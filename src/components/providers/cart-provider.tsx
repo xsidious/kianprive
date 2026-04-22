@@ -16,6 +16,7 @@ type AddCartItem = Omit<CartItem, "quantity">;
 type CartContextValue = {
   items: CartItem[];
   isOpen: boolean;
+  hydrated: boolean;
   itemCount: number;
   subtotal: number;
   addItem: (item: AddCartItem) => void;
@@ -41,6 +42,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   });
   const [isOpen, setIsOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
@@ -53,6 +59,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     return {
       items,
       isOpen,
+      hydrated,
       itemCount,
       subtotal,
       addItem: (item) => {
@@ -79,7 +86,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       closeCart: () => setIsOpen(false),
       toggleCart: () => setIsOpen((prev) => !prev),
     };
-  }, [isOpen, items]);
+  }, [hydrated, isOpen, items]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

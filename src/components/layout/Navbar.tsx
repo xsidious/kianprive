@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useCart } from "@/components/providers/cart-provider";
 
 const links = [
+  { href: "/", label: "Home" },
   { href: "/events-retreats", label: "Events & Retreats" },
   { href: "/shop", label: "Shop" },
   { href: "/blog", label: "Blog" },
@@ -26,10 +27,11 @@ const whatWeDoLinks = [
 export function Navbar() {
   const { data } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { itemCount, openCart } = useCart();
+  const { itemCount, openCart, hydrated } = useCart();
+  const displayCount = hydrated ? itemCount : 0;
   return (
     <header className="sticky top-0 z-40 border-b border-[#b78d4b33] bg-[#fffdf9e6] backdrop-blur">
-      <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3 sm:px-6 sm:py-4">
+      <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-2 px-4 py-3 sm:gap-3 sm:px-6 sm:py-4">
         <div className="flex items-center">
           <Link href="/" className="flex items-center">
             <Image src="/images/kianprivelogo.png" alt="KIAN Privé logo" width={52} height={52} />
@@ -65,7 +67,7 @@ export function Navbar() {
           <button onClick={openCart} className="relative inline-flex items-center rounded-full border border-[#b78d4b80] bg-white p-2 text-[#3b3024]">
             <ShoppingBag size={17} />
             <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[#b78d4b] px-1 text-[10px] text-white">
-              {itemCount}
+              {displayCount}
             </span>
           </button>
           <Link href="/book-online" className="rounded-full bg-[#b78d4b] px-4 py-2 text-sm text-white">
@@ -89,17 +91,21 @@ export function Navbar() {
           )}
         </div>
         <div className="flex items-center gap-2 sm:hidden">
-          <button onClick={openCart} className="relative inline-flex items-center rounded-full border border-[#b78d4b80] bg-white p-2 text-[#3b3024]">
-            <ShoppingBag size={16} />
-            {itemCount > 0 ? (
-              <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[#b78d4b] px-1 text-[10px] text-white">
-                {itemCount}
+          <button
+            onClick={openCart}
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#b78d4b66] bg-white text-[#3b3024] shadow-[0_10px_18px_-14px_rgba(66,45,14,0.55)]"
+            aria-label="Open cart"
+          >
+            <ShoppingBag size={17} />
+            {displayCount > 0 ? (
+              <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full border border-white bg-[#b78d4b] px-1 text-[10px] text-white">
+                {displayCount}
               </span>
             ) : null}
           </button>
           <button
             onClick={() => setMobileOpen((v) => !v)}
-            className="inline-flex items-center rounded-full border border-[#b78d4b80] bg-white p-2 text-[#3b3024]"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#b78d4b66] bg-white text-[#3b3024] shadow-[0_10px_18px_-14px_rgba(66,45,14,0.55)]"
             aria-label="Toggle menu"
           >
             {mobileOpen ? <X size={18} /> : <Menu size={18} />}
@@ -110,6 +116,9 @@ export function Navbar() {
       {mobileOpen ? (
         <div className="border-t border-[#b78d4b2f] bg-[#fffdf9] px-4 py-4 sm:hidden">
           <div className="grid gap-2 text-sm text-[#4f4335]">
+            <Link href="/" onClick={() => setMobileOpen(false)} className="rounded-xl px-3 py-2 hover:bg-[#fff7eb]">
+              Home
+            </Link>
             <p className="px-3 pt-1 text-xs tracking-[0.18em] text-[#8f6f3e]">WHAT WE DO</p>
             {whatWeDoLinks.map((link) => (
               <Link
