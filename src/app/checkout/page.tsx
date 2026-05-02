@@ -1,13 +1,71 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { useCart } from "@/components/providers/cart-provider";
 
 export default function CheckoutPage() {
   const { items, subtotal } = useCart();
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [resultMessage, setResultMessage] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const shipping = subtotal >= 150 || subtotal === 0 ? 0 : 12;
   const total = subtotal + shipping;
+
+  async function handleCompletePurchase() {
+    const cartId = window.localStorage.getItem("kianprive_cart_id");
+    if (!cartId) {
+      setResultMessage("No cart ID found. Please add products from the shop first.");
+      return;
+    }
+
+    setSubmitting(true);
+    setResultMessage(null);
+    try {
+      const response = await fetch("/api/commerce/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cartId,
+          email,
+          phone,
+          shippingAddress: {
+            firstName,
+            lastName,
+            address,
+            city,
+            zipCode,
+          },
+          billingAddress: {
+            firstName,
+            lastName,
+            address,
+            city,
+            zipCode,
+          },
+        }),
+      });
+
+      const payload = (await response.json()) as { order?: { orderNumber?: string }; error?: string };
+      if (!response.ok) {
+        setResultMessage(payload.error ?? "Failed to create order.");
+        return;
+      }
+
+      setResultMessage(`Order created successfully: ${payload.order?.orderNumber ?? "Pending number"}`);
+    } catch {
+      setResultMessage("Unexpected error while processing checkout.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <div className="bg-[#f6f1e8]">
@@ -23,13 +81,13 @@ export default function CheckoutPage() {
           <div className="rounded-2xl border border-[#b78d4b2d] bg-white p-5 sm:p-7">
             <h2 className="text-xl text-[#1f1a15]">Contact & Shipping</h2>
             <form className="mt-5 grid gap-4 md:grid-cols-2">
-              <input className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Email" type="email" />
-              <input className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Phone" />
-              <input className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="First name" />
-              <input className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Last name" />
-              <input className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3 md:col-span-2" placeholder="Address" />
-              <input className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="City" />
-              <input className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="ZIP Code" />
+              <input value={email} onChange={(e) => setEmail(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Email" type="email" />
+              <input value={phone} onChange={(e) => setPhone(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Phone" />
+              <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="First name" />
+              <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Last name" />
+              <input value={address} onChange={(e) => setAddress(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3 md:col-span-2" placeholder="Address" />
+              <input value={city} onChange={(e) => setCity(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="City" />
+              <input value={zipCode} onChange={(e) => setZipCode(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="ZIP Code" />
             </form>
 
             <h2 className="mt-8 text-xl text-[#1f1a15]">Payment</h2>
@@ -37,7 +95,14 @@ export default function CheckoutPage() {
               Card payment placeholder (Stripe checkout flow can be connected here next).
             </div>
 
-            <button className="mt-6 w-full rounded-full bg-[#b78d4b] px-6 py-3 text-white">Complete Purchase</button>
+            <button
+              onClick={handleCompletePurchase}
+              disabled={submitting}
+              className="mt-6 w-full rounded-full bg-[#b78d4b] px-6 py-3 text-white disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {submitting ? "Processing..." : "Complete Purchase"}
+            </button>
+            {resultMessage ? <p className="mt-3 text-sm text-[#6f6251]">{resultMessage}</p> : null}
           </div>
 
           <aside className="h-fit rounded-2xl border border-[#b78d4b2d] bg-white p-5 lg:sticky lg:top-24">

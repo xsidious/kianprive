@@ -6,6 +6,8 @@ import { Navbar } from "@/components/layout/Navbar";
 import { TrustBadges } from "@/components/layout/TrustBadges";
 import { AppSessionProvider } from "@/components/providers/session-provider";
 import { CartDrawer } from "@/components/cart/cart-drawer";
+import { PageAnalyticsTracker } from "@/components/analytics/page-analytics-tracker";
+import { buildSeoMetadata } from "@/lib/seo/metadata";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,8 +20,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "KIAN Privé",
-  description: "Premium concierge wellness for discerning clients and practitioners.",
+  ...buildSeoMetadata({
+    title: "KIAN Privé",
+    description: "Premium concierge wellness for discerning clients and practitioners.",
+    canonicalPath: "/",
+  }),
 };
 
 export default function RootLayout({
@@ -34,6 +39,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-[var(--bg)]">
         <AppSessionProvider>
+          <PageAnalyticsTracker />
           <Navbar />
           <TrustBadges />
           <main className="flex-1 bg-[var(--bg)]">{children}</main>

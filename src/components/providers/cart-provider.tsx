@@ -30,6 +30,7 @@ type CartContextValue = {
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
 const STORAGE_KEY = "kianprive_cart";
+const STORAGE_CART_ID_KEY = "kianprive_cart_id";
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(() => {
@@ -52,6 +53,30 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }, [items]);
 
+  async function syncCartItem(input: {
+    productId: string;
+    quantity: number;
+  }) {
+    try {
+      const cartId = localStorage.getItem(STORAGE_CART_ID_KEY);
+      const response = await fetch("/api/commerce/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cartId,
+          productId: input.productId,
+          quantity: input.quantity,
+        }),
+      });
+      const payload = (await response.json()) as { cart?: { id?: string } };
+      if (payload.cart?.id) {
+        localStorage.setItem(STORAGE_CART_ID_KEY, payload.cart.id);
+      }
+    } catch {
+      // Keep client cart available even if backend sync fails.
+    }
+  }
+
   const value = useMemo<CartContextValue>(() => {
     const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
     const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -63,6 +88,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       itemCount,
       subtotal,
       addItem: (item) => {
+        void syncCartItem({ productId: item.id, quantity: 1 });
         setItems((prev) => {
           const existing = prev.find((p) => p.id === item.id);
           if (existing) {

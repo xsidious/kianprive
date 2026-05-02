@@ -4,6 +4,7 @@ import { FadeIn } from "@/components/ui/FadeIn";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { ServiceCard } from "@/components/ui/ServiceCard";
 import { homepageStats, practitionerTeam, serviceHighlights } from "@/lib/site-content";
+import { getCmsPageContent } from "@/lib/cms/pages";
 
 const pathwaySteps = [
   "Assess your current lifestyle and identify gaps.",
@@ -36,18 +37,14 @@ const programTracks = [
 ];
 
 export default function Home() {
+  const cmsPromise = getCmsPageContent("home");
   return (
     <div>
       <SectionWrapper className="pt-14 sm:pt-16 md:pt-20">
         <FadeIn>
           <div className="mt-3 grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
             <div>
-              <p className="inline-flex rounded-full border border-[#b78d4b47] bg-white/80 px-4 py-1 text-xs tracking-[0.2em] text-[#8f6f3e]">
-                CONCIERGE WELLNESS
-              </p>
-              <h1 className="mt-5 max-w-3xl text-3xl leading-[1.2] text-[#1f1a15] sm:text-4xl md:text-5xl">
-                Your Private Pathway to Greatness in Health, Aesthetics, and Performance.
-              </h1>
+              <HomeHeading cmsPromise={cmsPromise} />
               <p className="mt-6 max-w-2xl text-base text-[#5f5344] sm:text-lg">
                 Delivering uninterrupted, personalized care at your location or ours. No busy
                 waiting rooms. No rush. Just elite professionals, precision protocols, and luxury-level results.
@@ -233,5 +230,21 @@ export default function Home() {
         </div>
       </SectionWrapper>
     </div>
+  );
+}
+
+async function HomeHeading({
+  cmsPromise,
+}: {
+  cmsPromise: ReturnType<typeof getCmsPageContent>;
+}) {
+  const content = await cmsPromise;
+  return (
+    <>
+      <p className="inline-flex rounded-full border border-[#b78d4b47] bg-white/80 px-4 py-1 text-xs tracking-[0.2em] text-[#8f6f3e]">
+        {content.eyebrow ?? "CONCIERGE WELLNESS"}
+      </p>
+      <h1 className="mt-5 max-w-3xl text-3xl leading-[1.2] text-[#1f1a15] sm:text-4xl md:text-5xl">{content.title}</h1>
+    </>
   );
 }

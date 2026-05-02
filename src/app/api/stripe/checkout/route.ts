@@ -10,6 +10,16 @@ const planToPrice: Record<string, string | undefined> = {
 };
 
 export async function POST(req: Request) {
+  const idempotencyKey = req.headers.get("x-idempotency-key");
+  if (idempotencyKey) {
+    const existing = await prisma.idempotencyKey.findUnique({
+      where: { key: idempotencyKey },
+    });
+    if (existing?.response) {
+      return NextResponse.json(existing.response);
+    }
+  }
+
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -40,5 +50,22 @@ export async function POST(req: Request) {
     metadata: { userId: dbUser.id, plan },
   });
 
-  return NextResponse.json({ url: checkoutSession.url });
+  const response = { url: checkoutSession.url };
+  if (idempotencyKey) {
+    await prisma.idempotencyKey.upsert({
+      where: { key: idempotencyKey },
+      create: {
+        key: idempotencyKey,
+        scope: "stripe.checkout.subscription",
+        statusCode: 200,
+        response,
+      },
+      update: {
+        statusCode: 200,
+        response,
+      },
+    });
+  }
+
+  return NextResponse.json(response);
 }

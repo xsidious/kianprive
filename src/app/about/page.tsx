@@ -1,5 +1,6 @@
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import Image from "next/image";
+import { getCmsPageContent } from "@/lib/cms/pages";
 
 const aboutTeam = [
   { name: "Alycia Lerer", title: "Founder", subtitle: "Wellness Coach", image: "/images/AlyciaLerer.avif" },
@@ -9,19 +10,17 @@ const aboutTeam = [
   { name: "Dr. Karl Ryan, DDS", title: "Aesthetic Injector", subtitle: "Provider", image: "/images/KarlRyan.avif" },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const cms = await getCmsPageContent("about");
   return (
     <div>
       <SectionWrapper className="pt-18">
         <div className="grid items-center gap-10 rounded-3xl border border-[#b78d4b2e] bg-white p-8 shadow-[0_20px_50px_-38px_rgba(66,45,14,0.45)] md:grid-cols-[1.1fr_0.9fr]">
           <div>
-            <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">ABOUT US</p>
-            <h1 className="mt-4 text-4xl text-[#1f1a15] md:text-5xl">A Truly Private Wellness Experience</h1>
+            <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">{cms.eyebrow ?? "ABOUT US"}</p>
+            <h1 className="mt-4 text-4xl text-[#1f1a15] md:text-5xl">{cms.title}</h1>
             <p className="mt-5 max-w-3xl text-[#6f6251]">
-              KIAN Privé is a concierge wellness company dedicated to delivering the finest services for a truly private wellness experience
-              provided by dedicated professionals at your location or ours. No busy waiting rooms, no hustle or bustle. Just uninterrupted,
-              personalized care in a serene and intimate setting. In-home and on-location services are available, bringing the full KIAN
-              Privé experience directly to you.
+              {cms.description}
             </p>
             <p className="mt-4 max-w-3xl text-[#6f6251]">
               At KIAN Privé, we believe optimal health is not a destination, it is a continuous, deeply personal journey. We bring together

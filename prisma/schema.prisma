@@ -25,6 +25,12 @@ model User {
   stripeCustomerId String?       @unique
   accounts        Account[]
   sessions        Session[]
+  authoredPosts   BlogPost[]      @relation("BlogPostAuthor")
+  editedPosts     BlogPost[]      @relation("BlogPostEditor")
+  orders          Order[]
+  carts           Cart[]
+  pageRevisions   PageRevision[]
+  auditLogs       AuditLog[]
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 }
@@ -52,6 +58,346 @@ model Subscription {
   user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
+}
+
+model SiteSetting {
+  id         String   @id @default(cuid())
+  key        String   @unique
+  value      Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model NavigationMenu {
+  id        String      @id @default(cuid())
+  name      String
+  slug      String      @unique
+  items     MenuItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model MenuItem {
+  id          String         @id @default(cuid())
+  menuId      String
+  parentId    String?
+  label       String
+  href        String
+  target      LinkTarget     @default(SAME_TAB)
+  sortOrder   Int            @default(0)
+  menu        NavigationMenu @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  parent      MenuItem?      @relation("MenuItemHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children    MenuItem[]     @relation("MenuItemHierarchy")
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([menuId, sortOrder])
+}
+
+model CmsPage {
+  id            String        @id @default(cuid())
+  slug          String        @unique
+  title         String
+  status        ContentStatus @default(DRAFT)
+  pageType      String        @default("marketing")
+  body          Json
+  seoTitle      String?
+  seoDescription String?
+  seoImage      String?
+  canonicalUrl  String?
+  noIndex       Boolean       @default(false)
+  sections      CmsSection[]
+  revisions     PageRevision[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  publishedAt   DateTime?
+}
+
+model CmsSection {
+  id         String    @id @default(cuid())
+  pageId     String
+  sectionKey String
+  sectionType String
+  sortOrder  Int       @default(0)
+  content    Json
+  page       CmsPage   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([pageId, sortOrder])
+}
+
+model PageRevision {
+  id         String    @id @default(cuid())
+  pageId      String
+  editorId    String?
+  note        String?
+  snapshot    Json
+  page        CmsPage  @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  editor      User?    @relation(fields: [editorId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+}
+
+model MediaAsset {
+  id          String    @id @default(cuid())
+  title       String?
+  alt         String?
+  mimeType    String?
+  storageKey  String?
+  url         String
+  width       Int?
+  height      Int?
+  metadata    Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model BlogCategory {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  name        String
+  description String?
+  posts       BlogPost[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model BlogPost {
+  id             String        @id @default(cuid())
+  slug           String        @unique
+  title          String
+  excerpt        String?
+  content        Json
+  status         ContentStatus @default(DRAFT)
+  categoryId     String?
+  authorId       String?
+  editorId       String?
+  featuredImage  String?
+  readTime       String?
+  seoTitle       String?
+  seoDescription String?
+  seoImage       String?
+  canonicalUrl   String?
+  noIndex        Boolean       @default(false)
+  tags           String[]
+  publishedAt    DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  category       BlogCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  author         User?         @relation("BlogPostAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  editor         User?         @relation("BlogPostEditor", fields: [editorId], references: [id], onDelete: SetNull)
+}
+
+model ProductCollection {
+  id          String       @id @default(cuid())
+  slug        String       @unique
+  name        String
+  description String?
+  products    Product[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Product {
+  id             String        @id @default(cuid())
+  slug           String        @unique
+  title          String
+  description    String?
+  status         ProductStatus @default(DRAFT)
+  category       String?
+  featuredImage  String?
+  price          Decimal       @db.Decimal(10, 2)
+  compareAtPrice Decimal?      @db.Decimal(10, 2)
+  currency       String        @default("USD")
+  sku            String?       @unique
+  inventoryQty   Int           @default(0)
+  trackInventory Boolean       @default(true)
+  stripeProductId String?
+  stripePriceId  String?
+  collectionId   String?
+  variants       ProductVariant[]
+  orderItems     OrderItem[]
+  cartItems      CartItem[]
+  collection     ProductCollection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model ProductVariant {
+  id            String    @id @default(cuid())
+  productId     String
+  title         String
+  sku           String?   @unique
+  price         Decimal   @db.Decimal(10, 2)
+  compareAtPrice Decimal? @db.Decimal(10, 2)
+  inventoryQty  Int       @default(0)
+  options       Json?
+  product       Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Cart {
+  id          String      @id @default(cuid())
+  userId      String?
+  email       String?
+  status      CartStatus  @default(ACTIVE)
+  currency    String      @default("USD")
+  subtotal    Decimal     @default(0) @db.Decimal(10, 2)
+  discountTotal Decimal   @default(0) @db.Decimal(10, 2)
+  taxTotal    Decimal     @default(0) @db.Decimal(10, 2)
+  total       Decimal     @default(0) @db.Decimal(10, 2)
+  items       CartItem[]
+  user        User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model CartItem {
+  id         String   @id @default(cuid())
+  cartId     String
+  productId  String
+  quantity   Int      @default(1)
+  unitPrice  Decimal  @db.Decimal(10, 2)
+  lineTotal  Decimal  @db.Decimal(10, 2)
+  cart       Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([cartId])
+}
+
+model Order {
+  id                   String       @id @default(cuid())
+  orderNumber          String       @unique
+  userId               String?
+  email                String?
+  phone                String?
+  status               OrderStatus  @default(PENDING)
+  paymentStatus        PaymentStatus @default(UNPAID)
+  fulfillmentStatus    FulfillmentStatus @default(UNFULFILLED)
+  currency             String       @default("USD")
+  subtotal             Decimal      @default(0) @db.Decimal(10, 2)
+  discountTotal        Decimal      @default(0) @db.Decimal(10, 2)
+  taxTotal             Decimal      @default(0) @db.Decimal(10, 2)
+  shippingTotal        Decimal      @default(0) @db.Decimal(10, 2)
+  total                Decimal      @default(0) @db.Decimal(10, 2)
+  shippingAddress      Json?
+  billingAddress       Json?
+  notes                String?
+  stripeCheckoutSessionId String?   @unique
+  stripePaymentIntentId String?     @unique
+  items                OrderItem[]
+  fulfillments         Fulfillment[]
+  payments             PaymentRecord[]
+  refunds              RefundRecord[]
+  user                 User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  productId   String
+  title       String
+  sku         String?
+  quantity    Int
+  unitPrice   Decimal  @db.Decimal(10, 2)
+  lineTotal   Decimal  @db.Decimal(10, 2)
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([orderId])
+}
+
+model Fulfillment {
+  id             String             @id @default(cuid())
+  orderId         String
+  status          FulfillmentStatus @default(PROCESSING)
+  carrier         String?
+  trackingNumber  String?
+  trackingUrl     String?
+  shippedAt       DateTime?
+  deliveredAt     DateTime?
+  notes           String?
+  order           Order              @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+}
+
+model PaymentRecord {
+  id                  String        @id @default(cuid())
+  orderId             String
+  provider            String        @default("stripe")
+  status              PaymentStatus @default(UNPAID)
+  amount              Decimal       @db.Decimal(10, 2)
+  currency            String        @default("USD")
+  stripePaymentIntentId String?
+  metadata            Json?
+  order               Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+}
+
+model RefundRecord {
+  id             String    @id @default(cuid())
+  orderId         String
+  amount          Decimal   @db.Decimal(10, 2)
+  reason          String?
+  stripeRefundId  String?   @unique
+  metadata        Json?
+  order           Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model AnalyticsEvent {
+  id           String    @id @default(cuid())
+  eventName     String
+  pagePath      String?
+  referrer      String?
+  source        String?
+  medium        String?
+  campaign      String?
+  userId        String?
+  sessionId     String?
+  orderId       String?
+  metadata      Json?
+  occurredAt    DateTime  @default(now())
+
+  @@index([eventName, occurredAt])
+  @@index([pagePath, occurredAt])
+}
+
+model IdempotencyKey {
+  id          String    @id @default(cuid())
+  key         String    @unique
+  scope       String
+  statusCode  Int?
+  response    Json?
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model AuditLog {
+  id          String    @id @default(cuid())
+  userId      String?
+  action      String
+  entityType  String
+  entityId    String?
+  metadata    Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime  @default(now())
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId])
+  @@index([action, createdAt])
 }
 
 model Account {
@@ -92,6 +438,8 @@ model VerificationToken {
 enum Role {
   GUEST
   MEMBER
+  EDITOR
+  OPERATIONS
   ADMIN
 }
 
@@ -105,4 +453,54 @@ enum SubscriptionStatus {
   ACTIVE
   PAST_DUE
   CANCELED
+}
+
+enum ContentStatus {
+  DRAFT
+  REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+enum LinkTarget {
+  SAME_TAB
+  NEW_TAB
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum CartStatus {
+  ACTIVE
+  CONVERTED
+  ABANDONED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  FULFILLED
+  DELIVERED
+  CANCELED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  PARTIALLY_REFUNDED
+  REFUNDED
+  FAILED
+}
+
+enum FulfillmentStatus {
+  UNFULFILLED
+  PROCESSING
+  PARTIALLY_FULFILLED
+  FULFILLED
+  DELIVERED
 }

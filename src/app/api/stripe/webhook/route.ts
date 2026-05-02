@@ -21,6 +21,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
+  const eventKey = `stripe:${event.id}`;
+  const alreadyProcessed = await prisma.idempotencyKey.findUnique({
+    where: { key: eventKey },
+  });
+  if (alreadyProcessed) {
+    return NextResponse.json({ received: true, duplicate: true });
+  }
+
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
     const userId = session.metadata?.userId;
@@ -50,6 +58,67 @@ export async function POST(req: Request) {
       });
     }
   }
+
+  if (event.type === "payment_intent.succeeded") {
+    const paymentIntent = event.data.object as Stripe.PaymentIntent;
+    const order = await prisma.order.findFirst({
+      where: { stripePaymentIntentId: paymentIntent.id },
+    });
+    if (order) {
+      await prisma.paymentRecord.create({
+        data: {
+          orderId: order.id,
+          status: "PAID",
+          amount: (paymentIntent.amount_received ?? paymentIntent.amount) / 100,
+          currency: (paymentIntent.currency ?? "usd").toUpperCase(),
+          stripePaymentIntentId: paymentIntent.id,
+          metadata: paymentIntent.metadata,
+        },
+      });
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          status: "PAID",
+          paymentStatus: "PAID",
+        },
+      });
+    }
+  }
+
+  if (event.type === "charge.refunded") {
+    const charge = event.data.object as Stripe.Charge;
+    if (charge.payment_intent) {
+      const order = await prisma.order.findFirst({
+        where: { stripePaymentIntentId: charge.payment_intent.toString() },
+      });
+      if (order) {
+        await prisma.refundRecord.create({
+          data: {
+            orderId: order.id,
+            amount: (charge.amount_refunded ?? 0) / 100,
+            reason: "stripe_charge_refund",
+            metadata: charge.metadata,
+          },
+        });
+        await prisma.order.update({
+          where: { id: order.id },
+          data: {
+            status: "REFUNDED",
+            paymentStatus: "REFUNDED",
+          },
+        });
+      }
+    }
+  }
+
+  await prisma.idempotencyKey.create({
+    data: {
+      key: eventKey,
+      scope: "stripe.webhook",
+      statusCode: 200,
+      response: { type: event.type },
+    },
+  });
 
   return NextResponse.json({ received: true });
 }

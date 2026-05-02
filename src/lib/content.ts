@@ -1,3 +1,6 @@
+import { ContentStatus } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+
 export type BlogPost = {
   slug: string;
   title: string;
@@ -103,9 +106,51 @@ export const blogPostsData: BlogPost[] = [
 ];
 
 export async function getBlogPosts(): Promise<BlogPost[]> {
-  return blogPostsData;
+  const dbPosts = await prisma.blogPost
+    .findMany({
+      where: { status: ContentStatus.PUBLISHED },
+      include: { category: true },
+      orderBy: { publishedAt: "desc" },
+    })
+    .catch(() => []);
+
+  if (!dbPosts.length) return blogPostsData;
+
+  return dbPosts.map((post) => ({
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.excerpt ?? "",
+    publishedAt: (post.publishedAt ?? post.updatedAt).toISOString(),
+    category: post.category?.name ?? "General",
+    readTime: post.readTime ?? "5 min read",
+    image: post.featuredImage ?? "/images/beauty.avif",
+    content: Array.isArray(post.content) ? (post.content as string[]) : [],
+  }));
 }
 
 export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
+  const dbPost = await prisma.blogPost
+    .findFirst({
+      where: {
+        slug,
+        status: ContentStatus.PUBLISHED,
+      },
+      include: { category: true },
+    })
+    .catch(() => null);
+
+  if (dbPost) {
+    return {
+      slug: dbPost.slug,
+      title: dbPost.title,
+      excerpt: dbPost.excerpt ?? "",
+      publishedAt: (dbPost.publishedAt ?? dbPost.updatedAt).toISOString(),
+      category: dbPost.category?.name ?? "General",
+      readTime: dbPost.readTime ?? "5 min read",
+      image: dbPost.featuredImage ?? "/images/beauty.avif",
+      content: Array.isArray(dbPost.content) ? (dbPost.content as string[]) : [],
+    };
+  }
+
   return blogPostsData.find((post) => post.slug === slug) ?? null;
 }
