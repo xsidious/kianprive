@@ -27,6 +27,12 @@ export default function EventsRetreatsPage() {
             <p className="mt-3 text-[#6f6251]">
               Immerse yourself in the ultimate natural wellness experience — let nature be your sanctuary.
             </p>
+            <div className="mt-4 rounded-2xl border border-[#1f7a7a4f] bg-[#eef8f8] p-4">
+              <p className="text-xs tracking-[0.18em] text-[#1b6568]">LAUNCH TIMELINE</p>
+              <p className="mt-2 text-sm text-[#28585a]">
+                Events begin June 7. Retreats begin in September. Additional event and retreat information will be released separately.
+              </p>
+            </div>
 
             <div className="mt-7 rounded-2xl border border-[#b78d4b30] bg-[#fffaf2] p-4">
               <p className="text-sm text-[#8f6f3e]">Join our list to opt-in for event launches & promotions!</p>

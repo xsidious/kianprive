@@ -3,6 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { getCmsPageContent } from "@/lib/cms/pages";
+import { ServiceCardsWithModal } from "@/components/services/ServiceCardsWithModal";
+import { PeptidesInteractiveShowcase } from "@/components/services/PeptidesInteractiveShowcase";
 
 const coreServices = [
   {
@@ -31,7 +33,7 @@ const coreServices = [
   },
   {
     title: "Nutrition",
-    image: "/images/nutrition.avif",
+    image: "/images/CherieJohnson.avif",
     description:
       "Science-based nutrition support tailored to your goals, with practical plans aligned to your clinical and lifestyle needs.",
   },
@@ -103,11 +105,11 @@ const gymServices = [
 ];
 
 const preferredProviders = [
-  { name: "Salt", logo: null as string | null },
-  { name: "PEMF", logo: null as string | null },
-  { name: "Far Infrared", logo: null as string | null },
-  { name: "MindTap", logo: null as string | null },
-  { name: "Adapt", logo: null as string | null },
+  { name: "Salt", logo: "/images/providers/holistic-salt-therapy-center.png", href: "/contact" },
+  { name: "PEMF", logo: "/images/providers/omg-aesthetics.png", href: "/contact" },
+  { name: "Far Infrared", logo: "/images/providers/facial-design-studio.png", href: "/contact" },
+  { name: "MindTap", logo: "/images/providers/mindtap.png", href: "/contact" },
+  { name: "Adapt", logo: "/images/providers/vcs-vitamin-c-to-sea.png", href: "/contact" },
 ];
 
 const icooneMinutePackages = [
@@ -739,31 +741,6 @@ const medicalDisclaimerParagraphs = [
 export default async function ServicesPage() {
   const cms = await getCmsPageContent("services");
 
-  const renderServiceCards = (services: typeof coreServices, label: string) => (
-    <div className="space-y-6">
-      {services.map((service, index) => (
-        <article
-          key={service.title}
-          className="grid gap-6 overflow-hidden rounded-3xl border border-[#b78d4b2d] bg-white p-5 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)] md:grid-cols-[0.42fr_0.58fr] md:items-start"
-        >
-          <div className="relative h-64 overflow-hidden rounded-2xl">
-            <Image src={service.image} alt={service.title} fill sizes="(max-width: 768px) 100vw, 42vw" className="object-cover" />
-          </div>
-          <div>
-            <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">
-              {label} {String(index + 1).padStart(2, "0")}
-            </p>
-            <h3 className="mt-2 text-2xl text-[#2b2218]">{service.title}</h3>
-            <p className="mt-4 leading-relaxed text-[#5f5344]">{service.description}</p>
-            <Link href="/book-online" className="mt-5 inline-flex rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
-              Book Now
-            </Link>
-          </div>
-        </article>
-      ))}
-    </div>
-  );
-
   const scrollTable = (header: ReactNode, body: ReactNode) => (
     <div className="overflow-x-auto rounded-3xl border border-[#b78d4b2d] bg-white shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
       <div className="min-w-[720px]">
@@ -810,15 +787,30 @@ export default async function ServicesPage() {
         <p className="mb-6 max-w-3xl text-[#6f6251]">
           Your primary care suite at KIAN Privé, delivered in one integrated experience.
         </p>
-        {renderServiceCards(coreServices, "SERVICE")}
+        <ServiceCardsWithModal services={coreServices} label="SERVICE" />
       </SectionWrapper>
 
       <SectionWrapper>
         <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Member Add-Ons</h2>
         <p className="mb-6 max-w-3xl text-[#6f6251]">
-          GLP-1s and peptides are offered as add-ons for active members.
+          GLP-1s and peptides are offered as add-ons for active members, with monthly peptide membership pathways available.
         </p>
-        {renderServiceCards(memberAddOns, "ADD-ON")}
+        <div className="mb-6 rounded-2xl border border-[#1f7a7a40] bg-[linear-gradient(120deg,#0f3a44_0%,#14505a_65%,#1f7a7a_100%)] p-4 text-white shadow-[0_20px_45px_-35px_rgba(15,58,68,0.8)]">
+          <p className="text-xs tracking-[0.2em] text-[#bce9e8]">MEMBER PRIORITY</p>
+          <p className="mt-2 text-sm leading-relaxed text-[#eef8f8]">
+            High-impact protocols for current and new members should stand out first. This section is intentionally highlighted to guide action.
+          </p>
+        </div>
+        <div className="mb-6 rounded-2xl border border-[#1f7a7a4f] bg-[#eef8f8] p-4">
+          <p className="text-xs tracking-[0.2em] text-[#1b6568]">PRIVATE MEMBERS UPDATE</p>
+          <p className="mt-2 text-sm text-[#28585a]">
+            Additional add-ons will be released separately. Retreats start in September. Events begin June 7, with additional information to follow.
+          </p>
+        </div>
+        <ServiceCardsWithModal services={memberAddOns} label="ADD-ON" />
+        <div className="mt-8">
+          <PeptidesInteractiveShowcase />
+        </div>
       </SectionWrapper>
 
       <SectionWrapper>
@@ -826,7 +818,10 @@ export default async function ServicesPage() {
         <p className="mb-6 max-w-3xl text-[#6f6251]">
           These add-ons are available at the same location as your core KIAN Privé services.
         </p>
-        {renderServiceCards(sameLocationAddOns, "SAME-LOCATION")}
+        <p className="mb-6 inline-flex rounded-full border border-[#1f7a7a5c] bg-[#e9f7f7] px-4 py-2 text-xs tracking-[0.18em] text-[#1b6568]">
+          HIGH-DEMAND ENHANCEMENTS
+        </p>
+        <ServiceCardsWithModal services={sameLocationAddOns} label="SAME-LOCATION" />
       </SectionWrapper>
 
       <SectionWrapper>
@@ -834,7 +829,7 @@ export default async function ServicesPage() {
         <p className="mb-6 max-w-3xl text-[#6f6251]">
           Partner services available at a different location.
         </p>
-        {renderServiceCards(differentLocationAddOns, "OFF-SITE")}
+        <ServiceCardsWithModal services={differentLocationAddOns} label="OFF-SITE" />
       </SectionWrapper>
 
       <SectionWrapper>
@@ -842,7 +837,7 @@ export default async function ServicesPage() {
         <p className="mb-6 max-w-3xl text-[#6f6251]">
           Performance and conditioning support through our gym partner network.
         </p>
-        {renderServiceCards(gymServices, "GYM")}
+        <ServiceCardsWithModal services={gymServices} label="GYM" />
       </SectionWrapper>
 
       <SectionWrapper>
@@ -1004,6 +999,12 @@ export default async function ServicesPage() {
                   <span className="text-xs tracking-[0.18em] text-[#8f6f3e]">LOGO COMING SOON</span>
                 )}
               </div>
+              <Link
+                href={provider.href}
+                className="mt-4 inline-flex rounded-full border border-[#1f7a7a66] bg-[#e9f7f7] px-4 py-2 text-xs tracking-[0.14em] text-[#1f6f75]"
+              >
+                Contact for Provider Details
+              </Link>
             </article>
           ))}
         </div>
@@ -1313,6 +1314,15 @@ export default async function ServicesPage() {
           <p className="mt-2 text-sm text-[#6f6251]">
             All medical services supervised by KIAN Privé board-certified physician. Packages expire after 1 year. Gift cards available.
           </p>
+        </div>
+        <div className="mt-6 rounded-2xl border border-[#1f7a7a42] bg-[linear-gradient(120deg,#eff9f9_0%,#e4f4f4_100%)] p-4">
+          <p className="text-xs tracking-[0.18em] text-[#1b6568]">READY TO START</p>
+          <p className="mt-2 text-sm text-[#28585a]">
+            New and current members can begin with a physician-led consultation to match services, add-ons, and protocol intensity to your goals.
+          </p>
+          <Link href="/book-online" className="mt-3 inline-flex rounded-full bg-gradient-to-r from-[#1f7a7a] to-[#174f63] px-5 py-2 text-sm text-white">
+            Start Membership Journey
+          </Link>
         </div>
       </SectionWrapper>
     </div>
