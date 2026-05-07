@@ -3,24 +3,11 @@ import { getToken } from "next-auth/jwt";
 import { canAccessAdmin } from "@/lib/rbac";
 
 const adminPaths = ["/admin"];
-const publicPaths = [
-  "/",
-  "/login",
-  "/signup",
-  "/services",
-  "/events-retreats",
-  "/shop",
-  "/cart",
-  "/checkout",
-];
 
 export async function middleware(req: Request & { nextUrl: URL }) {
   const { pathname } = req.nextUrl;
   const isAdminRoute = adminPaths.some((path) => pathname.startsWith(path));
-  const isPublicRoute =
-    publicPaths.some((path) => (path === "/" ? pathname === "/" : pathname.startsWith(path))) ||
-    pathname.startsWith("/api/auth");
-  if (isPublicRoute) return NextResponse.next();
+  if (!isAdminRoute) return NextResponse.next();
 
   const token = await getToken({
     req: req as never,
@@ -31,7 +18,7 @@ export async function middleware(req: Request & { nextUrl: URL }) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  if (isAdminRoute && !canAccessAdmin(token.role as never)) {
+  if (!canAccessAdmin(token.role as never)) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
@@ -39,5 +26,5 @@ export async function middleware(req: Request & { nextUrl: URL }) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|images).*)"],
+  matcher: ["/admin/:path*"],
 };

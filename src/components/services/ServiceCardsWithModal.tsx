@@ -8,6 +8,11 @@ type ServiceItem = {
   title: string;
   image: string;
   description: string;
+  details?: string[];
+  includes?: string[];
+  pricing?: string[];
+  membershipNotes?: string[];
+  availability?: string[];
 };
 
 type ServiceCardsWithModalProps = {
@@ -107,6 +112,66 @@ export function ServiceCardsWithModal({ services, label }: ServiceCardsWithModal
               <Image src={selectedService.image} alt={selectedService.title} fill className="object-cover" />
             </div>
             <p className="mt-5 leading-relaxed text-[#5f5344]">{selectedService.description}</p>
+            {selectedService.details && selectedService.details.length > 0 ? (
+              <div className="mt-5">
+                <p className="text-xs tracking-[0.16em] text-[#1f6f75]">DETAILS</p>
+                <div className="mt-2 space-y-2">
+                  {selectedService.details.map((item) => (
+                    <p key={item} className="text-sm leading-relaxed text-[#5f5344]">
+                      {item}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+            {selectedService.includes && selectedService.includes.length > 0 ? (
+              <div className="mt-5">
+                <p className="text-xs tracking-[0.16em] text-[#1f6f75]">WHAT THIS SUPPORTS</p>
+                <ul className="mt-2 space-y-1">
+                  {selectedService.includes.map((item) => (
+                    <li key={item} className="text-sm text-[#5f5344]">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            {selectedService.pricing && selectedService.pricing.length > 0 ? (
+              <div className="mt-5 rounded-xl border border-[#1f7a7a30] bg-[#eef8f8] p-3">
+                <p className="text-xs tracking-[0.16em] text-[#1f6f75]">PRICING SNAPSHOT</p>
+                <ul className="mt-2 space-y-1">
+                  {selectedService.pricing.map((item) => (
+                    <li key={item} className="text-sm text-[#28585a]">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            {selectedService.membershipNotes && selectedService.membershipNotes.length > 0 ? (
+              <div className="mt-5 rounded-xl border border-[#b78d4b38] bg-[#fffaf2] p-3">
+                <p className="text-xs tracking-[0.16em] text-[#8f6f3e]">MEMBERSHIP NOTES</p>
+                <ul className="mt-2 space-y-1">
+                  {selectedService.membershipNotes.map((item) => (
+                    <li key={item} className="text-sm text-[#5f5344]">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            {selectedService.availability && selectedService.availability.length > 0 ? (
+              <div className="mt-5">
+                <p className="text-xs tracking-[0.16em] text-[#1f6f75]">AVAILABILITY</p>
+                <ul className="mt-2 space-y-1">
+                  {selectedService.availability.map((item) => (
+                    <li key={item} className="text-sm text-[#5f5344]">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
             <div className="mt-6">
               <Link href="/book-online" className="inline-flex rounded-full bg-gradient-to-r from-[#1f7a7a] to-[#174f63] px-5 py-2 text-sm text-white">
                 Book This Service

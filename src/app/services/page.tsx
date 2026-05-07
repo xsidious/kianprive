@@ -12,48 +12,97 @@ const coreServices = [
     image: "/images/stock/hero-luxury-clinic.jpg",
     description:
       "Physician-led virtual consultations designed for continuity, convenience, and personalized wellness planning from wherever you are.",
+    details: [
+      "Board-certified providers review your goals, symptoms, labs, and treatment history.",
+      "Protocols are personalized and adjusted through scheduled follow-up check-ins.",
+    ],
+    includes: ["Wellness planning", "Medication/protocol review", "Follow-up optimization"],
+    availability: ["Virtual consultations available."],
   },
   {
     title: "Comprehensive Bloodwork",
     image: "/images/medicalaesthetics.avif",
     description:
       "Detailed lab analysis and physician interpretation to build your personalized care roadmap using objective, trackable health markers.",
+    details: [
+      "Comprehensive panels evaluate metabolic, inflammatory, nutrient, and hormone markers.",
+      "Results are reviewed with your physician and mapped into your ongoing wellness plan.",
+    ],
+    includes: ["Baseline biomarker assessment", "Progress tracking", "Protocol calibration support"],
   },
   {
     title: "Icoone® Laser",
     image: "/images/icoone.avif",
     description:
       "The revolutionary Icoone® Laser system uses patented Roboderm® technology with millions of micro-stimulations per session to activate the lymphatic system, stimulate collagen and elastin production, and trigger deep cellular renewal. For detoxification, it eliminates toxins and restores circulatory balance. For pain management, it relieves chronic tension and reduces inflammation. For athletes, it flushes metabolic waste, reduces recovery time, and enhances flexibility. For beauty and body contouring, Icoone® Laser delivers exceptional aesthetic results — visibly reducing cellulite, tightening and firming skin, smoothing the appearance of stretch marks, sculpting and reshaping body contours, improving skin texture and luminosity, and restoring a more youthful, toned silhouette. The multi-functional laser handpieces simultaneously deliver laser energy and mechanical stimulation, allowing treatments to be customized for the face, neck, and décolleté as well as the full body — addressing fine lines, sagging skin, and loss of facial volume alongside body contouring goals. Results are cumulative and progressive, with clients typically noticing measurable improvements in skin quality, firmness, and contour definition within the first few sessions.",
+    includes: [
+      "Lymphatic drainage and circulatory support",
+      "Cellulite and contouring support",
+      "Pain, inflammation, and recovery support",
+      "Face, neck, décolleté, and full-body targeting",
+    ],
+    pricing: [
+      "Single 40 min: $175 | 5-pack: $788 | 10-pack: $1,488",
+      "Single 50 min: $195 | 5-pack: $878 | 10-pack: $1,658",
+      "Single 80 min: $325 | 5-pack: $1,463 | 10-pack: $2,763",
+      "Monthly 50 min: 2/month $356 | 4/month $665",
+      "Monthly 80 min: 2/month $546 | 4/month $1,188",
+    ],
+    membershipNotes: [
+      "Monthly plans require a one-month security deposit and a 4-month minimum commitment.",
+      "Aftercare: hydration, light movement, avoid alcohol/processed foods 24h, avoid intense heat/exercise for 12h.",
+    ],
+    availability: ["Facility-based service (not offered in-home)."],
   },
   {
     title: "IV Therapy",
     image: "/images/wellness.avif",
     description:
       "Physician-guided IV protocols deliver targeted nutrients and hydration to support immunity, energy, recovery, and cellular performance.",
+    details: [
+      "IV infusions are selected and dosed based on goals, symptoms, and clinical context.",
+      "Can be paired with recovery, immunity, and performance protocols.",
+    ],
+    includes: ["Hydration support", "Nutrient replenishment", "Recovery and energy support"],
   },
   {
     title: "Nutrition",
     image: "/images/CherieJohnson.avif",
     description:
       "Science-based nutrition support tailored to your goals, with practical plans aligned to your clinical and lifestyle needs.",
+    details: [
+      "Led by certified nutrition experts in coordination with physician guidance.",
+      "Supports weight optimization, gut health, inflammation, hormonal balance, and long-term habits.",
+      "Cherie Johnson private virtual consultations are available.",
+    ],
+    pricing: ["Single session: $150", "4-session package: $500", "8-session package: $950"],
+    includes: ["Meal strategy", "Lifestyle adherence support", "Nutraceutical-aligned planning"],
   },
   {
     title: "Microneedling with Exosomes",
     image: "/images/facial-treatments.jpg",
     description:
       "Advanced skin rejuvenation treatment that supports collagen production and visible texture improvement through regenerative signaling.",
+    details: ["Microneedling combined with exosome-based regenerative support for skin renewal."],
+    pricing: ["Single session: $600", "4-session package: $1,800", "5-session package: $2,700", "10-session package: $5,000"],
+    includes: ["Texture refinement", "Tone support", "Fine-line and radiance improvement"],
   },
   {
     title: "Korean Organic Skincare",
     image: "/images/esthetics.avif",
     description:
       "Luxury preventive skincare protocols rooted in Korean methodology and clean organic formulations for barrier health and long-term skin quality.",
+    details: ["Preventive, hydration-focused skincare philosophy designed for skin longevity and barrier integrity."],
+    pricing: ["Single facial: $195", "4-session facial package: $725"],
+    includes: ["Barrier support", "Hydration protocols", "Gentle clinical-luxury skincare"],
   },
   {
     title: "Facial Aesthetics",
     image: "/images/beauty.avif",
     description:
       "Precision aesthetic services focused on natural-looking refinement and skin-forward outcomes in a physician-guided setting.",
+    details: ["Facial aesthetics plans are structured to preserve natural expression while improving harmony and confidence."],
+    availability: ["Provider-specific scheduling through contact form."],
   },
 ];
 
@@ -63,6 +112,17 @@ const memberAddOns = [
     image: "/images/nutrition.avif",
     description:
       "Offered as a members add-on only. Physician-supervised metabolic and peptide protocols are personalized to your goals and priced individually.",
+    details: [
+      "Includes injectable and sublingual pathway options based on clinical assessment.",
+      "Most side effects are GI-related or injection-site related and are often managed by titration and follow-up.",
+      "Pathways are supervised through valid patient-practitioner evaluation and compounding standards (503A/503B context).",
+    ],
+    membershipNotes: [
+      "Members add-on only.",
+      "Peptides now include monthly membership pathway options.",
+      "Additional add-ons are released separately.",
+    ],
+    availability: ["Physician-supervised protocols; route and dose selected after evaluation."],
   },
 ];
 
@@ -72,18 +132,24 @@ const sameLocationAddOns = [
     image: "/images/stock/service-wellness.jpg",
     description:
       "Same-location partner add-on that supports respiratory wellness, inflammation reduction, and holistic recovery.",
+    includes: ["Respiratory support", "Inflammation support", "Recovery protocol integration"],
+    availability: ["Facility-based service (not offered in-home)."],
   },
   {
     title: "PEMF",
     image: "/images/stock/service-medical-aesthetics.jpg",
     description:
       "Same-location pulsed electromagnetic field sessions designed for cellular recharge, pain support, and performance recovery.",
+    includes: ["Cellular recharge", "Pain support", "Performance recovery"],
+    availability: ["Same-location partner add-on."],
   },
   {
     title: "Far Infrared",
     image: "/images/stock/service-esthetics.jpg",
     description:
       "Same-location infrared sessions to support circulation, detox support, deep relaxation, and recovery.",
+    includes: ["Detox support", "Deep tissue warmth", "Recovery and relaxation support"],
+    availability: ["Same-location partner add-on."],
   },
 ];
 
@@ -93,6 +159,8 @@ const differentLocationAddOns = [
     image: "/images/beauty.avif",
     description:
       "Different-location add-on focused on cognitive conditioning and mental performance coaching.",
+    includes: ["Focus and composure training", "Performance psychology support", "Cognitive conditioning"],
+    availability: ["Different-location partner service; facility-only partner workflow."],
   },
 ];
 
@@ -101,6 +169,8 @@ const gymServices = [
     title: "Adapt",
     image: "/images/stock/service-beauty-salon.jpg",
     description: "Gym services partner focused on training support, recovery, and performance-driven movement programs.",
+    includes: ["Performance movement", "Conditioning support", "Recovery integration"],
+    availability: ["Partner access coordinated through contact form."],
   },
 ];
 
