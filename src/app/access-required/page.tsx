@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
+
+export const dynamic = "force-dynamic";
 
 const copyByTarget: Record<string, { title: string; description: string; loginRedirect: string }> = {
   practitioners: {
@@ -20,7 +22,7 @@ const copyByTarget: Record<string, { title: string; description: string; loginRe
   },
 };
 
-export default function AccessRequiredPage() {
+function AccessRequiredContent() {
   const params = useSearchParams();
   const target = params.get("target") ?? "practitioners";
 
@@ -73,5 +75,13 @@ export default function AccessRequiredPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function AccessRequiredPage() {
+  return (
+    <Suspense fallback={<div className="mx-auto min-h-[40vh] max-w-5xl px-6 py-10 text-[#6f6251]">Loading access settings...</div>}>
+      <AccessRequiredContent />
+    </Suspense>
   );
 }
