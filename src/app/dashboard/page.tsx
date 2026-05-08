@@ -58,9 +58,11 @@ export default async function DashboardPage() {
               {bookings.map((booking) => (
                 <article key={booking.id} className="rounded-xl border border-[#b78d4b2d] bg-[#fffaf2] p-3">
                   <p className="text-[#2b2218]">{booking.serviceTitles.join(", ")}</p>
+                  <p className="text-xs text-[#8f6f3e]">Location: {booking.preferredLocation}</p>
                   <p className="text-sm text-[#6f6251]">
                     {booking.preferredDate.toISOString().slice(0, 10)} · {booking.status}
                   </p>
+                  {booking.notes ? <p className="mt-1 text-xs text-[#6f6251]">{booking.notes}</p> : null}
                 </article>
               ))}
             </div>
