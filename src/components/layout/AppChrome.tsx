@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { TrustBadges } from "@/components/layout/TrustBadges";
 import { CartDrawer } from "@/components/cart/cart-drawer";
+import { FloatingWhatsAppButton } from "@/components/layout/FloatingWhatsAppButton";
 
 export function AppChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -21,6 +22,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
       <main className="flex-1 bg-[var(--bg)]">{children}</main>
       <Footer />
       <CartDrawer />
+      <FloatingWhatsAppButton />
     </>
   );
 }

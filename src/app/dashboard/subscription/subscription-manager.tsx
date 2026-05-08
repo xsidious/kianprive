@@ -1,6 +1,8 @@
 "use client";
 
+import { BadgeCheck, Crown, MessageCircleMore, Star } from "lucide-react";
 import { useMemo, useState } from "react";
+import { buildWhatsAppUrl } from "@/lib/contact";
 
 type SubscriptionView = {
   tier: "BASIC" | "PREMIUM";
@@ -74,9 +76,19 @@ export function SubscriptionManager({ initialSubscription }: { initialSubscripti
   return (
     <div className="space-y-6">
       <div className="rounded-3xl border border-[#d7b67666] bg-white p-6 text-[#2b2218]">
-        <p>Tier: {subscription?.tier ?? "BASIC"}</p>
+        <p className="inline-flex items-center gap-2 text-xs tracking-[0.14em] text-[#8f6f3e]"><Crown size={14} /> MEMBERSHIP OVERVIEW</p>
+        <p className="mt-3 text-lg">Tier: {subscription?.tier ?? "BASIC"}</p>
         <p className="mt-2">Status: {subscription?.status ?? "INACTIVE"}</p>
         <p className="mt-2">Renewal: {renewal}</p>
+        <a
+          href={buildWhatsAppUrl(`Hi KIAN Privé team, I have a question about my membership plan (${subscription?.tier ?? "BASIC"}).`)}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#25d36680] bg-[#ecfff3] px-4 py-2 text-sm text-[#1f7e45]"
+        >
+          <MessageCircleMore size={15} />
+          Ask on WhatsApp
+        </a>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -84,7 +96,7 @@ export function SubscriptionManager({ initialSubscription }: { initialSubscripti
           const isCurrent = subscription?.tier === plan.id && subscription?.status === "ACTIVE";
           return (
             <article key={plan.id} className="rounded-2xl border border-[#b78d4b2d] bg-white p-5">
-              <h2 className="text-xl text-[#1f1a15]">{plan.title}</h2>
+              <h2 className="inline-flex items-center gap-2 text-xl text-[#1f1a15]">{plan.id === "PREMIUM" ? <Star size={18} /> : <BadgeCheck size={18} />}{plan.title}</h2>
               <p className="mt-2 text-sm text-[#6f6251]">{plan.description}</p>
               <ul className="mt-3 space-y-1 text-sm text-[#5f5344]">
                 {plan.features.map((feature) => (

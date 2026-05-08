@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { BadgeDollarSign, CalendarCheck2, CircleUserRound, Crown, MessageCircleMore, PackageCheck } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getUserSubscription } from "@/lib/subscription";
+import { buildWhatsAppUrl } from "@/lib/contact";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -21,14 +23,46 @@ export default async function DashboardPage() {
       take: 10,
     }),
   ]);
+  const pendingBookings = bookings.filter((booking) => booking.status === "PENDING").length;
+  const activeOrders = orders.filter((order) => order.status !== "DELIVERED" && order.status !== "CANCELED").length;
+  const whatsappHref = buildWhatsAppUrl(
+    `Hi KIAN Privé team, I need support with my member dashboard account (${session.user.email ?? "member"}).`,
+  );
+
   return (
     <div className="mx-auto max-w-6xl px-6 py-16">
       <h1 className="text-4xl text-[#1f1a15]">Welcome back, {session.user.name ?? "Member"}</h1>
       <p className="mt-4 text-[#6f6251]">Role: {session.user.role}</p>
       <p className="text-[#6f6251]">Subscription: {sub?.tier ?? "BASIC"} / {sub?.status ?? "INACTIVE"}</p>
+
+      <div className="mt-6 grid gap-3 md:grid-cols-4">
+        <article className="rounded-2xl border border-[#b78d4b2d] bg-white p-4">
+          <p className="inline-flex items-center gap-2 text-xs tracking-[0.14em] text-[#8f6f3e]"><PackageCheck size={14} /> ORDERS</p>
+          <p className="mt-2 text-3xl text-[#1f1a15]">{orders.length}</p>
+          <p className="text-xs text-[#6f6251]">{activeOrders} active</p>
+        </article>
+        <article className="rounded-2xl border border-[#b78d4b2d] bg-white p-4">
+          <p className="inline-flex items-center gap-2 text-xs tracking-[0.14em] text-[#8f6f3e]"><CalendarCheck2 size={14} /> BOOKINGS</p>
+          <p className="mt-2 text-3xl text-[#1f1a15]">{bookings.length}</p>
+          <p className="text-xs text-[#6f6251]">{pendingBookings} pending</p>
+        </article>
+        <article className="rounded-2xl border border-[#b78d4b2d] bg-white p-4">
+          <p className="inline-flex items-center gap-2 text-xs tracking-[0.14em] text-[#8f6f3e]"><Crown size={14} /> MEMBERSHIP</p>
+          <p className="mt-2 text-xl text-[#1f1a15]">{sub?.tier ?? "BASIC"}</p>
+          <p className="text-xs text-[#6f6251]">{sub?.status ?? "INACTIVE"}</p>
+        </article>
+        <article className="rounded-2xl border border-[#b78d4b2d] bg-white p-4">
+          <p className="inline-flex items-center gap-2 text-xs tracking-[0.14em] text-[#8f6f3e]"><MessageCircleMore size={14} /> CONCIERGE</p>
+          <a href={whatsappHref} target="_blank" rel="noreferrer" className="mt-2 inline-flex rounded-full border border-[#25d36680] bg-[#ecfff3] px-3 py-1.5 text-xs text-[#1f7e45]">
+            Chat on WhatsApp
+          </a>
+        </article>
+      </div>
+
       <div className="mt-8 flex flex-wrap gap-3">
-        <Link className="rounded-full border border-[#d7b67680] px-5 py-2" href="/dashboard/subscription">View Subscription</Link>
-        <Link className="rounded-full border border-[#d7b67680] px-5 py-2" href="/dashboard/profile">Profile Settings</Link>
+        <Link className="inline-flex items-center gap-2 rounded-full border border-[#d7b67680] px-5 py-2" href="/dashboard/subscription"><BadgeDollarSign size={16} /> View Subscription</Link>
+        <Link className="inline-flex items-center gap-2 rounded-full border border-[#d7b67680] px-5 py-2" href="/dashboard/profile"><CircleUserRound size={16} /> Profile Settings</Link>
+        <Link className="inline-flex items-center gap-2 rounded-full border border-[#d7b67680] px-5 py-2" href="/dashboard/services"><CalendarCheck2 size={16} /> My Services</Link>
         <Link className="rounded-full bg-[#d7b676] px-5 py-2 text-black" href="/icoone-training">Go to Icoone Training</Link>
       </div>
 
@@ -67,6 +101,9 @@ export default async function DashboardPage() {
               ))}
             </div>
           )}
+          <Link href="/dashboard/services" className="mt-4 inline-flex rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-4 py-2 text-sm text-[#3b3024]">
+            Open My Services
+          </Link>
         </section>
       </div>
     </div>

@@ -137,8 +137,8 @@ export function Navbar() {
                   <Link href="/dashboard/subscription" className="block rounded-xl px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                     Subscription
                   </Link>
-                  <Link href="/services" className="block rounded-xl px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
-                    Services
+                  <Link href="/dashboard/services" className="block rounded-xl px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
+                    My Services
                   </Link>
                   <Link href="/book-online" className="block rounded-xl px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                     Book Consultations
@@ -256,6 +256,9 @@ export function Navbar() {
                   </Link>
                   <Link href="/dashboard/subscription" onClick={() => setMobileOpen(false)} className="rounded-xl px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
                     Subscription
+                  </Link>
+                  <Link href="/dashboard/services" onClick={() => setMobileOpen(false)} className="rounded-xl px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
+                    My Services
                   </Link>
                   {data.user.role === "ADMIN" ? (
                     <Link href="/admin" onClick={() => setMobileOpen(false)} className="rounded-xl px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
