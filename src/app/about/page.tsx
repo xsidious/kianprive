@@ -92,8 +92,14 @@ export default async function AboutPage() {
         <div className="grid gap-6 md:grid-cols-5">
           {aboutTeam.map((member) => (
             <article key={member.name} className="rounded-2xl border border-[#b78d4b2e] bg-white p-4 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)]">
-              <div className="relative h-56 overflow-hidden rounded-xl">
-                <Image src={member.image} alt={member.name} fill sizes="(max-width: 768px) 100vw, 20vw" className="object-cover" />
+              <div className="relative h-60 overflow-hidden rounded-xl border border-[#b78d4b1f] bg-[#f7efe3]">
+                <Image
+                  src={member.image}
+                  alt={member.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 20vw"
+                  className="object-contain object-top p-2"
+                />
               </div>
               <p className="mt-4 text-lg text-[#2b2218]">{member.name}</p>
               <p className="text-sm text-[#6f6251]">{member.title}</p>

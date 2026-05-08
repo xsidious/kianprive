@@ -3,18 +3,35 @@
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
-import { retreatEvents } from "@/lib/events";
+import { retreatEvents, type RetreatEvent } from "@/lib/events";
 
 export default function EventsRetreatsPage() {
   const [openModal, setOpenModal] = useState<null | "invite" | "consultation" | "rsvp">(null);
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [events, setEvents] = useState<RetreatEvent[]>(retreatEvents);
+
+  useEffect(() => {
+    async function loadEvents() {
+      try {
+        const response = await fetch("/api/retreats");
+        if (!response.ok) return;
+        const payload = (await response.json()) as { events?: RetreatEvent[] };
+        if (Array.isArray(payload.events) && payload.events.length > 0) {
+          setEvents(payload.events);
+        }
+      } catch {
+        // Keep fallback data available.
+      }
+    }
+    void loadEvents();
+  }, []);
 
   return (
     <div>
-      <SectionWrapper className="pt-14 sm:pt-16 md:pt-18">
+      <SectionWrapper className="pt-10 sm:pt-12 md:pt-14 pb-6 md:pb-8">
         <div className="grid items-center gap-8 rounded-3xl border border-[#b78d4b2e] bg-white p-5 shadow-[0_20px_50px_-38px_rgba(66,45,14,0.45)] sm:p-8 lg:grid-cols-[1.15fr_0.85fr]">
           <div>
             <p className="text-sm text-[#8f6f3e]">Beauty and Wellness</p>
@@ -82,13 +99,13 @@ export default function EventsRetreatsPage() {
         </div>
       </SectionWrapper>
 
-      <SectionWrapper>
+      <SectionWrapper className="py-6 md:py-8">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">Upcoming Events</h2>
           <span className="text-sm text-[#8f6f3e]">Facebook</span>
         </div>
         <div className="grid gap-5 md:grid-cols-3">
-          {retreatEvents.map((event) => (
+          {events.map((event) => (
             <article key={event.title} className="rounded-2xl border border-[#b78d4b2d] bg-white p-5 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)]">
               <div className="relative mb-4 h-40 overflow-hidden rounded-xl border border-[#b78d4b2d]">
                 <Image src={event.image} alt={event.title} fill className="object-cover" />
@@ -108,16 +125,16 @@ export default function EventsRetreatsPage() {
         </div>
       </SectionWrapper>
 
-      <SectionWrapper>
+      <SectionWrapper className="py-6 md:py-8">
         <h2 className="mb-4 text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">Featured Event</h2>
         <div className="grid items-center gap-8 rounded-3xl border border-[#b78d4b2d] bg-white p-8 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)] lg:grid-cols-[1fr_1fr]">
           <div>
-            <p className="text-sm text-[#8f6f3e]">INSIDE - OUT • MIAMI wellness RETREAT</p>
-            <h3 className="mt-2 text-3xl text-[#1f1a15]">Oriental Lotus</h3>
-            <p className="mt-2 text-[#5f5344]">Hosted by Cherie Johnson — Celebrity Nutritionist</p>
-            <button onClick={() => setOpenModal("consultation")} className="mt-5 rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
-              Learn More
-            </button>
+            <p className="text-sm text-[#8f6f3e]">FEATURED EVENT</p>
+            <h3 className="mt-2 text-3xl text-[#1f1a15]">Coming Soon</h3>
+            <p className="mt-2 text-[#5f5344]">New featured event details will be announced soon.</p>
+            <span className="mt-5 inline-flex rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]">
+              Stay Tuned
+            </span>
           </div>
           <div className="relative h-[260px] overflow-hidden rounded-2xl border border-[#b78d4b2d]">
             <Image src="/images/stock/service-wellness.jpg" alt="Featured retreat event" fill className="object-cover" />
@@ -125,7 +142,7 @@ export default function EventsRetreatsPage() {
         </div>
       </SectionWrapper>
 
-      <SectionWrapper>
+      <SectionWrapper className="py-6 md:py-8">
         <h2 className="mb-4 text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">My Journey to KIAN</h2>
         <div className="grid gap-8 rounded-3xl border border-[#b78d4b2d] bg-white p-8 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)] lg:grid-cols-[0.45fr_0.55fr]">
           <div className="relative h-[340px] overflow-hidden rounded-2xl border border-[#b78d4b2d]">

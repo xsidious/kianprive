@@ -26,8 +26,16 @@ Luxury concierge wellness platform with public marketing pages, gated premium co
 4. Run Prisma:
    - `npm run prisma:generate`
    - `npm run prisma:migrate`
+   - If you changed Prisma models and only need a quick local sync: `npx prisma db push`
 5. Start app:
    - `npm run dev`
+
+## Demo Login Bootstrap
+- Create a member login:
+  - `npm run demo:user`
+- Create an admin login:
+  - `npm run demo:admin`
+- These commands require a valid `DATABASE_URL` and will upsert users with hashed passwords.
 
 ## Docker Local Testing
 1. From project root run:
@@ -61,6 +69,7 @@ Luxury concierge wellness platform with public marketing pages, gated premium co
 - Subscription: `/pricing`
 - Member area: `/dashboard`, `/dashboard/subscription`, `/dashboard/profile`
 - Optional admin: `/admin`
+- Booking API: `POST /api/bookings` (guest/member booking), `GET /api/bookings` (admin only)
 
 ## Notes
 - Stripe is hybrid-ready: if Stripe keys are missing, checkout endpoint fails gracefully with guidance.

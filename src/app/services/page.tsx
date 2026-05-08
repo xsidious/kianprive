@@ -4,10 +4,10 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { getCmsPageContent } from "@/lib/cms/pages";
 import { ServiceCardsWithModal } from "@/components/services/ServiceCardsWithModal";
-import { PeptidesInteractiveShowcase } from "@/components/services/PeptidesInteractiveShowcase";
 
 const coreServices = [
   {
+    slug: "telemedicine",
     title: "Telemedicine",
     image: "/images/stock/hero-luxury-clinic.jpg",
     description:
@@ -20,6 +20,7 @@ const coreServices = [
     availability: ["Virtual consultations available."],
   },
   {
+    slug: "comprehensive-bloodwork",
     title: "Comprehensive Bloodwork",
     image: "/images/medicalaesthetics.avif",
     description:
@@ -31,6 +32,7 @@ const coreServices = [
     includes: ["Baseline biomarker assessment", "Progress tracking", "Protocol calibration support"],
   },
   {
+    slug: "icoone-laser",
     title: "Icoone® Laser",
     image: "/images/icoone.avif",
     description:
@@ -42,19 +44,31 @@ const coreServices = [
       "Face, neck, décolleté, and full-body targeting",
     ],
     pricing: [
-      "Single 40 min: $175 | 5-pack: $788 | 10-pack: $1,488",
-      "Single 50 min: $195 | 5-pack: $878 | 10-pack: $1,658",
-      "Single 80 min: $325 | 5-pack: $1,463 | 10-pack: $2,763",
-      "Monthly 50 min: 2/month $356 | 4/month $665",
-      "Monthly 80 min: 2/month $546 | 4/month $1,188",
+      "40 min single: $175",
+      "40 min 5-session package: $788 (save $87)",
+      "40 min 10-session package: $1,488 (save $262)",
+      "50 min single: $195",
+      "50 min 5-session package: $878 (save $97)",
+      "50 min 10-session package: $1,658 (save $292)",
+      "80 min single: $325",
+      "80 min 5-session package: $1,463 (save $162)",
+      "80 min 10-session package: $2,763 (save $487)",
+      "Monthly 50 min (2 sessions): $356/month",
+      "Monthly 50 min (4 sessions): $665/month",
+      "Monthly 80 min (2 sessions): $546/month",
+      "Monthly 80 min (4 sessions): $1,188/month",
     ],
     membershipNotes: [
       "Monthly plans require a one-month security deposit and a 4-month minimum commitment.",
       "Aftercare: hydration, light movement, avoid alcohol/processed foods 24h, avoid intense heat/exercise for 12h.",
+      "Many clients feel lighter and more relaxed after treatment; increased urination may occur as lymphatic flow improves.",
+      "Mild temporary soreness or sensitivity can happen in deeply treated areas and usually resolves within 24-48 hours.",
+      "Cumulative benefits include improved contour, skin firmness, recovery support, and reduced fluid retention over time.",
     ],
     availability: ["Facility-based service (not offered in-home)."],
   },
   {
+    slug: "iv-therapy",
     title: "IV Therapy",
     image: "/images/wellness.avif",
     description:
@@ -66,8 +80,9 @@ const coreServices = [
     includes: ["Hydration support", "Nutrient replenishment", "Recovery and energy support"],
   },
   {
+    slug: "nutrition",
     title: "Nutrition",
-    image: "/images/CherieJohnson.avif",
+    image: "/images/nutrition.avif",
     description:
       "Science-based nutrition support tailored to your goals, with practical plans aligned to your clinical and lifestyle needs.",
     details: [
@@ -79,6 +94,7 @@ const coreServices = [
     includes: ["Meal strategy", "Lifestyle adherence support", "Nutraceutical-aligned planning"],
   },
   {
+    slug: "microneedling-with-exosomes",
     title: "Microneedling with Exosomes",
     image: "/images/facial-treatments.jpg",
     description:
@@ -88,6 +104,7 @@ const coreServices = [
     includes: ["Texture refinement", "Tone support", "Fine-line and radiance improvement"],
   },
   {
+    slug: "korean-organic-skincare",
     title: "Korean Organic Skincare",
     image: "/images/esthetics.avif",
     description:
@@ -97,32 +114,40 @@ const coreServices = [
     includes: ["Barrier support", "Hydration protocols", "Gentle clinical-luxury skincare"],
   },
   {
+    slug: "facial-aesthetics",
     title: "Facial Aesthetics",
-    image: "/images/beauty.avif",
+    image: "/images/medicalaesthetics.avif",
     description:
       "Precision aesthetic services focused on natural-looking refinement and skin-forward outcomes in a physician-guided setting.",
     details: ["Facial aesthetics plans are structured to preserve natural expression while improving harmony and confidence."],
     availability: ["Provider-specific scheduling through contact form."],
   },
-];
-
-const memberAddOns = [
   {
+    slug: "glp1-peptides",
     title: "GLP-1s & Peptides",
     image: "/images/nutrition.avif",
+    showPeptidesExperience: true,
     description:
-      "Offered as a members add-on only. Physician-supervised metabolic and peptide protocols are personalized to your goals and priced individually.",
+      "Physician-supervised metabolic and peptide protocols are personalized to your goals and priced individually.",
     details: [
       "Includes injectable and sublingual pathway options based on clinical assessment.",
       "Most side effects are GI-related or injection-site related and are often managed by titration and follow-up.",
       "Pathways are supervised through valid patient-practitioner evaluation and compounding standards (503A/503B context).",
     ],
     membershipNotes: [
-      "Members add-on only.",
-      "Peptides now include monthly membership pathway options.",
-      "Additional add-ons are released separately.",
+      "Peptides include monthly pathway options.",
+      "Additional protocol add-ons are released separately.",
     ],
     availability: ["Physician-supervised protocols; route and dose selected after evaluation."],
+  },
+  {
+    slug: "mindtap",
+    title: "MindTap",
+    image: "/images/beauty.avif",
+    description:
+      "Focused cognitive conditioning and mental performance coaching integrated into your concierge wellness plan.",
+    includes: ["Focus and composure training", "Performance psychology support", "Cognitive conditioning"],
+    availability: ["Different-location partner service; facility-only partner workflow."],
   },
 ];
 
@@ -153,16 +178,7 @@ const sameLocationAddOns = [
   },
 ];
 
-const differentLocationAddOns = [
-  {
-    title: "MindTap",
-    image: "/images/beauty.avif",
-    description:
-      "Different-location add-on focused on cognitive conditioning and mental performance coaching.",
-    includes: ["Focus and composure training", "Performance psychology support", "Cognitive conditioning"],
-    availability: ["Different-location partner service; facility-only partner workflow."],
-  },
-];
+const differentLocationAddOns: Array<(typeof coreServices)[number]> = [];
 
 const gymServices = [
   {
@@ -180,18 +196,6 @@ const preferredProviders = [
   { name: "Far Infrared", logo: "/images/providers/facial-design-studio.png", href: "/contact" },
   { name: "MindTap", logo: "/images/providers/mindtap.png", href: "/contact" },
   { name: "Adapt", logo: "/images/providers/vcs-vitamin-c-to-sea.png", href: "/contact" },
-];
-
-const icooneMinutePackages = [
-  { label: "Single Session", detail: "40 minutes", price: "$175", savings: "-" },
-  { label: "5-Session Package", detail: "40 minutes", price: "$788", savings: "Save $87" },
-  { label: "10-Session Package", detail: "40 minutes", price: "$1,488", savings: "Save $262" },
-  { label: "Single Session", detail: "50 minutes", price: "$195", savings: "-" },
-  { label: "5-Session Package", detail: "50 minutes", price: "$878", savings: "Save $97" },
-  { label: "10-Session Package", detail: "50 minutes", price: "$1,658", savings: "Save $292" },
-  { label: "Single Session", detail: "80 minutes", price: "$325", savings: "-" },
-  { label: "5-Session Package", detail: "80 minutes", price: "$1,463", savings: "Save $162" },
-  { label: "10-Session Package", detail: "80 minutes", price: "$2,763", savings: "Save $487" },
 ];
 
 const koreanAndRecoveryPricing = [
@@ -219,80 +223,6 @@ const membershipPolicyHighlights = [
   "Memberships automatically renew monthly until cancelled in writing.",
   "A failed payment of more than two consecutive months will result in immediate cancellation of membership and the remaining balance in full will become due.",
   "No-show and late cancellation fees apply. Please review our cancellation policy at time of enrollment.",
-];
-
-const painRecoveryPrograms = [
-  {
-    name: "Pain Relief & Recovery — Essential",
-    price: "$699 / month",
-    deposit: "One (1) month security deposit ($699) required upon signing. Minimum commitment of 4 months.",
-    bestFor:
-      "Clients managing chronic pain or in early pre-operative preparation who want consistent, targeted therapeutic support each month.",
-    includes: [
-      "2 Icoone® Laser sessions (lymphatic drainage & tissue recovery)",
-      "2 Holistic Salt Therapy sessions (respiratory & anti-inflammatory support)",
-      "PEMF Therapy Bed session (cellular repair & pain relief)",
-      "Red Light Therapy session (tissue regeneration & wound healing)",
-      "Ionic Foot Bath session (complimentary — detox & circulation)",
-      "InBody Scan — body composition & recovery tracking",
-      "Power Plate sessions (complimentary — circulation & mobility)",
-      "10% discount on all additional à la carte services",
-    ],
-  },
-  {
-    name: "Pain Relief & Recovery — Advanced",
-    price: "$899 / month",
-    deposit: "One (1) month security deposit ($899) required upon signing. Minimum commitment of 4 months.",
-    bestFor:
-      "Clients in active surgical recovery, managing significant chronic pain, or seeking a comprehensive pre-operative optimization protocol with maximum therapeutic intensity.",
-    includes: [
-      "4 Icoone® Laser sessions (lymphatic drainage, scar tissue remodeling & body recovery)",
-      "4 Holistic Salt Therapy sessions (airway support, skin healing & inflammation reduction)",
-      "2 PEMF Therapy Bed sessions (deep cellular repair, nerve support & pain relief)",
-      "2 Red Light Therapy sessions (photobiomodulation for accelerated healing & pain reduction)",
-      "2 FAR Infrared Sauna sessions (detoxification & deep tissue relief)",
-      "Ionic Foot Bath sessions (complimentary — toxin elimination & circulation)",
-      "InBody Scan — monthly recovery progress tracking",
-      "Power Plate sessions (complimentary — rehabilitation & mobility support)",
-      "15% discount on all additional à la carte services",
-      "Telemedicine access for physician check-ins & protocol adjustments",
-    ],
-  },
-];
-
-const icooneMonthly50Packages = [
-  { label: "2 × 50-Minute Treatments (monthly)", sessions: "2 sessions / month", price: "$356 / month" },
-  { label: "4 × 50-Minute Treatments (monthly)", sessions: "4 sessions / month", price: "$665 / month" },
-];
-
-const icooneBulkPackages = [
-  { label: "10 × 50-Minute Customized Treatments", sessions: "10 sessions", price: "$1,750" },
-  { label: "10 × 40-Minute Sessions — Lymphatic Drainage only", sessions: "10 sessions", price: "$1,500" },
-];
-
-const icooneMonthly80Packages = [
-  { label: "2 × 80-Minute Treatments (monthly)", sessions: "2 sessions / month", price: "$546 / month" },
-  { label: "4 × 80-Minute Treatments (monthly)", sessions: "4 sessions / month", price: "$1,188 / month" },
-];
-
-const icooneAftereffectsImmediate = [
-  "Many clients experience a profound sense of relaxation and lightness immediately following treatment. Because the lymphatic system is highly stimulated, you may notice an increased need to urinate in the hours after your session — this is a positive sign that your body is actively eliminating accumulated fluid and toxins. Mild fatigue is also common and reflects your body’s natural detoxification response at work. Some clients notice a pleasant sensation of warmth or mild tingling in the treated areas as circulation and lymphatic flow are enhanced.",
-];
-
-const icooneAftereffectsShortTerm = [
-  "You may observe visible reduction in puffiness, swelling, and water retention, particularly in the face, abdomen, and legs. Skin may appear noticeably more toned, smooth, and radiant as improved microcirculation delivers oxygen and nutrients to the surface layers. Clients managing chronic inflammation or post-surgical swelling often report a meaningful reduction in discomfort and a sense of general physical relief. Mild soreness or sensitivity in deeply treated areas is normal and typically resolves within 24 to 48 hours.",
-];
-
-const icooneAftereffectsCumulative = [
-  "With a series of sessions, clients experience progressive and lasting improvements including measurable reduction in cellulite and body circumference, firmer and more supple skin texture, improved detoxification and immune function, enhanced athletic performance and faster muscle recovery, reduction of chronic pain and post-operative swelling, and a visible improvement in the appearance of stretch marks and scar tissue. Long-term lymphatic health supports hormonal balance, better sleep quality, clearer skin, and sustained energy levels.",
-];
-
-const icoonePostSessionCare = [
-  "Drink plenty of water (at least 64 ounces) following each session.",
-  "Avoid alcohol and processed foods for 24 hours.",
-  "Engage in light movement such as walking to support continued lymphatic circulation.",
-  "Refrain from vigorous exercise or heat exposure (saunas, hot baths) for 12 hours post-treatment.",
-  "Your KIAN Privé specialist will provide personalized post-care guidance tailored to your treatment goals.",
 ];
 
 const serviceAccessNotes = [
@@ -847,9 +777,20 @@ export default async function ServicesPage() {
 
       <SectionWrapper>
         <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">{brandIntro.tagline}</p>
-        <h2 className="mt-3 text-3xl text-[#1f1a15] md:text-4xl">Concierge Wellness Experience</h2>
-        <p className="mt-4 max-w-3xl leading-relaxed text-[#6f6251]">{brandIntro.lead}</p>
+        <h2 className="mt-3 text-3xl text-[#1f1a15] md:text-4xl">Luxury Wellness Services Designed Around Your Personal needs &amp; Goals</h2>
+        <p className="mt-4 max-w-3xl leading-relaxed text-[#6f6251]">
+          Clinically grounded, hospitality-led, and designed for measurable transformation.
+        </p>
         <p className="mt-4 max-w-3xl leading-relaxed text-[#6f6251]">{brandIntro.team}</p>
+      </SectionWrapper>
+
+      <SectionWrapper>
+        <div className="rounded-2xl border border-[#1f7a7a4f] bg-[#eef8f8] p-4">
+          <p className="text-xs tracking-[0.2em] text-[#1b6568]">PRIVATE MEMBERS UPDATE</p>
+          <p className="mt-2 text-sm text-[#28585a]">
+            Additional add-ons will be released separately. Retreats start in September. Events begin June 7, with additional information to follow.
+          </p>
+        </div>
       </SectionWrapper>
 
       <SectionWrapper>
@@ -858,29 +799,6 @@ export default async function ServicesPage() {
           Your primary care suite at KIAN Privé, delivered in one integrated experience.
         </p>
         <ServiceCardsWithModal services={coreServices} label="SERVICE" />
-      </SectionWrapper>
-
-      <SectionWrapper>
-        <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Member Add-Ons</h2>
-        <p className="mb-6 max-w-3xl text-[#6f6251]">
-          GLP-1s and peptides are offered as add-ons for active members, with monthly peptide membership pathways available.
-        </p>
-        <div className="mb-6 rounded-2xl border border-[#1f7a7a40] bg-[linear-gradient(120deg,#0f3a44_0%,#14505a_65%,#1f7a7a_100%)] p-4 text-white shadow-[0_20px_45px_-35px_rgba(15,58,68,0.8)]">
-          <p className="text-xs tracking-[0.2em] text-[#bce9e8]">MEMBER PRIORITY</p>
-          <p className="mt-2 text-sm leading-relaxed text-[#eef8f8]">
-            High-impact protocols for current and new members should stand out first. This section is intentionally highlighted to guide action.
-          </p>
-        </div>
-        <div className="mb-6 rounded-2xl border border-[#1f7a7a4f] bg-[#eef8f8] p-4">
-          <p className="text-xs tracking-[0.2em] text-[#1b6568]">PRIVATE MEMBERS UPDATE</p>
-          <p className="mt-2 text-sm text-[#28585a]">
-            Additional add-ons will be released separately. Retreats start in September. Events begin June 7, with additional information to follow.
-          </p>
-        </div>
-        <ServiceCardsWithModal services={memberAddOns} label="ADD-ON" />
-        <div className="mt-8">
-          <PeptidesInteractiveShowcase />
-        </div>
       </SectionWrapper>
 
       <SectionWrapper>
@@ -910,437 +828,17 @@ export default async function ServicesPage() {
         <ServiceCardsWithModal services={gymServices} label="GYM" />
       </SectionWrapper>
 
-      <SectionWrapper>
-        <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">{brandIntro.tagline}</p>
-        <h2 className="mb-2 mt-3 text-3xl text-[#1f1a15] md:text-4xl">Icoone® Laser — Services, Packages & Memberships</h2>
-        <h3 className="text-xl text-[#2b2218]">Our Services</h3>
-        <h4 className="mt-3 text-lg font-medium text-[#2b2218]">Icoone® Laser — Lymphatic Drainage & Body Wellness</h4>
-        <p className="mt-4 max-w-3xl leading-relaxed text-[#6f6251]">
-          The revolutionary Icoone® Laser system uses patented Roboderm® technology with millions of micro-stimulations per session to activate the
-          lymphatic system, stimulate collagen and elastin production, and trigger deep cellular renewal. For detoxification, it eliminates toxins
-          and restores circulatory balance. For pain management, it relieves chronic tension and reduces inflammation. For athletes, it flushes
-          metabolic waste, reduces recovery time, and enhances flexibility. For beauty and body contouring, Icoone® Laser delivers exceptional
-          aesthetic results — visibly reducing cellulite, tightening and firming skin, smoothing the appearance of stretch marks, sculpting and
-          reshaping body contours, improving skin texture and luminosity, and restoring a more youthful, toned silhouette. The multi-functional laser
-          handpieces simultaneously deliver laser energy and mechanical stimulation, allowing treatments to be customized for the face, neck, and
-          décolleté as well as the full body — addressing fine lines, sagging skin, and loss of facial volume alongside body contouring goals.
-          Results are cumulative and progressive, with clients typically noticing measurable improvements in skin quality, firmness, and contour
-          definition within the first few sessions.
-        </p>
-        <h3 className="mt-8 text-xl text-[#2b2218]">Service Packages & À La Carte Pricing</h3>
-        <h4 className="mt-3 text-sm font-medium tracking-[0.18em] text-[#8f6f3e]">ICOONE® LASER MINUTE PACKAGES</h4>
-        <div className="mt-3 overflow-hidden rounded-3xl border border-[#b78d4b2d] bg-white shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-          <div className="grid grid-cols-4 border-b border-[#b78d4b2d] bg-[#fffaf2] px-5 py-3 text-xs tracking-[0.18em] text-[#8f6f3e]">
-            <p>SERVICE</p>
-            <p>DURATION</p>
-            <p>PRICE</p>
-            <p>SAVINGS</p>
-          </div>
-          {icooneMinutePackages.map((item) => (
-            <div key={`${item.label}-${item.detail}-${item.price}`} className="grid grid-cols-4 gap-2 border-b border-[#f1e6d3] px-5 py-3 text-sm text-[#4f4539] last:border-b-0">
-              <p>{item.label}</p>
-              <p>{item.detail}</p>
-              <p>{item.price}</p>
-              <p>{item.savings}</p>
-            </div>
-          ))}
-        </div>
-
-        <h4 className="mt-8 text-sm font-medium tracking-[0.18em] text-[#8f6f3e]">ICOONE® LASER — 50-MINUTE MONTHLY PACKAGES</h4>
-        <p className="mt-2 text-sm text-[#6f6251]">Advance payment & monthly programs — 50-minute customized sessions.</p>
-        <div className="mt-3 overflow-hidden rounded-3xl border border-[#b78d4b2d] bg-white shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-          <div className="grid grid-cols-3 border-b border-[#b78d4b2d] bg-[#fffaf2] px-5 py-3 text-xs tracking-[0.18em] text-[#8f6f3e]">
-            <p>PACKAGE</p>
-            <p>SESSIONS</p>
-            <p>PRICE</p>
-          </div>
-          {icooneMonthly50Packages.map((item) => (
-            <div key={item.label} className="grid grid-cols-3 gap-2 border-b border-[#f1e6d3] px-5 py-3 text-sm text-[#4f4539] last:border-b-0">
-              <p>{item.label}</p>
-              <p>{item.sessions}</p>
-              <p>{item.price}</p>
-            </div>
-          ))}
-          {icooneBulkPackages.map((item) => (
-            <div key={item.label} className="grid grid-cols-3 gap-2 border-b border-[#f1e6d3] px-5 py-3 text-sm text-[#4f4539] last:border-b-0">
-              <p>{item.label}</p>
-              <p>{item.sessions}</p>
-              <p>{item.price}</p>
-            </div>
-          ))}
-        </div>
-        <p className="mt-3 text-sm text-[#8f6f3e]">
-          Monthly packages require a one (1) month security deposit upon signing. Minimum commitment of 4 months. 2-session: $356 deposit —
-          4-session: $665 deposit.
-        </p>
-
-        <h4 className="mt-8 text-sm font-medium tracking-[0.18em] text-[#8f6f3e]">ICOONE® LASER — 80-MINUTE MONTHLY PACKAGES</h4>
-        <p className="mt-2 text-sm text-[#6f6251]">Advance payment & monthly programs — 80-minute customized sessions.</p>
-        <div className="mt-3 overflow-hidden rounded-3xl border border-[#b78d4b2d] bg-white shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-          <div className="grid grid-cols-3 border-b border-[#b78d4b2d] bg-[#fffaf2] px-5 py-3 text-xs tracking-[0.18em] text-[#8f6f3e]">
-            <p>PACKAGE</p>
-            <p>SESSIONS</p>
-            <p>PRICE</p>
-          </div>
-          {icooneMonthly80Packages.map((item) => (
-            <div key={item.label} className="grid grid-cols-3 gap-2 border-b border-[#f1e6d3] px-5 py-3 text-sm text-[#4f4539] last:border-b-0">
-              <p>{item.label}</p>
-              <p>{item.sessions}</p>
-              <p>{item.price}</p>
-            </div>
-          ))}
-        </div>
-        <p className="mt-3 text-sm text-[#8f6f3e]">
-          Monthly packages require a one (1) month security deposit upon signing. Minimum commitment of 4 months. 2-session: $546 deposit —
-          4-session: $1,188 deposit.
-        </p>
-      </SectionWrapper>
 
       <SectionWrapper>
-        <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">{brandIntro.tagline}</p>
-        <h2 className="mb-2 mt-3 text-3xl text-[#1f1a15] md:text-4xl">Pain Relief & Surgical Recovery Program</h2>
-        <p className="mb-6 max-w-3xl text-[#6f6251]">
-          Designed for clients managing chronic pain or preparing for — and recovering from — surgical procedures, the KIAN Privé Pain Relief &
-          Surgical Recovery Program combines the most clinically effective non-invasive therapies available into one deeply restorative,
-          physician-supported monthly protocol. Each program is personalized to your specific condition, surgical timeline, and recovery goals.
-        </p>
-        <div className="grid gap-5 lg:grid-cols-2">
-          {painRecoveryPrograms.map((program) => (
-            <article key={program.name} className="rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-              <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">MONTHLY PROGRAM</p>
-              <h3 className="mt-2 text-2xl text-[#2b2218]">{program.name}</h3>
-              <p className="mt-1 text-[#8f6f3e]">{program.price}</p>
-              <ul className="mt-4 space-y-2">
-                {program.includes.map((benefit) => (
-                  <li key={benefit} className="text-[#5f5344]">
-                    {benefit}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 text-sm text-[#8f6f3e]">{program.deposit}</p>
-              <p className="mt-2 text-sm text-[#6f6251]">
-                <span className="font-medium text-[#2b2218]">Best for:</span> {program.bestFor}
-              </p>
-            </article>
-          ))}
+        <div className="rounded-2xl border border-[#1f7a7a40] bg-[linear-gradient(120deg,#0f3a44_0%,#14505a_65%,#1f7a7a_100%)] p-4 text-white shadow-[0_20px_45px_-35px_rgba(15,58,68,0.8)]">
+          <p className="text-xs tracking-[0.2em] text-[#bce9e8]">DETAILED SERVICE LIBRARY</p>
+          <p className="mt-2 text-sm leading-relaxed text-[#eef8f8]">
+            Korean skincare, GLP-1/metabolic pathways, and advanced protocol details are now organized in each dedicated service page.
+            Open any service card and select <strong>Service Page</strong> to view full information.
+          </p>
         </div>
       </SectionWrapper>
 
-      <SectionWrapper>
-        <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">{brandIntro.tagline}</p>
-        <h2 className="mb-2 mt-3 text-3xl text-[#1f1a15] md:text-4xl">Korean & Organic Skincare</h2>
-        <p className="mb-4 max-w-3xl leading-relaxed text-[#6f6251]">{koreanSkincareIntro}</p>
-        <p className="mb-6 max-w-3xl leading-relaxed text-[#6f6251]">{brandIntro.team}</p>
-        <h3 className="text-xl text-[#2b2218]">Korean & Organic Skincare Facial — Microneedling with Exosomes — Nutrition & Coaching</h3>
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {koreanAndRecoveryPricing.map((item) => (
-            <article key={`${item.service}-${item.price}`} className="rounded-2xl border border-[#b78d4b2d] bg-white p-5 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-              <h3 className="text-xl text-[#2b2218]">{item.service}</h3>
-              {(item.service.startsWith("InBody") || item.service.startsWith("Nutrition") || item.service.startsWith("Power Plate")) && (
-                <p className="mt-3 text-sm leading-relaxed text-[#6f6251]">
-                  {item.service.startsWith("InBody")
-                    ? inBodyDescription
-                    : item.service.startsWith("Nutrition")
-                      ? nutritionDescription
-                      : powerPlateDescription}
-                </p>
-              )}
-              <p className="mt-2 text-[#5f5344]">{item.price}</p>
-              <p className="mt-1 text-sm text-[#8f6f3e]">{item.note}</p>
-            </article>
-          ))}
-        </div>
-      </SectionWrapper>
-
-      <SectionWrapper>
-        <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Preferred Providers</h2>
-        <p className="mb-6 max-w-3xl text-[#6f6251]">
-          Send your logos and I will place each provider mark into these slots.
-        </p>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {preferredProviders.map((provider) => (
-            <article key={provider.name} className="rounded-2xl border border-[#b78d4b2d] bg-white p-5 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-              <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">PROVIDER</p>
-              <h3 className="mt-2 text-xl text-[#2b2218]">{provider.name}</h3>
-              <div className="mt-4 flex h-24 items-center justify-center rounded-xl border border-dashed border-[#b78d4b66] bg-[#fffaf2]">
-                {provider.logo ? (
-                  <Image src={provider.logo} alt={`${provider.name} logo`} width={180} height={64} className="h-auto w-auto object-contain" />
-                ) : (
-                  <span className="text-xs tracking-[0.18em] text-[#8f6f3e]">LOGO COMING SOON</span>
-                )}
-              </div>
-              <Link
-                href={provider.href}
-                className="mt-4 inline-flex rounded-full border border-[#1f7a7a66] bg-[#e9f7f7] px-4 py-2 text-xs tracking-[0.14em] text-[#1f6f75]"
-              >
-                Contact for Provider Details
-              </Link>
-            </article>
-          ))}
-        </div>
-      </SectionWrapper>
-
-      <SectionWrapper>
-        <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">{compoundedRxReference.title}</h2>
-        <p className="mb-2 text-sm font-medium tracking-[0.12em] text-[#8f6f3e]">{compoundedRxReference.subtitle}</p>
-        <p className="mb-6 max-w-3xl text-sm text-[#6f6251]">{compoundedRxReference.sideEffectsNote}</p>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          {compoundedRxReference.natureLegend.map((entry) => (
-            <article key={entry.code} className="rounded-2xl border border-[#b78d4b2d] bg-white p-5 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-              <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">{entry.code}</p>
-              <h3 className="mt-2 text-lg text-[#2b2218]">{entry.label}</h3>
-              <p className="mt-2 text-sm text-[#5f5344]">{entry.detail}</p>
-            </article>
-          ))}
-        </div>
-
-        <h3 className="mt-10 text-xl text-[#2b2218]">Understanding 503A & 503B Compounding</h3>
-        <div className="mt-4 grid gap-4 lg:grid-cols-2">
-          <article className="rounded-2xl border border-[#b78d4b2d] bg-white p-5 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-            <h4 className="text-lg text-[#2b2218]">{compoundedRxReference.understanding503A.title}</h4>
-            <p className="mt-2 text-sm text-[#5f5344]">{compoundedRxReference.understanding503A.lead}</p>
-            <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-[#5f5344]">
-              {compoundedRxReference.understanding503A.bullets.map((b) => (
-                <li key={b}>{b}</li>
-              ))}
-            </ul>
-          </article>
-          <article className="rounded-2xl border border-[#b78d4b2d] bg-white p-5 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-            <h4 className="text-lg text-[#2b2218]">{compoundedRxReference.understanding503B.title}</h4>
-            <p className="mt-2 text-sm text-[#5f5344]">{compoundedRxReference.understanding503B.lead}</p>
-            <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-[#5f5344]">
-              {compoundedRxReference.understanding503B.bullets.map((b) => (
-                <li key={b}>{b}</li>
-              ))}
-            </ul>
-          </article>
-        </div>
-
-        <h3 className="mt-10 text-xl text-[#2b2218]">GLP-1 & Metabolic Agents</h3>
-        <p className="mt-2 max-w-3xl text-sm text-[#6f6251]">{compoundedRxReference.glp1Intro}</p>
-        {scrollTable(
-          <div className="grid grid-cols-[1.2fr_1fr_0.5fr_1.1fr_1.1fr] gap-2 border-b border-[#b78d4b2d] bg-[#fffaf2] px-4 py-3 text-[0.65rem] font-medium tracking-[0.12em] text-[#8f6f3e] md:px-5 md:text-xs md:tracking-[0.18em]">
-            <p>PRODUCT</p>
-            <p>CONC / VIAL</p>
-            <p>NATURE</p>
-            <p>COMMON SIDE EFFECTS</p>
-            <p>CLINICAL NOTES</p>
-          </div>,
-          <>
-            {glp1MetabolicRows.map((row) => (
-              <div
-                key={row.product}
-                className="grid grid-cols-[1.2fr_1fr_0.5fr_1.1fr_1.1fr] gap-2 border-b border-[#f1e6d3] px-4 py-3 text-xs text-[#4f4539] last:border-b-0 md:px-5 md:text-sm"
-              >
-                <p className="font-medium text-[#2b2218]">{row.product}</p>
-                <p>
-                  {row.concentration} · {row.vial}
-                </p>
-                <p>{row.nature}</p>
-                <p>{row.sideEffects}</p>
-                <p>{row.notes}</p>
-              </div>
-            ))}
-          </>,
-        )}
-
-        <h3 className="mt-10 text-xl text-[#2b2218]">Sublingual Formulations</h3>
-        <p className="mt-2 max-w-3xl text-sm text-[#6f6251]">{compoundedRxReference.sublingualIntro}</p>
-        {scrollTable(
-          <div className="grid grid-cols-[1.2fr_1fr_0.5fr_1.1fr_1.1fr] gap-2 border-b border-[#b78d4b2d] bg-[#fffaf2] px-4 py-3 text-[0.65rem] font-medium tracking-[0.12em] text-[#8f6f3e] md:px-5 md:text-xs md:tracking-[0.18em]">
-            <p>PRODUCT</p>
-            <p>STRENGTH / VOL</p>
-            <p>NATURE</p>
-            <p>COMMON SIDE EFFECTS</p>
-            <p>BENEFIT HIGHLIGHT</p>
-          </div>,
-          <>
-            {sublingualRows.map((row) => (
-              <div
-                key={row.product}
-                className="grid grid-cols-[1.2fr_1fr_0.5fr_1.1fr_1.1fr] gap-2 border-b border-[#f1e6d3] px-4 py-3 text-xs text-[#4f4539] last:border-b-0 md:px-5 md:text-sm"
-              >
-                <p className="font-medium text-[#2b2218]">{row.product}</p>
-                <p>
-                  {row.strength} · {row.volume}
-                </p>
-                <p>{row.nature}</p>
-                <p>{row.sideEffects}</p>
-                <p>{row.benefit}</p>
-              </div>
-            ))}
-          </>,
-        )}
-
-        <h3 className="mt-10 text-xl text-[#2b2218]">Peptide & Regenerative Agents</h3>
-        <p className="mt-2 max-w-3xl text-sm text-[#6f6251]">{compoundedRxReference.peptideIntro}</p>
-        {scrollTable(
-          <div className="grid grid-cols-[0.9fr_1fr_0.5fr_1.1fr_1.2fr] gap-2 border-b border-[#b78d4b2d] bg-[#fffaf2] px-4 py-3 text-[0.65rem] font-medium tracking-[0.12em] text-[#8f6f3e] md:px-5 md:text-xs md:tracking-[0.18em]">
-            <p>PEPTIDE</p>
-            <p>CONCENTRATION</p>
-            <p>NATURE</p>
-            <p>COMMON SIDE EFFECTS</p>
-            <p>PRIMARY ACTION</p>
-          </div>,
-          <>
-            {peptideRegenerativeRows.map((row) => (
-              <div
-                key={row.peptide}
-                className="grid grid-cols-[0.9fr_1fr_0.5fr_1.1fr_1.2fr] gap-2 border-b border-[#f1e6d3] px-4 py-3 text-xs text-[#4f4539] last:border-b-0 md:px-5 md:text-sm"
-              >
-                <p className="font-medium text-[#2b2218]">{row.peptide}</p>
-                <p>{row.concentration}</p>
-                <p>{row.nature}</p>
-                <p>{row.sideEffects}</p>
-                <p>{row.action}</p>
-              </div>
-            ))}
-          </>,
-        )}
-
-        <h3 className="mt-10 text-xl text-[#2b2218]">Combination Peptide Protocols</h3>
-        <p className="mt-2 max-w-3xl text-sm text-[#6f6251]">{compoundedRxReference.combinationIntro}</p>
-        {scrollTable(
-          <div className="grid grid-cols-[1.1fr_0.6fr_0.5fr_1.1fr_1.1fr] gap-2 border-b border-[#b78d4b2d] bg-[#fffaf2] px-4 py-3 text-[0.65rem] font-medium tracking-[0.12em] text-[#8f6f3e] md:px-5 md:text-xs md:tracking-[0.18em]">
-            <p>COMBINATION</p>
-            <p>DOSE/ML</p>
-            <p>NATURE</p>
-            <p>COMMON SIDE EFFECTS</p>
-            <p>SYNERGISTIC GOAL</p>
-          </div>,
-          <>
-            {combinationPeptideRows.map((row) => (
-              <div
-                key={row.combination}
-                className="grid grid-cols-[1.1fr_0.6fr_0.5fr_1.1fr_1.1fr] gap-2 border-b border-[#f1e6d3] px-4 py-3 text-xs text-[#4f4539] last:border-b-0 md:px-5 md:text-sm"
-              >
-                <p className="font-medium text-[#2b2218]">{row.combination}</p>
-                <p>{row.dosePerMl}</p>
-                <p>{row.nature}</p>
-                <p>{row.sideEffects}</p>
-                <p>{row.goal}</p>
-              </div>
-            ))}
-          </>,
-        )}
-
-        <h3 className="mt-10 text-xl text-[#2b2218]">Oral Capsule Formulations</h3>
-        {scrollTable(
-          <div className="grid grid-cols-[1fr_0.9fr_0.5fr_1.1fr_1.2fr] gap-2 border-b border-[#b78d4b2d] bg-[#fffaf2] px-4 py-3 text-[0.65rem] font-medium tracking-[0.12em] text-[#8f6f3e] md:px-5 md:text-xs md:tracking-[0.18em]">
-            <p>PRODUCT</p>
-            <p>DOSE</p>
-            <p>NATURE</p>
-            <p>COMMON SIDE EFFECTS</p>
-            <p>INDICATION / USE</p>
-          </div>,
-          <>
-            {oralCapsuleRows.map((row) => (
-              <div
-                key={`${row.product}-${row.dose}`}
-                className="grid grid-cols-[1fr_0.9fr_0.5fr_1.1fr_1.2fr] gap-2 border-b border-[#f1e6d3] px-4 py-3 text-xs text-[#4f4539] last:border-b-0 md:px-5 md:text-sm"
-              >
-                <p className="font-medium text-[#2b2218]">{row.product}</p>
-                <p>{row.dose}</p>
-                <p>{row.nature}</p>
-                <p>{row.sideEffects}</p>
-                <p>{row.indication}</p>
-              </div>
-            ))}
-          </>,
-        )}
-
-        <h3 className="mt-10 text-xl text-[#2b2218]">Ancillary & Support Agents</h3>
-        {scrollTable(
-          <div className="grid grid-cols-[1fr_1fr_0.5fr_1.1fr_1.2fr] gap-2 border-b border-[#b78d4b2d] bg-[#fffaf2] px-4 py-3 text-[0.65rem] font-medium tracking-[0.12em] text-[#8f6f3e] md:px-5 md:text-xs md:tracking-[0.18em]">
-            <p>AGENT</p>
-            <p>CONCENTRATION</p>
-            <p>NATURE</p>
-            <p>COMMON SIDE EFFECTS</p>
-            <p>CLINICAL APPLICATION</p>
-          </div>,
-          <>
-            {ancillaryAgentRows.map((row) => (
-              <div
-                key={row.agent}
-                className="grid grid-cols-[1fr_1fr_0.5fr_1.1fr_1.2fr] gap-2 border-b border-[#f1e6d3] px-4 py-3 text-xs text-[#4f4539] last:border-b-0 md:px-5 md:text-sm"
-              >
-                <p className="font-medium text-[#2b2218]">{row.agent}</p>
-                <p>{row.concentration}</p>
-                <p>{row.nature}</p>
-                <p>{row.sideEffects}</p>
-                <p>{row.application}</p>
-              </div>
-            ))}
-          </>,
-        )}
-
-        <div className="mt-8 rounded-2xl border border-[#b78d4b66] bg-[#fffaf2] p-5 text-sm leading-relaxed text-[#5f5344]">
-          {compoundedRxReference.importantNotice}
-        </div>
-      </SectionWrapper>
-
-      <SectionWrapper>
-        <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">{brandIntro.tagline}</p>
-        <h2 className="mb-2 mt-3 text-3xl text-[#1f1a15] md:text-4xl">What You May Experience After Your Icoone® Laser Lymphatic Drainage Session</h2>
-        <p className="mb-6 max-w-3xl text-[#6f6251]">
-          Icoone® Laser lymphatic drainage is a deeply effective treatment, and understanding what your body may experience in the hours and days
-          following your session helps you get the most from your results. Most clients find the experience relaxing and deeply therapeutic — both
-          during and after.
-        </p>
-        <div className="space-y-6">
-          <div className="rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-            <h3 className="text-lg text-[#2b2218]">Immediate Potential Aftereffects</h3>
-            {icooneAftereffectsImmediate.map((p) => (
-              <p key={p} className="mt-3 leading-relaxed text-[#5f5344]">
-                {p}
-              </p>
-            ))}
-          </div>
-          <div className="rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-            <h3 className="text-lg text-[#2b2218]">Short-Term Potential Aftereffects</h3>
-            {icooneAftereffectsShortTerm.map((p) => (
-              <p key={p} className="mt-3 leading-relaxed text-[#5f5344]">
-                {p}
-              </p>
-            ))}
-          </div>
-          <div className="rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-            <h3 className="text-lg text-[#2b2218]">Cumulative Results Over Time</h3>
-            {icooneAftereffectsCumulative.map((p) => (
-              <p key={p} className="mt-3 leading-relaxed text-[#5f5344]">
-                {p}
-              </p>
-            ))}
-          </div>
-          <div className="rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-            <h3 className="text-lg text-[#2b2218]">Post-Session Care Recommendations</h3>
-            <ul className="mt-3 space-y-2">
-              {icoonePostSessionCare.map((tip) => (
-                <li key={tip} className="text-[#5f5344]">
-                  {tip}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </SectionWrapper>
-
-      <SectionWrapper>
-        <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Service Availability</h2>
-        <p className="mb-6 max-w-3xl text-[#6f6251]">
-          Availability notes extracted from your service menu so clients understand which services are in-home eligible.
-        </p>
-        <div className="rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-          <ul className="space-y-2">
-            {serviceAccessNotes.map((note) => (
-              <li key={note} className="text-[#5f5344]">
-                {note}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </SectionWrapper>
 
       <SectionWrapper>
         <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">{brandIntro.tagline}</p>
@@ -1393,6 +891,60 @@ export default async function ServicesPage() {
           <Link href="/book-online" className="mt-3 inline-flex rounded-full bg-gradient-to-r from-[#1f7a7a] to-[#174f63] px-5 py-2 text-sm text-white">
             Start Membership Journey
           </Link>
+        </div>
+      </SectionWrapper>
+
+      <SectionWrapper>
+        <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Service Availability</h2>
+        <p className="mb-6 max-w-3xl text-[#6f6251]">
+          Availability notes extracted from your service menu so clients understand which services are in-home eligible.
+        </p>
+        <div className="rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
+          <ul className="space-y-2">
+            {serviceAccessNotes.map((note) => (
+              <li key={note} className="text-[#5f5344]">
+                {note}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </SectionWrapper>
+
+      <SectionWrapper>
+        <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Preferred Providers</h2>
+        <p className="mb-6 max-w-3xl text-[#6f6251]">
+          Trusted preferred providers integrated into the KIAN Privé care experience.
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {preferredProviders.map((provider) => (
+            <article key={provider.name} className="rounded-2xl border border-[#1f7a7a33] bg-[linear-gradient(160deg,#ffffff_20%,#f3fbfb_100%)] p-5 shadow-[0_18px_45px_-35px_rgba(20,58,58,0.45)]">
+              <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">PROVIDER</p>
+              <h3 className="mt-2 text-xl text-[#2b2218]">{provider.name}</h3>
+              <div className="mt-4 rounded-xl border border-[#1f7a7a2e] bg-white p-3 shadow-[inset_0_0_0_1px_rgba(31,122,122,0.06)]">
+                <div className="relative h-28 w-full overflow-hidden rounded-lg bg-[#f8fcfc]">
+                {provider.logo ? (
+                    <Image
+                      src={provider.logo}
+                      alt={`${provider.name} logo`}
+                      fill
+                      sizes="(max-width: 1024px) 50vw, 33vw"
+                      className="object-contain p-3"
+                    />
+                ) : (
+                    <div className="flex h-full items-center justify-center">
+                      <span className="text-xs tracking-[0.18em] text-[#8f6f3e]">LOGO COMING SOON</span>
+                    </div>
+                )}
+                </div>
+              </div>
+              <Link
+                href={provider.href}
+                className="mt-4 inline-flex rounded-full border border-[#1f7a7a66] bg-[#e9f7f7] px-4 py-2 text-xs tracking-[0.14em] text-[#1f6f75] transition hover:bg-[#dff3f2]"
+              >
+                Contact for Provider Details
+              </Link>
+            </article>
+          ))}
         </div>
       </SectionWrapper>
     </div>

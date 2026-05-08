@@ -15,7 +15,7 @@ const fallbackMap: Record<string, PageContentFallback> = {
   },
   services: {
     eyebrow: "PRIVÉ SERVICES",
-    title: "Luxury Wellness Services Designed Around Your Goals",
+    title: "Luxury Wellness Services Designed Around Your Personal needs & Goals",
     description: "Clinically grounded, hospitality-led, and designed for measurable transformation.",
   },
   about: {

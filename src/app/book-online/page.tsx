@@ -69,6 +69,8 @@ export default function BookOnlinePage() {
   const [preferredDate, setPreferredDate] = useState("");
   const [preferredLocation, setPreferredLocation] = useState("In-Clinic");
   const [notes, setNotes] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const selectedServiceTitles = useMemo(
     () =>
@@ -97,9 +99,46 @@ export default function BookOnlinePage() {
     );
   }
 
+  async function completeBooking() {
+    if (submitting) return;
+    setSubmitError("");
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName,
+          email,
+          phone,
+          preferredDate,
+          preferredLocation,
+          notes: notes || undefined,
+          serviceIds: selectedServices,
+          serviceTitles: selectedServiceTitles,
+          guestTotal,
+          memberTotal,
+        }),
+      });
+      if (!res.ok) {
+        const data = (await res.json()) as { error?: string };
+        throw new Error(data.error || "Could not submit booking.");
+      }
+      setStep(3);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "Could not submit booking.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   function nextStep() {
     if (step === 1 && selectedServices.length === 0) return;
     if (step === 2 && (!fullName || !email || !phone || !preferredDate)) return;
+    if (step === 2) {
+      void completeBooking();
+      return;
+    }
     setStep((prev) => (prev < 3 ? ((prev + 1) as BookingStep) : prev));
   }
 
@@ -113,14 +152,14 @@ export default function BookOnlinePage() {
         <div className="grid items-center gap-8 rounded-3xl border border-[#b78d4b2e] bg-white p-5 shadow-[0_20px_50px_-38px_rgba(66,45,14,0.45)] sm:p-8 lg:grid-cols-[1.05fr_0.95fr]">
           <div>
             <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">CLIENT BOOKING</p>
-            <h1 className="mt-4 text-3xl text-[#1f1a15] sm:text-4xl md:text-5xl">Book Your Private Session Online</h1>
+            <h1 className="mt-4 text-3xl text-[#1f1a15] sm:text-4xl md:text-5xl">Book Concierge Consultation</h1>
             <p className="mt-5 max-w-2xl text-[#6f6251]">
-              Schedule concierge wellness sessions, protocol reviews, and premium treatment visits with a guided multi-step experience.
-              Select one or multiple services, confirm your details, and complete booking in minutes.
+              Start your onboarding with a guided multi-step consultation form. Tell us your goals, choose your services,
+              and submit your preferred date in minutes.
             </p>
             <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#b78d4b45] bg-[#fff7eb] px-4 py-2 text-xs text-[#8f6f3e]">
               <Sparkles size={14} />
-              No login required to book
+              No login required for new consultation bookings
             </div>
             <div className="mt-7 flex flex-wrap gap-2">
               <span className={`rounded-full border px-3 py-1 text-xs ${step === 1 ? "border-[#b78d4b] bg-[#fff3df] text-[#8f6f3e]" : "border-[#b78d4b3e] text-[#7b6d5a]"}`}>1. Services</span>
@@ -267,6 +306,7 @@ export default function BookOnlinePage() {
                   className="min-h-[100px] rounded-xl border border-[#b78d4b3a] bg-[#fffaf4] p-3 text-[#2b2218] outline-none focus:border-[#b78d4b] md:col-span-2"
                 />
               </div>
+              {submitError ? <p className="mt-4 text-sm text-red-600">{submitError}</p> : null}
             </motion.div>
           ) : null}
 
@@ -341,12 +381,13 @@ export default function BookOnlinePage() {
               type="button"
               onClick={nextStep}
               disabled={
+                submitting ||
                 (step === 1 && selectedServices.length === 0) ||
                 (step === 2 && (!fullName || !email || !phone || !preferredDate))
               }
               className="rounded-full bg-[#b78d4b] px-6 py-3 text-white disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {step === 2 ? "Complete Booking" : "Next Step"}
+              {step === 2 ? (submitting ? "Submitting..." : "Complete Booking") : "Next Step"}
             </button>
           ) : (
             <button
@@ -366,6 +407,18 @@ export default function BookOnlinePage() {
               Start New Booking
             </button>
           )}
+        </div>
+        <div className="mt-6 rounded-2xl border border-[#b78d4b2d] bg-white p-5 text-center">
+          <p className="text-sm text-[#5f5344]">Already a member?</p>
+          <p className="mt-1 text-sm text-[#6f6251]">
+            Log in to manage your profile and continue with member access.
+          </p>
+          <Link
+            href="/login"
+            className="mt-4 inline-flex rounded-full border border-[#b78d4b80] bg-white px-6 py-3 text-sm text-[#3b3024] transition hover:bg-[#fff7eb]"
+          >
+            Login
+          </Link>
         </div>
       </SectionWrapper>
     </div>

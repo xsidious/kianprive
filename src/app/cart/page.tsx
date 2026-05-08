@@ -2,12 +2,26 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useMemo } from "react";
 import { Minus, Plus, ShieldCheck, Truck } from "lucide-react";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { useCart } from "@/components/providers/cart-provider";
+import { catalogProducts } from "@/lib/commerce/products";
+
+const FREE_SHIPPING_THRESHOLD = 150;
 
 export default function CartPage() {
-  const { items, subtotal, updateQuantity, removeItem } = useCart();
+  const { items, subtotal, updateQuantity, removeItem, addItem } = useCart();
+  const amountToFreeShipping = Math.max(FREE_SHIPPING_THRESHOLD - subtotal, 0);
+  const shippingProgress = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
+
+  const recommendedProducts = useMemo(() => {
+    const cartIds = new Set(items.map((item) => item.id));
+    const cartCategories = new Set(items.map((item) => item.category));
+    const categoryMatches = catalogProducts.filter((product) => !cartIds.has(product.id) && cartCategories.has(product.category));
+    const fallback = catalogProducts.filter((product) => !cartIds.has(product.id) && !cartCategories.has(product.category));
+    return [...categoryMatches, ...fallback].slice(0, 3);
+  }, [items]);
 
   return (
     <div>
@@ -60,6 +74,19 @@ export default function CartPage() {
 
           <aside className="h-fit rounded-2xl border border-[#b78d4b2d] bg-white p-5 lg:sticky lg:top-24">
             <h2 className="text-xl text-[#1f1a15]">Order Summary</h2>
+            <div className="mt-4 rounded-xl border border-[#b78d4b2d] bg-[#fff8ef] p-3">
+              <p className="text-sm text-[#4f4335]">
+                {amountToFreeShipping > 0
+                  ? `Add $${amountToFreeShipping.toFixed(2)} to unlock free shipping.`
+                  : "You unlocked free shipping!"}
+              </p>
+              <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#ead8bc]">
+                <div
+                  className="h-full rounded-full bg-[#b78d4b] transition-all duration-300"
+                  style={{ width: `${shippingProgress}%` }}
+                />
+              </div>
+            </div>
             <div className="mt-4 space-y-2 text-sm text-[#5f5344]">
               <div className="flex justify-between">
                 <span>Subtotal</span>
@@ -67,18 +94,19 @@ export default function CartPage() {
               </div>
               <div className="flex justify-between">
                 <span>Shipping</span>
-                <span>{subtotal >= 150 ? "Free" : "$12.00"}</span>
+                <span>{subtotal >= FREE_SHIPPING_THRESHOLD ? "Free" : "$12.00"}</span>
               </div>
             </div>
             <div className="mt-4 border-t border-[#b78d4b24] pt-4">
               <div className="flex justify-between text-[#1f1a15]">
                 <span>Total</span>
-                <span>${(subtotal + (subtotal >= 150 || subtotal === 0 ? 0 : 12)).toFixed(2)}</span>
+                <span>${(subtotal + (subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : 12)).toFixed(2)}</span>
               </div>
             </div>
             <Link href="/checkout" className="mt-5 block rounded-full bg-[#b78d4b] px-5 py-3 text-center text-sm text-white">
               Checkout
             </Link>
+            <p className="mt-3 text-center text-xs text-[#8f6f3e]">Most members complete checkout in under 60 seconds.</p>
             <div className="mt-5 space-y-2 text-xs text-[#6f6251]">
               <p className="inline-flex items-center gap-2"><Truck size={14} className="text-[#8f6f3e]" /> Fast delivery support</p>
               <p className="inline-flex items-center gap-2"><ShieldCheck size={14} className="text-[#8f6f3e]" /> Secure encrypted checkout</p>
@@ -86,6 +114,46 @@ export default function CartPage() {
           </aside>
         </div>
       </SectionWrapper>
+
+      {items.length > 0 ? (
+        <SectionWrapper className="pt-0">
+          <div className="rounded-2xl border border-[#b78d4b2d] bg-white p-5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-2xl text-[#1f1a15]">Recommended For Your Cart</h2>
+              <p className="text-sm text-[#8f6f3e]">Frequently bought together</p>
+            </div>
+            <div className="mt-4 grid gap-4 md:grid-cols-3">
+              {recommendedProducts.map((product) => (
+                <article key={product.id} className="rounded-2xl border border-[#b78d4b2d] bg-[#fffdf9] p-3">
+                  <div className="relative h-36 overflow-hidden rounded-xl border border-[#b78d4b2d]">
+                    <Image src={product.image} alt={product.name} fill className="object-cover" />
+                  </div>
+                  <p className="mt-3 text-xs tracking-[0.14em] text-[#8f6f3e]">{product.category}</p>
+                  <p className="mt-1 text-[#2b2218]">{product.name}</p>
+                  <div className="mt-3 flex items-center justify-between">
+                    <p className="text-lg text-[#1f1a15]">${product.price}</p>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        addItem({
+                          id: product.id,
+                          name: product.name,
+                          price: product.price,
+                          image: product.image,
+                          category: product.category,
+                        })
+                      }
+                      className="rounded-full bg-[#b78d4b] px-4 py-2 text-xs text-white"
+                    >
+                      Add
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </SectionWrapper>
+      ) : null}
     </div>
   );
 }

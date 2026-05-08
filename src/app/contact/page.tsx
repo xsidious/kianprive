@@ -10,7 +10,7 @@ export default function ContactPage() {
         <div className="grid items-center gap-8 rounded-3xl border border-[#b78d4b2e] bg-white p-5 shadow-[0_20px_50px_-38px_rgba(66,45,14,0.45)] sm:p-8 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">CONTACT US</p>
-            <h1 className="mt-4 text-3xl text-[#1f1a15] sm:text-4xl md:text-5xl">Request Your Private Concierge Wellness Experience</h1>
+            <h1 className="mt-4 text-3xl text-[#1f1a15] sm:text-4xl md:text-5xl">Request Your Private Concierge Experience</h1>
             <p className="mt-5 max-w-3xl text-[#6f6251]">
               Connect with the KIAN Privé team for private onboarding, membership support, retreat inquiries, and priority booking requests.
             </p>
@@ -44,8 +44,8 @@ export default function ContactPage() {
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <div className="rounded-xl border border-[#b78d4b2e] bg-[#fffaf2] p-4">
                 <p className="inline-flex items-center gap-2 text-sm text-[#8f6f3e]"><Mail size={14} /> Email</p>
-                <a href="mailto:Contact@KeepingItAllNatural.com" className="mt-1 block text-[#2b2218] hover:text-[#8f6f3e]">
-                  Contact@KeepingItAllNatural.com
+                <a href="mailto:contact@kianprive.com" className="mt-1 block text-[#2b2218] hover:text-[#8f6f3e]">
+                  contact@kianprive.com
                 </a>
               </div>
               <div className="rounded-xl border border-[#b78d4b2e] bg-[#fffaf2] p-4">
@@ -56,7 +56,7 @@ export default function ContactPage() {
               </div>
             </div>
             <div className="mt-5 flex items-center gap-3">
-              <a href="https://facebook.com/keepingitallnatural" target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#b78d4b3a] bg-white p-2 text-[#8f6f3e]">
+              <a href="https://www.facebook.com/KIAN4Life/" target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#b78d4b3a] bg-white p-2 text-[#8f6f3e]">
                 <Globe size={18} />
               </a>
               <a href="https://instagram.com/keepingitallnatural" target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#b78d4b3a] bg-white p-2 text-[#8f6f3e]">

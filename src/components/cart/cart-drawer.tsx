@@ -5,8 +5,12 @@ import Link from "next/link";
 import { Lock, Minus, Plus, RotateCcw, ShieldCheck, Truck, X } from "lucide-react";
 import { useCart } from "@/components/providers/cart-provider";
 
+const FREE_SHIPPING_THRESHOLD = 150;
+
 export function CartDrawer() {
   const { items, isOpen, itemCount, subtotal, closeCart, removeItem, updateQuantity, clearCart } = useCart();
+  const amountToFreeShipping = Math.max(FREE_SHIPPING_THRESHOLD - subtotal, 0);
+  const shippingProgress = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
 
   return (
     <>
@@ -70,6 +74,14 @@ export function CartDrawer() {
             )}
 
             <div className="mt-6 space-y-2 rounded-2xl border border-[#b78d4b2d] bg-[#fff8ef] p-4 text-sm text-[#4f4335]">
+              <p>
+                {amountToFreeShipping > 0
+                  ? `Add $${amountToFreeShipping.toFixed(2)} more for free shipping.`
+                  : "Free shipping unlocked."}
+              </p>
+              <div className="h-2 overflow-hidden rounded-full bg-[#ead8bc]">
+                <div className="h-full rounded-full bg-[#b78d4b] transition-all duration-300" style={{ width: `${shippingProgress}%` }} />
+              </div>
               <p className="inline-flex items-center gap-2"><Truck size={15} className="text-[#8f6f3e]" /> Free delivery on orders over $150</p>
               <p className="inline-flex items-center gap-2"><RotateCcw size={15} className="text-[#8f6f3e]" /> 30-day return support</p>
               <p className="inline-flex items-center gap-2"><ShieldCheck size={15} className="text-[#8f6f3e]" /> Clinically curated quality assurance</p>

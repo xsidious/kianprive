@@ -46,3 +46,20 @@ export async function PATCH(req: Request, { params }: Params) {
 
   return NextResponse.json({ post });
 }
+
+export async function DELETE(_: Request, { params }: Params) {
+  const guard = await requireAdminAccess();
+  if (!guard.ok) return guard.response;
+  const { id } = await params;
+
+  const post = await prisma.blogPost.delete({ where: { id } });
+  await writeAuditLog({
+    userId: guard.userId,
+    action: "blog.post.delete",
+    entityType: "BlogPost",
+    entityId: post.id,
+    metadata: { slug: post.slug },
+  });
+
+  return NextResponse.json({ ok: true });
+}

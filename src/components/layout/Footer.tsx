@@ -5,6 +5,23 @@ export function Footer() {
   return (
     <footer className="border-t border-[#b78d4b33] bg-[#f3ece0] px-4 py-12 text-[#5a4c3e] sm:px-6">
       <div className="mx-auto max-w-7xl">
+        <div className="mb-10 rounded-2xl border border-[#b78d4b33] bg-[#fffaf2] p-5 sm:p-6">
+          <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">NEWSLETTER</p>
+          <h3 className="mt-2 text-2xl text-[#2b2218]">Get KIAN updates, events, and offers</h3>
+          <p className="mt-2 text-sm text-[#6f6251]">Join our list for wellness insights, retreat launches, and exclusive promotions.</p>
+          <form className="mt-4 flex flex-wrap gap-2" action="#">
+            <input
+              type="email"
+              required
+              placeholder="Enter your email"
+              className="min-w-[230px] flex-1 rounded-xl border border-[#b78d4b35] bg-white p-3 text-sm text-[#2b2218]"
+            />
+            <button type="submit" className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
+              Subscribe
+            </button>
+          </form>
+        </div>
+
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <Image src="/images/kianprivelogo.png" alt="KIAN Privé logo" width={58} height={58} />
@@ -57,11 +74,11 @@ export function Footer() {
               <a href="tel:3059182570" className="block hover:text-[#8f6f3e] hover:underline">
                 305-918-2570
               </a>
-              <a href="mailto:Contact@KeepingItAllNatural.com" className="block hover:text-[#8f6f3e] hover:underline">
-                Contact@KeepingItAllNatural.com
+              <a href="mailto:contact@kianprive.com" className="block hover:text-[#8f6f3e] hover:underline">
+                contact@kianprive.com
               </a>
               <a
-                href="https://facebook.com/keepingitallnatural"
+                href="https://www.facebook.com/KIAN4Life/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block hover:text-[#8f6f3e] hover:underline"

@@ -3,10 +3,15 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { PeptidesInteractiveShowcase } from "@/components/services/PeptidesInteractiveShowcase";
 
 type ServiceItem = {
+  slug?: string;
   title: string;
   image: string;
+  video?: string;
+  showPeptidesExperience?: boolean;
   description: string;
   details?: string[];
   includes?: string[];
@@ -22,7 +27,13 @@ type ServiceCardsWithModalProps = {
 
 export function ServiceCardsWithModal({ services, label }: ServiceCardsWithModalProps) {
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
+  const { data } = useSession();
   const isPriorityGroup = label === "ADD-ON" || label === "SAME-LOCATION";
+  const canViewPricing =
+    data?.user?.subscriptionStatus === "ACTIVE" ||
+    data?.user?.role === "ADMIN" ||
+    data?.user?.role === "OPERATIONS" ||
+    data?.user?.role === "EDITOR";
 
   useEffect(() => {
     if (!selectedService) return;
@@ -72,6 +83,18 @@ export function ServiceCardsWithModal({ services, label }: ServiceCardsWithModal
                 >
                   View More
                 </button>
+                {service.slug ? (
+                  <Link
+                    href={`/services/${service.slug}`}
+                    className={`inline-flex rounded-full border px-5 py-2 text-sm ${
+                      isPriorityGroup
+                        ? "border-[#1f7a7a66] bg-white text-[#11464c]"
+                        : "border-[#b78d4b70] bg-white text-[#3b3024]"
+                    }`}
+                  >
+                    Service Page
+                  </Link>
+                ) : null}
                 <Link
                   href="/book-online"
                   className={`inline-flex rounded-full px-5 py-2 text-sm text-white ${
@@ -108,9 +131,24 @@ export function ServiceCardsWithModal({ services, label }: ServiceCardsWithModal
                 CLOSE
               </button>
             </div>
-            <div className="relative mt-4 h-56 overflow-hidden rounded-2xl border border-[#b78d4b2d]">
-              <Image src={selectedService.image} alt={selectedService.title} fill className="object-cover" />
-            </div>
+            {selectedService.showPeptidesExperience ? (
+              <div className="mt-4 overflow-hidden rounded-2xl border border-[#b78d4b2d]">
+                <PeptidesInteractiveShowcase />
+              </div>
+            ) : (
+              <div className="relative mt-4 h-56 overflow-hidden rounded-2xl border border-[#b78d4b2d]">
+                {selectedService.video ? (
+                  <video
+                    src={selectedService.video}
+                    controls
+                    playsInline
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <Image src={selectedService.image} alt={selectedService.title} fill className="object-cover" />
+                )}
+              </div>
+            )}
             <p className="mt-5 leading-relaxed text-[#5f5344]">{selectedService.description}</p>
             {selectedService.details && selectedService.details.length > 0 ? (
               <div className="mt-5">
@@ -139,13 +177,19 @@ export function ServiceCardsWithModal({ services, label }: ServiceCardsWithModal
             {selectedService.pricing && selectedService.pricing.length > 0 ? (
               <div className="mt-5 rounded-xl border border-[#1f7a7a30] bg-[#eef8f8] p-3">
                 <p className="text-xs tracking-[0.16em] text-[#1f6f75]">PRICING SNAPSHOT</p>
-                <ul className="mt-2 space-y-1">
-                  {selectedService.pricing.map((item) => (
-                    <li key={item} className="text-sm text-[#28585a]">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+                {canViewPricing ? (
+                  <ul className="mt-2 space-y-1">
+                    {selectedService.pricing.map((item) => (
+                      <li key={item} className="text-sm text-[#28585a]">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-2 text-sm text-[#28585a]">
+                    Pricing is available for active members only. Please login with your membership account.
+                  </p>
+                )}
               </div>
             ) : null}
             {selectedService.membershipNotes && selectedService.membershipNotes.length > 0 ? (

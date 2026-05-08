@@ -10,6 +10,11 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "demo:user": "node scripts/create-demo-user.mjs",
+    "demo:admin": "node scripts/create-demo-admin.mjs",
+    "demo:seed": "node scripts/seed-demo-data.mjs",
+    "seed:cms": "node scripts/seed-cms-pages.mjs",
+    "seed:blog": "node scripts/seed-all-blog-posts.mjs",
+    "seed:all": "npm run demo:admin && npm run demo:user && npm run demo:seed && npm run seed:cms && npm run seed:blog",
     "smoke:backend": "node scripts/backend-smoke-check.mjs",
     "postinstall": "prisma generate"
   },

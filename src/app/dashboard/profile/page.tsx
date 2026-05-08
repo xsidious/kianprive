@@ -21,13 +21,14 @@ export default function DashboardProfilePage() {
 
   return (
     <div className="mx-auto max-w-xl px-6 py-16">
-      <h1 className="text-4xl">Profile Settings</h1>
-      <form onSubmit={onSubmit} className="mt-8 space-y-4">
-        <input className="w-full rounded-xl border border-[#d7b6764d] bg-[#171310] p-3" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-        <input className="w-full rounded-xl border border-[#d7b6764d] bg-[#171310] p-3" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
-        <input className="w-full rounded-xl border border-[#d7b6764d] bg-[#171310] p-3" placeholder="Company" value={company} onChange={(e) => setCompany(e.target.value)} />
-        <button className="rounded-full bg-[#d7b676] px-5 py-2 text-black">Save Profile</button>
-        {saved && <p className="text-sm text-[#d7b676]">Saved.</p>}
+      <h1 className="text-4xl text-[#1f1a15]">Profile Settings</h1>
+      <p className="mt-2 text-[#6f6251]">Update your details for concierge communication and service planning.</p>
+      <form onSubmit={onSubmit} className="mt-8 space-y-4 rounded-2xl border border-[#b78d4b2d] bg-white p-5">
+        <input className="w-full rounded-xl border border-[#d7b6764d] bg-[#fffaf2] p-3 text-[#1f1a15]" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+        <input className="w-full rounded-xl border border-[#d7b6764d] bg-[#fffaf2] p-3 text-[#1f1a15]" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+        <input className="w-full rounded-xl border border-[#d7b6764d] bg-[#fffaf2] p-3 text-[#1f1a15]" placeholder="Company" value={company} onChange={(e) => setCompany(e.target.value)} />
+        <button className="rounded-full bg-[#d7b676] px-5 py-2 text-[#1f1a15]">Save Profile</button>
+        {saved && <p className="text-sm text-[#8f6f3e]">Saved.</p>}
       </form>
     </div>
   );

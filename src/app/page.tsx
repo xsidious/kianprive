@@ -36,6 +36,40 @@ const programTracks = [
   "Marketing & Client Development",
 ];
 
+const testimonials = [
+  {
+    quote:
+      "My energy, skin, and recovery all improved within weeks. The KIAN team built a plan that finally felt personal and sustainable.",
+    name: "Sophia M.",
+    title: "Concierge Wellness Client",
+  },
+  {
+    quote:
+      "The protocols are premium but practical. I now have clear monthly targets and measurable progress without the usual clinic friction.",
+    name: "Daniel R.",
+    title: "Performance Member",
+  },
+  {
+    quote:
+      "This is the first place where medical insight and aesthetics were coordinated as one strategy. Results have been consistent and visible.",
+    name: "Alyssa T.",
+    title: "Aesthetics Client",
+  },
+];
+
+const beforeAfterShowcase = [
+  {
+    treatment: "Lymphatic + Contouring Protocol",
+    beforeImage: "/images/wellness.avif",
+    afterImage: "/images/icoone.avif",
+  },
+  {
+    treatment: "Skin Renewal Program",
+    beforeImage: "/images/esthetics.avif",
+    afterImage: "/images/facial-treatments.jpg",
+  },
+];
+
 export default function Home() {
   const cmsPromise = getCmsPageContent("home");
   return (
@@ -96,9 +130,6 @@ export default function Home() {
               Every protocol is customized around your goals, lifestyle, and biology.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/book-online" className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
-                Book Now
-              </Link>
               <Link href="/services" className="rounded-full border border-[#b78d4b69] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]">
                 View Services
               </Link>
@@ -127,6 +158,46 @@ export default function Home() {
               image={service.image}
               href={service.href}
             />
+          ))}
+        </div>
+      </SectionWrapper>
+
+      <SectionWrapper>
+        <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Client Testimonials</h2>
+        <p className="mb-6 max-w-3xl text-[#6f6251]">Real feedback from clients following personalized concierge protocols.</p>
+        <div className="grid gap-4 md:grid-cols-3">
+          {testimonials.map((item) => (
+            <article key={item.name} className="rounded-2xl border border-[#b78d4b2d] bg-white p-5 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)]">
+              <p className="text-[#4f4335]">&ldquo;{item.quote}&rdquo;</p>
+              <p className="mt-4 text-[#2b2218]">{item.name}</p>
+              <p className="text-sm text-[#8f6f3e]">{item.title}</p>
+            </article>
+          ))}
+        </div>
+      </SectionWrapper>
+
+      <SectionWrapper>
+        <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Before & After</h2>
+        <p className="mb-6 max-w-3xl text-[#6f6251]">Examples of visible transformation from structured KIAN treatment plans.</p>
+        <div className="grid gap-5 lg:grid-cols-2">
+          {beforeAfterShowcase.map((item) => (
+            <article key={item.treatment} className="rounded-2xl border border-[#b78d4b2d] bg-white p-4 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)]">
+              <p className="mb-3 text-lg text-[#2b2218]">{item.treatment}</p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <p className="mb-2 text-xs tracking-[0.18em] text-[#8f6f3e]">BEFORE</p>
+                  <div className="relative h-48 overflow-hidden rounded-xl border border-[#b78d4b2d]">
+                    <Image src={item.beforeImage} alt={`${item.treatment} before`} fill className="object-cover" />
+                  </div>
+                </div>
+                <div>
+                  <p className="mb-2 text-xs tracking-[0.18em] text-[#8f6f3e]">AFTER</p>
+                  <div className="relative h-48 overflow-hidden rounded-xl border border-[#b78d4b2d]">
+                    <Image src={item.afterImage} alt={`${item.treatment} after`} fill className="object-cover" />
+                  </div>
+                </div>
+              </div>
+            </article>
           ))}
         </div>
       </SectionWrapper>

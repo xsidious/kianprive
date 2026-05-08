@@ -8,8 +8,9 @@ RUN npm install
 
 COPY . .
 RUN npm run prisma:generate
+RUN sed -i 's/\r$//' docker-entrypoint.sh
 RUN chmod +x docker-entrypoint.sh
 
 EXPOSE 3000
 
-CMD ["./docker-entrypoint.sh"]
+CMD ["sh", "/app/docker-entrypoint.sh"]

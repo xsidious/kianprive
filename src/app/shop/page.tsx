@@ -5,15 +5,7 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import { ShieldCheck, Truck } from "lucide-react";
 import { useCart } from "@/components/providers/cart-provider";
-
-const products = [
-  { id: "p1", name: "Lymphatic Support Serum", category: "Skincare", price: 129, image: "/images/facial-treatments.jpg" },
-  { id: "p2", name: "Daily Recovery Electrolyte Blend", category: "Nutrition", price: 59, image: "/images/beauty.avif" },
-  { id: "p3", name: "Collagen Renewal Capsules", category: "Supplements", price: 89, image: "/images/esthetics.avif" },
-  { id: "p4", name: "Night Repair Facial Oil", category: "Skincare", price: 98, image: "/images/facial-treatments.jpg" },
-  { id: "p5", name: "Metabolic Support Protein", category: "Nutrition", price: 72, image: "/images/nutrition.avif" },
-  { id: "p6", name: "Advanced Beauty Essentials Kit", category: "Beauty", price: 149, image: "/images/wellness.avif" },
-];
+import { catalogProducts } from "@/lib/commerce/products";
 
 export default function ShopPage() {
   const [category, setCategory] = useState("All");
@@ -22,7 +14,7 @@ export default function ShopPage() {
   const { itemCount, addItem, openCart, subtotal } = useCart();
 
   const filteredProducts = useMemo(() => {
-    let list = products.filter((p) => (category === "All" ? true : p.category === category));
+    let list = catalogProducts.filter((p) => (category === "All" ? true : p.category === category));
     list = list.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
     if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
     if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);

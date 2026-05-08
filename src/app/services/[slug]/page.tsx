@@ -1,0 +1,148 @@
+import { redirect } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { SectionWrapper } from "@/components/ui/SectionWrapper";
+import { auth } from "@/lib/auth";
+import { getServiceBySlug, serviceCatalog } from "@/lib/services/catalog";
+
+export function generateStaticParams() {
+  return serviceCatalog.map((service) => ({ slug: service.slug }));
+}
+
+export default async function ServiceDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const service = getServiceBySlug(slug);
+  if (!service) redirect("/services");
+
+  const session = await auth();
+  const canViewPricing =
+    session?.user?.subscriptionStatus === "ACTIVE" ||
+    session?.user?.role === "ADMIN" ||
+    session?.user?.role === "OPERATIONS" ||
+    session?.user?.role === "EDITOR";
+  if (service.requiresLogin && !session?.user?.id) {
+    redirect("/login");
+  }
+
+  return (
+    <div>
+      <SectionWrapper className="pt-10 sm:pt-12 md:pt-14">
+        <div className="grid items-center gap-8 rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)] lg:grid-cols-[1.05fr_0.95fr]">
+          <div>
+            <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">SERVICE DETAIL</p>
+            <h1 className="mt-3 text-3xl text-[#1f1a15] sm:text-4xl md:text-5xl">{service.title}</h1>
+            <p className="mt-4 text-[#6f6251]">{service.description}</p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link href="/book-online" className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
+                Book Consultation
+              </Link>
+              <Link href="/services" className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]">
+                Back to Services
+              </Link>
+            </div>
+          </div>
+          <div className="relative h-[300px] overflow-hidden rounded-2xl border border-[#b78d4b2d] sm:h-[360px]">
+            <Image src={service.image} alt={service.title} fill className="object-cover" />
+          </div>
+        </div>
+      </SectionWrapper>
+
+      {service.details?.length ? (
+        <SectionWrapper>
+          <h2 className="text-2xl text-[#1f1a15] sm:text-3xl">How This Service Works</h2>
+          <div className="mt-4 grid gap-3">
+            {service.details.map((detail) => (
+              <article key={detail} className="rounded-2xl border border-[#b78d4b2d] bg-white p-4 text-[#5f5344]">
+                {detail}
+              </article>
+            ))}
+          </div>
+        </SectionWrapper>
+      ) : null}
+
+      {service.includes?.length ? (
+        <SectionWrapper>
+          <h2 className="text-2xl text-[#1f1a15] sm:text-3xl">What It Supports</h2>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {service.includes.map((item) => (
+              <article key={item} className="rounded-2xl border border-[#b78d4b2d] bg-white p-4 text-[#5f5344]">
+                {item}
+              </article>
+            ))}
+          </div>
+        </SectionWrapper>
+      ) : null}
+
+      {service.pricing?.length ? (
+        <SectionWrapper>
+          <h2 className="text-2xl text-[#1f1a15] sm:text-3xl">Pricing</h2>
+          <div className="mt-4 rounded-2xl border border-[#b78d4b2d] bg-white p-5">
+            {canViewPricing ? (
+              <ul className="space-y-2 text-[#5f5344]">
+                {service.pricing.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            ) : (
+              <div>
+                <p className="text-[#5f5344]">
+                  Pricing is only visible for logged-in members with active access.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <Link href="/login" className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
+                    Member Login
+                  </Link>
+                  <Link href="/pricing" className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]">
+                    View Membership
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+        </SectionWrapper>
+      ) : null}
+
+      {service.availability?.length ? (
+        <SectionWrapper>
+          <h2 className="text-2xl text-[#1f1a15] sm:text-3xl">Availability</h2>
+          <div className="mt-4 rounded-2xl border border-[#b78d4b2d] bg-white p-5">
+            <ul className="space-y-2 text-[#5f5344]">
+              {service.availability.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </div>
+        </SectionWrapper>
+      ) : null}
+
+      {service.contentSections?.length ? (
+        <SectionWrapper>
+          <h2 className="text-2xl text-[#1f1a15] sm:text-3xl">Program Details</h2>
+          <div className="mt-4 grid gap-4">
+            {service.contentSections.map((section) => (
+              <article key={section.title} className="rounded-2xl border border-[#b78d4b2d] bg-white p-5">
+                <h3 className="text-xl text-[#2b2218]">{section.title}</h3>
+                {section.paragraphs?.map((paragraph) => (
+                  <p key={paragraph} className="mt-3 text-[#5f5344]">
+                    {paragraph}
+                  </p>
+                ))}
+                {section.bullets?.length ? (
+                  <ul className="mt-3 space-y-2 text-[#5f5344]">
+                    {section.bullets.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                ) : null}
+              </article>
+            ))}
+          </div>
+        </SectionWrapper>
+      ) : null}
+    </div>
+  );
+}

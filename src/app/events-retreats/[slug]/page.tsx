@@ -2,10 +2,11 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
-import { getRetreatEventBySlug, retreatEvents } from "@/lib/events";
+import { getRetreatEventsFromStore, getRetreatEventFromStoreBySlug } from "@/lib/events-store";
 
-export function generateStaticParams() {
-  return retreatEvents.map((event) => ({ slug: event.slug }));
+export async function generateStaticParams() {
+  const events = await getRetreatEventsFromStore();
+  return events.map((event) => ({ slug: event.slug }));
 }
 
 export default async function EventDetailsPage({
@@ -17,7 +18,7 @@ export default async function EventDetailsPage({
 }) {
   const { slug } = await params;
   const { intent } = await searchParams;
-  const event = getRetreatEventBySlug(slug);
+  const event = await getRetreatEventFromStoreBySlug(slug);
 
   if (!event) notFound();
 
