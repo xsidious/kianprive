@@ -3,9 +3,10 @@
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, ShieldCheck, Sparkles, Star, Truck, UserCheck } from "lucide-react";
+import { CheckCircle2, LogIn, ShieldCheck, Sparkles, Star, Truck, UserCheck, UserCircle2 } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
 
 type BookingStep = 1 | 2 | 3;
 
@@ -61,6 +62,10 @@ const serviceOptions = [
 ];
 
 export default function BookOnlinePage() {
+  const { data: session, status: sessionStatus } = useSession();
+  const isLoggedIn = Boolean(session?.user);
+  const [memberPricingActive, setMemberPricingActive] = useState(false);
+
   const [step, setStep] = useState<BookingStep>(1);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [fullName, setFullName] = useState("");
@@ -92,6 +97,45 @@ export default function BookOnlinePage() {
     [selectedServiceRows],
   );
   const savings = guestTotal - memberTotal;
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    const name = session?.user?.name ?? "";
+    const emailAddr = session?.user?.email ?? "";
+    if (name) setFullName(name);
+    if (emailAddr) setEmail(emailAddr);
+  }, [isLoggedIn, session?.user?.name, session?.user?.email]);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setMemberPricingActive(false);
+      return;
+    }
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await fetch("/api/profile");
+        if (!res.ok) return;
+        const payload = (await res.json()) as {
+          profile?: { phone?: string };
+          subscription?: { status: string; currentPeriodEnd: string | null } | null;
+        };
+        if (cancelled) return;
+        if (payload.profile?.phone) setPhone(payload.profile.phone);
+        const sub = payload.subscription;
+        const active =
+          sub?.status === "ACTIVE" &&
+          sub.currentPeriodEnd &&
+          new Date(sub.currentPeriodEnd).getTime() > Date.now();
+        setMemberPricingActive(Boolean(active));
+      } catch {
+        /* ignore */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoggedIn]);
 
   function toggleService(id: string) {
     setSelectedServices((prev) =>
@@ -157,10 +201,74 @@ export default function BookOnlinePage() {
               Start your onboarding with a guided multi-step consultation form. Tell us your goals, choose your services,
               and submit your preferred date in minutes.
             </p>
-            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#b78d4b45] bg-[#fff7eb] px-4 py-2 text-xs text-[#8f6f3e]">
-              <Sparkles size={14} />
-              No login required for new consultation bookings
-            </div>
+            {sessionStatus === "loading" ? (
+              <div className="mt-5 rounded-2xl border border-[#b78d4b33] bg-[#fffaf2] px-4 py-3 text-sm text-[#6f6251]">
+                Checking your session…
+              </div>
+            ) : isLoggedIn ? (
+              <div className="mt-5 rounded-2xl border border-[#2e7d3245] bg-[#f1faf1] p-4">
+                <p className="inline-flex items-center gap-2 text-xs font-medium tracking-[0.12em] text-[#2e7d32]">
+                  <UserCircle2 size={16} />
+                  SIGNED IN
+                </p>
+                <p className="mt-2 text-sm text-[#2b2218]">
+                  You are booking as <span className="font-medium">{session?.user?.name ?? "Member"}</span>
+                  {session?.user?.email ? (
+                    <>
+                      {" "}
+                      (<span className="text-[#5f5344]">{session.user.email}</span>)
+                    </>
+                  ) : null}
+                  . This request will be saved to your account.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Link
+                    href="/dashboard"
+                    className="rounded-full border border-[#2e7d3240] bg-white px-4 py-2 text-xs font-medium text-[#1b5e20]"
+                  >
+                    Member dashboard
+                  </Link>
+                  <Link
+                    href="/dashboard/services"
+                    className="rounded-full border border-[#2e7d3240] bg-white px-4 py-2 text-xs font-medium text-[#1b5e20]"
+                  >
+                    My booked services
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl border border-[#b78d4b] bg-[#fff7eb] p-4 ring-2 ring-[#b78d4b33]">
+                  <p className="text-xs font-medium tracking-[0.14em] text-[#8f6f3e]">CONTINUE AS GUEST</p>
+                  <p className="mt-2 text-sm text-[#5f5344]">Book without an account. We will follow up by email and phone.</p>
+                </div>
+                <div className="rounded-2xl border border-[#b78d4b2d] bg-white p-4">
+                  <p className="text-xs font-medium tracking-[0.14em] text-[#8f6f3e]">MEMBER OR NEW ACCOUNT</p>
+                  <p className="mt-2 text-sm text-[#5f5344]">Sign in for member pricing and to track bookings in your dashboard.</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Link
+                      href="/login?callbackUrl=/book-online"
+                      className="inline-flex items-center gap-1 rounded-full bg-[#b78d4b] px-4 py-2 text-xs text-white"
+                    >
+                      <LogIn size={14} />
+                      Log in
+                    </Link>
+                    <Link href="/signup" className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-4 py-2 text-xs text-[#3b3024]">
+                      Create account
+                    </Link>
+                    <Link href="/pricing" className="rounded-full border border-[#b78d4b50] px-4 py-2 text-xs text-[#3b3024]">
+                      Membership
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+            {!isLoggedIn ? (
+              <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#b78d4b45] bg-[#fff7eb] px-4 py-2 text-xs text-[#8f6f3e]">
+                <Sparkles size={14} />
+                Guest booking — you can join anytime for member rates
+              </div>
+            ) : null}
             <div className="mt-7 flex flex-wrap gap-2">
               <span className={`rounded-full border px-3 py-1 text-xs ${step === 1 ? "border-[#b78d4b] bg-[#fff3df] text-[#8f6f3e]" : "border-[#b78d4b3e] text-[#7b6d5a]"}`}>1. Services</span>
               <span className={`rounded-full border px-3 py-1 text-xs ${step === 2 ? "border-[#b78d4b] bg-[#fff3df] text-[#8f6f3e]" : "border-[#b78d4b3e] text-[#7b6d5a]"}`}>2. Information</span>
@@ -186,20 +294,45 @@ export default function BookOnlinePage() {
             </div>
           </div>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
-            <article className="rounded-2xl border border-[#b78d4b30] bg-white p-4">
-              <p className="text-sm text-[#8f6f3e]">Book as Guest</p>
-              <p className="mt-1 text-sm text-[#6f6251]">Reserve services instantly with no account required.</p>
+            <article
+              className={`rounded-2xl border p-4 ${isLoggedIn && memberPricingActive ? "border-[#2e7d3240] bg-[#f4fbf4]" : "border-[#b78d4b30] bg-white"}`}
+            >
+              <p className="text-sm text-[#8f6f3e]">{isLoggedIn ? "Your booking totals" : "Book as guest"}</p>
+              <p className="mt-1 text-sm text-[#6f6251]">
+                {isLoggedIn && memberPricingActive
+                  ? "Active membership pricing applies to your estimate below."
+                  : isLoggedIn
+                    ? "Member estimate shown; activate membership in your dashboard for best rates."
+                    : "Reserve services with no account. Sign in anytime for member rates."}
+              </p>
             </article>
             <article className="rounded-2xl border border-[#b78d4b45] bg-[#fff7eb] p-4">
-              <p className="text-sm text-[#8f6f3e]">Become a Member</p>
-              <p className="mt-1 text-sm text-[#6f6251]">Get discounted session rates, priority booking, and premium concierge support.</p>
+              <p className="text-sm text-[#8f6f3e]">{isLoggedIn ? "Account shortcuts" : "Become a member"}</p>
+              <p className="mt-1 text-sm text-[#6f6251]">
+                {isLoggedIn
+                  ? "Manage profile, subscription, and past bookings from your dashboard."
+                  : "Get discounted session rates, priority booking, and premium concierge support."}
+              </p>
               <div className="mt-3 flex flex-wrap gap-2">
-                <Link href="/signup" className="rounded-full bg-[#b78d4b] px-4 py-2 text-xs text-white">
-                  Create Account
-                </Link>
-                <Link href="/pricing" className="rounded-full border border-[#b78d4b70] bg-white px-4 py-2 text-xs text-[#3b3024]">
-                  View Membership
-                </Link>
+                {isLoggedIn ? (
+                  <>
+                    <Link href="/dashboard/subscription" className="rounded-full bg-[#b78d4b] px-4 py-2 text-xs text-white">
+                      Membership
+                    </Link>
+                    <Link href="/dashboard/profile" className="rounded-full border border-[#b78d4b70] bg-white px-4 py-2 text-xs text-[#3b3024]">
+                      Profile
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/signup" className="rounded-full bg-[#b78d4b] px-4 py-2 text-xs text-white">
+                      Create Account
+                    </Link>
+                    <Link href="/pricing" className="rounded-full border border-[#b78d4b70] bg-white px-4 py-2 text-xs text-[#3b3024]">
+                      View Membership
+                    </Link>
+                  </>
+                )}
               </div>
             </article>
           </div>
@@ -264,6 +397,11 @@ export default function BookOnlinePage() {
             >
               <h2 className="text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">Your Information</h2>
               <p className="mt-2 text-[#6f6251]">Tell us where and when you want your session.</p>
+              {isLoggedIn ? (
+                <p className="mt-2 rounded-xl border border-[#2e7d322e] bg-[#f7fcf7] px-3 py-2 text-xs text-[#2e7d32]">
+                  Signed in — details below are pre-filled from your account. You can still edit before submitting.
+                </p>
+              ) : null}
               <div className="mt-6 grid gap-4 md:grid-cols-2">
                 <input
                   value={fullName}
@@ -353,12 +491,25 @@ export default function BookOnlinePage() {
                 <p className="inline-flex items-center gap-2"><Star size={14} className="text-[#8f6f3e]" /> Priority member perks available</p>
               </div>
               <div className="mt-5 flex flex-wrap justify-center gap-2">
-                <Link href="/signup" className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
-                  Create Account for Member Pricing
-                </Link>
-                <Link href="/pricing" className="rounded-full border border-[#b78d4b70] bg-white px-5 py-2 text-sm text-[#3b3024]">
-                  Compare Membership Plans
-                </Link>
+                {isLoggedIn ? (
+                  <>
+                    <Link href="/dashboard/services" className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
+                      View my bookings
+                    </Link>
+                    <Link href="/dashboard" className="rounded-full border border-[#b78d4b70] bg-white px-5 py-2 text-sm text-[#3b3024]">
+                      Dashboard
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/signup" className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
+                      Create Account for Member Pricing
+                    </Link>
+                    <Link href="/pricing" className="rounded-full border border-[#b78d4b70] bg-white px-5 py-2 text-sm text-[#3b3024]">
+                      Compare Membership Plans
+                    </Link>
+                  </>
+                )}
               </div>
             </motion.div>
           ) : null}
@@ -409,16 +560,40 @@ export default function BookOnlinePage() {
           )}
         </div>
         <div className="mt-6 rounded-2xl border border-[#b78d4b2d] bg-white p-5 text-center">
-          <p className="text-sm text-[#5f5344]">Already a member?</p>
-          <p className="mt-1 text-sm text-[#6f6251]">
-            Log in to manage your profile and continue with member access.
-          </p>
-          <Link
-            href="/login"
-            className="mt-4 inline-flex rounded-full border border-[#b78d4b80] bg-white px-6 py-3 text-sm text-[#3b3024] transition hover:bg-[#fff7eb]"
-          >
-            Login
-          </Link>
+          {isLoggedIn ? (
+            <>
+              <p className="text-sm font-medium text-[#2b2218]">You are signed in</p>
+              <p className="mt-1 text-sm text-[#6f6251]">Your session is active across the site. Continue booking or go to your dashboard.</p>
+              <div className="mt-4 flex flex-wrap justify-center gap-2">
+                <Link
+                  href="/dashboard"
+                  className="inline-flex rounded-full bg-[#b78d4b] px-6 py-3 text-sm text-white transition hover:opacity-95"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => void signOut({ callbackUrl: "/login?callbackUrl=/book-online" })}
+                  className="inline-flex rounded-full border border-[#b78d4b80] bg-white px-6 py-3 text-sm text-[#3b3024] transition hover:bg-[#fff7eb]"
+                >
+                  Switch account
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="text-sm text-[#5f5344]">Already a member?</p>
+              <p className="mt-1 text-sm text-[#6f6251]">
+                Log in to apply member pricing and save this booking to your account.
+              </p>
+              <Link
+                href="/login?callbackUrl=/book-online"
+                className="mt-4 inline-flex rounded-full border border-[#b78d4b80] bg-white px-6 py-3 text-sm text-[#3b3024] transition hover:bg-[#fff7eb]"
+              >
+                Log in
+              </Link>
+            </>
+          )}
         </div>
       </SectionWrapper>
     </div>

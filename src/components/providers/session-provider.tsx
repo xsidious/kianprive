@@ -5,7 +5,7 @@ import { CartProvider } from "@/components/providers/cart-provider";
 
 export function AppSessionProvider({ children }: { children: React.ReactNode }) {
   return (
-    <SessionProvider>
+    <SessionProvider refetchOnWindowFocus refetchInterval={5 * 60}>
       <CartProvider>{children}</CartProvider>
     </SessionProvider>
   );
