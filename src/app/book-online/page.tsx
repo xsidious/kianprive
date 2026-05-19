@@ -192,7 +192,17 @@ function BookOnlineContent() {
           durationMinutes: String(bookingDurationMinutes),
         });
         const res = await fetch(`/api/scheduling/slots?${params.toString()}`);
-        const payload = (await res.json()) as { slots?: TimeSlot[]; error?: string };
+        const raw = await res.text();
+        let payload: { slots?: TimeSlot[]; error?: string } = {};
+        if (raw) {
+          try {
+            payload = JSON.parse(raw) as { slots?: TimeSlot[]; error?: string };
+          } catch {
+            throw new Error("Scheduling service returned an invalid response. Please refresh and try again.");
+          }
+        } else if (!res.ok) {
+          throw new Error("Scheduling service is unavailable. Please try again in a moment.");
+        }
         if (!res.ok) throw new Error(payload.error ?? "Could not load time slots.");
         if (cancelled) return;
         setAvailableSlots(payload.slots ?? []);

@@ -41,10 +41,18 @@ export function zonedDateTimeToUtc(
   minute: number,
   timeZone: string,
 ): Date {
-  const windowStart = Date.UTC(year, month - 1, day, 0, 0, 0) - 16 * 3_600_000;
-  const windowEnd = Date.UTC(year, month - 1, day, 23, 59, 0) + 16 * 3_600_000;
+  let utcMs = Date.UTC(year, month - 1, day, hour, minute, 0, 0);
+  const desired = Date.UTC(year, month - 1, day, hour, minute, 0, 0);
 
-  for (let ms = windowStart; ms <= windowEnd; ms += 60_000) {
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const zoned = getZonedParts(new Date(utcMs), timeZone);
+    const actual = Date.UTC(zoned.year, zoned.month - 1, zoned.day, zoned.hour, zoned.minute, 0, 0);
+    const diffMs = desired - actual;
+    if (diffMs === 0) return new Date(utcMs);
+    utcMs += diffMs;
+  }
+
+  for (let ms = utcMs - 2 * 3_600_000; ms <= utcMs + 2 * 3_600_000; ms += 60_000) {
     const parts = getZonedParts(new Date(ms), timeZone);
     if (
       parts.year === year &&
