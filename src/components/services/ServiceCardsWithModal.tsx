@@ -6,27 +6,15 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { PeptidesInteractiveShowcase } from "@/components/services/PeptidesInteractiveShowcase";
 
-type ServiceItem = {
-  slug?: string;
-  title: string;
-  image: string;
-  video?: string;
-  showPeptidesExperience?: boolean;
-  description: string;
-  details?: string[];
-  includes?: string[];
-  pricing?: string[];
-  membershipNotes?: string[];
-  availability?: string[];
-};
+import type { ServiceListingItem } from "@/lib/services/types";
 
 type ServiceCardsWithModalProps = {
-  services: ServiceItem[];
+  services: ServiceListingItem[];
   label: string;
 };
 
 export function ServiceCardsWithModal({ services, label }: ServiceCardsWithModalProps) {
-  const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
+  const [selectedService, setSelectedService] = useState<ServiceListingItem | null>(null);
   const { data } = useSession();
   const isPriorityGroup = label === "ADD-ON" || label === "SAME-LOCATION";
   const canViewPricing =
@@ -96,7 +84,7 @@ export function ServiceCardsWithModal({ services, label }: ServiceCardsWithModal
                   </Link>
                 ) : null}
                 <Link
-                  href="/book-online"
+                  href={service.slug ? `/book-online?service=${service.slug}` : "/book-online"}
                   className={`inline-flex rounded-full px-5 py-2 text-sm text-white ${
                     isPriorityGroup ? "bg-gradient-to-r from-[#1f7a7a] to-[#174f63]" : "bg-[#b78d4b]"
                   }`}
@@ -217,7 +205,10 @@ export function ServiceCardsWithModal({ services, label }: ServiceCardsWithModal
               </div>
             ) : null}
             <div className="mt-6">
-              <Link href="/book-online" className="inline-flex rounded-full bg-gradient-to-r from-[#1f7a7a] to-[#174f63] px-5 py-2 text-sm text-white">
+              <Link
+                href={selectedService.slug ? `/book-online?service=${selectedService.slug}` : "/book-online"}
+                className="inline-flex rounded-full bg-gradient-to-r from-[#1f7a7a] to-[#174f63] px-5 py-2 text-sm text-white"
+              >
                 Book This Service
               </Link>
             </div>

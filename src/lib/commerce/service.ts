@@ -1,5 +1,40 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { getCatalogProduct } from "@/lib/commerce/products";
+import { calculateShipping } from "@/lib/commerce/shipping";
+import { stripe } from "@/lib/stripe";
+
+async function resolveProduct(productIdOrSlug: string) {
+  const byId = await prisma.product.findUnique({ where: { id: productIdOrSlug } });
+  if (byId) return byId;
+
+  const bySlug = await prisma.product.findUnique({ where: { slug: productIdOrSlug } });
+  if (bySlug) return bySlug;
+
+  const catalog = getCatalogProduct(productIdOrSlug);
+  if (!catalog) return null;
+
+  return prisma.product.upsert({
+    where: { slug: catalog.slug },
+    update: {
+      title: catalog.name,
+      category: catalog.category,
+      price: catalog.price,
+      featuredImage: catalog.image,
+      status: "ACTIVE",
+    },
+    create: {
+      slug: catalog.slug,
+      title: catalog.name,
+      description: `${catalog.name} by KIAN Privé`,
+      category: catalog.category,
+      price: catalog.price,
+      featuredImage: catalog.image,
+      status: "ACTIVE",
+      inventoryQty: 250,
+    },
+  });
+}
 
 export async function createOrUpdateCartItem(input: {
   cartId?: string;
@@ -8,9 +43,7 @@ export async function createOrUpdateCartItem(input: {
   productId: string;
   quantity: number;
 }) {
-  const product = await prisma.product.findUnique({
-    where: { id: input.productId },
-  });
+  const product = await resolveProduct(input.productId);
   if (!product) {
     throw new Error("Product not found");
   }
@@ -18,7 +51,7 @@ export async function createOrUpdateCartItem(input: {
   const cart =
     (input.cartId
       ? await prisma.cart.findUnique({
-          where: { id: input.cartId },
+          where: { id: input.cartId, status: "ACTIVE" },
           include: { items: true },
         })
       : null) ??
@@ -54,6 +87,47 @@ export async function createOrUpdateCartItem(input: {
   return recalculateCartTotals(cart.id);
 }
 
+export async function replaceCartItems(input: {
+  cartId?: string;
+  userId?: string;
+  email?: string;
+  items: Array<{ productId: string; quantity: number }>;
+}) {
+  const cart =
+    (input.cartId
+      ? await prisma.cart.findUnique({
+          where: { id: input.cartId, status: "ACTIVE" },
+          include: { items: true },
+        })
+      : null) ??
+    (await prisma.cart.create({
+      data: {
+        userId: input.userId,
+        email: input.email,
+      },
+      include: { items: true },
+    }));
+
+  await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
+
+  for (const item of input.items) {
+    if (item.quantity <= 0) continue;
+    const product = await resolveProduct(item.productId);
+    if (!product) continue;
+    await prisma.cartItem.create({
+      data: {
+        cartId: cart.id,
+        productId: product.id,
+        quantity: item.quantity,
+        unitPrice: product.price,
+        lineTotal: product.price.mul(item.quantity),
+      },
+    });
+  }
+
+  return recalculateCartTotals(cart.id);
+}
+
 export async function recalculateCartTotals(cartId: string) {
   const cart = await prisma.cart.findUnique({
     where: { id: cartId },
@@ -74,18 +148,30 @@ export async function recalculateCartTotals(cartId: string) {
       taxTotal,
       total,
     },
-    include: { items: true },
+    include: { items: { include: { product: true } } },
   });
 }
 
-export async function createOrderFromCart(cartId: string, input: { email?: string; phone?: string; shippingAddress?: unknown; billingAddress?: unknown }) {
+export async function createOrderFromCart(
+  cartId: string,
+  input: {
+    email?: string;
+    phone?: string;
+    shippingAddress?: unknown;
+    billingAddress?: unknown;
+    shippingTotal?: number;
+  },
+) {
   const cart = await prisma.cart.findUnique({
-    where: { id: cartId },
+    where: { id: cartId, status: "ACTIVE" },
     include: { items: { include: { product: true } } },
   });
   if (!cart) throw new Error("Cart not found");
   if (!cart.items.length) throw new Error("Cart is empty");
 
+  const subtotalNumber = Number(cart.subtotal);
+  const shippingTotal = new Prisma.Decimal(input.shippingTotal ?? calculateShipping(subtotalNumber));
+  const orderTotal = cart.subtotal.add(shippingTotal);
   const orderNumber = `KP-${Date.now()}`;
 
   const order = await prisma.order.create({
@@ -98,7 +184,8 @@ export async function createOrderFromCart(cartId: string, input: { email?: strin
       subtotal: cart.subtotal,
       discountTotal: cart.discountTotal,
       taxTotal: cart.taxTotal,
-      total: cart.total,
+      shippingTotal,
+      total: orderTotal,
       shippingAddress: (input.shippingAddress as object | undefined) ?? undefined,
       billingAddress: (input.billingAddress as object | undefined) ?? undefined,
       items: {
@@ -115,9 +202,75 @@ export async function createOrderFromCart(cartId: string, input: { email?: strin
     include: { items: true },
   });
 
-  await prisma.cart.update({
-    where: { id: cart.id },
-    data: { status: "CONVERTED" },
+  return order;
+}
+
+export async function createStripeCheckoutForOrder(orderId: string) {
+  if (!stripe) {
+    throw new Error("Stripe is not configured.");
+  }
+
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: { items: true },
+  });
+  if (!order) throw new Error("Order not found");
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const lineItems = order.items.map((item) => ({
+    price_data: {
+      currency: order.currency.toLowerCase(),
+      product_data: { name: item.title },
+      unit_amount: Math.round(Number(item.unitPrice) * 100),
+    },
+    quantity: item.quantity,
+  }));
+
+  if (Number(order.shippingTotal) > 0) {
+    lineItems.push({
+      price_data: {
+        currency: order.currency.toLowerCase(),
+        product_data: { name: "Shipping" },
+        unit_amount: Math.round(Number(order.shippingTotal) * 100),
+      },
+      quantity: 1,
+    });
+  }
+
+  const session = await stripe.checkout.sessions.create({
+    mode: "payment",
+    customer_email: order.email ?? undefined,
+    line_items: lineItems,
+    success_url: `${appUrl}/checkout/success?order=${order.orderNumber}`,
+    cancel_url: `${appUrl}/checkout?canceled=1`,
+    metadata: {
+      orderId: order.id,
+      orderNumber: order.orderNumber,
+      checkoutType: "product_order",
+    },
+  });
+
+  await prisma.order.update({
+    where: { id: order.id },
+    data: { stripeCheckoutSessionId: session.id },
+  });
+
+  return session;
+}
+
+export async function markOrderPaidFromCheckoutSession(sessionId: string, paymentIntentId?: string) {
+  const order = await prisma.order.findFirst({
+    where: { stripeCheckoutSessionId: sessionId },
+  });
+  if (!order) return null;
+
+  await prisma.order.update({
+    where: { id: order.id },
+    data: {
+      status: "PAID",
+      paymentStatus: "PAID",
+      stripePaymentIntentId: paymentIntentId ?? order.stripePaymentIntentId,
+    },
   });
 
   return order;

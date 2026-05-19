@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { createOrUpdateCartItem } from "@/lib/commerce/service";
+import { createOrUpdateCartItem, replaceCartItems } from "@/lib/commerce/service";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -19,6 +19,16 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const body = await req.json();
   const session = await auth();
+
+  if (Array.isArray(body.items)) {
+    const cart = await replaceCartItems({
+      cartId: body.cartId,
+      userId: session?.user?.id,
+      email: body.email ?? session?.user?.email ?? undefined,
+      items: body.items as Array<{ productId: string; quantity: number }>,
+    });
+    return NextResponse.json({ cart });
+  }
 
   const cart = await createOrUpdateCartItem({
     cartId: body.cartId,

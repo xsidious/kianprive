@@ -1,12 +1,16 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import Link from "next/link";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { useCart } from "@/components/providers/cart-provider";
 
-export default function CheckoutPage() {
-  const { items, subtotal } = useCart();
+function CheckoutForm() {
+  const { items, subtotal, shipping, total } = useCart();
+  const searchParams = useSearchParams();
+  const canceled = searchParams.get("canceled");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -16,50 +20,45 @@ export default function CheckoutPage() {
   const [zipCode, setZipCode] = useState("");
   const [resultMessage, setResultMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const shipping = subtotal >= 150 || subtotal === 0 ? 0 : 12;
-  const total = subtotal + shipping;
 
   async function handleCompletePurchase() {
+    if (!items.length) {
+      setResultMessage("Your cart is empty. Add products from the shop first.");
+      return;
+    }
+    if (!email) {
+      setResultMessage("Email is required for checkout.");
+      return;
+    }
+
     const cartId = window.localStorage.getItem("kianprive_cart_id");
     if (!cartId) {
-      setResultMessage("No cart ID found. Please add products from the shop first.");
+      setResultMessage("Syncing cart... please try again in a moment.");
       return;
     }
 
     setSubmitting(true);
     setResultMessage(null);
     try {
-      const response = await fetch("/api/commerce/orders", {
+      const response = await fetch("/api/commerce/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           cartId,
           email,
           phone,
-          shippingAddress: {
-            firstName,
-            lastName,
-            address,
-            city,
-            zipCode,
-          },
-          billingAddress: {
-            firstName,
-            lastName,
-            address,
-            city,
-            zipCode,
-          },
+          shippingAddress: { firstName, lastName, address, city, zipCode },
+          billingAddress: { firstName, lastName, address, city, zipCode },
         }),
       });
 
-      const payload = (await response.json()) as { order?: { orderNumber?: string }; error?: string };
-      if (!response.ok) {
-        setResultMessage(payload.error ?? "Failed to create order.");
+      const payload = (await response.json()) as { url?: string; error?: string };
+      if (!response.ok || !payload.url) {
+        setResultMessage(payload.error ?? "Failed to start checkout.");
         return;
       }
 
-      setResultMessage(`Order created successfully: ${payload.order?.orderNumber ?? "Pending number"}`);
+      window.location.assign(payload.url);
     } catch {
       setResultMessage("Unexpected error while processing checkout.");
     } finally {
@@ -72,7 +71,12 @@ export default function CheckoutPage() {
       <SectionWrapper className="py-10">
         <div className="mx-auto max-w-6xl">
           <h1 className="text-3xl text-[#1f1a15]">Checkout</h1>
-          <p className="mt-2 text-sm text-[#6f6251]">Secure, distraction-free checkout experience.</p>
+          <p className="mt-2 text-sm text-[#6f6251]">Secure payment powered by Stripe.</p>
+          {canceled ? (
+            <p className="mt-3 rounded-xl border border-[#b78d4b40] bg-[#fff7eb] px-4 py-2 text-sm text-[#6f6251]">
+              Payment was canceled. Your cart is still saved.
+            </p>
+          ) : null}
         </div>
       </SectionWrapper>
 
@@ -81,7 +85,7 @@ export default function CheckoutPage() {
           <div className="rounded-2xl border border-[#b78d4b2d] bg-white p-5 sm:p-7">
             <h2 className="text-xl text-[#1f1a15]">Contact & Shipping</h2>
             <form className="mt-5 grid gap-4 md:grid-cols-2">
-              <input value={email} onChange={(e) => setEmail(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Email" type="email" />
+              <input value={email} onChange={(e) => setEmail(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Email *" type="email" required />
               <input value={phone} onChange={(e) => setPhone(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Phone" />
               <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="First name" />
               <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Last name" />
@@ -91,18 +95,22 @@ export default function CheckoutPage() {
             </form>
 
             <h2 className="mt-8 text-xl text-[#1f1a15]">Payment</h2>
-            <div className="mt-4 rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-4 text-sm text-[#6f6251]">
-              Card payment placeholder (Stripe checkout flow can be connected here next).
-            </div>
+            <p className="mt-3 text-sm text-[#6f6251]">
+              You will be redirected to Stripe to complete your purchase securely.
+            </p>
 
             <button
+              type="button"
               onClick={handleCompletePurchase}
-              disabled={submitting}
+              disabled={submitting || items.length === 0}
               className="mt-6 w-full rounded-full bg-[#b78d4b] px-6 py-3 text-white disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {submitting ? "Processing..." : "Complete Purchase"}
+              {submitting ? "Redirecting to Stripe..." : `Pay $${total.toFixed(2)} with Stripe`}
             </button>
             {resultMessage ? <p className="mt-3 text-sm text-[#6f6251]">{resultMessage}</p> : null}
+            <Link href="/shop" className="mt-4 inline-block text-sm text-[#8f6f3e] hover:underline">
+              Continue shopping
+            </Link>
           </div>
 
           <aside className="h-fit rounded-2xl border border-[#b78d4b2d] bg-white p-5 lg:sticky lg:top-24">
@@ -139,5 +147,13 @@ export default function CheckoutPage() {
         </div>
       </SectionWrapper>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div className="bg-[#f6f1e8] p-10 text-[#6f6251]">Loading checkout...</div>}>
+      <CheckoutForm />
+    </Suspense>
   );
 }

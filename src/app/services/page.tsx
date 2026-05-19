@@ -3,200 +3,17 @@ import Link from "next/link";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { getCmsPageContent } from "@/lib/cms/pages";
+import { KianPrivePaymentPolicies, PoliciesPageLinks } from "@/components/policies/KianPrivePaymentPolicies";
 import { ServiceCardsWithModal } from "@/components/services/ServiceCardsWithModal";
-
-const coreServices = [
-  {
-    slug: "telemedicine",
-    title: "Telemedicine",
-    image: "/images/stock/hero-luxury-clinic.jpg",
-    description:
-      "Physician-led virtual consultations designed for continuity, convenience, and personalized wellness planning from wherever you are.",
-    details: [
-      "Board-certified providers review your goals, symptoms, labs, and treatment history.",
-      "Protocols are personalized and adjusted through scheduled follow-up check-ins.",
-    ],
-    includes: ["Wellness planning", "Medication/protocol review", "Follow-up optimization"],
-    availability: ["Virtual consultations available."],
-  },
-  {
-    slug: "comprehensive-bloodwork",
-    title: "Comprehensive Bloodwork",
-    image: "/images/medicalaesthetics.avif",
-    description:
-      "Detailed lab analysis and physician interpretation to build your personalized care roadmap using objective, trackable health markers.",
-    details: [
-      "Comprehensive panels evaluate metabolic, inflammatory, nutrient, and hormone markers.",
-      "Results are reviewed with your physician and mapped into your ongoing wellness plan.",
-    ],
-    includes: ["Baseline biomarker assessment", "Progress tracking", "Protocol calibration support"],
-  },
-  {
-    slug: "icoone-laser",
-    title: "Icoone® Laser",
-    image: "/images/icoone.avif",
-    description:
-      "The revolutionary Icoone® Laser system uses patented Roboderm® technology with millions of micro-stimulations per session to activate the lymphatic system, stimulate collagen and elastin production, and trigger deep cellular renewal. For detoxification, it eliminates toxins and restores circulatory balance. For pain management, it relieves chronic tension and reduces inflammation. For athletes, it flushes metabolic waste, reduces recovery time, and enhances flexibility. For beauty and body contouring, Icoone® Laser delivers exceptional aesthetic results — visibly reducing cellulite, tightening and firming skin, smoothing the appearance of stretch marks, sculpting and reshaping body contours, improving skin texture and luminosity, and restoring a more youthful, toned silhouette. The multi-functional laser handpieces simultaneously deliver laser energy and mechanical stimulation, allowing treatments to be customized for the face, neck, and décolleté as well as the full body — addressing fine lines, sagging skin, and loss of facial volume alongside body contouring goals. Results are cumulative and progressive, with clients typically noticing measurable improvements in skin quality, firmness, and contour definition within the first few sessions.",
-    includes: [
-      "Lymphatic drainage and circulatory support",
-      "Cellulite and contouring support",
-      "Pain, inflammation, and recovery support",
-      "Face, neck, décolleté, and full-body targeting",
-    ],
-    pricing: [
-      "40 min single: $175",
-      "40 min 5-session package: $788 (save $87)",
-      "40 min 10-session package: $1,488 (save $262)",
-      "50 min single: $195",
-      "50 min 5-session package: $878 (save $97)",
-      "50 min 10-session package: $1,658 (save $292)",
-      "80 min single: $325",
-      "80 min 5-session package: $1,463 (save $162)",
-      "80 min 10-session package: $2,763 (save $487)",
-      "Monthly 50 min (2 sessions): $356/month",
-      "Monthly 50 min (4 sessions): $665/month",
-      "Monthly 80 min (2 sessions): $546/month",
-      "Monthly 80 min (4 sessions): $1,188/month",
-    ],
-    membershipNotes: [
-      "Monthly plans require a one-month security deposit and a 4-month minimum commitment.",
-      "Aftercare: hydration, light movement, avoid alcohol/processed foods 24h, avoid intense heat/exercise for 12h.",
-      "Many clients feel lighter and more relaxed after treatment; increased urination may occur as lymphatic flow improves.",
-      "Mild temporary soreness or sensitivity can happen in deeply treated areas and usually resolves within 24-48 hours.",
-      "Cumulative benefits include improved contour, skin firmness, recovery support, and reduced fluid retention over time.",
-    ],
-    availability: ["Facility-based service (not offered in-home)."],
-  },
-  {
-    slug: "iv-therapy",
-    title: "IV Therapy",
-    image: "/images/wellness.avif",
-    description:
-      "Physician-guided IV protocols deliver targeted nutrients and hydration to support immunity, energy, recovery, and cellular performance.",
-    details: [
-      "IV infusions are selected and dosed based on goals, symptoms, and clinical context.",
-      "Can be paired with recovery, immunity, and performance protocols.",
-    ],
-    includes: ["Hydration support", "Nutrient replenishment", "Recovery and energy support"],
-  },
-  {
-    slug: "nutrition",
-    title: "Nutrition",
-    image: "/images/nutrition.avif",
-    description:
-      "Science-based nutrition support tailored to your goals, with practical plans aligned to your clinical and lifestyle needs.",
-    details: [
-      "Led by certified nutrition experts in coordination with physician guidance.",
-      "Supports weight optimization, gut health, inflammation, hormonal balance, and long-term habits.",
-      "Cherie Johnson private virtual consultations are available.",
-    ],
-    pricing: ["Single session: $150", "4-session package: $500", "8-session package: $950"],
-    includes: ["Meal strategy", "Lifestyle adherence support", "Nutraceutical-aligned planning"],
-  },
-  {
-    slug: "microneedling-with-exosomes",
-    title: "Microneedling with Exosomes",
-    image: "/images/facial-treatments.jpg",
-    description:
-      "Advanced skin rejuvenation treatment that supports collagen production and visible texture improvement through regenerative signaling.",
-    details: ["Microneedling combined with exosome-based regenerative support for skin renewal."],
-    pricing: ["Single session: $600", "4-session package: $1,800", "5-session package: $2,700", "10-session package: $5,000"],
-    includes: ["Texture refinement", "Tone support", "Fine-line and radiance improvement"],
-  },
-  {
-    slug: "korean-organic-skincare",
-    title: "Korean Organic Skincare",
-    image: "/images/esthetics.avif",
-    description:
-      "Luxury preventive skincare protocols rooted in Korean methodology and clean organic formulations for barrier health and long-term skin quality.",
-    details: ["Preventive, hydration-focused skincare philosophy designed for skin longevity and barrier integrity."],
-    pricing: ["Single facial: $195", "4-session facial package: $725"],
-    includes: ["Barrier support", "Hydration protocols", "Gentle clinical-luxury skincare"],
-  },
-  {
-    slug: "facial-aesthetics",
-    title: "Facial Aesthetics",
-    image: "/images/medicalaesthetics.avif",
-    description:
-      "Precision aesthetic services focused on natural-looking refinement and skin-forward outcomes in a physician-guided setting.",
-    details: ["Facial aesthetics plans are structured to preserve natural expression while improving harmony and confidence."],
-    availability: ["Provider-specific scheduling through contact form."],
-  },
-  {
-    slug: "glp1-peptides",
-    title: "GLP-1s & Peptides",
-    image: "/images/nutrition.avif",
-    showPeptidesExperience: true,
-    description:
-      "Physician-supervised metabolic and peptide protocols are personalized to your goals and priced individually.",
-    details: [
-      "Includes injectable and sublingual pathway options based on clinical assessment.",
-      "Most side effects are GI-related or injection-site related and are often managed by titration and follow-up.",
-      "Pathways are supervised through valid patient-practitioner evaluation and compounding standards (503A/503B context).",
-    ],
-    membershipNotes: [
-      "Peptides include monthly pathway options.",
-      "Additional protocol add-ons are released separately.",
-    ],
-    availability: ["Physician-supervised protocols; route and dose selected after evaluation."],
-  },
-  {
-    slug: "mindtap",
-    title: "MindTap",
-    image: "/images/beauty.avif",
-    description:
-      "Focused cognitive conditioning and mental performance coaching integrated into your concierge wellness plan.",
-    includes: ["Focus and composure training", "Performance psychology support", "Cognitive conditioning"],
-    availability: ["Different-location partner service; facility-only partner workflow."],
-  },
-];
-
-const sameLocationAddOns = [
-  {
-    title: "Salt Therapy",
-    image: "/images/stock/service-wellness.jpg",
-    description:
-      "Same-location partner add-on that supports respiratory wellness, inflammation reduction, and holistic recovery.",
-    includes: ["Respiratory support", "Inflammation support", "Recovery protocol integration"],
-    availability: ["Facility-based service (not offered in-home)."],
-  },
-  {
-    title: "PEMF",
-    image: "/images/stock/service-medical-aesthetics.jpg",
-    description:
-      "Same-location pulsed electromagnetic field sessions designed for cellular recharge, pain support, and performance recovery.",
-    includes: ["Cellular recharge", "Pain support", "Performance recovery"],
-    availability: ["Same-location partner add-on."],
-  },
-  {
-    title: "Far Infrared",
-    image: "/images/stock/service-esthetics.jpg",
-    description:
-      "Same-location infrared sessions to support circulation, detox support, deep relaxation, and recovery.",
-    includes: ["Detox support", "Deep tissue warmth", "Recovery and relaxation support"],
-    availability: ["Same-location partner add-on."],
-  },
-];
-
-const differentLocationAddOns: Array<(typeof coreServices)[number]> = [];
-
-const gymServices = [
-  {
-    title: "Adapt",
-    image: "/images/stock/service-beauty-salon.jpg",
-    description: "Gym services partner focused on training support, recovery, and performance-driven movement programs.",
-    includes: ["Performance movement", "Conditioning support", "Recovery integration"],
-    availability: ["Partner access coordinated through contact form."],
-  },
-];
-
-const preferredProviders = [
-  { name: "Salt", logo: "/images/providers/holistic-salt-therapy-center.png", href: "/contact" },
-  { name: "PEMF", logo: "/images/providers/omg-aesthetics.png", href: "/contact" },
-  { name: "Far Infrared", logo: "/images/providers/facial-design-studio.png", href: "/contact" },
-  { name: "MindTap", logo: "/images/providers/mindtap.png", href: "/contact" },
-  { name: "Adapt", logo: "/images/providers/vcs-vitamin-c-to-sea.png", href: "/contact" },
-];
+import {
+  brandIntro,
+  coreServices,
+  differentLocationAddOns,
+  gymServices,
+  preferredProviders,
+  sameLocationAddOns,
+  serviceAccessNotes,
+} from "@/lib/services/groups";
 
 const koreanAndRecoveryPricing = [
   { service: "Korean & Organic Skincare Facial", price: "Single $195 | 4-Session $725", note: "Save $55" },
@@ -213,21 +30,6 @@ const koreanAndRecoveryPricing = [
     price: "Single Session (individual / non-member) $25",
     note: "Complimentary with any active membership. Uses Precision Vibration Technology™ for rapid, multi-directional vibration.",
   },
-];
-
-const membershipPolicyHighlights = [
-  "A one (1) month security deposit is required upon signing for all memberships.",
-  "All memberships are for a minimum 4-month period and will automatically renew on a monthly basis thereafter.",
-  "All membership services are fully customizable and interchangeable with services of equal pricing to suit your individual needs.",
-  "Unused services roll over to the following month.",
-  "Memberships automatically renew monthly until cancelled in writing.",
-  "A failed payment of more than two consecutive months will result in immediate cancellation of membership and the remaining balance in full will become due.",
-  "No-show and late cancellation fees apply. Please review our cancellation policy at time of enrollment.",
-];
-
-const serviceAccessNotes = [
-  "In-home and on-location services are available for most treatments, bringing the full KIAN Privé experience directly to you.",
-  "Icoone® Laser, Holistic Salt Therapy, and MINDTAP coaching sessions are available at our facility only and are not offered as in-home services.",
 ];
 
 const compoundedRxReference = {
@@ -697,27 +499,6 @@ const ancillaryAgentRows = [
   },
 ];
 
-const paymentPolicyDetails = [
-  "Gratuity is not included in any service, package, or membership pricing. We kindly ask that you compensate our staff directly for their care and expertise.",
-  "Financing available through Cherry. Ask our team about flexible payment plans.",
-  "PPO members — some services may be super-billed to your insurance provider. Please inquire at time of service.",
-  "PPO Insurance — Medical Treatment Policy: Members with PPO insurance must have a consultation with a KIAN Privé physician for evaluation and receive physician approval prior to receiving medical treatment with the Icoone Laser Med.",
-  "We encourage all clients to check with their insurance company to see if they cover related expenses for wellness treatments.",
-  "Itemized invoices provided upon request.",
-  "All major credit cards accepted — a 3% processing fee applies.",
-  "Zelle accepted with no additional fee.",
-  "PayPal, Venmo and Cash App accepted — a 3% processing fee applies.",
-  "FSA and HSA cards accepted.",
-];
-
-const brandIntro = {
-  tagline: "Luxury Wellness. Uncompromising Care. Exclusively Yours.",
-  lead:
-    "KIAN Privé is a concierge wellness company dedicated to delivering the finest services for a truly private wellness experience provided by dedicated professionals at your location or ours. No busy waiting rooms, no hustle or bustle. Just uninterrupted, personalized care in a serene and intimate setting. In-home and on-location services are available for most treatments, bringing the full KIAN Privé experience directly to you.",
-  team:
-    "We bring together a distinguished team of physicians, registered nurses, licensed aestheticians, certified nutrition experts, and wellness specialists to deliver a seamless fusion of clinical medicine, advanced skincare, regenerative therapies, and luxury wellness — tailored to every individual. From the moment you engage with KIAN Privé, our professionals work in concert to assess and elevate every dimension of your wellness, inside and out.",
-};
-
 const koreanSkincareIntro =
   "KIAN Privé is a concierge wellness company dedicated to delivering the finest services for a truly private wellness experience — provided by dedicated professionals at your location or ours. No busy waiting rooms, no hustle or bustle. Just uninterrupted, personalized care in a serene and intimate setting. In-home and on-location services are available for most treatments, bringing the full KIAN Privé experience directly to you. Please note that Icoone® Laser, Holistic Salt Therapy, and MINDTAP coaching sessions are available at our facility only and are not offered as in-home services.";
 
@@ -729,14 +510,6 @@ const nutritionDescription =
 
 const powerPlateDescription =
   "The Power Plate uses advanced Precision Vibration Technology™ to deliver rapid, multi-directional vibrations throughout the entire body — stimulating muscles to contract and relax up to 50 times per second. Power Plate therapy accelerates muscle recovery, enhances circulation and lymphatic flow, improves balance and neuromuscular function, increases bone density, and promotes fat metabolism. Complimentary with any active membership.";
-
-const medicalDisclaimerParagraphs = [
-  "Important Notice Regarding Health & Wellness Services",
-  "The services, treatments, and programs offered by KIAN Privé are intended for general wellness, recovery support, and lifestyle optimization. They are not intended to diagnose, treat, cure, or prevent any medical condition or disease.",
-  "The wellness services provided by KIAN Privé do not replace the care, advice, diagnosis, or treatment provided by your Primary Care Physician or any licensed medical professional. We strongly encourage all clients to consult with their Primary Care Physician or a qualified healthcare provider before beginning any new wellness program, treatment protocol, or service — particularly if you have a pre-existing medical condition, are pregnant, nursing, or currently taking prescription medications.",
-  "Results from wellness services vary by individual and are not guaranteed.",
-  "If you are experiencing a medical emergency, please call 911 or go to your nearest emergency room immediately.",
-];
 
 export default async function ServicesPage() {
   const cms = await getCmsPageContent("services");
@@ -843,46 +616,8 @@ export default async function ServicesPage() {
       <SectionWrapper>
         <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">{brandIntro.tagline}</p>
         <h2 className="mb-2 mt-3 text-3xl text-[#1f1a15] md:text-4xl">Payment & Policies</h2>
-        <div className="rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-          <h3 className="text-lg text-[#2b2218]">Membership Policy Summary</h3>
-          <ul className="mt-3 space-y-2">
-            {membershipPolicyHighlights.map((rule) => (
-              <li key={rule} className="text-[#5f5344]">
-                {rule}
-              </li>
-            ))}
-          </ul>
-          <h3 className="mt-8 text-lg text-[#2b2218]">Gratuity</h3>
-          <p className="mt-2 text-sm text-[#5f5344]">{paymentPolicyDetails[0]}</p>
-          <h3 className="mt-8 text-lg text-[#2b2218]">Financing & Insurance</h3>
-          <ul className="mt-3 space-y-2">
-            {paymentPolicyDetails.slice(1, 6).map((item) => (
-              <li key={item} className="text-sm text-[#5f5344]">
-                {item}
-              </li>
-            ))}
-          </ul>
-          <h3 className="mt-8 text-lg text-[#2b2218]">Accepted Forms of Payment</h3>
-          <ul className="mt-3 space-y-2">
-            {paymentPolicyDetails.slice(6).map((item) => (
-              <li key={item} className="text-sm text-[#5f5344]">
-                {item}
-              </li>
-            ))}
-          </ul>
-          <h3 className="mt-8 text-lg text-[#2b2218]">Medical Disclaimer</h3>
-          <div className="mt-3 space-y-3 text-sm leading-relaxed text-[#5f5344]">
-            {medicalDisclaimerParagraphs.map((para) => (
-              <p key={para}>{para}</p>
-            ))}
-          </div>
-          <p className="mt-6 text-sm font-medium text-[#2b2218]">
-            KIAN Privé — Your health. Your sanctuary. Your KIAN Privé.
-          </p>
-          <p className="mt-2 text-sm text-[#6f6251]">
-            All medical services supervised by KIAN Privé board-certified physician. Packages expire after 1 year. Gift cards available.
-          </p>
-        </div>
+        <PoliciesPageLinks className="mb-6" />
+        <KianPrivePaymentPolicies />
         <div className="mt-6 rounded-2xl border border-[#1f7a7a42] bg-[linear-gradient(120deg,#eff9f9_0%,#e4f4f4_100%)] p-4">
           <p className="text-xs tracking-[0.18em] text-[#1b6568]">READY TO START</p>
           <p className="mt-2 text-sm text-[#28585a]">

@@ -1,9 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Play } from "lucide-react";
+import { BeforeAfterGallery } from "@/components/home/BeforeAfterGallery";
+import { GetUpdatesSection } from "@/components/home/GetUpdatesSection";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { ServiceCard } from "@/components/ui/ServiceCard";
-import { homepageStats, practitionerTeam, serviceHighlights } from "@/lib/site-content";
+import { homepageStats, serviceHighlights, whyClientsChooseUs } from "@/lib/site-content";
 import { getCmsPageContent } from "@/lib/cms/pages";
 
 const pathwaySteps = [
@@ -12,13 +15,6 @@ const pathwaySteps = [
   "Implement clinical and holistic protocol changes.",
   "Monitor progress and optimize monthly.",
   "Celebrate wins and scale your results.",
-];
-
-const coreValues = [
-  { title: "Commitment", description: "Dedication to your long-term transformation with accountability at every stage." },
-  { title: "Clarity", description: "Science-backed guidance that makes decisions simple and actionable." },
-  { title: "Consistency", description: "Daily habits and structured routines that produce sustainable results." },
-  { title: "Change", description: "Progressive support for the evolution of body, mind, and lifestyle." },
 ];
 
 const icooneBenefits = [
@@ -36,7 +32,7 @@ const programTracks = [
   "Marketing & Client Development",
 ];
 
-const testimonials = [
+const writtenTestimonials = [
   {
     quote:
       "My energy, skin, and recovery all improved within weeks. The KIAN team built a plan that finally felt personal and sustainable.",
@@ -57,17 +53,10 @@ const testimonials = [
   },
 ];
 
-const beforeAfterShowcase = [
-  {
-    treatment: "Lymphatic + Contouring Protocol",
-    beforeImage: "/images/wellness.avif",
-    afterImage: "/images/icoone.avif",
-  },
-  {
-    treatment: "Skin Renewal Program",
-    beforeImage: "/images/esthetics.avif",
-    afterImage: "/images/facial-treatments.jpg",
-  },
+const videoTestimonials = [
+  { title: "Concierge Wellness Journey", category: "Written & Video" },
+  { title: "Lymphatic & Recovery Results", category: "Video" },
+  { title: "Aesthetics Transformation Story", category: "Video" },
 ];
 
 export default function Home() {
@@ -88,7 +77,7 @@ export default function Home() {
                 of your well-being.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link href="/contact" className="rounded-full bg-[#b78d4b] px-6 py-3 text-white shadow-sm">
+                <Link href="/book-online" className="rounded-full bg-[#b78d4b] px-6 py-3 text-white shadow-sm">
                   Book Concierge Consultation
                 </Link>
                 <Link href="/pricing" className="rounded-full border border-[#b78d4b80] bg-white px-6 py-3 text-[#3b3024]">
@@ -121,32 +110,6 @@ export default function Home() {
       </SectionWrapper>
 
       <SectionWrapper>
-        <div className="grid gap-8 rounded-3xl border border-[#b78d4b30] bg-white p-8 shadow-[0_18px_45px_-35px_rgba(72,49,14,0.45)] md:grid-cols-2">
-          <div>
-            <p className="text-xs tracking-[0.22em] text-[#8f6f3e]">HIGH-CONVERTING CLARITY</p>
-            <h2 className="mt-3 text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">Why Clients Choose This Experience</h2>
-            <p className="mt-4 text-[#6f6251]">
-              We blend modern medicine, advanced aesthetics, regenerative therapies, and luxury wellness into a single personalized system.
-              Every protocol is customized around your goals, lifestyle, and biology.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/services" className="rounded-full border border-[#b78d4b69] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]">
-                View Services
-              </Link>
-            </div>
-          </div>
-          <div className="grid gap-3">
-            {coreValues.map((value) => (
-              <article key={value.title} className="rounded-2xl border border-[#b78d4b33] bg-[#fffaf2] p-4">
-                <p className="text-lg text-[#2b2218]">{value.title}</p>
-                <p className="text-sm text-[#6f6251]">{value.description}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </SectionWrapper>
-
-      <SectionWrapper>
         <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Signature Services</h2>
         <p className="mb-6 max-w-2xl text-[#6f6251]">A modern, integrated service stack designed for visible outcomes and long-term wellness.</p>
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -164,9 +127,12 @@ export default function Home() {
 
       <SectionWrapper>
         <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Client Testimonials</h2>
-        <p className="mb-6 max-w-3xl text-[#6f6251]">Real feedback from clients following personalized concierge protocols.</p>
+        <p className="mb-6 max-w-3xl text-[#6f6251]">
+          Written and video stories from clients following personalized concierge protocols.
+        </p>
+        <p className="mb-4 text-xs tracking-[0.18em] text-[#8f6f3e]">WRITTEN</p>
         <div className="grid gap-4 md:grid-cols-3">
-          {testimonials.map((item) => (
+          {writtenTestimonials.map((item) => (
             <article key={item.name} className="rounded-2xl border border-[#b78d4b2d] bg-white p-5 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)]">
               <p className="text-[#4f4335]">&ldquo;{item.quote}&rdquo;</p>
               <p className="mt-4 text-[#2b2218]">{item.name}</p>
@@ -174,32 +140,37 @@ export default function Home() {
             </article>
           ))}
         </div>
-      </SectionWrapper>
-
-      <SectionWrapper>
-        <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Before & After</h2>
-        <p className="mb-6 max-w-3xl text-[#6f6251]">Examples of visible transformation from structured KIAN treatment plans.</p>
-        <div className="grid gap-5 lg:grid-cols-2">
-          {beforeAfterShowcase.map((item) => (
-            <article key={item.treatment} className="rounded-2xl border border-[#b78d4b2d] bg-white p-4 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)]">
-              <p className="mb-3 text-lg text-[#2b2218]">{item.treatment}</p>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div>
-                  <p className="mb-2 text-xs tracking-[0.18em] text-[#8f6f3e]">BEFORE</p>
-                  <div className="relative h-48 overflow-hidden rounded-xl border border-[#b78d4b2d]">
-                    <Image src={item.beforeImage} alt={`${item.treatment} before`} fill className="object-cover" />
-                  </div>
+        <p className="mb-4 mt-10 text-xs tracking-[0.18em] text-[#8f6f3e]">VIDEO</p>
+        <div className="grid gap-4 md:grid-cols-3">
+          {videoTestimonials.map((item) => (
+            <article
+              key={item.title}
+              className="overflow-hidden rounded-2xl border border-[#b78d4b2d] bg-[#2b2218] shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)]"
+            >
+              <div className="relative h-44">
+                <Image src="/images/facial-treatments.jpg" alt="" fill className="object-cover opacity-40" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-full border border-white/40 bg-white/15 text-white backdrop-blur-sm">
+                    <Play size={22} fill="currentColor" />
+                  </span>
+                  <p className="text-xs tracking-[0.14em] text-white/80">{item.category.toUpperCase()}</p>
                 </div>
-                <div>
-                  <p className="mb-2 text-xs tracking-[0.18em] text-[#8f6f3e]">AFTER</p>
-                  <div className="relative h-48 overflow-hidden rounded-xl border border-[#b78d4b2d]">
-                    <Image src={item.afterImage} alt={`${item.treatment} after`} fill className="object-cover" />
-                  </div>
-                </div>
+              </div>
+              <div className="p-4">
+                <p className="text-sm text-white">{item.title}</p>
+                <p className="mt-1 text-xs text-[#c9b89a]">Video testimonial — upload final asset when ready.</p>
               </div>
             </article>
           ))}
         </div>
+      </SectionWrapper>
+
+      <SectionWrapper>
+        <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Before & After</h2>
+        <p className="mb-6 max-w-3xl text-[#6f6251]">
+          Transformation examples organized by category. Final creatives can be produced in Canva for Body, Face, and Hair.
+        </p>
+        <BeforeAfterGallery />
       </SectionWrapper>
 
       <SectionWrapper>
@@ -246,38 +217,39 @@ export default function Home() {
       </SectionWrapper>
 
       <SectionWrapper>
-        <div className="grid gap-8 rounded-3xl border border-[#b78d4b30] bg-white p-6 sm:p-8 md:grid-cols-2">
+        <div className="grid gap-8 rounded-3xl border border-[#b78d4b30] bg-white p-6 sm:p-8 lg:grid-cols-2">
           <div>
-            <h2 className="text-3xl text-[#1f1a15] md:text-4xl">The Lifestyle Framework</h2>
+            <p className="text-xs tracking-[0.22em] text-[#8f6f3e]">LIFESTYLE FRAMEWORK</p>
+            <h2 className="mt-2 text-3xl text-[#1f1a15] md:text-4xl">The Lifestyle Framework</h2>
             <p className="mt-4 text-[#6f6251]">
               Lasting transformation goes beyond diet and exercise. We combine education-first care, natural solutions, and clinical
               precision to create sustainable progress.
             </p>
+            <p className="mt-6 text-xs tracking-[0.18em] text-[#8f6f3e]">WHY CLIENTS CHOOSE US</p>
+            <ul className="mt-3 space-y-2">
+              {whyClientsChooseUs.map((reason) => (
+                <li key={reason} className="rounded-xl border border-[#b78d4b30] bg-[#fffaf2] p-3 text-sm text-[#4f4335]">
+                  {reason}
+                </li>
+              ))}
+            </ul>
           </div>
-          <ol className="space-y-3">
-            {pathwaySteps.map((step, idx) => (
-              <li key={step} className="rounded-xl border border-[#b78d4b30] bg-[#fffaf2] p-4 text-sm text-[#4f4335]">
-                <span className="mr-2 text-[#8f6f3e]">0{idx + 1}</span>
-                {step}
-              </li>
-            ))}
-          </ol>
+          <div>
+            <p className="mb-3 text-xs tracking-[0.18em] text-[#8f6f3e]">YOUR PATHWAY</p>
+            <ol className="space-y-3">
+              {pathwaySteps.map((step, idx) => (
+                <li key={step} className="rounded-xl border border-[#b78d4b30] bg-[#fffaf2] p-4 text-sm text-[#4f4335]">
+                  <span className="mr-2 text-[#8f6f3e]">0{idx + 1}</span>
+                  {step}
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
       </SectionWrapper>
 
       <SectionWrapper>
-        <h2 className="mb-6 text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">Meet The Team</h2>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {practitionerTeam.map((member) => (
-            <article key={member.name} className="rounded-2xl border border-[#b78d4b2e] bg-white p-4 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)]">
-              <div className="relative h-56 overflow-hidden rounded-xl">
-                <Image src={member.image} alt={member.name} fill className="object-cover" />
-              </div>
-              <p className="mt-4 text-lg text-[#2b2218]">{member.name}</p>
-              <p className="text-sm text-[#6f6251]">{member.role}</p>
-            </article>
-          ))}
-        </div>
+        <GetUpdatesSection />
       </SectionWrapper>
 
       <SectionWrapper>
@@ -319,3 +291,4 @@ async function HomeHeading({
     </>
   );
 }
+

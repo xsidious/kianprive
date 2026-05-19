@@ -169,6 +169,22 @@ export default function EventsRetreatsPage() {
         </div>
       </SectionWrapper>
 
+      <SectionWrapper>
+        <div className="rounded-2xl border border-[#b78d4b30] bg-[#fffaf2] p-5">
+          <p className="text-xs tracking-[0.18em] text-[#8f6f3e]">RETREATS & EVENTS POLICIES</p>
+          <p className="mt-2 text-sm text-[#6f6251]">
+            Booking, cancellation, travel insurance, and event guarantees for retreats and events are covered in our dedicated
+            terms — separate from KIAN Privé membership and concierge service policies.
+          </p>
+          <Link
+            href="/terms-and-conditions"
+            className="mt-4 inline-flex rounded-full border border-[#b78d4b70] bg-white px-5 py-2 text-sm text-[#3b3024]"
+          >
+            View Retreats & Events Terms
+          </Link>
+        </div>
+      </SectionWrapper>
+
       {openModal ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4">
           <div className="w-full max-w-2xl rounded-3xl border border-[#b78d4b45] bg-white p-6 shadow-[0_25px_45px_-20px_rgba(0,0,0,0.4)]">

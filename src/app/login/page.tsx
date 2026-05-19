@@ -38,45 +38,67 @@ export default function LoginPage() {
             </p>
             <h1 className="mt-4 text-4xl text-[#1f1a15] sm:text-5xl">Welcome Back</h1>
             <p className="mt-3 max-w-xl text-[#6f6251]">
-              Log in to access your private dashboard, premium protocols, orders, and concierge service activity.
+              Existing approved members can sign in and continue directly to their dashboard and subscription tools.
             </p>
             <div className="mt-7 grid gap-3 text-sm text-[#5f5344]">
-              <p className="rounded-xl border border-[#b78d4b30] bg-white/80 px-4 py-3">Trusted by physicians, med spas, advanced practitioners, clients, and patients.</p>
-              <p className="rounded-xl border border-[#b78d4b30] bg-white/80 px-4 py-3">8,000+ hands-on treatment hours behind our education methodology.</p>
-              <p className="rounded-xl border border-[#b78d4b30] bg-white/80 px-4 py-3">Secure credential login with role-based premium access.</p>
+              <p className="rounded-xl border border-[#b78d4b30] bg-white/80 px-4 py-3">Fast access for approved private members.</p>
+              <p className="rounded-xl border border-[#b78d4b30] bg-white/80 px-4 py-3">Secure credential login with role-based access.</p>
+              <p className="rounded-xl border border-[#b78d4b30] bg-white/80 px-4 py-3">Onboarding for new members is consultation-led.</p>
             </div>
           </aside>
 
-          <div className="rounded-3xl border border-[#b78d4b2e] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(72,49,14,0.45)] sm:p-8">
-            <h2 className="text-2xl text-[#1f1a15]">Member Sign In</h2>
-            <p className="mt-2 text-sm text-[#6f6251]">Use your account credentials to continue.</p>
-            <form onSubmit={onSubmit} className="mt-6 space-y-4">
-              <input
-                className="w-full rounded-xl border border-[#b78d4b3a] bg-[#fffaf4] p-3 text-[#2b2218] outline-none focus:border-[#b78d4b] focus:ring-2 focus:ring-[#b78d4b33]"
-                placeholder="Email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <input
-                className="w-full rounded-xl border border-[#b78d4b3a] bg-[#fffaf4] p-3 text-[#2b2218] outline-none focus:border-[#b78d4b] focus:ring-2 focus:ring-[#b78d4b33]"
-                placeholder="Password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <button className="w-full rounded-full bg-gradient-to-r from-[#b78d4b] to-[#a57b3e] py-3 text-white shadow-[0_12px_28px_-18px_rgba(66,45,14,0.6)]">
-                Login
-              </button>
-            </form>
-            <p className="mt-5 text-sm text-[#6f6251]">
-              Need an account?{" "}
-              <Link href="/signup" className="text-[#8f6f3e] hover:underline">
-                Create one here
-              </Link>
-              .
-            </p>
+          <div className="space-y-4">
+            <div className="rounded-3xl border border-[#b78d4b2e] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(72,49,14,0.45)] sm:p-8">
+              <h2 className="text-2xl text-[#1f1a15]">Member Sign In</h2>
+              <p className="mt-2 text-sm text-[#6f6251]">Use your approved account credentials to continue.</p>
+              <form onSubmit={onSubmit} className="mt-6 space-y-4">
+                <input
+                  className="w-full rounded-xl border border-[#b78d4b3a] bg-[#fffaf4] p-3 text-[#2b2218] outline-none focus:border-[#b78d4b] focus:ring-2 focus:ring-[#b78d4b33]"
+                  placeholder="Email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <input
+                  className="w-full rounded-xl border border-[#b78d4b3a] bg-[#fffaf4] p-3 text-[#2b2218] outline-none focus:border-[#b78d4b] focus:ring-2 focus:ring-[#b78d4b33]"
+                  placeholder="Password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                {error ? <p className="text-sm text-red-500">{error}</p> : null}
+                <button className="w-full rounded-full bg-gradient-to-r from-[#b78d4b] to-[#a57b3e] py-3 text-white shadow-[0_12px_28px_-18px_rgba(66,45,14,0.6)]">
+                  Login
+                </button>
+              </form>
+            </div>
+
+            <div className="rounded-3xl border border-[#b78d4b2e] bg-[#fffaf4] p-6 sm:p-8">
+              <h3 className="text-xl text-[#1f1a15]">No account yet?</h3>
+              <p className="mt-2 text-sm text-[#6f6251]">
+                New membership accounts are set up after consultation, onboarding fee payment, and approval.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Link
+                  href="/book-online?service=telemedicine"
+                  className="rounded-full bg-[#b78d4b] px-4 py-2 text-sm text-white"
+                >
+                  Book consultation
+                </Link>
+                <Link
+                  href="/signup"
+                  className="rounded-full border border-[#b78d4b70] bg-white px-4 py-2 text-sm text-[#3b3024]"
+                >
+                  View onboarding steps
+                </Link>
+                <Link
+                  href="/pricing"
+                  className="rounded-full border border-[#b78d4b70] bg-white px-4 py-2 text-sm text-[#3b3024]"
+                >
+                  Membership pricing
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>

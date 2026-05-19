@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { ContentStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { retreatEvents } from "@/lib/events";
+import { getServiceSlugs } from "@/lib/services/catalog";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
@@ -29,6 +30,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${appUrl}/about`, lastModified: new Date() },
     { url: `${appUrl}/contact`, lastModified: new Date() },
     { url: `${appUrl}/shop`, lastModified: new Date() },
+    { url: `${appUrl}/book-online`, lastModified: new Date() },
+    { url: `${appUrl}/pricing`, lastModified: new Date() },
+    { url: `${appUrl}/payment-policies`, lastModified: new Date() },
+    { url: `${appUrl}/terms-and-conditions`, lastModified: new Date() },
   ];
 
   const cmsRoutes = pages.map((page) => ({
@@ -51,5 +56,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(),
   }));
 
-  return [...staticRoutes, ...cmsRoutes, ...blogRoutes, ...productRoutes, ...eventRoutes];
+  const serviceRoutes = getServiceSlugs().map((slug) => ({
+    url: `${appUrl}/services/${slug}`,
+    lastModified: new Date(),
+  }));
+
+  return [...staticRoutes, ...serviceRoutes, ...cmsRoutes, ...blogRoutes, ...productRoutes, ...eventRoutes];
 }

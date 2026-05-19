@@ -99,8 +99,11 @@ export function Footer() {
 
         <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-[#b78d4b24] pt-4 text-xs text-[#7d6d58]">
           <p>© {new Date().getFullYear()} KIAN Privé. All rights reserved.</p>
+          <Link href="/payment-policies" className="hover:text-[#8f6f3e] hover:underline">
+            Payment & Policies
+          </Link>
           <Link href="/terms-and-conditions" className="hover:text-[#8f6f3e] hover:underline">
-            Terms, Privacy & Guarantees
+            Retreats & Events Terms
           </Link>
         </div>
       </div>

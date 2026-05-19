@@ -31,6 +31,18 @@ export async function POST(req: Request) {
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
+
+    if (session.metadata?.checkoutType === "product_order" && session.metadata.orderId) {
+      await prisma.order.update({
+        where: { id: session.metadata.orderId },
+        data: {
+          status: "PAID",
+          paymentStatus: "PAID",
+          stripePaymentIntentId: session.payment_intent?.toString() ?? undefined,
+        },
+      });
+    }
+
     const userId = session.metadata?.userId;
     const plan = (session.metadata?.plan ?? "BASIC") as SubscriptionTier;
     if (userId) {

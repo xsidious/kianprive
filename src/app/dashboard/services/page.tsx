@@ -80,8 +80,16 @@ export default async function DashboardServicesPage() {
 
               <div className="mt-4 grid gap-3 text-sm text-[#5f5344] md:grid-cols-3">
                 <div className="rounded-xl border border-[#b78d4b24] bg-[#fffaf2] p-3">
-                  <p className="inline-flex items-center gap-1 text-xs tracking-[0.1em] text-[#8f6f3e]"><CalendarDays size={13} /> REQUESTED DATE</p>
-                  <p className="mt-1">{booking.preferredDate.toISOString().slice(0, 10)}</p>
+                  <p className="inline-flex items-center gap-1 text-xs tracking-[0.1em] text-[#8f6f3e]"><CalendarDays size={13} /> SCHEDULED</p>
+                  <p className="mt-1">
+                    {booking.scheduledStart
+                      ? booking.scheduledStart.toLocaleString("en-US", {
+                          timeZone: booking.timezone ?? "America/New_York",
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        })
+                      : booking.preferredDate.toISOString().slice(0, 10)}
+                  </p>
                 </div>
                 <div className="rounded-xl border border-[#b78d4b24] bg-[#fffaf2] p-3">
                   <p className="inline-flex items-center gap-1 text-xs tracking-[0.1em] text-[#8f6f3e]"><MapPin size={13} /> LOCATION</p>

@@ -11,7 +11,7 @@ import { catalogProducts } from "@/lib/commerce/products";
 const FREE_SHIPPING_THRESHOLD = 150;
 
 export default function CartPage() {
-  const { items, subtotal, updateQuantity, removeItem, addItem } = useCart();
+  const { items, subtotal, shipping, total, updateQuantity, removeItem, addItem } = useCart();
   const amountToFreeShipping = Math.max(FREE_SHIPPING_THRESHOLD - subtotal, 0);
   const shippingProgress = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
 
@@ -94,13 +94,13 @@ export default function CartPage() {
               </div>
               <div className="flex justify-between">
                 <span>Shipping</span>
-                <span>{subtotal >= FREE_SHIPPING_THRESHOLD ? "Free" : "$12.00"}</span>
+                <span>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
               </div>
             </div>
             <div className="mt-4 border-t border-[#b78d4b24] pt-4">
               <div className="flex justify-between text-[#1f1a15]">
                 <span>Total</span>
-                <span>${(subtotal + (subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : 12)).toFixed(2)}</span>
+                <span>${total.toFixed(2)}</span>
               </div>
             </div>
             <Link href="/checkout" className="mt-5 block rounded-full bg-[#b78d4b] px-5 py-3 text-center text-sm text-white">
