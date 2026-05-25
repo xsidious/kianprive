@@ -276,16 +276,45 @@ export function BookOnlineWizard() {
     });
   }, [step, preselectedService, serviceInterest]);
 
+  function computeNextServices(prev: string[], id: string) {
+    if (serviceInterest === "one") {
+      if (prev.includes(id) && prev.length === 1) return [];
+      return [id];
+    }
+    if (prev.includes(id)) return prev.filter((s) => s !== id);
+    if (serviceInterest === "two" && prev.length >= 2) return prev;
+    return [...prev, id];
+  }
+
+  function shouldAutoAdvanceFromServices(next: string[]) {
+    if (serviceInterest === "one") return next.length === 1;
+    if (serviceInterest === "two") return next.length >= 2;
+    return false;
+  }
+
+  function chooseVisitor(type: VisitorType) {
+    setVisitorType(type);
+    setStep("count");
+  }
+
+  function chooseServiceInterest(interest: ServiceInterest) {
+    setServiceInterest(interest);
+    setSelectedServices([]);
+    preselectAppliedRef.current = false;
+    setStep("services");
+  }
+
   function toggleService(id: string) {
-    setSelectedServices((prev) => {
-      if (serviceInterest === "one") {
-        if (prev.includes(id) && prev.length === 1) return [];
-        return [id];
-      }
-      if (prev.includes(id)) return prev.filter((s) => s !== id);
-      if (serviceInterest === "two" && prev.length >= 2) return prev;
-      return [...prev, id];
-    });
+    const next = computeNextServices(selectedServices, id);
+    setSelectedServices(next);
+    if (shouldAutoAdvanceFromServices(next)) {
+      setStep("schedule");
+    }
+  }
+
+  function selectTimeSlot(slotId: string) {
+    setSelectedSlotId(slotId);
+    setStep("details");
   }
 
   function servicesValid() {
@@ -294,12 +323,15 @@ export function BookOnlineWizard() {
   }
 
   function goNext() {
-    if (step === "welcome" && visitorType) setStep("count");
-    else if (step === "count" && serviceInterest) setStep("services");
-    else if (step === "services" && servicesValid()) setStep("schedule");
+    if (step === "services" && servicesValid()) setStep("schedule");
     else if (step === "schedule" && selectedSlotId) setStep("details");
     else if (step === "details") void submitBooking();
   }
+
+  const showContinueButton =
+    step === "details" ||
+    (step === "services" &&
+      (serviceInterest === "many" || (serviceInterest === "two" && selectedServices.length < 2)));
 
   function goBack() {
     if (step === "complete") return;
@@ -345,10 +377,7 @@ export function BookOnlineWizard() {
   }
 
   const canContinue =
-    (step === "welcome" && visitorType !== null) ||
-    (step === "count" && serviceInterest !== null) ||
     (step === "services" && servicesValid()) ||
-    (step === "schedule" && Boolean(selectedSlotId)) ||
     (step === "details" && Boolean(fullName.trim() && email.trim() && phone.trim()));
 
   const continueLabel =
@@ -412,10 +441,7 @@ export function BookOnlineWizard() {
                   <p className="mt-1 text-sm text-[#6f6251]">{session?.user?.email}</p>
                   <button
                     type="button"
-                    onClick={() => {
-                      setVisitorType("member");
-                      setStep("count");
-                    }}
+                    onClick={() => chooseVisitor("member")}
                     className="mt-6 w-full rounded-2xl bg-[#b78d4b] py-4 text-lg font-semibold text-white"
                   >
                     Continue as member
@@ -425,7 +451,7 @@ export function BookOnlineWizard() {
                 <div className="mt-8 grid gap-4 sm:grid-cols-2">
                   <button
                     type="button"
-                    onClick={() => setVisitorType("member")}
+                    onClick={() => chooseVisitor("member")}
                     className={`group rounded-2xl border-2 p-6 text-left transition-all ${
                       visitorType === "member"
                         ? "border-[#b78d4b] bg-[#fff8ed] shadow-lg shadow-[#b78d4b22]"
@@ -448,7 +474,7 @@ export function BookOnlineWizard() {
 
                   <button
                     type="button"
-                    onClick={() => setVisitorType("guest")}
+                    onClick={() => chooseVisitor("guest")}
                     className={`group rounded-2xl border-2 p-6 text-left transition-all ${
                       visitorType === "guest"
                         ? "border-[#b78d4b] bg-[#fff8ed] shadow-lg shadow-[#b78d4b22]"
@@ -486,10 +512,7 @@ export function BookOnlineWizard() {
                     <button
                       key={opt.id}
                       type="button"
-                      onClick={() => {
-                        setServiceInterest(opt.id);
-                        setSelectedServices([]);
-                      }}
+                      onClick={() => chooseServiceInterest(opt.id)}
                       className={`flex w-full items-center gap-4 rounded-2xl border-2 px-5 py-5 text-left transition-all ${
                         active
                           ? "border-[#b78d4b] bg-gradient-to-r from-[#fff8ed] to-white shadow-md"
@@ -635,7 +658,7 @@ export function BookOnlineWizard() {
                       <button
                         key={slot.id}
                         type="button"
-                        onClick={() => setSelectedSlotId(slot.id)}
+                        onClick={() => selectTimeSlot(slot.id)}
                         className={`min-h-[48px] rounded-2xl border-2 py-3 text-base ${
                           selectedSlotId === slot.id
                             ? "border-[#b78d4b] bg-[#fff5e6] font-semibold"
@@ -779,14 +802,24 @@ export function BookOnlineWizard() {
                 Back
               </button>
             ) : null}
-            <button
-              type="button"
-              onClick={goNext}
-              disabled={!canContinue || submitting}
-              className="min-h-[56px] flex-1 rounded-2xl bg-gradient-to-r from-[#b78d4b] to-[#a67d42] text-lg font-semibold text-white shadow-[0_12px_28px_-12px_rgba(183,141,75,0.8)] disabled:opacity-50"
-            >
-              {continueLabel}
-            </button>
+            {showContinueButton ? (
+              <button
+                type="button"
+                onClick={goNext}
+                disabled={!canContinue || submitting}
+                className="min-h-[56px] flex-1 rounded-2xl bg-gradient-to-r from-[#b78d4b] to-[#a67d42] text-lg font-semibold text-white shadow-[0_12px_28px_-12px_rgba(183,141,75,0.8)] disabled:opacity-50"
+              >
+                {continueLabel}
+              </button>
+            ) : (
+              <p className="flex min-h-[56px] flex-1 items-center justify-center text-center text-sm text-[#8f6f3e]">
+                {step === "services" && serviceInterest === "many"
+                  ? "Tap services to add, then Continue"
+                  : step === "services" && serviceInterest === "two"
+                    ? "Select one more service"
+                    : "Tap your choice above to continue"}
+              </p>
+            )}
           </div>
         </div>
       ) : null}
