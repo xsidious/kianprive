@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { bookingServiceOptions, getBookingOptionById } from "@/lib/services/booking-options";
 import { DEFAULT_TIMEZONE } from "@/lib/scheduling/config";
 
@@ -148,6 +148,7 @@ export function BookOnlineWizard() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [confirmedSummary, setConfirmedSummary] = useState("");
+  const preselectAppliedRef = useRef(false);
 
   const selectedRows = useMemo(
     () => bookingServiceOptions.filter((s) => selectedServices.includes(s.id)),
@@ -260,16 +261,27 @@ export function BookOnlineWizard() {
   }, [dateSlotGroups, selectedDateKey]);
 
   useEffect(() => {
-    if (step !== "services" || !preselectedService || !getBookingOptionById(preselectedService)) return;
-    if (serviceInterest === "one") setSelectedServices([preselectedService]);
-    else if (!selectedServices.includes(preselectedService)) {
-      setSelectedServices((prev) => [...prev, preselectedService]);
+    if (step !== "services") {
+      preselectAppliedRef.current = false;
+      return;
     }
-  }, [step, preselectedService, serviceInterest, selectedServices]);
+    if (!preselectedService || !getBookingOptionById(preselectedService) || preselectAppliedRef.current) {
+      return;
+    }
+    preselectAppliedRef.current = true;
+    setSelectedServices((prev) => {
+      if (prev.length > 0) return prev;
+      if (serviceInterest === "one") return [preselectedService];
+      return [preselectedService];
+    });
+  }, [step, preselectedService, serviceInterest]);
 
   function toggleService(id: string) {
     setSelectedServices((prev) => {
-      if (serviceInterest === "one") return prev.includes(id) ? [] : [id];
+      if (serviceInterest === "one") {
+        if (prev.includes(id) && prev.length === 1) return [];
+        return [id];
+      }
       if (prev.includes(id)) return prev.filter((s) => s !== id);
       if (serviceInterest === "two" && prev.length >= 2) return prev;
       return [...prev, id];
@@ -277,8 +289,6 @@ export function BookOnlineWizard() {
   }
 
   function servicesValid() {
-    if (!serviceInterest) return selectedServices.length >= 1;
-    if (serviceInterest === "one") return selectedServices.length === 1;
     if (serviceInterest === "two") return selectedServices.length >= 2;
     return selectedServices.length >= 1;
   }
@@ -510,6 +520,11 @@ export function BookOnlineWizard() {
               <div className="text-center sm:text-left">
                 <h2 className="text-2xl font-medium text-[#1f1a15] sm:text-3xl">Choose your services</h2>
                 <p className="mt-2 text-[#6f6251]">{serviceSelectionHint}</p>
+                {preselectedService && getBookingOptionById(preselectedService) ? (
+                  <p className="mt-2 text-sm text-[#8f6f3e]">
+                    Tap any card to change your selection — you are not locked to one service.
+                  </p>
+                ) : null}
                 {selectedServices.length > 0 ? (
                   <div className="mt-4 flex flex-wrap justify-center gap-2 sm:justify-start">
                     {selectedRows.map((s) => (

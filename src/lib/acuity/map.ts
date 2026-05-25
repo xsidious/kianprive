@@ -16,6 +16,8 @@ const DEFAULT_ACUITY_APPOINTMENT_TYPES: Record<string, number> = {
   "power-plate": 74887377,
   "microneedling-with-exosomes": 86507329, // Deluxe Micro-Needling
   "korean-organic-skincare": 51056087, // Organic Facial
+  "glp1-peptides": 74887377,
+  "mindtap": 74887377,
 };
 
 function envTypeId(slug: string) {
