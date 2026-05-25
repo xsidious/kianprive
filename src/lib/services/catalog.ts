@@ -1,6 +1,7 @@
 import type { ServiceDetail } from "@/lib/services/types";
+import { icooneMediaGallery, icoonePrimaryImage } from "@/lib/media/icoone";
 
-export type { ServiceDetail, ServiceContentSection } from "@/lib/services/types";
+export type { ServiceDetail, ServiceContentSection, ServiceMediaItem } from "@/lib/services/types";
 
 export const serviceCatalog: ServiceDetail[] = [
   {
@@ -18,24 +19,37 @@ export const serviceCatalog: ServiceDetail[] = [
   },
   {
     slug: "comprehensive-bloodwork",
-    title: "Comprehensive Bloodwork",
-    image: "/images/medicalaesthetics.avif",
+    title: "Blood Work",
+    image: "/images/blood-work.png",
     description:
-      "Detailed lab analysis and physician interpretation to build your personalized care roadmap using objective, trackable health markers.",
+      "Comprehensive blood work with physician interpretation—objective lab markers to guide your wellness, performance, and treatment plan with clarity you can track over time.",
     details: [
-      "Comprehensive panels evaluate metabolic, inflammatory, nutrient, and hormone markers.",
-      "Results are reviewed with your physician and mapped into your ongoing wellness plan.",
+      "Panels evaluate metabolic, inflammatory, nutrient, hormone, and recovery-related markers based on your goals.",
+      "Samples are collected in a professional lab setting; results are reviewed with your KIAN Privé physician.",
+      "Findings are mapped into your ongoing protocol—nutrition, peptides, IV therapy, aesthetics, and recovery support.",
     ],
-    includes: ["Baseline biomarker assessment", "Progress tracking", "Protocol calibration support"],
+    includes: [
+      "Comprehensive biomarker panels",
+      "Physician review and interpretation",
+      "Baseline assessment and progress tracking",
+      "Protocol calibration support",
+    ],
   },
   {
     slug: "icoone-laser",
-    title: "Icoone® Laser",
-    image: "/images/icoone.avif",
+    title: "Icoone® Lymphatic Drainage",
+    image: icoonePrimaryImage,
+    gallery: icooneMediaGallery,
     description:
-      "Advanced Roboderm micro-stimulation to activate lymphatic flow, stimulate collagen and elastin, and support contouring, recovery, and skin quality.",
+      "Physician-guided Icoone® lymphatic drainage using Roboderm® microstimulation to support detox, circulation, and recovery—while helping reduce puffiness, refine contour, and improve skin quality.",
+    details: [
+      "Robotic microstimulation activates superficial and deep lymphatic pathways for fluid balance and tissue comfort.",
+      "Sessions are performed in a compression body suit for precise, full-body or targeted face, neck, décolleté, and body protocols.",
+      "Ideal for swelling support, post-travel recovery, contour refinement, and inflammation reduction within your wellness plan.",
+    ],
     includes: [
       "Lymphatic drainage and circulatory support",
+      "Detox, puffiness, and fluid-retention support",
       "Cellulite and contouring support",
       "Pain, inflammation, and recovery support",
       "Face, neck, décolleté, and full-body targeting",
@@ -75,16 +89,87 @@ export const serviceCatalog: ServiceDetail[] = [
   },
   {
     slug: "nutrition",
-    title: "Nutrition",
-    image: "/images/nutrition.avif",
+    title: "Cherie Johnson Nutrition Services",
+    image: "/images/cherie-johnson.avif",
     description:
-      "Science-based nutrition support tailored to your goals, with practical plans aligned to your clinical and lifestyle needs.",
+      "Holistic, culturally aware nutrition support for women and families—rooted in nourishment, balance, and realistic lifestyle changes that fit everyday life.",
     details: [
-      "Led by certified nutrition experts in coordination with physician guidance.",
-      "Supports weight optimization, gut health, inflammation, hormonal balance, and long-term habits.",
+      "Personalized consultations that honor your health history, goals, and dietary needs—not one-size-fits-all plans.",
+      "Practical meal guidance and sustainable habit-building designed for long-term wellness, not quick fixes.",
+      "Coordination with KIAN Privé physician-led care when your wellness plan benefits from clinical alignment.",
     ],
-    pricing: ["Single session: $150", "4-session package: $500", "8-session package: $950"],
-    includes: ["Meal strategy", "Lifestyle adherence support", "Nutraceutical-aligned planning"],
+    includes: [
+      "One-on-one personalized consultations",
+      "Individualized wellness and meal planning support",
+      "Holistic and realistic nutrition guidance",
+      "Sustainable lifestyle recommendations",
+      "Compassionate accountability and encouragement",
+      "A judgment-free wellness experience",
+    ],
+    pricing: [
+      "Initial Nutrition Consultation & Meal Plan — wellness assessment, personalized recommendations, customized meal guidance, lifestyle support",
+      "Follow-up session: $150",
+      "4-session package: $500",
+      "8-session package: $950",
+    ],
+    contentSections: [
+      {
+        title: "Our Approach",
+        paragraphs: [
+          "We believe wellness starts with nourishment, balance, and realistic lifestyle changes that fit your everyday life. Our approach is rooted in holistic nutrition, compassionate support, and culturally aware guidance designed specifically for women and families.",
+          "Whether you are navigating hormonal changes, digestive concerns, blood sugar management, or simply looking to feel healthier and more energized, we provide personalized nutrition support tailored to your unique needs and goals.",
+        ],
+      },
+      {
+        title: "Meet Cherie Johnson",
+        paragraphs: [
+          "Cherie Johnson is a wellness advocate, nutrition consultant, actress, producer, and entrepreneur passionate about helping women and families reclaim their health naturally. Through practical nutrition education and individualized support, Cherie helps clients build sustainable habits that support long-term wellness—not quick fixes.",
+          "Her mission is to create a safe, judgment-free space where clients feel empowered, educated, and supported throughout their wellness journey.",
+        ],
+      },
+      {
+        title: "Our Nutritional Consultation Services",
+        paragraphs: [
+          "Every body is different. During your consultation, we take the time to understand your health history, lifestyle, wellness goals, and dietary needs to create a customized plan designed specifically for you.",
+        ],
+        bullets: [
+          "Personalized Nutrition Consultations — health history, lifestyle, and goal-based planning",
+          "Meal Planning Support — realistic guidance tailored to your schedule and healing goals",
+          "Women's Wellness Nutrition — hormone balance, PCOS, blood sugar, weight, gut health, energy, pre- and post-pregnancy wellness",
+          "Family Nutrition Guidance — balanced routines and practical strategies for busy households",
+        ],
+      },
+      {
+        title: "Areas of Nutritional Support",
+        bullets: [
+          "Pre-pregnancy and post-pregnancy nutrition",
+          "Obesity and weight management",
+          "Diabetes and blood sugar support",
+          "Eczema and inflammatory concerns",
+          "High blood pressure (hypertension)",
+          "Diverticulitis and digestive health",
+          "PCOS (polycystic ovary syndrome)",
+          "Gut health and hormone balance",
+        ],
+      },
+      {
+        title: "Why Choose Cherie Johnson Nutrition Services?",
+        bullets: [
+          "Holistic and culturally aware approach",
+          "Realistic nutrition plans for real life",
+          "Focus on sustainable lifestyle changes",
+          "Supportive coaching and wellness guidance",
+          "Personalized attention for every client",
+          "Passionate about empowering women and families",
+        ],
+      },
+      {
+        title: "Begin Your Wellness Journey",
+        paragraphs: [
+          "Your health journey deserves support, compassion, and a plan designed specifically for you. Let Cherie Johnson Nutrition Services help you create healthier habits that nourish your body and support your overall wellness.",
+        ],
+      },
+    ],
   },
   {
     slug: "microneedling-with-exosomes",

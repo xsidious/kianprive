@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { icoonePrimaryImage } from "@/lib/media/icoone";
 
 type Category = "Body" | "Face" | "Hair";
 
@@ -14,9 +15,9 @@ type ShowcaseItem = {
 const beforeAfterByCategory: Record<Category, ShowcaseItem[]> = {
   Body: [
     {
-      treatment: "Lymphatic + Contouring Protocol",
+      treatment: "Icoone® Lymphatic Drainage",
       beforeImage: "/images/wellness.avif",
-      afterImage: "/images/icoone.avif",
+      afterImage: icoonePrimaryImage,
     },
   ],
   Face: [

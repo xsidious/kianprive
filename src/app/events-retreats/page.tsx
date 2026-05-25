@@ -5,13 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
-import { retreatEvents, type RetreatEvent } from "@/lib/events";
+import { getFeaturedRetreatEvent, retreatEvents, type RetreatEvent } from "@/lib/events";
 
 export default function EventsRetreatsPage() {
   const [openModal, setOpenModal] = useState<null | "invite" | "consultation" | "rsvp">(null);
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [events, setEvents] = useState<RetreatEvent[]>(retreatEvents);
+  const featuredEvent = events.find((event) => event.featured) ?? getFeaturedRetreatEvent();
 
   useEffect(() => {
     async function loadEvents() {
@@ -45,10 +46,16 @@ export default function EventsRetreatsPage() {
               Immerse yourself in the ultimate natural wellness experience — let nature be your sanctuary.
             </p>
             <div className="mt-4 rounded-2xl border border-[#1f7a7a4f] bg-[#eef8f8] p-4">
-              <p className="text-xs tracking-[0.18em] text-[#1b6568]">LAUNCH TIMELINE</p>
+              <p className="text-xs tracking-[0.18em] text-[#1b6568]">NEXT EVENT</p>
               <p className="mt-2 text-sm text-[#28585a]">
-                Events begin June 7. Retreats begin in September. Additional event and retreat information will be released separately.
+                <strong>Corporate Health &amp; Wellness Day</strong> — Sunday, June 7 in Wynwood. Retreats begin in September.
               </p>
+              <Link
+                href="/events-retreats/corporate-health-wellness-day"
+                className="mt-3 inline-flex rounded-full bg-[#1f7a7a] px-4 py-2 text-xs text-white"
+              >
+                View Event Details
+              </Link>
             </div>
 
             <div className="mt-7 rounded-2xl border border-[#b78d4b30] bg-[#fffaf2] p-4">
@@ -104,21 +111,44 @@ export default function EventsRetreatsPage() {
           <h2 className="text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">Upcoming Events</h2>
           <span className="text-sm text-[#8f6f3e]">Facebook</span>
         </div>
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {events.map((event) => (
-            <article key={event.title} className="rounded-2xl border border-[#b78d4b2d] bg-white p-5 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)]">
-              <div className="relative mb-4 h-40 overflow-hidden rounded-xl border border-[#b78d4b2d]">
-                <Image src={event.image} alt={event.title} fill className="object-cover" />
+            <article
+              key={event.slug}
+              className={`rounded-2xl border bg-white p-5 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)] ${
+                event.featured ? "border-[#1f7a7a55] ring-1 ring-[#1f7a7a33]" : "border-[#b78d4b2d]"
+              }`}
+            >
+              {event.featured ? (
+                <p className="mb-2 text-xs tracking-[0.16em] text-[#1b6568]">FEATURED · JUNE 7</p>
+              ) : null}
+              <div className="relative mb-4 h-44 overflow-hidden rounded-xl border border-[#b78d4b2d]">
+                <Image src={event.image} alt={event.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
               </div>
               <p className="text-xl text-[#2b2218]">{event.title}</p>
-              <p className="mt-3 text-sm text-[#5f5344]">{event.subtitle}</p>
-              <div className="mt-4 flex gap-2">
+              {event.host ? <p className="mt-1 text-xs text-[#8f6f3e]">Presented by {event.host}</p> : null}
+              <p className="mt-3 text-sm leading-relaxed text-[#5f5344]">{event.subtitle}</p>
+              {event.ticketPrice ? (
+                <p className="mt-2 text-sm font-medium text-[#2b2218]">Tickets from {event.ticketPrice}</p>
+              ) : null}
+              <div className="mt-4 flex flex-wrap gap-2">
                 <Link href={`/events-retreats/${event.slug}`} className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-4 py-2 text-xs text-[#3b3024]">
                   More info
                 </Link>
-                <Link href={`/events-retreats/${event.slug}?intent=rsvp`} className="rounded-full bg-[#b78d4b] px-4 py-2 text-xs text-white">
-                  RSVP
-                </Link>
+                {event.ticketUrl ? (
+                  <a
+                    href={event.ticketUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full bg-[#b78d4b] px-4 py-2 text-xs text-white"
+                  >
+                    Get Tickets
+                  </a>
+                ) : (
+                  <Link href={`/events-retreats/${event.slug}?intent=rsvp`} className="rounded-full bg-[#b78d4b] px-4 py-2 text-xs text-white">
+                    RSVP
+                  </Link>
+                )}
               </div>
             </article>
           ))}
@@ -127,17 +157,47 @@ export default function EventsRetreatsPage() {
 
       <SectionWrapper className="py-6 md:py-8">
         <h2 className="mb-4 text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">Featured Event</h2>
-        <div className="grid items-center gap-8 rounded-3xl border border-[#b78d4b2d] bg-white p-8 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)] lg:grid-cols-[1fr_1fr]">
+        <div className="grid items-center gap-8 rounded-3xl border border-[#1f7a7a45] bg-white p-8 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)] lg:grid-cols-[1.05fr_0.95fr]">
           <div>
-            <p className="text-sm text-[#8f6f3e]">FEATURED EVENT</p>
-            <h3 className="mt-2 text-3xl text-[#1f1a15]">Coming Soon</h3>
-            <p className="mt-2 text-[#5f5344]">New featured event details will be announced soon.</p>
-            <span className="mt-5 inline-flex rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]">
-              Stay Tuned
-            </span>
+            <p className="text-sm tracking-[0.16em] text-[#1b6568]">FEATURED EVENT</p>
+            <h3 className="mt-2 text-3xl text-[#1f1a15] md:text-4xl">{featuredEvent.title}</h3>
+            {featuredEvent.host ? (
+              <p className="mt-2 text-sm text-[#8f6f3e]">Presented by {featuredEvent.host}</p>
+            ) : null}
+            <p className="mt-3 text-[#5f5344]">{featuredEvent.description}</p>
+            <p className="mt-3 text-sm text-[#6f6251]">{featuredEvent.when}</p>
+            <p className="text-sm text-[#6f6251]">{featuredEvent.location}</p>
+            {featuredEvent.ticketPrice ? (
+              <p className="mt-2 text-sm font-medium text-[#2b2218]">Ticket price: {featuredEvent.ticketPrice}</p>
+            ) : null}
+            <div className="mt-5 flex flex-wrap gap-3">
+              {featuredEvent.ticketUrl ? (
+                <a
+                  href={featuredEvent.ticketUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white"
+                >
+                  Get Tickets on Luma
+                </a>
+              ) : null}
+              <Link
+                href={`/events-retreats/${featuredEvent.slug}`}
+                className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]"
+              >
+                Full Event Details
+              </Link>
+            </div>
           </div>
-          <div className="relative h-[260px] overflow-hidden rounded-2xl border border-[#b78d4b2d]">
-            <Image src="/images/stock/service-wellness.jpg" alt="Featured retreat event" fill className="object-cover" />
+          <div className="space-y-4">
+            <div className="relative h-[220px] overflow-hidden rounded-2xl border border-[#b78d4b2d] sm:h-[260px]">
+              <Image src={featuredEvent.image} alt={featuredEvent.title} fill className="object-cover" />
+            </div>
+            {featuredEvent.flyerImage ? (
+              <div className="relative h-[180px] overflow-hidden rounded-2xl border border-[#b78d4b2d] bg-[#f8faf6]">
+                <Image src={featuredEvent.flyerImage} alt={`${featuredEvent.title} flyer`} fill className="object-contain p-2" />
+              </div>
+            ) : null}
           </div>
         </div>
       </SectionWrapper>

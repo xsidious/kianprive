@@ -6,9 +6,38 @@ export type RetreatEvent = {
   location: string;
   when: string;
   image: string;
+  flyerImage?: string;
+  host?: string;
+  ticketUrl?: string;
+  ticketPrice?: string;
+  featured?: boolean;
+  highlights?: string[];
 };
 
 export const retreatEvents: RetreatEvent[] = [
+  {
+    slug: "corporate-health-wellness-day",
+    title: "Corporate Health & Wellness Day",
+    subtitle: "Sunday, June 7 · 10:00 AM – 5:00 PM EDT · Frida Kahlo Center, Wynwood",
+    description:
+      "Join us for a full day dedicated to employee well-being, connection, and inspiration in the heart of Wynwood. Presented by Miami Sports & Entertainment Alliance.",
+    location: "Frida Kahlo Center · 1018 N Miami Ave, Miami, FL 33136",
+    when: "Sunday, June 7, 2026 · 10:00 AM – 5:00 PM EDT",
+    image: "/images/corporate-wellness-venue.png",
+    flyerImage: "/images/corporate-wellness-flyer.png",
+    host: "Miami Sports & Entertainment Alliance",
+    ticketUrl: "https://luma.com/corporatewellness",
+    ticketPrice: "$150.00",
+    featured: true,
+    highlights: [
+      "Focus: performance, balance, and modern leadership",
+      "Expert panels on wellness, corporate well-being, and lifestyle innovation",
+      "Health and wellness-focused experiences and classes (including MINDTAP)",
+      "Vendor showcases in health, wellness, and performance",
+      "Discussion panels on today's top health and wellness topics",
+      "Move your body, clear your mind, and connect with others — one day of real connection and lasting wellness",
+    ],
+  },
   {
     slug: "kian-beauty-wellness-getaway",
     title: "KIAN Beauty & Wellness Getaway",
@@ -43,4 +72,8 @@ export const retreatEvents: RetreatEvent[] = [
 
 export function getRetreatEventBySlug(slug: string) {
   return retreatEvents.find((event) => event.slug === slug) ?? null;
+}
+
+export function getFeaturedRetreatEvent() {
+  return retreatEvents.find((event) => event.featured) ?? retreatEvents[0];
 }

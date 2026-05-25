@@ -61,7 +61,7 @@ export const gymServices: ServiceListingItem[] = [
 
 export const serviceAccessNotes = [
   "In-home and on-location services are available for most treatments, bringing the full KIAN Privé experience directly to you.",
-  "Icoone® Laser, Holistic Salt Therapy, and MINDTAP coaching sessions are available at our facility only and are not offered as in-home services.",
+  "Icoone® Lymphatic Drainage, Holistic Salt Therapy, and MINDTAP coaching sessions are available at our facility only and are not offered as in-home services.",
 ];
 
 export const preferredProviders = [

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Play } from "lucide-react";
 import { BeforeAfterGallery } from "@/components/home/BeforeAfterGallery";
+import { getIcooneImage } from "@/lib/media/icoone";
 import { GetUpdatesSection } from "@/components/home/GetUpdatesSection";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
@@ -200,7 +201,7 @@ export default function Home() {
             <p className="mt-3 text-xs text-[#8a7a66]">Premium access required for full practitioner training content.</p>
           </div>
           <div className="relative h-[320px] overflow-hidden rounded-3xl border border-[#b78d4b35] sm:h-[420px] lg:h-[500px]">
-            <Image src="/images/icoone.avif" alt="Icoone practitioner training" fill className="object-cover" />
+            <Image src={getIcooneImage(1).src} alt={getIcooneImage(1).alt} fill className="object-cover" />
           </div>
         </div>
       </SectionWrapper>

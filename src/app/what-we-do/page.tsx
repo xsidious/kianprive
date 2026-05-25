@@ -22,10 +22,10 @@ const offerings = [
     image: "/images/medicalaesthetics.avif",
   },
   {
-    title: "Icoone",
-    description: "Advanced Icoone practitioner training and premium protocol integration pathways.",
+    title: "Icoone® Lymphatic Drainage",
+    description: "Facility-based Icoone® lymphatic drainage and certified practitioner training pathways.",
     href: "/icoone-training",
-    image: "/images/icoone.avif",
+    image: "/images/icoone-treatment-session.png",
   },
   {
     title: "Practitioners",

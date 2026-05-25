@@ -1,7 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
+import { IcooneMediaGallery } from "@/components/services/IcooneMediaGallery";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { PremiumCard } from "@/components/ui/PremiumCard";
+import { getIcooneImage, icoonePrimaryImage } from "@/lib/media/icoone";
 
 const benefits = [
   {
@@ -56,7 +58,7 @@ export default function IcooneTrainingPage() {
         <div className="grid overflow-hidden rounded-3xl border border-[#b78d4b2e] bg-white md:grid-cols-[1.15fr_0.85fr]">
           <div className="p-8 md:p-14">
             <p className="text-xs tracking-[0.3em] text-[#8f6f3e]">ICOONE</p>
-            <h1 className="mt-4 text-4xl text-[#1f1a15] md:text-6xl">Icoone</h1>
+            <h1 className="mt-4 text-4xl text-[#1f1a15] md:text-6xl">Icoone® Lymphatic Drainage</h1>
             <p className="mt-4 text-lg text-[#5f5344]">
               Icoone is a non-invasive treatment that utilizes advanced robotic technology to perform micro-stimulation of the skin and
               underlying tissues. It is primarily known for body contouring, lymphatic drainage, and skin tightening.
@@ -71,7 +73,7 @@ export default function IcooneTrainingPage() {
             </div>
           </div>
           <div className="relative min-h-[280px]">
-            <Image src="/images/icoone.avif" alt="Icoone therapy" fill className="object-cover" />
+            <Image src={icoonePrimaryImage} alt="Icoone lymphatic drainage session" fill className="object-cover" />
           </div>
         </div>
 
@@ -94,9 +96,13 @@ export default function IcooneTrainingPage() {
                 </p>
               </div>
               <div className="relative h-[320px] overflow-hidden rounded-2xl border border-[#b78d4b2d]">
-                <Image src="/images/facial-treatments.jpg" alt="Icoone facial treatment" fill className="object-cover" />
+                <Image src={getIcooneImage(3).src} alt={getIcooneImage(3).alt} fill className="object-cover" />
               </div>
             </div>
+          </section>
+
+          <section>
+            <IcooneMediaGallery />
           </section>
 
           <section>

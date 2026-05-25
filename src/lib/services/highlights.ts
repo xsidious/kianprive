@@ -24,12 +24,12 @@ export const serviceHighlights: ServiceHighlight[] = [
   highlightFromService("comprehensive-bloodwork", {
     title: "Blood Work",
     description:
-      "Comprehensive lab analysis and physician interpretation to build your personalized wellness and performance roadmap.",
+      "Comprehensive blood work and physician interpretation to build your personalized wellness and performance roadmap.",
   }),
   highlightFromService("icoone-laser", {
-    title: "Lymphatic Drainage",
+    title: "Icoone® Lymphatic Drainage",
     description:
-      "Advanced Icoone® lymphatic protocols for detox support, contouring, recovery, inflammation reduction, and skin quality.",
+      "Advanced Icoone® lymphatic drainage for detox support, contouring, recovery, inflammation reduction, and skin quality.",
   }),
   highlightFromService("glp1-peptides", {
     title: "Peptides — GLP-1s & Exosomes",
@@ -37,8 +37,9 @@ export const serviceHighlights: ServiceHighlight[] = [
       "Physician-supervised metabolic, peptide, and regenerative pathways including GLP-1 programs and exosome-enhanced treatments.",
   }),
   highlightFromService("nutrition", {
+    title: "Cherie Johnson Nutrition",
     description:
-      "Science-based nutrition planning tailored to your goals with practical, sustainable guidance aligned to your clinical needs.",
+      "Holistic, culturally aware nutrition for women and families—personalized consultations, meal planning, and sustainable wellness habits.",
   }),
   highlightFromService("iv-therapy", {}),
   highlightFromService("korean-organic-skincare", {

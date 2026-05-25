@@ -2,15 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-type RetreatEvent = {
-  slug: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  location: string;
-  when: string;
-  image: string;
-};
+import type { RetreatEvent } from "@/lib/events";
 
 export default function AdminRetreatsPage() {
   const [events, setEvents] = useState<RetreatEvent[]>([]);
@@ -124,6 +116,30 @@ export default function AdminRetreatsPage() {
               <label className="text-sm text-[#5f5344] md:col-span-2">
                 Image Path
                 <input value={event.image} onChange={(e) => updateEvent(index, "image", e.target.value)} className="mt-1 w-full rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3 text-[#1f1a15]" />
+              </label>
+              <label className="text-sm text-[#5f5344] md:col-span-2">
+                Ticket URL (Luma, etc.)
+                <input
+                  value={event.ticketUrl ?? ""}
+                  onChange={(e) => updateEvent(index, "ticketUrl", e.target.value)}
+                  className="mt-1 w-full rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3 text-[#1f1a15]"
+                />
+              </label>
+              <label className="text-sm text-[#5f5344]">
+                Ticket Price
+                <input
+                  value={event.ticketPrice ?? ""}
+                  onChange={(e) => updateEvent(index, "ticketPrice", e.target.value)}
+                  className="mt-1 w-full rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3 text-[#1f1a15]"
+                />
+              </label>
+              <label className="text-sm text-[#5f5344]">
+                Host / Presenter
+                <input
+                  value={event.host ?? ""}
+                  onChange={(e) => updateEvent(index, "host", e.target.value)}
+                  className="mt-1 w-full rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3 text-[#1f1a15]"
+                />
               </label>
               <label className="text-sm text-[#5f5344] md:col-span-2">
                 Description

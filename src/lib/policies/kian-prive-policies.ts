@@ -14,7 +14,7 @@ export const gratuityPolicy =
 export const financingAndInsurancePolicies = [
   "Financing available through Cherry. Ask our team about flexible payment plans.",
   "PPO members — some services may be super-billed to your insurance provider. Please inquire at time of service.",
-  "PPO Insurance — Medical Treatment Policy: Members with PPO insurance must have a consultation with a KIAN Privé physician for evaluation and receive physician approval prior to receiving medical treatment with the Icoone Laser Med.",
+  "PPO Insurance — Medical Treatment Policy: Members with PPO insurance must have a consultation with a KIAN Privé physician for evaluation and receive physician approval prior to receiving medical treatment with Icoone® Lymphatic Drainage (Icoone Laser Med).",
   "We encourage all clients to check with their insurance company to see if they cover related expenses for wellness treatments.",
   "Itemized invoices provided upon request.",
 ];

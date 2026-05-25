@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { auth } from "@/lib/auth";
+import { IcooneMediaGallery } from "@/components/services/IcooneMediaGallery";
 import { getServiceBySlug, serviceCatalog } from "@/lib/services/catalog";
 
 export function generateStaticParams() {
@@ -28,6 +29,9 @@ export default async function ServiceDetailPage({
     redirect("/login");
   }
 
+  const isNutrition = slug === "nutrition";
+  const showPricing = canViewPricing || isNutrition;
+
   return (
     <div>
       <SectionWrapper className="pt-10 sm:pt-12 md:pt-14">
@@ -37,9 +41,17 @@ export default async function ServiceDetailPage({
             <h1 className="mt-3 text-3xl text-[#1f1a15] sm:text-4xl md:text-5xl">{service.title}</h1>
             <p className="mt-4 text-[#6f6251]">{service.description}</p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/book-online" className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
-                Book Consultation
+              <Link
+                href={isNutrition ? "/book-online?service=nutrition" : "/book-online"}
+                className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white"
+              >
+                {isNutrition ? "Schedule Your Consultation Today" : "Book Consultation"}
               </Link>
+              {isNutrition ? (
+                <Link href="/contact" className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]">
+                  Contact Us
+                </Link>
+              ) : null}
               <Link href="/services" className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]">
                 Back to Services
               </Link>
@@ -50,6 +62,12 @@ export default async function ServiceDetailPage({
           </div>
         </div>
       </SectionWrapper>
+
+      {service.gallery?.length ? (
+        <SectionWrapper>
+          <IcooneMediaGallery title="Treatment Experience" items={service.gallery} />
+        </SectionWrapper>
+      ) : null}
 
       {service.details?.length ? (
         <SectionWrapper>
@@ -64,9 +82,38 @@ export default async function ServiceDetailPage({
         </SectionWrapper>
       ) : null}
 
+      {service.contentSections?.length ? (
+        <SectionWrapper>
+          <h2 className="text-2xl text-[#1f1a15] sm:text-3xl">
+            {isNutrition ? "Nutrition Services Overview" : "Program Details"}
+          </h2>
+          <div className="mt-4 grid gap-4">
+            {service.contentSections.map((section) => (
+              <article key={section.title} className="rounded-2xl border border-[#b78d4b2d] bg-white p-5">
+                <h3 className="text-xl text-[#2b2218]">{section.title}</h3>
+                {section.paragraphs?.map((paragraph) => (
+                  <p key={paragraph} className="mt-3 leading-relaxed text-[#5f5344]">
+                    {paragraph}
+                  </p>
+                ))}
+                {section.bullets?.length ? (
+                  <ul className="mt-3 list-disc space-y-2 pl-5 text-[#5f5344]">
+                    {section.bullets.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                ) : null}
+              </article>
+            ))}
+          </div>
+        </SectionWrapper>
+      ) : null}
+
       {service.includes?.length ? (
         <SectionWrapper>
-          <h2 className="text-2xl text-[#1f1a15] sm:text-3xl">What It Supports</h2>
+          <h2 className="text-2xl text-[#1f1a15] sm:text-3xl">
+            {isNutrition ? "What You Can Expect" : "What It Supports"}
+          </h2>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {service.includes.map((item) => (
               <article key={item} className="rounded-2xl border border-[#b78d4b2d] bg-white p-4 text-[#5f5344]">
@@ -79,9 +126,11 @@ export default async function ServiceDetailPage({
 
       {service.pricing?.length ? (
         <SectionWrapper>
-          <h2 className="text-2xl text-[#1f1a15] sm:text-3xl">Pricing</h2>
+          <h2 className="text-2xl text-[#1f1a15] sm:text-3xl">
+            {isNutrition ? "Consultation Pricing" : "Pricing"}
+          </h2>
           <div className="mt-4 rounded-2xl border border-[#b78d4b2d] bg-white p-5">
-            {canViewPricing ? (
+            {showPricing ? (
               <ul className="space-y-2 text-[#5f5344]">
                 {service.pricing.map((line) => (
                   <li key={line}>{line}</li>
@@ -119,27 +168,27 @@ export default async function ServiceDetailPage({
         </SectionWrapper>
       ) : null}
 
-      {service.contentSections?.length ? (
+      {isNutrition ? (
         <SectionWrapper>
-          <h2 className="text-2xl text-[#1f1a15] sm:text-3xl">Program Details</h2>
-          <div className="mt-4 grid gap-4">
-            {service.contentSections.map((section) => (
-              <article key={section.title} className="rounded-2xl border border-[#b78d4b2d] bg-white p-5">
-                <h3 className="text-xl text-[#2b2218]">{section.title}</h3>
-                {section.paragraphs?.map((paragraph) => (
-                  <p key={paragraph} className="mt-3 text-[#5f5344]">
-                    {paragraph}
-                  </p>
-                ))}
-                {section.bullets?.length ? (
-                  <ul className="mt-3 space-y-2 text-[#5f5344]">
-                    {section.bullets.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                ) : null}
-              </article>
-            ))}
+          <div className="rounded-3xl border border-[#b78d4b4f] bg-gradient-to-b from-[#fff8ed] to-[#f1e7d7] p-8 text-center shadow-[0_18px_40px_-30px_rgba(66,45,14,0.45)]">
+            <h2 className="text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">Begin Your Wellness Journey</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-[#5f5344]">
+              Your health journey deserves support, compassion, and a plan designed specifically for you.
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Link
+                href="/book-online?service=nutrition"
+                className="rounded-full bg-[#b78d4b] px-6 py-3 text-sm text-white"
+              >
+                Schedule Your Consultation Today
+              </Link>
+              <Link
+                href="/contact"
+                className="rounded-full border border-[#b78d4b80] bg-white px-6 py-3 text-sm text-[#3b3024]"
+              >
+                Contact Us
+              </Link>
+            </div>
           </div>
         </SectionWrapper>
       ) : null}

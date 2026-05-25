@@ -138,7 +138,7 @@ export default function PractitionersPage() {
             </p>
           </div>
           <div className="relative h-[300px] overflow-hidden rounded-2xl border border-[#b78d4b2d]">
-            <Image src="/images/icoone.avif" alt="Icoone marketing and protocol training" fill className="object-cover" />
+            <Image src="/images/icoone-treatment-session.png" alt="Icoone lymphatic drainage treatment" fill className="object-cover" />
           </div>
         </div>
       </SectionWrapper>

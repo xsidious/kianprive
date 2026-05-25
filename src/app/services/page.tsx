@@ -500,7 +500,7 @@ const ancillaryAgentRows = [
 ];
 
 const koreanSkincareIntro =
-  "KIAN Privé is a concierge wellness company dedicated to delivering the finest services for a truly private wellness experience — provided by dedicated professionals at your location or ours. No busy waiting rooms, no hustle or bustle. Just uninterrupted, personalized care in a serene and intimate setting. In-home and on-location services are available for most treatments, bringing the full KIAN Privé experience directly to you. Please note that Icoone® Laser, Holistic Salt Therapy, and MINDTAP coaching sessions are available at our facility only and are not offered as in-home services.";
+  "KIAN Privé is a concierge wellness company dedicated to delivering the finest services for a truly private wellness experience — provided by dedicated professionals at your location or ours. No busy waiting rooms, no hustle or bustle. Just uninterrupted, personalized care in a serene and intimate setting. In-home and on-location services are available for most treatments, bringing the full KIAN Privé experience directly to you. Please note that Icoone® Lymphatic Drainage, Holistic Salt Therapy, and MINDTAP coaching sessions are available at our facility only and are not offered as in-home services.";
 
 const inBodyDescription =
   "The InBody Scan provides a comprehensive, non-invasive assessment of your body composition — measuring muscle mass, body fat percentage, visceral fat, hydration levels, and metabolic rate with clinical precision. Included monthly in all membership tiers, your InBody results are reviewed alongside your physician's wellness roadmap to track progress, adjust protocols, and optimize every dimension of your transformation.";
@@ -561,7 +561,11 @@ export default async function ServicesPage() {
         <div className="rounded-2xl border border-[#1f7a7a4f] bg-[#eef8f8] p-4">
           <p className="text-xs tracking-[0.2em] text-[#1b6568]">PRIVATE MEMBERS UPDATE</p>
           <p className="mt-2 text-sm text-[#28585a]">
-            Additional add-ons will be released separately. Retreats start in September. Events begin June 7, with additional information to follow.
+            Additional add-ons will be released separately. Retreats start in September.{" "}
+            <Link href="/events-retreats/corporate-health-wellness-day" className="text-[#1b6568] underline">
+              Corporate Health &amp; Wellness Day
+            </Link>{" "}
+            is June 7 in Wynwood — tickets on Luma.
           </p>
         </div>
       </SectionWrapper>

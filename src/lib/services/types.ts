@@ -4,10 +4,17 @@ export type ServiceContentSection = {
   bullets?: string[];
 };
 
+export type ServiceMediaItem = {
+  src: string;
+  alt: string;
+  caption?: string;
+};
+
 export type ServiceDetail = {
   slug: string;
   title: string;
   image: string;
+  gallery?: ServiceMediaItem[];
   description: string;
   requiresLogin?: boolean;
   details?: string[];
