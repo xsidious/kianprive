@@ -53,18 +53,8 @@ export function ServiceCardsWithModal({ services, label }: ServiceCardsWithModal
                 : "border-[#b78d4b2d] bg-white"
             }`}
           >
-            <div
-              className={`relative overflow-hidden rounded-2xl ${
-                isNutritionService(service) ? "h-72 bg-[#f4efe6] sm:h-80" : "h-64"
-              }`}
-            >
-              <Image
-                src={service.image}
-                alt={service.title}
-                fill
-                sizes="(max-width: 768px) 100vw, 42vw"
-                className={isNutritionService(service) ? "object-contain p-2" : "object-cover"}
-              />
+            <div className="relative h-64 overflow-hidden rounded-2xl">
+              <Image src={service.image} alt={service.title} fill sizes="(max-width: 768px) 100vw, 42vw" className="object-cover" />
             </div>
             <div>
               <p className={`text-xs tracking-[0.2em] ${isPriorityGroup ? "text-[#1f6f75]" : "text-[#8f6f3e]"}`}>
@@ -153,12 +143,18 @@ export function ServiceCardsWithModal({ services, label }: ServiceCardsWithModal
                   />
                 ) : (
                   <Image
-                    src={selectedService.image}
+                    src={
+                      isNutritionService(selectedService) && selectedService.promoImage
+                        ? selectedService.promoImage
+                        : selectedService.image
+                    }
                     alt={selectedService.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 720px"
                     className={
-                      isNutritionService(selectedService) ? "object-contain p-3" : "object-cover"
+                      isNutritionService(selectedService) && selectedService.promoImage
+                        ? "object-contain p-3"
+                        : "object-cover"
                     }
                   />
                 )}
@@ -179,14 +175,49 @@ export function ServiceCardsWithModal({ services, label }: ServiceCardsWithModal
             ) : null}
             {selectedService.includes && selectedService.includes.length > 0 ? (
               <div className="mt-5">
-                <p className="text-xs tracking-[0.16em] text-[#1f6f75]">WHAT THIS SUPPORTS</p>
-                <ul className="mt-2 space-y-1">
+                <p className="text-xs tracking-[0.16em] text-[#1f6f75]">
+                  {isNutritionService(selectedService)
+                    ? "PERSONALIZED WELLNESS SUPPORT FOR"
+                    : "WHAT THIS SUPPORTS"}
+                </p>
+                <ul className="mt-2 list-disc space-y-1 pl-5">
                   {selectedService.includes.map((item) => (
                     <li key={item} className="text-sm text-[#5f5344]">
                       {item}
                     </li>
                   ))}
                 </ul>
+              </div>
+            ) : null}
+            {selectedService.contentSections && selectedService.contentSections.length > 0 ? (
+              <div className="mt-5 space-y-4">
+                {selectedService.contentSections
+                  .filter(
+                    (section) =>
+                      !(
+                        isNutritionService(selectedService) &&
+                        section.title.toLowerCase() === "personalized wellness support for"
+                      ),
+                  )
+                  .map((section) => (
+                  <div key={section.title}>
+                    <p className="text-xs tracking-[0.16em] text-[#1f6f75]">{section.title.toUpperCase()}</p>
+                    {section.paragraphs?.map((paragraph) => (
+                      <p key={paragraph} className="mt-2 text-sm leading-relaxed text-[#5f5344]">
+                        {paragraph}
+                      </p>
+                    ))}
+                    {section.bullets?.length ? (
+                      <ul className="mt-2 list-disc space-y-1 pl-5">
+                        {section.bullets.map((item) => (
+                          <li key={item} className="text-sm text-[#5f5344]">
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </div>
+                ))}
               </div>
             ) : null}
             {selectedService.pricing && selectedService.pricing.length > 0 ? (

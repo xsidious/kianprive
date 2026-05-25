@@ -32,6 +32,7 @@ export default async function ServiceDetailPage({
 
   const isNutrition = slug === NUTRITION_SERVICE_SLUG;
   const showPricing = canViewPricing || isNutrition;
+  const heroImage = isNutrition ? service.promoImage ?? nutritionPromoImage : service.image;
 
   return (
     <div>
@@ -39,9 +40,10 @@ export default async function ServiceDetailPage({
         {isNutrition ? (
           <div className="rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)] sm:p-8">
             <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">NUTRITION SERVICES</p>
-            <h1 className="mt-3 text-3xl text-[#1f1a15] sm:text-4xl md:text-5xl">{service.title}</h1>
-            <p className="mt-2 text-sm text-[#8f6f3e]">Cherie Johnson · Certified Nutritionist · Wellness Educator</p>
-            <p className="mt-4 max-w-3xl text-[#6f6251]">{service.description}</p>
+            <p className="mt-3 text-center text-sm tracking-[0.22em] text-[#5f5344] sm:text-base">CHERIE JOHNSON</p>
+            <p className="mt-1 text-center text-sm text-[#8f6f3e]">Certified Nutritionist · Wellness Educator</p>
+            <h1 className="mt-4 text-center text-3xl italic text-[#1f1a15] sm:text-4xl md:text-5xl">Elevate Your Wellness</h1>
+            <p className="mx-auto mt-6 max-w-2xl text-center leading-relaxed text-[#5f5344]">{service.description}</p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href="/book-online?service=nutrition"
@@ -59,7 +61,7 @@ export default async function ServiceDetailPage({
             <div className="relative mx-auto mt-8 max-w-2xl overflow-hidden rounded-2xl border border-[#b78d4b2d] bg-[#f4efe6]">
               <div className="relative aspect-[3/4] w-full sm:aspect-[4/5]">
                 <Image
-                  src={nutritionPromoImage}
+                  src={heroImage}
                   alt="Cherie Johnson Nutrition Services — holistic wellness and personalized nutrition support"
                   fill
                   sizes="(max-width: 768px) 100vw, 672px"

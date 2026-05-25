@@ -40,7 +40,6 @@ export const serviceHighlights: ServiceHighlight[] = [
     title: "Nutrition Services",
     description:
       "Cherie Johnson, Certified Nutritionist—30+ years of holistic wellness support with private virtual consultations.",
-    image: "/images/cherie-johnson-nutrition.png",
   }),
   highlightFromService("iv-therapy", {}),
   highlightFromService("korean-organic-skincare", {

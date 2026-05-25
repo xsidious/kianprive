@@ -14,6 +14,8 @@ export type ServiceDetail = {
   slug: string;
   title: string;
   image: string;
+  /** Optional hero/flyer for detail page and modal (falls back to image). */
+  promoImage?: string;
   gallery?: ServiceMediaItem[];
   description: string;
   requiresLogin?: boolean;

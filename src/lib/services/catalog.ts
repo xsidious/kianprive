@@ -1,6 +1,6 @@
 import type { ServiceDetail } from "@/lib/services/types";
 import { icooneMediaGallery, icoonePrimaryImage } from "@/lib/media/icoone";
-import { nutritionPromoImage } from "@/lib/media/nutrition";
+import { nutritionCardImage, nutritionPromoImage } from "@/lib/media/nutrition";
 
 export type { ServiceDetail, ServiceContentSection, ServiceMediaItem } from "@/lib/services/types";
 
@@ -91,21 +91,23 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "nutrition",
     title: "Nutrition Services",
-    image: nutritionPromoImage,
+    image: nutritionCardImage,
+    promoImage: nutritionPromoImage,
     description:
-      "Cherie Johnson, Certified Nutritionist & Wellness Educator, brings over 30 years of experience in holistic, culturally aware nutrition—private virtual consultations available.",
+      "With over 30 years in nutrition, Cherie Johnson brings a refined, holistic approach to modern wellness. Organic living. Sustainable habits. Lifelong vitality.",
     details: [
-      "Personalized consultations that honor your health history, goals, and dietary needs—not one-size-fits-all plans.",
-      "Practical meal guidance and sustainable habit-building designed for long-term wellness, not quick fixes.",
-      "Coordination with KIAN Privé physician-led care when your wellness plan benefits from clinical alignment.",
+      "Certified Nutritionist · Wellness Educator — Cherie Johnson",
+      "Private Virtual Consultations Available",
+      "Nourish your body. Support your wellness. Elevate your future.",
     ],
     includes: [
-      "One-on-one personalized consultations",
-      "Individualized wellness and meal planning support",
-      "Holistic and realistic nutrition guidance",
-      "Sustainable lifestyle recommendations",
-      "Compassionate accountability and encouragement",
-      "A judgment-free wellness experience",
+      "Blood pressure balance",
+      "Inflammation & autoimmune wellness",
+      "Diabetes-conscious nutrition",
+      "Fibromyalgia support",
+      "Digestive & gut balance",
+      "Heart-focused living",
+      "Gentle detox lifestyle guidance",
     ],
     pricing: [
       "Initial Nutrition Consultation & Meal Plan — wellness assessment, personalized recommendations, customized meal guidance, lifestyle support",
@@ -115,61 +117,40 @@ export const serviceCatalog: ServiceDetail[] = [
     ],
     contentSections: [
       {
-        title: "Our Approach",
+        title: "Elevate Your Wellness",
         paragraphs: [
-          "We believe wellness starts with nourishment, balance, and realistic lifestyle changes that fit your everyday life. Our approach is rooted in holistic nutrition, compassionate support, and culturally aware guidance designed specifically for women and families.",
-          "Whether you are navigating hormonal changes, digestive concerns, blood sugar management, or simply looking to feel healthier and more energized, we provide personalized nutrition support tailored to your unique needs and goals.",
+          "With over 30 years in nutrition, Cherie Johnson brings a refined, holistic approach to modern wellness.",
+          "Organic living. Sustainable habits. Lifelong vitality.",
         ],
       },
       {
-        title: "Meet Cherie Johnson",
+        title: "Personalized wellness support for",
+        bullets: [
+          "Blood pressure balance",
+          "Inflammation & autoimmune wellness",
+          "Diabetes-conscious nutrition",
+          "Fibromyalgia support",
+          "Digestive & gut balance",
+          "Heart-focused living",
+          "Gentle detox lifestyle guidance",
+        ],
+      },
+      {
+        title: "Private Virtual Consultations Available",
         paragraphs: [
-          "Cherie Johnson is a certified nutritionist, wellness educator, actress, producer, and entrepreneur with over 30 years in nutrition. She brings a refined, holistic approach rooted in organic living, sustainable habits, and lifelong vitality.",
-          "Through practical nutrition education and individualized support, Cherie helps women and families build sustainable habits—not quick fixes—in a safe, judgment-free space.",
-          "Private virtual consultations available. Nourish your body. Support your wellness. Elevate your future.",
+          "Nourish your body. Support your wellness. Elevate your future.",
         ],
       },
       {
         title: "Our Nutritional Consultation Services",
         paragraphs: [
-          "Every body is different. During your consultation, we take the time to understand your health history, lifestyle, wellness goals, and dietary needs to create a customized plan designed specifically for you.",
+          "Holistic, culturally aware nutrition support for women and families—personalized consultations, meal planning, and sustainable wellness habits coordinated with your KIAN Privé care team when needed.",
         ],
         bullets: [
-          "Personalized Nutrition Consultations — health history, lifestyle, and goal-based planning",
-          "Meal Planning Support — realistic guidance tailored to your schedule and healing goals",
-          "Women's Wellness Nutrition — hormone balance, PCOS, blood sugar, weight, gut health, energy, pre- and post-pregnancy wellness",
-          "Family Nutrition Guidance — balanced routines and practical strategies for busy households",
-        ],
-      },
-      {
-        title: "Areas of Nutritional Support",
-        bullets: [
-          "Blood pressure balance",
-          "Inflammation and autoimmune wellness",
-          "Diabetes-conscious nutrition",
-          "Fibromyalgia support",
-          "Digestive and gut balance",
-          "Heart-focused living",
-          "Gentle detox lifestyle guidance",
-          "Pre-pregnancy and post-pregnancy nutrition",
-          "Weight management and hormone balance",
-        ],
-      },
-      {
-        title: "Why Choose Cherie Johnson Nutrition Services?",
-        bullets: [
-          "Holistic and culturally aware approach",
-          "Realistic nutrition plans for real life",
-          "Focus on sustainable lifestyle changes",
-          "Supportive coaching and wellness guidance",
-          "Personalized attention for every client",
-          "Passionate about empowering women and families",
-        ],
-      },
-      {
-        title: "Begin Your Wellness Journey",
-        paragraphs: [
-          "Your health journey deserves support, compassion, and a plan designed specifically for you. Let Cherie Johnson Nutrition Services help you create healthier habits that nourish your body and support your overall wellness.",
+          "Personalized nutrition consultations",
+          "Meal planning support",
+          "Women's wellness nutrition",
+          "Family nutrition guidance",
         ],
       },
     ],
