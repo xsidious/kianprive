@@ -6,7 +6,12 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { PeptidesInteractiveShowcase } from "@/components/services/PeptidesInteractiveShowcase";
 
+import { NUTRITION_SERVICE_SLUG } from "@/lib/media/nutrition";
 import type { ServiceListingItem } from "@/lib/services/types";
+
+function isNutritionService(service: Pick<ServiceListingItem, "slug">) {
+  return service.slug === NUTRITION_SERVICE_SLUG;
+}
 
 type ServiceCardsWithModalProps = {
   services: ServiceListingItem[];
@@ -48,8 +53,18 @@ export function ServiceCardsWithModal({ services, label }: ServiceCardsWithModal
                 : "border-[#b78d4b2d] bg-white"
             }`}
           >
-            <div className="relative h-64 overflow-hidden rounded-2xl">
-              <Image src={service.image} alt={service.title} fill sizes="(max-width: 768px) 100vw, 42vw" className="object-cover" />
+            <div
+              className={`relative overflow-hidden rounded-2xl ${
+                isNutritionService(service) ? "h-72 bg-[#f4efe6] sm:h-80" : "h-64"
+              }`}
+            >
+              <Image
+                src={service.image}
+                alt={service.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 42vw"
+                className={isNutritionService(service) ? "object-contain p-2" : "object-cover"}
+              />
             </div>
             <div>
               <p className={`text-xs tracking-[0.2em] ${isPriorityGroup ? "text-[#1f6f75]" : "text-[#8f6f3e]"}`}>
@@ -124,7 +139,11 @@ export function ServiceCardsWithModal({ services, label }: ServiceCardsWithModal
                 <PeptidesInteractiveShowcase />
               </div>
             ) : (
-              <div className="relative mt-4 h-56 overflow-hidden rounded-2xl border border-[#b78d4b2d]">
+              <div
+                className={`relative mt-4 overflow-hidden rounded-2xl border border-[#b78d4b2d] ${
+                  isNutritionService(selectedService) ? "h-[min(70vh,520px)] bg-[#f4efe6]" : "h-56"
+                }`}
+              >
                 {selectedService.video ? (
                   <video
                     src={selectedService.video}
@@ -133,7 +152,15 @@ export function ServiceCardsWithModal({ services, label }: ServiceCardsWithModal
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <Image src={selectedService.image} alt={selectedService.title} fill className="object-cover" />
+                  <Image
+                    src={selectedService.image}
+                    alt={selectedService.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 720px"
+                    className={
+                      isNutritionService(selectedService) ? "object-contain p-3" : "object-cover"
+                    }
+                  />
                 )}
               </div>
             )}

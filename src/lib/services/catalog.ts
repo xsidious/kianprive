@@ -1,5 +1,6 @@
 import type { ServiceDetail } from "@/lib/services/types";
 import { icooneMediaGallery, icoonePrimaryImage } from "@/lib/media/icoone";
+import { nutritionPromoImage } from "@/lib/media/nutrition";
 
 export type { ServiceDetail, ServiceContentSection, ServiceMediaItem } from "@/lib/services/types";
 
@@ -89,10 +90,10 @@ export const serviceCatalog: ServiceDetail[] = [
   },
   {
     slug: "nutrition",
-    title: "Cherie Johnson Nutrition Services",
-    image: "/images/cherie-johnson.avif",
+    title: "Nutrition Services",
+    image: nutritionPromoImage,
     description:
-      "Holistic, culturally aware nutrition support for women and families—rooted in nourishment, balance, and realistic lifestyle changes that fit everyday life.",
+      "Cherie Johnson, Certified Nutritionist & Wellness Educator, brings over 30 years of experience in holistic, culturally aware nutrition—private virtual consultations available.",
     details: [
       "Personalized consultations that honor your health history, goals, and dietary needs—not one-size-fits-all plans.",
       "Practical meal guidance and sustainable habit-building designed for long-term wellness, not quick fixes.",
@@ -123,8 +124,9 @@ export const serviceCatalog: ServiceDetail[] = [
       {
         title: "Meet Cherie Johnson",
         paragraphs: [
-          "Cherie Johnson is a wellness advocate, nutrition consultant, actress, producer, and entrepreneur passionate about helping women and families reclaim their health naturally. Through practical nutrition education and individualized support, Cherie helps clients build sustainable habits that support long-term wellness—not quick fixes.",
-          "Her mission is to create a safe, judgment-free space where clients feel empowered, educated, and supported throughout their wellness journey.",
+          "Cherie Johnson is a certified nutritionist, wellness educator, actress, producer, and entrepreneur with over 30 years in nutrition. She brings a refined, holistic approach rooted in organic living, sustainable habits, and lifelong vitality.",
+          "Through practical nutrition education and individualized support, Cherie helps women and families build sustainable habits—not quick fixes—in a safe, judgment-free space.",
+          "Private virtual consultations available. Nourish your body. Support your wellness. Elevate your future.",
         ],
       },
       {
@@ -142,14 +144,15 @@ export const serviceCatalog: ServiceDetail[] = [
       {
         title: "Areas of Nutritional Support",
         bullets: [
+          "Blood pressure balance",
+          "Inflammation and autoimmune wellness",
+          "Diabetes-conscious nutrition",
+          "Fibromyalgia support",
+          "Digestive and gut balance",
+          "Heart-focused living",
+          "Gentle detox lifestyle guidance",
           "Pre-pregnancy and post-pregnancy nutrition",
-          "Obesity and weight management",
-          "Diabetes and blood sugar support",
-          "Eczema and inflammatory concerns",
-          "High blood pressure (hypertension)",
-          "Diverticulitis and digestive health",
-          "PCOS (polycystic ovary syndrome)",
-          "Gut health and hormone balance",
+          "Weight management and hormone balance",
         ],
       },
       {

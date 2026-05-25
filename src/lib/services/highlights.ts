@@ -37,9 +37,10 @@ export const serviceHighlights: ServiceHighlight[] = [
       "Physician-supervised metabolic, peptide, and regenerative pathways including GLP-1 programs and exosome-enhanced treatments.",
   }),
   highlightFromService("nutrition", {
-    title: "Cherie Johnson Nutrition",
+    title: "Nutrition Services",
     description:
-      "Holistic, culturally aware nutrition for women and families—personalized consultations, meal planning, and sustainable wellness habits.",
+      "Cherie Johnson, Certified Nutritionist—30+ years of holistic wellness support with private virtual consultations.",
+    image: "/images/cherie-johnson-nutrition.png",
   }),
   highlightFromService("iv-therapy", {}),
   highlightFromService("korean-organic-skincare", {

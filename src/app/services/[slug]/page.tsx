@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { auth } from "@/lib/auth";
 import { IcooneMediaGallery } from "@/components/services/IcooneMediaGallery";
+import { nutritionPromoImage, NUTRITION_SERVICE_SLUG } from "@/lib/media/nutrition";
 import { getServiceBySlug, serviceCatalog } from "@/lib/services/catalog";
 
 export function generateStaticParams() {
@@ -29,38 +30,65 @@ export default async function ServiceDetailPage({
     redirect("/login");
   }
 
-  const isNutrition = slug === "nutrition";
+  const isNutrition = slug === NUTRITION_SERVICE_SLUG;
   const showPricing = canViewPricing || isNutrition;
 
   return (
     <div>
       <SectionWrapper className="pt-10 sm:pt-12 md:pt-14">
-        <div className="grid items-center gap-8 rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)] lg:grid-cols-[1.05fr_0.95fr]">
-          <div>
-            <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">SERVICE DETAIL</p>
+        {isNutrition ? (
+          <div className="rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)] sm:p-8">
+            <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">NUTRITION SERVICES</p>
             <h1 className="mt-3 text-3xl text-[#1f1a15] sm:text-4xl md:text-5xl">{service.title}</h1>
-            <p className="mt-4 text-[#6f6251]">{service.description}</p>
+            <p className="mt-2 text-sm text-[#8f6f3e]">Cherie Johnson · Certified Nutritionist · Wellness Educator</p>
+            <p className="mt-4 max-w-3xl text-[#6f6251]">{service.description}</p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                href={isNutrition ? "/book-online?service=nutrition" : "/book-online"}
+                href="/book-online?service=nutrition"
                 className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white"
               >
-                {isNutrition ? "Schedule Your Consultation Today" : "Book Consultation"}
+                Schedule Your Consultation Today
               </Link>
-              {isNutrition ? (
-                <Link href="/contact" className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]">
-                  Contact Us
-                </Link>
-              ) : null}
+              <Link href="/contact" className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]">
+                Contact Us
+              </Link>
               <Link href="/services" className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]">
                 Back to Services
               </Link>
             </div>
+            <div className="relative mx-auto mt-8 max-w-2xl overflow-hidden rounded-2xl border border-[#b78d4b2d] bg-[#f4efe6]">
+              <div className="relative aspect-[3/4] w-full sm:aspect-[4/5]">
+                <Image
+                  src={nutritionPromoImage}
+                  alt="Cherie Johnson Nutrition Services — holistic wellness and personalized nutrition support"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 672px"
+                  className="object-contain p-4"
+                  priority
+                />
+              </div>
+            </div>
           </div>
-          <div className="relative h-[300px] overflow-hidden rounded-2xl border border-[#b78d4b2d] sm:h-[360px]">
-            <Image src={service.image} alt={service.title} fill className="object-cover" />
+        ) : (
+          <div className="grid items-center gap-8 rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)] lg:grid-cols-[1.05fr_0.95fr]">
+            <div>
+              <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">SERVICE DETAIL</p>
+              <h1 className="mt-3 text-3xl text-[#1f1a15] sm:text-4xl md:text-5xl">{service.title}</h1>
+              <p className="mt-4 text-[#6f6251]">{service.description}</p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link href="/book-online" className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
+                  Book Consultation
+                </Link>
+                <Link href="/services" className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]">
+                  Back to Services
+                </Link>
+              </div>
+            </div>
+            <div className="relative h-[300px] overflow-hidden rounded-2xl border border-[#b78d4b2d] sm:h-[360px]">
+              <Image src={service.image} alt={service.title} fill className="object-cover" />
+            </div>
           </div>
-        </div>
+        )}
       </SectionWrapper>
 
       {service.gallery?.length ? (
