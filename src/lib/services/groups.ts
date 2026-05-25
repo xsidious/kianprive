@@ -7,6 +7,9 @@ function bySlug(slug: string) {
   return service;
 }
 
+/** Every catalog service with a detail page — use for full services listing. */
+export const allCatalogServices: ServiceListingItem[] = serviceCatalog.map((entry) => entry);
+
 export const coreServices: ServiceListingItem[] = [
   bySlug("telemedicine"),
   bySlug("comprehensive-bloodwork"),
@@ -18,6 +21,14 @@ export const coreServices: ServiceListingItem[] = [
   bySlug("facial-aesthetics"),
   bySlug("glp1-peptides"),
   bySlug("mindtap"),
+  bySlug("beauty-hair-nails"),
+  bySlug("inbody-scan"),
+  bySlug("power-plate"),
+];
+
+export const wellnessTechnologyServices: ServiceListingItem[] = [
+  bySlug("inbody-scan"),
+  bySlug("power-plate"),
 ];
 
 export const sameLocationAddOns: ServiceListingItem[] = [
@@ -57,6 +68,12 @@ export const gymServices: ServiceListingItem[] = [
     includes: ["Performance movement", "Conditioning support", "Recovery integration"],
     availability: ["Partner access coordinated through contact form."],
   },
+];
+
+export const partnerAddOnServices: ServiceListingItem[] = [
+  ...sameLocationAddOns,
+  ...gymServices,
+  ...differentLocationAddOns,
 ];
 
 export const serviceAccessNotes = [

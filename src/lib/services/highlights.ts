@@ -53,11 +53,9 @@ export const serviceHighlights: ServiceHighlight[] = [
       "Precision aesthetic services from licensed professionals—injectables, resurfacing, peels, and skin-forward clinical outcomes.",
     image: "/images/stock/service-medical-aesthetics.jpg",
   }),
-  {
+  highlightFromService("beauty-hair-nails", {
     title: "Beauty (Hair and Nails)",
     description:
       "Salon-partner beauty services including hair, nails, lashes, and skincare in a coordinated luxury setting.",
-    image: "/images/stock/service-beauty-salon.jpg",
-    href: "/book-online",
-  },
+  }),
 ];

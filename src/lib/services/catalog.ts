@@ -238,6 +238,61 @@ export const serviceCatalog: ServiceDetail[] = [
     includes: ["Focus and composure training", "Performance psychology support", "Cognitive conditioning"],
     availability: ["Different-location partner service; facility-only partner workflow."],
   },
+  {
+    slug: "beauty-hair-nails",
+    title: "Beauty (Hair and Nails)",
+    image: "/images/stock/service-beauty-salon.jpg",
+    description:
+      "Salon-partner beauty services including hair, nails, lashes, and skincare in a coordinated luxury setting with your KIAN Privé care team.",
+    details: [
+      "Coordinated with your wellness and aesthetics plan for a unified luxury experience.",
+      "Hair, nail, lash, and skincare services through trusted salon partners.",
+    ],
+    includes: ["Hair services", "Nails and lashes", "Skincare coordination", "Luxury salon partner access"],
+    availability: ["Partner scheduling coordinated through KIAN Privé concierge."],
+  },
+  {
+    slug: "inbody-scan",
+    title: "InBody Scan — Body Composition",
+    image: "/images/stock/service-wellness.jpg",
+    description:
+      "Comprehensive, non-invasive body composition analysis—muscle mass, body fat, visceral fat, hydration, and metabolic insights reviewed with your physician.",
+    details: [
+      "Clinical-precision scan measuring muscle, fat distribution, visceral fat, and hydration.",
+      "Results integrated into your physician wellness roadmap and membership progress tracking.",
+    ],
+    includes: [
+      "Body composition report",
+      "Physician roadmap integration",
+      "Progress tracking over time",
+      "Membership-tier complimentary access",
+    ],
+    pricing: [
+      "Single scan (non-member): $30",
+      "Included monthly in membership Tiers 1–3",
+      "4× monthly included in Tier 4",
+    ],
+    availability: ["Facility-based; coordinated with consultations and memberships."],
+  },
+  {
+    slug: "power-plate",
+    title: "Power Plate — Vibration Therapy",
+    image: "/images/stock/service-esthetics.jpg",
+    description:
+      "Whole-body vibration therapy using Precision Vibration Technology™ to support recovery, circulation, balance, and metabolic performance.",
+    details: [
+      "Muscles contract and relax up to 50 times per second for rapid recovery support.",
+      "Enhances circulation, lymphatic flow, balance, bone density, and fat metabolism.",
+    ],
+    includes: [
+      "Whole-body vibration session",
+      "Recovery and circulation support",
+      "Balance and neuromuscular support",
+      "Complimentary with active membership",
+    ],
+    pricing: ["Single session (non-member): $25", "Complimentary with any active membership"],
+    availability: ["Facility-based; available with membership and select protocols."],
+  },
 ];
 
 export function getServiceBySlug(slug: string) {

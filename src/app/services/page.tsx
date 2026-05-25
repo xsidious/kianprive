@@ -6,12 +6,10 @@ import { getCmsPageContent } from "@/lib/cms/pages";
 import { KianPrivePaymentPolicies, PoliciesPageLinks } from "@/components/policies/KianPrivePaymentPolicies";
 import { ServiceCardsWithModal } from "@/components/services/ServiceCardsWithModal";
 import {
+  allCatalogServices,
   brandIntro,
-  coreServices,
-  differentLocationAddOns,
-  gymServices,
+  partnerAddOnServices,
   preferredProviders,
-  sameLocationAddOns,
   serviceAccessNotes,
 } from "@/lib/services/groups";
 
@@ -525,25 +523,36 @@ export default async function ServicesPage() {
 
   return (
     <div>
-      <SectionWrapper className="pt-18">
-        <div className="grid items-center gap-10 rounded-3xl border border-[#b78d4b2e] bg-white p-8 shadow-[0_20px_50px_-38px_rgba(66,45,14,0.45)] lg:grid-cols-[1.1fr_0.9fr]">
+      <SectionWrapper className="pt-14 sm:pt-16">
+        <div className="relative overflow-hidden rounded-[2rem] border border-[#b78d4b22] bg-gradient-to-br from-[#fffaf2] via-white to-[#f4efe6] p-8 shadow-[0_28px_60px_-40px_rgba(66,45,14,0.45)] sm:p-10 lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-10">
+          <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-[#b78d4b15] blur-3xl" aria-hidden />
           <div>
-            <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">{cms.eyebrow ?? "PRIVÉ SERVICES"}</p>
-            <h1 className="mt-4 text-4xl text-[#1f1a15] md:text-5xl">{cms.title}</h1>
-            <p className="mt-5 max-w-2xl text-[#6f6251]">
-              {cms.description}
+            <p className="inline-flex rounded-full border border-[#b78d4b33] bg-white/80 px-4 py-1.5 text-xs tracking-[0.2em] text-[#8f6f3e]">
+              {cms.eyebrow ?? "PRIVÉ SERVICES"}
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link href="/book-online" className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
-                Book Services
+            <h1 className="mt-5 font-serif text-4xl tracking-tight text-[#1f1a15] md:text-5xl">{cms.title}</h1>
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-[#6f6251]">{cms.description}</p>
+            <p className="mt-3 max-w-xl text-[#8f6f3e]">{brandIntro.tagline}</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="/book-online"
+                className="inline-flex min-h-[48px] items-center rounded-2xl bg-gradient-to-r from-[#b78d4b] to-[#a67d42] px-6 text-base font-semibold text-white shadow-[0_12px_28px_-12px_rgba(183,141,75,0.75)]"
+              >
+                Book an appointment
               </Link>
-              <Link href="/pricing" className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]">
-                View Membership
+              <Link
+                href="/pricing"
+                className="inline-flex min-h-[48px] items-center rounded-2xl border-2 border-[#b78d4b55] bg-white px-6 text-base text-[#3b3024]"
+              >
+                Membership
               </Link>
             </div>
+            <p className="mt-6 text-sm text-[#8f6f3e]">
+              {allCatalogServices.length} services · In-clinic, in-home, and virtual options
+            </p>
           </div>
-          <div className="relative h-[360px] overflow-hidden rounded-3xl border border-[#b78d4b36]">
-            <Image src="/images/wellness.avif" alt="KIAN Privé services overview" fill className="object-cover" />
+          <div className="relative mt-8 h-[280px] overflow-hidden rounded-3xl border border-[#b78d4b33] lg:mt-0 lg:h-[360px]">
+            <Image src="/images/wellness.avif" alt="KIAN Privé services overview" fill className="object-cover" priority />
           </div>
         </div>
       </SectionWrapper>
@@ -570,51 +579,57 @@ export default async function ServicesPage() {
         </div>
       </SectionWrapper>
 
-      <SectionWrapper>
-        <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Core Services</h2>
-        <p className="mb-6 max-w-3xl text-[#6f6251]">
-          Your primary care suite at KIAN Privé, delivered in one integrated experience.
-        </p>
-        <ServiceCardsWithModal services={coreServices} label="SERVICE" />
-      </SectionWrapper>
-
-      <SectionWrapper>
-        <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Add-Ons (Same Location)</h2>
-        <p className="mb-6 max-w-3xl text-[#6f6251]">
-          These add-ons are available at the same location as your core KIAN Privé services.
-        </p>
-        <p className="mb-6 inline-flex rounded-full border border-[#1f7a7a5c] bg-[#e9f7f7] px-4 py-2 text-xs tracking-[0.18em] text-[#1b6568]">
-          HIGH-DEMAND ENHANCEMENTS
-        </p>
-        <ServiceCardsWithModal services={sameLocationAddOns} label="SAME-LOCATION" />
-      </SectionWrapper>
-
-      <SectionWrapper>
-        <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Add-Ons (Different Location)</h2>
-        <p className="mb-6 max-w-3xl text-[#6f6251]">
-          Partner services available at a different location.
-        </p>
-        <ServiceCardsWithModal services={differentLocationAddOns} label="OFF-SITE" />
-      </SectionWrapper>
-
-      <SectionWrapper>
-        <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Gym Services</h2>
-        <p className="mb-6 max-w-3xl text-[#6f6251]">
-          Performance and conditioning support through our gym partner network.
-        </p>
-        <ServiceCardsWithModal services={gymServices} label="GYM" />
-      </SectionWrapper>
-
-
-      <SectionWrapper>
-        <div className="rounded-2xl border border-[#1f7a7a40] bg-[linear-gradient(120deg,#0f3a44_0%,#14505a_65%,#1f7a7a_100%)] p-4 text-white shadow-[0_20px_45px_-35px_rgba(15,58,68,0.8)]">
-          <p className="text-xs tracking-[0.2em] text-[#bce9e8]">DETAILED SERVICE LIBRARY</p>
-          <p className="mt-2 text-sm leading-relaxed text-[#eef8f8]">
-            Korean skincare, GLP-1/metabolic pathways, and advanced protocol details are now organized in each dedicated service page.
-            Open any service card and select <strong>Service Page</strong> to view full information.
+      <SectionWrapper id="all-services">
+        <div className="mb-8 max-w-3xl">
+          <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">COMPLETE MENU</p>
+          <h2 className="mt-2 font-serif text-3xl text-[#1f1a15] md:text-4xl">All KIAN Privé Services</h2>
+          <p className="mt-4 text-lg leading-relaxed text-[#6f6251]">
+            Every offering in one place — tap <strong>Quick view</strong> for a summary, <strong>Full details</strong> for
+            pricing and protocols, or <strong>Book</strong> to schedule online.
           </p>
         </div>
+        <ServiceCardsWithModal services={allCatalogServices} label="SERVICE" layout="grid" />
       </SectionWrapper>
+
+      <SectionWrapper>
+        <div className="mb-8 max-w-3xl">
+          <p className="text-xs tracking-[0.2em] text-[#1f6f75]">PRICING OVERVIEW</p>
+          <h2 className="mt-2 text-3xl text-[#1f1a15] md:text-4xl">Popular packages &amp; sessions</h2>
+          <p className="mt-3 text-[#6f6251]">
+            Member pricing and full protocol menus are on each service page. Icoone® packages are listed on the{" "}
+            <Link href="/services/icoone-laser" className="text-[#8f6f3e] underline">
+              Icoone service page
+            </Link>
+            .
+          </p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {koreanAndRecoveryPricing.map((row) => (
+            <article
+              key={row.service}
+              className="rounded-2xl border border-[#b78d4b2d] bg-white p-5 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)]"
+            >
+              <h3 className="text-lg font-medium text-[#1f1a15]">{row.service}</h3>
+              <p className="mt-2 text-sm font-medium text-[#8f6f3e]">{row.price}</p>
+              {row.note ? <p className="mt-2 text-sm text-[#6f6251]">{row.note}</p> : null}
+            </article>
+          ))}
+        </div>
+      </SectionWrapper>
+
+      {partnerAddOnServices.length > 0 ? (
+        <SectionWrapper>
+          <div className="mb-8 max-w-3xl">
+            <p className="text-xs tracking-[0.2em] text-[#1f6f75]">PARTNER ENHANCEMENTS</p>
+            <h2 className="mt-2 text-3xl text-[#1f1a15] md:text-4xl">Add-ons &amp; partner services</h2>
+            <p className="mt-3 text-[#6f6251]">
+              Salt therapy, PEMF, infrared, performance gym partners, and more — coordinated through KIAN Privé
+              concierge.
+            </p>
+          </div>
+          <ServiceCardsWithModal services={partnerAddOnServices} label="PARTNER" layout="grid" />
+        </SectionWrapper>
+      ) : null}
 
 
       <SectionWrapper>

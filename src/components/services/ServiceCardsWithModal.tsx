@@ -16,9 +16,10 @@ function isNutritionService(service: Pick<ServiceListingItem, "slug">) {
 type ServiceCardsWithModalProps = {
   services: ServiceListingItem[];
   label: string;
+  layout?: "list" | "grid";
 };
 
-export function ServiceCardsWithModal({ services, label }: ServiceCardsWithModalProps) {
+export function ServiceCardsWithModal({ services, label, layout = "list" }: ServiceCardsWithModalProps) {
   const [selectedService, setSelectedService] = useState<ServiceListingItem | null>(null);
   const { data } = useSession();
   const isPriorityGroup = label === "ADD-ON" || label === "SAME-LOCATION";
@@ -41,65 +42,122 @@ export function ServiceCardsWithModal({ services, label }: ServiceCardsWithModal
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [selectedService]);
 
+  const shortDescription = (text: string, max = 140) =>
+    text.length > max ? `${text.slice(0, max).trim()}…` : text;
+
   return (
     <>
-      <div className="space-y-6">
-        {services.map((service, index) => (
-          <article
-            key={service.title}
-            className={`grid gap-6 overflow-hidden rounded-3xl border p-5 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)] md:grid-cols-[0.42fr_0.58fr] md:items-start ${
-              isPriorityGroup
-                ? "border-[#1f7a7a4d] bg-[linear-gradient(160deg,#ffffff_35%,#eef8f7_100%)]"
-                : "border-[#b78d4b2d] bg-white"
-            }`}
-          >
-            <div className="relative h-64 overflow-hidden rounded-2xl">
-              <Image src={service.image} alt={service.title} fill sizes="(max-width: 768px) 100vw, 42vw" className="object-cover" />
-            </div>
-            <div>
-              <p className={`text-xs tracking-[0.2em] ${isPriorityGroup ? "text-[#1f6f75]" : "text-[#8f6f3e]"}`}>
-                {label} {String(index + 1).padStart(2, "0")}
-              </p>
-              <h3 className="mt-2 text-2xl text-[#2b2218]">{service.title}</h3>
-              <p className="mt-4 leading-relaxed text-[#5f5344]">
-                {service.description.length > 280 ? `${service.description.slice(0, 280)}...` : service.description}
-              </p>
-              <div className="mt-5 flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  onClick={() => setSelectedService(service)}
-                  className={`inline-flex rounded-full border px-5 py-2 text-sm ${
-                    isPriorityGroup
-                      ? "border-[#1f7a7a66] bg-[#e9f7f7] text-[#11464c]"
-                      : "border-[#b78d4b70] bg-[#fffaf2] text-[#3b3024]"
-                  }`}
-                >
-                  View More
-                </button>
-                {service.slug ? (
-                  <Link
-                    href={`/services/${service.slug}`}
+      <div className={layout === "grid" ? "grid gap-5 sm:grid-cols-2 xl:grid-cols-3" : "space-y-6"}>
+        {services.map((service, index) =>
+          layout === "grid" ? (
+            <article
+              key={service.slug ?? `${service.title}-${index}`}
+              className="group flex flex-col overflow-hidden rounded-[1.75rem] border border-[#b78d4b22] bg-white shadow-[0_22px_50px_-38px_rgba(66,45,14,0.5)] transition hover:border-[#b78d4b55] hover:shadow-[0_28px_55px_-32px_rgba(66,45,14,0.45)]"
+            >
+              <div className="relative h-48 overflow-hidden">
+                <Image
+                  src={service.image}
+                  alt=""
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                  className="object-cover transition duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1f1a15]/80 via-[#1f1a15]/10 to-transparent" />
+                <p className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[10px] font-medium tracking-[0.16em] text-[#8f6f3e]">
+                  {label}
+                </p>
+                <h3 className="absolute bottom-4 left-4 right-4 text-xl font-medium leading-snug text-white">
+                  {service.title}
+                </h3>
+              </div>
+              <div className="flex flex-1 flex-col p-5">
+                <p className="flex-1 text-sm leading-relaxed text-[#5f5344]">
+                  {shortDescription(service.description)}
+                </p>
+                <div className="mt-5 flex flex-col gap-2">
+                  {service.slug ? (
+                    <Link
+                      href={`/services/${service.slug}`}
+                      className="inline-flex min-h-[44px] items-center justify-center rounded-2xl border-2 border-[#b78d4b44] bg-[#fffaf2] text-sm font-medium text-[#3b3024]"
+                    >
+                      Full details
+                    </Link>
+                  ) : null}
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedService(service)}
+                      className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-2xl border-2 border-[#e8dcc8] text-sm text-[#3b3024]"
+                    >
+                      Quick view
+                    </button>
+                    <Link
+                      href={service.slug ? `/book-online?service=${service.slug}` : "/book-online"}
+                      className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-2xl bg-gradient-to-r from-[#b78d4b] to-[#a67d42] text-sm font-semibold text-white"
+                    >
+                      Book
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ) : (
+            <article
+              key={service.slug ?? `${service.title}-${index}`}
+              className={`grid gap-6 overflow-hidden rounded-3xl border p-5 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)] md:grid-cols-[0.42fr_0.58fr] md:items-start ${
+                isPriorityGroup
+                  ? "border-[#1f7a7a4d] bg-[linear-gradient(160deg,#ffffff_35%,#eef8f7_100%)]"
+                  : "border-[#b78d4b2d] bg-white"
+              }`}
+            >
+              <div className="relative h-64 overflow-hidden rounded-2xl">
+                <Image src={service.image} alt="" fill sizes="(max-width: 768px) 100vw, 42vw" className="object-cover" />
+              </div>
+              <div>
+                <p className={`text-xs tracking-[0.2em] ${isPriorityGroup ? "text-[#1f6f75]" : "text-[#8f6f3e]"}`}>
+                  {label} {String(index + 1).padStart(2, "0")}
+                </p>
+                <h3 className="mt-2 text-2xl text-[#2b2218]">{service.title}</h3>
+                <p className="mt-4 leading-relaxed text-[#5f5344]">
+                  {service.description.length > 280 ? `${service.description.slice(0, 280)}...` : service.description}
+                </p>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedService(service)}
                     className={`inline-flex rounded-full border px-5 py-2 text-sm ${
                       isPriorityGroup
-                        ? "border-[#1f7a7a66] bg-white text-[#11464c]"
-                        : "border-[#b78d4b70] bg-white text-[#3b3024]"
+                        ? "border-[#1f7a7a66] bg-[#e9f7f7] text-[#11464c]"
+                        : "border-[#b78d4b70] bg-[#fffaf2] text-[#3b3024]"
                     }`}
                   >
-                    Service Page
+                    View More
+                  </button>
+                  {service.slug ? (
+                    <Link
+                      href={`/services/${service.slug}`}
+                      className={`inline-flex rounded-full border px-5 py-2 text-sm ${
+                        isPriorityGroup
+                          ? "border-[#1f7a7a66] bg-white text-[#11464c]"
+                          : "border-[#b78d4b70] bg-white text-[#3b3024]"
+                      }`}
+                    >
+                      Service Page
+                    </Link>
+                  ) : null}
+                  <Link
+                    href={service.slug ? `/book-online?service=${service.slug}` : "/book-online"}
+                    className={`inline-flex rounded-full px-5 py-2 text-sm text-white ${
+                      isPriorityGroup ? "bg-gradient-to-r from-[#1f7a7a] to-[#174f63]" : "bg-[#b78d4b]"
+                    }`}
+                  >
+                    Book Now
                   </Link>
-                ) : null}
-                <Link
-                  href={service.slug ? `/book-online?service=${service.slug}` : "/book-online"}
-                  className={`inline-flex rounded-full px-5 py-2 text-sm text-white ${
-                    isPriorityGroup ? "bg-gradient-to-r from-[#1f7a7a] to-[#174f63]" : "bg-[#b78d4b]"
-                  }`}
-                >
-                  Book Now
-                </Link>
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          ),
+        )}
       </div>
 
       {selectedService ? (
