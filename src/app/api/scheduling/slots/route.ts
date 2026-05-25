@@ -3,6 +3,8 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getBookingOptionById } from "@/lib/services/booking-options";
 import { DEFAULT_TIMEZONE } from "@/lib/scheduling/config";
+import { isAcuitySchedulingEnabled } from "@/lib/acuity/config";
+import { fetchAcuitySlots } from "@/lib/acuity/slots";
 import { generateAvailableSlots } from "@/lib/scheduling/slots";
 
 const querySchema = z.object({
@@ -49,18 +51,41 @@ export async function GET(req: Request) {
       console.error("[scheduling/slots] Could not load existing bookings:", dbError);
     }
 
-    const slots = generateAvailableSlots({
-      fromDate: new Date(),
-      durationMinutes,
-      timezone,
-      bookedStarts,
-    });
+    let slots;
+    let source: "acuity" | "internal" = "internal";
+
+    if (isAcuitySchedulingEnabled()) {
+      try {
+        slots = await fetchAcuitySlots({
+          serviceId: option.id,
+          durationMinutes,
+          timezone,
+        });
+        source = "acuity";
+      } catch (acuityError) {
+        console.error("[scheduling/slots] Acuity availability failed, using internal slots:", acuityError);
+        slots = generateAvailableSlots({
+          fromDate: new Date(),
+          durationMinutes,
+          timezone,
+          bookedStarts,
+        });
+      }
+    } else {
+      slots = generateAvailableSlots({
+        fromDate: new Date(),
+        durationMinutes,
+        timezone,
+        bookedStarts,
+      });
+    }
 
     return NextResponse.json({
       serviceId: option.id,
       timezone,
       durationMinutes,
       slots,
+      source,
     });
   } catch (error) {
     console.error("[scheduling/slots] Failed to generate slots:", error);

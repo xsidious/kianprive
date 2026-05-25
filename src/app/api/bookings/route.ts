@@ -5,6 +5,10 @@ import { prisma } from "@/lib/prisma";
 import { canAccessAdmin } from "@/lib/rbac";
 import { getBookingOptionById, getBookingOptionIds } from "@/lib/services/booking-options";
 import { DEFAULT_TIMEZONE } from "@/lib/scheduling/config";
+import { createAcuityAppointment } from "@/lib/acuity/appointments";
+import { AcuityApiError } from "@/lib/acuity/client";
+import { isAcuitySchedulingEnabled } from "@/lib/acuity/config";
+import { resolveBookingDatetime } from "@/lib/acuity/datetime";
 import { computeSlotEnd, isSlotAvailable, parseSlotId } from "@/lib/scheduling/slots";
 
 const createBookingSchema = z.object({
@@ -33,7 +37,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "One or more selected services are invalid." }, { status: 400 });
   }
 
-  const scheduledStart = parseSlotId(parsed.data.scheduledSlotId);
+  const resolved = resolveBookingDatetime(parsed.data.scheduledSlotId);
+  const scheduledStart = resolved?.start ?? parseSlotId(parsed.data.scheduledSlotId);
+  const acuityDatetime = resolved?.acuityDatetime ?? parsed.data.scheduledSlotId;
   if (!scheduledStart) {
     return NextResponse.json({ error: "Selected time slot is invalid." }, { status: 400 });
   }
@@ -45,19 +51,28 @@ export async function POST(req: Request) {
 
   const timezone = parsed.data.timezone ?? DEFAULT_TIMEZONE;
 
-  const existingBookings = await prisma.bookingRequest.findMany({
-    where: {
-      scheduledStart: { gte: new Date() },
-      status: { in: ["PENDING", "CONFIRMED"] },
-    },
-    select: { scheduledStart: true },
-  });
+  const useAcuity = isAcuitySchedulingEnabled();
 
-  const bookedStarts = existingBookings
-    .map((booking) => booking.scheduledStart)
-    .filter((value): value is Date => value instanceof Date);
+  let bookedStarts: Date[] = [];
+  if (!useAcuity) {
+    try {
+      const existingBookings = await prisma.bookingRequest.findMany({
+        where: {
+          scheduledStart: { gte: new Date() },
+          status: { in: ["PENDING", "CONFIRMED"] },
+        },
+        select: { scheduledStart: true },
+      });
+      bookedStarts = existingBookings
+        .map((booking) => booking.scheduledStart)
+        .filter((value): value is Date => value instanceof Date);
+    } catch (dbError) {
+      console.error("[bookings] Could not load existing bookings:", dbError);
+    }
+  }
 
   if (
+    !useAcuity &&
     !isSlotAvailable(
       parsed.data.scheduledSlotId,
       bookedStarts,
@@ -66,6 +81,41 @@ export async function POST(req: Request) {
     )
   ) {
     return NextResponse.json({ error: "That time slot is no longer available. Please choose another." }, { status: 409 });
+  }
+
+  let acuityAppointmentId: number | null = null;
+  if (useAcuity) {
+    const nameParts = parsed.data.fullName.trim().split(/\s+/);
+    const firstName = nameParts[0] ?? parsed.data.fullName;
+    const lastName = nameParts.slice(1).join(" ") || firstName;
+    try {
+      const acuityAppointment = await createAcuityAppointment({
+        serviceSlug: primaryService.slug,
+        datetime: acuityDatetime,
+        firstName,
+        lastName,
+        email: parsed.data.email,
+        phone: parsed.data.phone,
+        notes: [
+          parsed.data.notes,
+          `Booked via kianprive.com/book-online`,
+          `Services: ${parsed.data.serviceIds.join(", ")}`,
+          `Location: ${parsed.data.preferredLocation}`,
+        ]
+          .filter(Boolean)
+          .join("\n"),
+      });
+      acuityAppointmentId = acuityAppointment.id;
+    } catch (error) {
+      console.error("[bookings] Acuity appointment create failed:", error);
+      const message =
+        error instanceof AcuityApiError
+          ? error.message
+          : error instanceof Error
+            ? error.message
+            : "Could not confirm appointment with scheduling system.";
+      return NextResponse.json({ error: message }, { status: 502 });
+    }
   }
 
   const scheduledEnd = computeSlotEnd(scheduledStart, primaryService.durationMinutes);
@@ -80,33 +130,60 @@ export async function POST(req: Request) {
     memberTotal += option.memberPrice;
   }
 
-  const booking = await prisma.bookingRequest.create({
-    data: {
-      userId: session?.user?.id || null,
-      fullName: parsed.data.fullName,
-      email: parsed.data.email.toLowerCase(),
-      phone: parsed.data.phone,
-      preferredDate: scheduledStart,
-      preferredLocation: parsed.data.preferredLocation,
-      scheduledStart,
-      scheduledEnd,
-      timezone,
-      notes: parsed.data.notes || null,
-      serviceIds: parsed.data.serviceIds,
-      serviceTitles,
-      guestTotal,
-      memberTotal,
-      status: "CONFIRMED",
-    },
-    select: {
-      id: true,
-      status: true,
-      scheduledStart: true,
-      scheduledEnd: true,
-    },
-  });
+  let booking: {
+    id: string;
+    status: string;
+    scheduledStart: Date | null;
+    scheduledEnd: Date | null;
+  } | null = null;
 
-  return NextResponse.json({ ok: true, booking });
+  try {
+    booking = await prisma.bookingRequest.create({
+      data: {
+        userId: session?.user?.id || null,
+        fullName: parsed.data.fullName,
+        email: parsed.data.email.toLowerCase(),
+        phone: parsed.data.phone,
+        preferredDate: scheduledStart,
+        preferredLocation: parsed.data.preferredLocation,
+        scheduledStart,
+        scheduledEnd,
+        timezone,
+        notes: [
+          parsed.data.notes,
+          acuityAppointmentId ? `Acuity appointment #${acuityAppointmentId}` : null,
+        ]
+          .filter(Boolean)
+          .join("\n\n") || null,
+        serviceIds: parsed.data.serviceIds,
+        serviceTitles,
+        guestTotal,
+        memberTotal,
+        status: "CONFIRMED",
+      },
+      select: {
+        id: true,
+        status: true,
+        scheduledStart: true,
+        scheduledEnd: true,
+      },
+    });
+  } catch (dbError) {
+    console.error("[bookings] Could not save booking request to database:", dbError);
+    if (!acuityAppointmentId) {
+      return NextResponse.json(
+        { error: "Could not save booking. Please contact concierge to confirm your appointment." },
+        { status: 500 },
+      );
+    }
+  }
+
+  return NextResponse.json({
+    ok: true,
+    booking,
+    acuityAppointmentId,
+    schedulingSource: useAcuity ? "acuity" : "internal",
+  });
 }
 
 export async function GET() {

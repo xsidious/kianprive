@@ -72,6 +72,7 @@ function BookOnlineContent() {
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [slotsError, setSlotsError] = useState("");
+  const [slotsSource, setSlotsSource] = useState<"acuity" | "internal" | "">("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -193,7 +194,7 @@ function BookOnlineContent() {
         });
         const res = await fetch(`/api/scheduling/slots?${params.toString()}`);
         const raw = await res.text();
-        let payload: { slots?: TimeSlot[]; error?: string } = {};
+        let payload: { slots?: TimeSlot[]; error?: string; source?: string } = {};
         if (raw) {
           try {
             payload = JSON.parse(raw) as { slots?: TimeSlot[]; error?: string };
@@ -206,6 +207,7 @@ function BookOnlineContent() {
         if (!res.ok) throw new Error(payload.error ?? "Could not load time slots.");
         if (cancelled) return;
         setAvailableSlots(payload.slots ?? []);
+        setSlotsSource(payload.source === "acuity" ? "acuity" : "internal");
         if (selectedSlotId && !payload.slots?.some((slot) => slot.id === selectedSlotId)) {
           setSelectedSlotId("");
         }
@@ -461,7 +463,9 @@ function BookOnlineContent() {
             >
               <h2 className="text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">Choose Date &amp; Time</h2>
               <p className="mt-2 text-[#6f6251]">
-                First choose your date, then pick your preferred time. Appointments are offered weekdays, 8:00 AM–8:00 PM Eastern ({bookingDurationMinutes} min session).
+                {slotsSource === "acuity"
+                  ? `Choose from live availability in our Acuity calendar (${bookingDurationMinutes} min session, Eastern Time).`
+                  : `First choose your date, then pick your preferred time. Appointments are offered weekdays, 8:00 AM–8:00 PM Eastern (${bookingDurationMinutes} min session).`}
               </p>
               {slotsLoading ? (
                 <p className="mt-6 text-sm text-[#6f6251]">Loading available times…</p>
@@ -603,7 +607,9 @@ function BookOnlineContent() {
               </motion.div>
               <h2 className="mt-4 text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">Appointment Confirmed</h2>
               <p className="mx-auto mt-3 max-w-2xl text-[#5f5344]">
-                Thank you, {fullName || "Member"}. Your appointment is confirmed. A confirmation email will follow shortly.
+                Thank you, {fullName || "Member"}. Your appointment is confirmed in our scheduling system and you should
+                receive a confirmation email from Acuity shortly. If your service includes a health intake form, you may
+                complete it from that email before your visit.
               </p>
               <div className="mx-auto mt-6 max-w-2xl rounded-2xl border border-[#b78d4b38] bg-white/75 p-4 text-left">
                 <p className="text-sm text-[#4f4335]">
