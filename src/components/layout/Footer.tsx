@@ -51,7 +51,7 @@ export function Footer() {
             <p className="text-sm font-medium text-[#3f3327]">Services</p>
             <div className="mt-3 space-y-2 text-sm">
               <Link href="/services" className="block hover:text-[#8f6f3e] hover:underline">
-                Privée Services
+                Privé Services
               </Link>
               <Link href="/icoone-training" className="block hover:text-[#8f6f3e] hover:underline">
                 Icoone Training

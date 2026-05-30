@@ -17,6 +17,7 @@ export const coreServices: ServiceListingItem[] = [
   bySlug("iv-therapy"),
   bySlug("nutrition"),
   bySlug("microneedling-with-exosomes"),
+  bySlug("hair-restoration"),
   bySlug("korean-organic-skincare"),
   bySlug("facial-aesthetics"),
   bySlug("glp1-peptides"),

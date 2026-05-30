@@ -8,7 +8,7 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "telemedicine",
     title: "Telemedicine",
-    image: "/images/stock/hero-luxury-clinic.jpg",
+    image: "/images/ConciergeHomevisit.jpeg",
     description:
       "Physician-led virtual consultations designed for continuity, convenience, and personalized wellness planning from wherever you are.",
     details: [
@@ -158,12 +158,25 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "microneedling-with-exosomes",
     title: "Microneedling with Exosomes",
-    image: "/images/facial-treatments.jpg",
+    image: "/images/microneedling.jpg",
     description:
       "Advanced skin rejuvenation treatment that supports collagen production and visible texture improvement through regenerative signaling.",
     details: ["Microneedling combined with exosome-based regenerative support for skin renewal."],
     pricing: ["Single session: $600", "4-session package: $1,800", "5-session package: $2,700", "10-session package: $5,000"],
     includes: ["Texture refinement", "Tone support", "Fine-line and radiance improvement"],
+  },
+  {
+    slug: "hair-restoration",
+    title: "Hair Restoration",
+    image: "/images/hairrestoration.jpeg",
+    description:
+      "Physician-guided hair restoration programs combining diagnostics and regenerative options to support healthier density and scalp vitality.",
+    details: [
+      "Programs are personalized based on scalp assessment, medical history, and restoration goals.",
+      "Treatment planning may include regenerative pathways, protocol sequencing, and follow-up optimization.",
+    ],
+    includes: ["Scalp and follicle health support", "Density-focused treatment planning", "Progress tracking and follow-up care"],
+    availability: ["Physician consultation required before treatment planning."],
   },
   {
     slug: "korean-organic-skincare",

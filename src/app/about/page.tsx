@@ -8,6 +8,13 @@ const aboutTeam = [
   { name: "Chyle Beaird, M.D.", title: "Medical Director", subtitle: "Physician", image: "/images/ChyleBeaird.avif" },
   { name: "Jacquiline Hayes", title: "Pharmacy Technician", subtitle: "Clinical Support", image: "/images/JacquilineHayes.avif" },
   { name: "Dr. Karl Ryan, DDS", title: "Aesthetic Injector", subtitle: "Provider", image: "/images/KarlRyan.avif" },
+  {
+    name: "Dr. John Maarouf, DO",
+    title: "Concierge and Telemedicine",
+    subtitle: "Family & Sports Medicine",
+    image: "/images/JohnMaarouf.jpeg",
+    bio: "Dr. Maarouf is a dual board certified physician in Family and Sports Medicine who specializes in non surgical orthopedics and orthobiologics to remedy common injuries for every level of athlete like knee pain, meniscus injuries, rotator cuff tears, tennis/golfers elbow, plantar fasciitis and more. With a calm presence, sharp diagnostics, and an eye for detail, Dr. Maarouf guides personalized care that gets results.",
+  },
 ];
 
 export default async function AboutPage() {
@@ -89,7 +96,7 @@ export default async function AboutPage() {
 
       <SectionWrapper>
         <h2 className="mb-6 text-3xl text-[#1f1a15] md:text-4xl">Meet The Team</h2>
-        <div className="grid gap-6 md:grid-cols-5">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {aboutTeam.map((member) => (
             <article key={member.name} className="rounded-2xl border border-[#b78d4b2e] bg-white p-4 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)]">
               <div className="relative h-60 overflow-hidden rounded-xl border border-[#b78d4b1f] bg-[#f7efe3]">
@@ -104,6 +111,7 @@ export default async function AboutPage() {
               <p className="mt-4 text-lg text-[#2b2218]">{member.name}</p>
               <p className="text-sm text-[#6f6251]">{member.title}</p>
               <p className="text-xs text-[#8f6f3e]">{member.subtitle}</p>
+              {"bio" in member ? <p className="mt-3 text-sm leading-relaxed text-[#5f5344]">{member.bio}</p> : null}
             </article>
           ))}
         </div>

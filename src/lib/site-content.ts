@@ -6,6 +6,7 @@ export const practitionerTeam = [
   { name: "Chyle Beaird", role: "Protocol Performance Advisor", image: "/images/ChyleBeaird.avif" },
   { name: "Jacquiline Hayes", role: "Practice Growth Consultant", image: "/images/JacquilineHayes.avif" },
   { name: "Karl Ryan", role: "Operations and Revenue Strategist", image: "/images/KarlRyan.avif" },
+  { name: "Dr. John Maarouf, DO", role: "Concierge and Telemedicine", image: "/images/JohnMaarouf.jpeg" },
 ];
 
 export const homepageStats = [
