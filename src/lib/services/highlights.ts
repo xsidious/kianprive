@@ -32,9 +32,19 @@ export const serviceHighlights: ServiceHighlight[] = [
       "Advanced Icoone® lymphatic drainage for detox support, contouring, recovery, inflammation reduction, and skin quality.",
   }),
   highlightFromService("glp1-peptides", {
-    title: "Peptides — GLP-1s & Exosomes",
+    title: "GLP-1s & Peptides",
     description:
-      "Physician-supervised metabolic, peptide, and regenerative pathways including GLP-1 programs and exosome-enhanced treatments.",
+      "Start online intake, receive approval or physician review, then book or purchase your personalized GLP-1 and peptide pathway.",
+  }),
+  highlightFromService("hair-restoration", {
+    title: "Hair Restoration",
+    description:
+      "Physician-guided hair restoration programs with personalized diagnostics and regenerative pathways for healthier scalp and hair density support.",
+  }),
+  highlightFromService("microneedling-with-exosomes", {
+    title: "Microneedling with Exosomes",
+    description:
+      "Advanced regenerative skin treatment designed to support collagen production, texture refinement, and visibly smoother, brighter skin.",
   }),
   highlightFromService("nutrition", {
     title: "Nutrition Services",
@@ -51,7 +61,6 @@ export const serviceHighlights: ServiceHighlight[] = [
     title: "Medical Aesthetics",
     description:
       "Precision aesthetic services from licensed professionals—injectables, resurfacing, peels, and skin-forward clinical outcomes.",
-    image: "/images/stock/service-medical-aesthetics.jpg",
   }),
   highlightFromService("beauty-hair-nails", {
     title: "Beauty (Hair and Nails)",

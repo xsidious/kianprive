@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Play } from "lucide-react";
 import { BeforeAfterGallery } from "@/components/home/BeforeAfterGallery";
-import { getIcooneImage } from "@/lib/media/icoone";
 import { GetUpdatesSection } from "@/components/home/GetUpdatesSection";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
@@ -16,21 +15,6 @@ const pathwaySteps = [
   "Implement clinical and holistic protocol changes.",
   "Monitor progress and optimize monthly.",
   "Celebrate wins and scale your results.",
-];
-
-const icooneBenefits = [
-  "Lymphatic drainage and detox support",
-  "Inflammation reduction and pain management",
-  "Athletic recovery and mobility improvement",
-  "Skin tightening and body contouring",
-];
-
-const programTracks = [
-  "Foundational Certification",
-  "Advanced Clinical Protocols",
-  "One-on-One Physician & Clinical Training",
-  "Multi-Modality Integration (GLP-1, Exosomes, Stem Cells)",
-  "Marketing & Client Development",
 ];
 
 const writtenTestimonials = [
@@ -84,8 +68,8 @@ export default function Home() {
                 <Link href="/pricing" className="rounded-full border border-[#b78d4b80] bg-white px-6 py-3 text-[#3b3024]">
                   Unlock Premium Access
                 </Link>
-                <Link href="/icoone-training" className="rounded-full border border-[#b78d4b80] bg-white px-6 py-3 text-[#3b3024]">
-                  Explore Icoone Training
+                <Link href="/practitioners" className="rounded-full border border-[#b78d4b80] bg-white px-6 py-3 text-[#3b3024]">
+                  Explore Icoone Practitioners
                 </Link>
               </div>
               <div className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -172,49 +156,6 @@ export default function Home() {
           Transformation examples organized by category. Final creatives can be produced in Canva for Body, Face, and Hair.
         </p>
         <BeforeAfterGallery />
-      </SectionWrapper>
-
-      <SectionWrapper>
-        <div className="grid items-center gap-8 rounded-3xl border border-[#b78d4b30] bg-white p-8 shadow-[0_18px_45px_-35px_rgba(72,49,14,0.45)] lg:grid-cols-[1.05fr_0.95fr]">
-          <div>
-            <p className="text-xs tracking-[0.22em] text-[#8f6f3e]">ICOONE CERTIFIED TRAINING</p>
-            <h2 className="mt-3 text-2xl text-[#1f1a15] sm:text-3xl md:text-5xl">Learn How to Become Profitable with Icoone</h2>
-            <p className="mt-4 text-[#6f6251]">
-              Learn from one of the most experienced Icoone training teams in the United States, backed by 8+ years of clinical experience
-              and nearly 8,000 hands-on treatment hours.
-            </p>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              {icooneBenefits.map((benefit) => (
-                <p key={benefit} className="rounded-xl border border-[#b78d4b33] bg-[#fffaf2] px-4 py-3 text-sm text-[#4f4335]">
-                  {benefit}
-                </p>
-              ))}
-            </div>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/icoone-training" className="rounded-full bg-[#b78d4b] px-6 py-3 text-white">
-                Apply for Training
-              </Link>
-              <Link href="/pricing" className="rounded-full border border-[#b78d4b80] bg-[#fffaf2] px-6 py-3 text-[#3b3024]">
-                Unlock Premium Training
-              </Link>
-            </div>
-            <p className="mt-3 text-xs text-[#8a7a66]">Premium access required for full practitioner training content.</p>
-          </div>
-          <div className="relative h-[320px] overflow-hidden rounded-3xl border border-[#b78d4b35] sm:h-[420px] lg:h-[500px]">
-            <Image src={getIcooneImage(1).src} alt={getIcooneImage(1).alt} fill className="object-cover" />
-          </div>
-        </div>
-      </SectionWrapper>
-
-      <SectionWrapper>
-        <h2 className="text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">Icoone Programs That Convert Knowledge Into Revenue</h2>
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {programTracks.map((program) => (
-            <article key={program} className="rounded-2xl border border-[#b78d4b33] bg-white p-5 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)]">
-              <p className="text-lg text-[#2b2218]">{program}</p>
-            </article>
-          ))}
-        </div>
       </SectionWrapper>
 
       <SectionWrapper>

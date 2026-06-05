@@ -48,14 +48,8 @@ export default function EventsRetreatsPage() {
             <div className="mt-4 rounded-2xl border border-[#1f7a7a4f] bg-[#eef8f8] p-4">
               <p className="text-xs tracking-[0.18em] text-[#1b6568]">NEXT EVENT</p>
               <p className="mt-2 text-sm text-[#28585a]">
-                <strong>Corporate Health &amp; Wellness Day</strong> — Sunday, June 7 in Wynwood. Retreats begin in September.
+                <strong>Corporate Health &amp; Wellness Day</strong> is coming soon. Retreats begin in September.
               </p>
-              <Link
-                href="/events-retreats/corporate-health-wellness-day"
-                className="mt-3 inline-flex rounded-full bg-[#1f7a7a] px-4 py-2 text-xs text-white"
-              >
-                View Event Details
-              </Link>
             </div>
 
             <div className="mt-7 rounded-2xl border border-[#b78d4b30] bg-[#fffaf2] p-4">
@@ -120,7 +114,7 @@ export default function EventsRetreatsPage() {
               }`}
             >
               {event.featured ? (
-                <p className="mb-2 text-xs tracking-[0.16em] text-[#1b6568]">FEATURED · JUNE 7</p>
+                <p className="mb-2 text-xs tracking-[0.16em] text-[#1b6568]">FEATURED · COMING SOON</p>
               ) : null}
               <div className="relative mb-4 h-44 overflow-hidden rounded-xl border border-[#b78d4b2d]">
                 <Image src={event.image} alt={event.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />

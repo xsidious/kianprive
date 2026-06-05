@@ -158,7 +158,7 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "microneedling-with-exosomes",
     title: "Microneedling with Exosomes",
-    image: "/images/microneedling.jpg",
+    image: "/images/microneedlingg.jpeg",
     description:
       "Advanced skin rejuvenation treatment that supports collagen production and visible texture improvement through regenerative signaling.",
     details: ["Microneedling combined with exosome-based regenerative support for skin renewal."],
@@ -168,7 +168,7 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "hair-restoration",
     title: "Hair Restoration",
-    image: "/images/hairrestoration.jpeg",
+    image: "/images/MedicalAestheticss.jpeg",
     description:
       "Physician-guided hair restoration programs combining diagnostics and regenerative options to support healthier density and scalp vitality.",
     details: [
@@ -204,7 +204,7 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "facial-aesthetics",
     title: "Facial Aesthetics",
-    image: "/images/medicalaesthetics.avif",
+    image: "/images/MedicalAestheticss.jpeg",
     description:
       "Precision aesthetic services focused on natural-looking refinement and skin-forward outcomes in a physician-guided setting.",
     details: ["Facial aesthetics plans are structured to preserve natural expression while improving harmony and confidence."],
@@ -213,18 +213,18 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "glp1-peptides",
     title: "GLP-1s & Peptides",
-    image: "/images/nutrition.avif",
-    requiresLogin: true,
+    image: "/images/Peptidesandexosomes.jpeg",
     showPeptidesExperience: true,
     description:
-      "Physician-supervised metabolic and peptide protocols are personalized to your goals and priced individually.",
+      "Complete a secure intake form online, receive approval or physician review, then book or purchase a personalized GLP-1 and peptide protocol.",
     details: [
-      "Includes injectable and sublingual pathway options based on clinical assessment.",
-      "Most side effects are GI-related or injection-site related and are often managed by titration and follow-up.",
+      "Includes injectable and sublingual pathway options selected from your intake and clinical profile.",
+      "If clinically indicated, you are routed to a physician consultation before approval.",
+      "Once approved, you can proceed with booking and purchasing through the program workflow.",
     ],
     membershipNotes: [
-      "Peptides include monthly pathway options.",
-      "Additional protocol add-ons are released separately.",
+      "Includes monthly pathway options and follow-up optimization.",
+      "Additional protocol add-ons are available after clinical review.",
     ],
     availability: ["Physician-supervised protocols; route and dose selected after evaluation."],
     contentSections: [

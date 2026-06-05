@@ -12,11 +12,14 @@ export function ServiceCard({
   image?: string;
   href?: string;
 }) {
+  const imageClassName =
+    title === "Nutrition Services" ? "object-cover object-top" : "object-cover";
+
   return (
     <article className="rounded-3xl border border-[#b78d4b2e] bg-white p-7 shadow-[0_14px_35px_-25px_rgba(66,45,14,0.35)]">
       {image ? (
         <div className="relative mb-5 h-48 overflow-hidden rounded-2xl">
-          <Image src={image} alt={title} fill sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw" className="object-cover" />
+          <Image src={image} alt={title} fill sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw" className={imageClassName} />
         </div>
       ) : null}
       <h3 className="text-xl text-[#2b2218]">{title}</h3>

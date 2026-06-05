@@ -18,16 +18,6 @@ const koreanAndRecoveryPricing = [
   { service: "Microneedling with Exosomes", price: "Single $600 | 4-Session $1,800", note: "Save $600" },
   { service: "Microneedling with Exosomes", price: "5-Session $2,700 | 10-Session $5,000", note: "Save up to $1,000" },
   { service: "Nutrition & Wellness Coaching", price: "Single $150 | 4-Session $500 | 8-Session $950", note: "Save up to $250" },
-  {
-    service: "InBody Scan — Body Composition Analysis",
-    price: "Single Scan (non-member) $30",
-    note: "Included monthly in all membership tiers (Tiers 1–3); 4× monthly (Tier 4). Complimentary for members as described.",
-  },
-  {
-    service: "Power Plate — Whole-Body Vibration Therapy",
-    price: "Single Session (individual / non-member) $25",
-    note: "Complimentary with any active membership. Uses Precision Vibration Technology™ for rapid, multi-directional vibration.",
-  },
 ];
 
 const compoundedRxReference = {
@@ -511,6 +501,10 @@ const powerPlateDescription =
 
 export default async function ServicesPage() {
   const cms = await getCmsPageContent("services");
+  const hiddenServiceSlugs = new Set(["inbody-scan", "power-plate"]);
+  const visibleCatalogServices = allCatalogServices.filter(
+    (service) => !service.slug || !hiddenServiceSlugs.has(service.slug),
+  );
 
   const scrollTable = (header: ReactNode, body: ReactNode) => (
     <div className="overflow-x-auto rounded-3xl border border-[#b78d4b2d] bg-white shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
@@ -548,7 +542,7 @@ export default async function ServicesPage() {
               </Link>
             </div>
             <p className="mt-6 text-sm text-[#8f6f3e]">
-              {allCatalogServices.length} services · In-clinic, in-home, and virtual options
+              {visibleCatalogServices.length} services · In-clinic, in-home, and virtual options
             </p>
           </div>
           <div className="relative mt-8 h-[280px] overflow-hidden rounded-3xl border border-[#b78d4b33] lg:mt-0 lg:h-[360px]">
@@ -570,11 +564,7 @@ export default async function ServicesPage() {
         <div className="rounded-2xl border border-[#1f7a7a4f] bg-[#eef8f8] p-4">
           <p className="text-xs tracking-[0.2em] text-[#1b6568]">PRIVATE MEMBERS UPDATE</p>
           <p className="mt-2 text-sm text-[#28585a]">
-            Additional add-ons will be released separately. Retreats start in September.{" "}
-            <Link href="/events-retreats/corporate-health-wellness-day" className="text-[#1b6568] underline">
-              Corporate Health &amp; Wellness Day
-            </Link>{" "}
-            is June 7 in Wynwood — tickets on Luma.
+            Additional add-ons will be released separately. Corporate Health &amp; Wellness Day is coming soon. Retreats start in September.
           </p>
         </div>
       </SectionWrapper>
@@ -588,7 +578,7 @@ export default async function ServicesPage() {
             pricing and protocols, or <strong>Book</strong> to schedule online.
           </p>
         </div>
-        <ServiceCardsWithModal services={allCatalogServices} label="SERVICE" layout="grid" />
+        <ServiceCardsWithModal services={visibleCatalogServices} label="SERVICE" layout="grid" />
       </SectionWrapper>
 
       <SectionWrapper>

@@ -4,7 +4,7 @@ import { getCmsPageContent } from "@/lib/cms/pages";
 
 const aboutTeam = [
   { name: "Alycia Lerer", title: "Founder", subtitle: "Wellness Coach", image: "/images/AlyciaLerer.avif" },
-  { name: "Cherie Johnson", title: "Co-Founder", subtitle: "Nutritionist", image: "/images/CherieJohnson.avif" },
+  { name: "Cherie Johnson", title: "Co-Founder", subtitle: "Nutritionist", image: "/images/NutritionServices.jpeg" },
   { name: "Chyle Beaird, M.D.", title: "Medical Director", subtitle: "Physician", image: "/images/ChyleBeaird.avif" },
   { name: "Jacquiline Hayes", title: "Pharmacy Technician", subtitle: "Clinical Support", image: "/images/JacquilineHayes.avif" },
   { name: "Dr. Karl Ryan, DDS", title: "Aesthetic Injector", subtitle: "Provider", image: "/images/KarlRyan.avif" },
@@ -37,7 +37,7 @@ export default async function AboutPage() {
             </p>
           </div>
           <div className="relative h-[360px] overflow-hidden rounded-3xl border border-[#b78d4b36]">
-            <Image src="/images/stock/hero-luxury-clinic.jpg" alt="KIAN Privé team and wellness sanctuary" fill className="object-cover" />
+            <Image src="/images/abougpage.jpeg" alt="KIAN Privé team and wellness sanctuary" fill className="object-cover" />
           </div>
         </div>
       </SectionWrapper>
@@ -105,7 +105,7 @@ export default async function AboutPage() {
                   alt={member.name}
                   fill
                   sizes="(max-width: 768px) 100vw, 20vw"
-                  className="object-contain object-top p-2"
+                  className={member.name === "Dr. Karl Ryan, DDS" ? "object-contain object-center p-0" : "object-contain object-top p-2"}
                 />
               </div>
               <p className="mt-4 text-lg text-[#2b2218]">{member.name}</p>
