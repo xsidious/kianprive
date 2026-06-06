@@ -168,7 +168,7 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "hair-restoration",
     title: "Hair Restoration",
-    image: "/images/MedicalAestheticss.jpeg",
+    image: "/images/HairReatorationpicture.jpeg",
     description:
       "Physician-guided hair restoration programs combining diagnostics and regenerative options to support healthier density and scalp vitality.",
     details: [
@@ -254,7 +254,29 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "beauty-hair-nails",
     title: "Beauty (Hair and Nails)",
-    image: "/images/stock/service-beauty-salon.jpg",
+    image: "/images/salonpics/WhatsApp Image 2026-05-21 at 2.45.02 PM.jpeg",
+    gallery: [
+      {
+        src: "/images/salonpics/WhatsApp Image 2026-05-21 at 2.45.02 PM.jpeg",
+        alt: "Beauty partner salon interior and styling stations",
+      },
+      {
+        src: "/images/salonpics/WhatsApp Image 2026-05-21 at 2.45.02 P1M.jpeg",
+        alt: "Beauty partner service area and salon setup",
+      },
+      {
+        src: "/images/salonpics/WhatsApp Image 2026-05-21 at 2.45.02 1PM.jpeg",
+        alt: "Beauty partner treatment and styling environment",
+      },
+      {
+        src: "/images/salonpics/WhatsApp Image 2026-05-21 at 2.45.0212 PM.jpeg",
+        alt: "Beauty partner in-salon experience details",
+      },
+      {
+        src: "/images/salonpics/WhatsApp Image 202a6-05-21 at 2.45.02 PM.jpeg",
+        alt: "Beauty partner salon space and equipment",
+      },
+    ],
     description:
       "Salon-partner beauty services including hair, nails, lashes, and skincare in a coordinated luxury setting with your KIAN Privé care team.",
     details: [
