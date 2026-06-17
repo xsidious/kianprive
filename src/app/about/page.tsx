@@ -9,6 +9,12 @@ const aboutTeam = [
   { name: "Jacquiline Hayes", title: "Pharmacy Technician", subtitle: "Clinical Support", image: "/images/JacquilineHayes.avif" },
   { name: "Dr. Karl Ryan, DDS", title: "Aesthetic Injector", subtitle: "Provider", image: "/images/KarlRyan.avif" },
   {
+    name: "Carolina Millan",
+    title: "Director of Business Affairs",
+    subtitle: "Operations Leadership",
+    image: "/images/CarolinaMillan.png",
+  },
+  {
     name: "Dr. John Maarouf, DO",
     title: "Concierge and Telemedicine",
     subtitle: "Family & Sports Medicine",

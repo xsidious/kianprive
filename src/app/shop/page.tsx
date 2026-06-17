@@ -55,7 +55,7 @@ export default function ShopPage() {
             <div className="mt-4">
               <p className="text-sm text-[#3b3024]">Category</p>
               <div className="mt-2 grid gap-2">
-                {["All", "Skincare", "Nutrition", "Supplements", "Beauty"].map((value) => (
+                {["All", "Skincare", "Nutrients", "Professional"].map((value) => (
                   <button
                     key={value}
                     onClick={() => setCategory(value)}
@@ -106,23 +106,38 @@ export default function ShopPage() {
                   <div className="p-5">
                     <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">{product.category}</p>
                     <h2 className="mt-2 text-xl text-[#2b2218]">{product.name}</h2>
-                    <p className="mt-3 text-2xl text-[#1f1a15]">${product.price}</p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        addItem({
-                          id: product.id,
-                          name: product.name,
-                          price: product.price,
-                          image: product.image,
-                          category: product.category,
-                        });
-                        openCart();
-                      }}
-                      className="mt-4 rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white"
-                    >
-                      Add to Cart
-                    </button>
+                    {product.redirectUrl ? (
+                      <p className="mt-3 text-sm text-[#6f6251]">Redirects to external product page.</p>
+                    ) : (
+                      <p className="mt-3 text-2xl text-[#1f1a15]">${product.price}</p>
+                    )}
+                    {product.redirectUrl ? (
+                      <a
+                        href={product.redirectUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-4 inline-flex rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white"
+                      >
+                        Go to Product
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          addItem({
+                            id: product.id,
+                            name: product.name,
+                            price: product.price,
+                            image: product.image,
+                            category: product.category,
+                          });
+                          openCart();
+                        }}
+                        className="mt-4 rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white"
+                      >
+                        Add to Cart
+                      </button>
+                    )}
                   </div>
                 </article>
               ))}
