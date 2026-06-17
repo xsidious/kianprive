@@ -21,8 +21,6 @@ export const coreServices: ServiceListingItem[] = [
   bySlug("korean-organic-skincare"),
   bySlug("facial-aesthetics"),
   bySlug("glp1-peptides"),
-  bySlug("mindtap"),
-  bySlug("beauty-hair-nails"),
   bySlug("inbody-scan"),
   bySlug("power-plate"),
 ];
@@ -34,27 +32,42 @@ export const wellnessTechnologyServices: ServiceListingItem[] = [
 
 export const sameLocationAddOns: ServiceListingItem[] = [
   {
+    slug: "salt-therapy",
     title: "Salt Therapy",
     image: "/images/stock/service-wellness.jpg",
+    partnerName: "Holistic Therapy Place",
+    partnerLogo: "/images/providers/holistic-salt-therapy-center.png",
+    externalBookingUrl: "/contact",
+    isPartnerService: true,
     description:
-      "Same-location partner add-on that supports respiratory wellness, inflammation reduction, and holistic recovery.",
-    includes: ["Respiratory support", "Inflammation support", "Recovery protocol integration"],
+      "Partner add-on from Holistic Therapy Place for respiratory wellness, inflammation support, and holistic recovery.",
+    includes: ["Respiratory support", "Inflammation support", "Recovery protocol integration", "+15% partner discount (pending confirmation)"],
     availability: ["Facility-based service (not offered in-home)."],
   },
   {
+    slug: "pemf",
     title: "PEMF",
     image: "/images/stock/service-medical-aesthetics.jpg",
+    partnerName: "Holistic Therapy Place",
+    partnerLogo: "/images/providers/holistic-salt-therapy-center.png",
+    externalBookingUrl: "/contact",
+    isPartnerService: true,
     description:
-      "Same-location pulsed electromagnetic field sessions designed for cellular recharge, pain support, and performance recovery.",
-    includes: ["Cellular recharge", "Pain support", "Performance recovery"],
+      "Partner add-on from Holistic Therapy Place designed for cellular recharge, pain support, and performance recovery.",
+    includes: ["Cellular recharge", "Pain support", "Performance recovery", "+15% partner discount (pending confirmation)"],
     availability: ["Same-location partner add-on."],
   },
   {
+    slug: "far-infrared",
     title: "Far Infrared",
     image: "/images/stock/service-esthetics.jpg",
+    partnerName: "Holistic Therapy Place",
+    partnerLogo: "/images/providers/holistic-salt-therapy-center.png",
+    externalBookingUrl: "/contact",
+    isPartnerService: true,
     description:
-      "Same-location infrared sessions to support circulation, detox support, deep relaxation, and recovery.",
-    includes: ["Detox support", "Deep tissue warmth", "Recovery and relaxation support"],
+      "Partner add-on from Holistic Therapy Place with infrared sessions to support circulation, detox support, and deep relaxation.",
+    includes: ["Detox support", "Deep tissue warmth", "Recovery and relaxation support", "+15% partner discount (pending confirmation)"],
     availability: ["Same-location partner add-on."],
   },
 ];
@@ -63,8 +76,13 @@ export const differentLocationAddOns: ServiceListingItem[] = [];
 
 export const gymServices: ServiceListingItem[] = [
   {
+    slug: "adapt-fitness",
     title: "Adapt",
     image: "/images/stock/service-beauty-salon.jpg",
+    partnerName: "Adapt",
+    partnerLogo: "/images/providers/vcs-vitamin-c-to-sea.png",
+    externalBookingUrl: "/contact",
+    isPartnerService: true,
     description: "Gym services partner focused on training support, recovery, and performance-driven movement programs.",
     includes: ["Performance movement", "Conditioning support", "Recovery integration"],
     availability: ["Partner access coordinated through contact form."],
@@ -72,6 +90,14 @@ export const gymServices: ServiceListingItem[] = [
 ];
 
 export const partnerAddOnServices: ServiceListingItem[] = [
+  { ...bySlug("mindtap"), partnerName: "MindTap", partnerLogo: "/images/providers/mindtap.png", externalBookingUrl: "/contact", isPartnerService: true },
+  {
+    ...bySlug("beauty-hair-nails"),
+    partnerName: "Beauty Partner",
+    partnerLogo: "/images/providers/facial-design-studio.png",
+    externalBookingUrl: "/contact",
+    isPartnerService: true,
+  },
   ...sameLocationAddOns,
   ...gymServices,
   ...differentLocationAddOns,
@@ -88,6 +114,12 @@ export const preferredProviders = [
   { name: "Far Infrared", logo: "/images/providers/facial-design-studio.png", href: "/contact" },
   { name: "MindTap", logo: "/images/providers/mindtap.png", href: "/contact" },
   { name: "Adapt", logo: "/images/providers/vcs-vitamin-c-to-sea.png", href: "/contact" },
+];
+
+export const featuredProviderLogos = [
+  { name: "Bloodwork", logo: "/images/Bloodwork.jpeg" },
+  { name: "Medical Aesthetics", logo: "/images/MedicalAestheticss.jpeg" },
+  { name: "Hair Removal", logo: "/images/HairReatorationpicture.jpeg" },
 ];
 
 export const brandIntro = {

@@ -32,11 +32,9 @@ export const bookingServiceOptions: BookingServiceOption[] = [
   bookingOption("comprehensive-bloodwork", 210, 168, 30),
   bookingOption("beauty-hair-nails", 120, 96, 60),
   bookingOption("inbody-scan", 30, 0, 20),
-  bookingOption("power-plate", 25, 0, 20),
   bookingOption("microneedling-with-exosomes", 600, 480, 60),
   bookingOption("korean-organic-skincare", 195, 156, 60),
   bookingOption("glp1-peptides", 0, 0, 45),
-  bookingOption("mindtap", 125, 100, 60),
 ];
 
 export function getBookingOptionById(id: string) {

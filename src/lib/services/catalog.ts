@@ -203,7 +203,7 @@ export const serviceCatalog: ServiceDetail[] = [
   },
   {
     slug: "facial-aesthetics",
-    title: "Facial Aesthetics",
+    title: "Medical Aesthetics",
     image: "/images/MedicalAestheticss.jpeg",
     description:
       "Precision aesthetic services focused on natural-looking refinement and skin-forward outcomes in a physician-guided setting.",

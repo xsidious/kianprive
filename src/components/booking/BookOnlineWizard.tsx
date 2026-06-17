@@ -19,18 +19,19 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { bookingServiceOptions, getBookingOptionById } from "@/lib/services/booking-options";
 import { DEFAULT_TIMEZONE } from "@/lib/scheduling/config";
 
-type WizardStep = "welcome" | "count" | "services" | "schedule" | "details" | "complete";
+type WizardStep = "welcome" | "count" | "services" | "provider" | "schedule" | "details" | "complete";
 type VisitorType = "member" | "guest" | null;
 type ServiceInterest = "one" | "two" | "many" | null;
 
 type TimeSlot = { id: string; start: string; end: string; label: string };
 type DateSlotGroup = { key: string; label: string; slots: TimeSlot[] };
 
-const STEPS: WizardStep[] = ["welcome", "count", "services", "schedule", "details"];
+const STEPS: WizardStep[] = ["welcome", "count", "services", "provider", "schedule", "details"];
 const STEP_TITLES: Record<WizardStep, string> = {
   welcome: "Welcome",
   count: "Your plan",
   services: "Services",
+  provider: "Provider",
   schedule: "Date & time",
   details: "Your details",
   complete: "Confirmed",
@@ -61,6 +62,11 @@ const COUNT_OPTIONS = [
     subtitle: "Build a full wellness experience",
     emoji: "3+",
   },
+];
+
+const MEDICAL_AESTHETICS_PROVIDER_OPTIONS = [
+  { id: "dr-karl-ryan", label: "Dr. Karl Ryan, DDS" },
+  { id: "dr-john-maarouf", label: "Dr. John Maarouf, DO" },
 ];
 
 function getDateKeyInTimezone(isoDate: string, timezone: string) {
@@ -136,6 +142,7 @@ export function BookOnlineWizard() {
   const [visitorType, setVisitorType] = useState<VisitorType>(null);
   const [serviceInterest, setServiceInterest] = useState<ServiceInterest>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [selectedProvider, setSelectedProvider] = useState("");
   const [selectedDateKey, setSelectedDateKey] = useState("");
   const [selectedSlotId, setSelectedSlotId] = useState("");
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
@@ -154,6 +161,7 @@ export function BookOnlineWizard() {
     () => bookingServiceOptions.filter((s) => selectedServices.includes(s.id)),
     [selectedServices],
   );
+  const needsProviderStep = selectedServices.includes("facial-aesthetics");
 
   const primaryServiceId = selectedServices[0] ?? "";
   const bookingDurationMinutes = useMemo(() => {
@@ -300,15 +308,23 @@ export function BookOnlineWizard() {
   function chooseServiceInterest(interest: ServiceInterest) {
     setServiceInterest(interest);
     setSelectedServices([]);
+    setSelectedProvider("");
     preselectAppliedRef.current = false;
     setStep("services");
   }
 
   function toggleService(id: string) {
+    if (id === "glp1-peptides") {
+      window.open("https://shop.kianprive.com/", "_blank", "noopener,noreferrer");
+      return;
+    }
     const next = computeNextServices(selectedServices, id);
     setSelectedServices(next);
+    if (!next.includes("facial-aesthetics")) {
+      setSelectedProvider("");
+    }
     if (shouldAutoAdvanceFromServices(next)) {
-      setStep("schedule");
+      setStep(next.includes("facial-aesthetics") ? "provider" : "schedule");
     }
   }
 
@@ -323,13 +339,17 @@ export function BookOnlineWizard() {
   }
 
   function goNext() {
-    if (step === "services" && servicesValid()) setStep("schedule");
+    if (step === "services" && servicesValid()) {
+      setStep(needsProviderStep ? "provider" : "schedule");
+    }
+    else if (step === "provider" && selectedProvider) setStep("schedule");
     else if (step === "schedule" && selectedSlotId) setStep("details");
     else if (step === "details") void submitBooking();
   }
 
   const showContinueButton =
     step === "details" ||
+    step === "provider" ||
     (step === "services" &&
       (serviceInterest === "many" || (serviceInterest === "two" && selectedServices.length < 2)));
 
@@ -353,6 +373,7 @@ export function BookOnlineWizard() {
           email,
           phone,
           preferredLocation,
+          notes: selectedProvider ? `Preferred provider: ${selectedProvider}` : undefined,
           serviceIds: selectedServices,
           scheduledSlotId: selectedSlotId,
           timezone: DEFAULT_TIMEZONE,
@@ -378,6 +399,7 @@ export function BookOnlineWizard() {
 
   const canContinue =
     (step === "services" && servicesValid()) ||
+    (step === "provider" && Boolean(selectedProvider)) ||
     (step === "details" && Boolean(fullName.trim() && email.trim() && phone.trim()));
 
   const continueLabel =
@@ -674,6 +696,30 @@ export function BookOnlineWizard() {
             </WizardCard>
           ) : null}
 
+          {step === "provider" ? (
+            <WizardCard key="provider">
+              <h2 className="text-2xl font-medium text-[#1f1a15] sm:text-3xl">Choose your Medical Aesthetics provider</h2>
+              <p className="mt-2 text-[#6f6251]">Select a provider before picking your date and time.</p>
+              <div className="mt-6 grid gap-3">
+                {MEDICAL_AESTHETICS_PROVIDER_OPTIONS.map((provider) => {
+                  const active = selectedProvider === provider.label;
+                  return (
+                    <button
+                      key={provider.id}
+                      type="button"
+                      onClick={() => setSelectedProvider(provider.label)}
+                      className={`rounded-2xl border-2 px-5 py-4 text-left transition ${
+                        active ? "border-[#b78d4b] bg-[#fff5e6]" : "border-[#e8dcc8] bg-white hover:border-[#b78d4b66]"
+                      }`}
+                    >
+                      <p className="text-lg text-[#1f1a15]">{provider.label}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </WizardCard>
+          ) : null}
+
           {step === "details" ? (
             <WizardCard key="details">
               <h2 className="text-2xl font-medium text-[#1f1a15] sm:text-3xl">Almost there</h2>
@@ -817,6 +863,8 @@ export function BookOnlineWizard() {
                   ? "Tap services to add, then Continue"
                   : step === "services" && serviceInterest === "two"
                     ? "Select one more service"
+                    : step === "provider"
+                      ? "Choose provider to continue"
                     : "Tap your choice above to continue"}
               </p>
             )}

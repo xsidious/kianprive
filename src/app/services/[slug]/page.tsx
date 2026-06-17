@@ -33,6 +33,12 @@ export default async function ServiceDetailPage({
   const isNutrition = slug === NUTRITION_SERVICE_SLUG;
   const showPricing = canViewPricing || isNutrition;
   const heroImage = isNutrition ? service.promoImage ?? nutritionPromoImage : service.image;
+  const bookingHref = service.externalBookingUrl
+    ? service.externalBookingUrl
+    : service.slug === "glp1-peptides"
+      ? "https://shop.kianprive.com/"
+      : "/book-online";
+  const bookingIsExternal = bookingHref.startsWith("http://") || bookingHref.startsWith("https://");
 
   return (
     <div>
@@ -78,8 +84,13 @@ export default async function ServiceDetailPage({
               <h1 className="mt-3 text-3xl text-[#1f1a15] sm:text-4xl md:text-5xl">{service.title}</h1>
               <p className="mt-4 text-[#6f6251]">{service.description}</p>
               <div className="mt-6 flex flex-wrap gap-3">
-                <Link href="/book-online" className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
-                  Book Consultation
+                <Link
+                  href={bookingHref}
+                  target={bookingIsExternal ? "_blank" : undefined}
+                  rel={bookingIsExternal ? "noreferrer" : undefined}
+                  className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white"
+                >
+                  {service.externalBookingUrl ? "Book with Partner" : service.slug === "glp1-peptides" ? "Go to Shop" : "Book Consultation"}
                 </Link>
                 <Link href="/services" className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]">
                   Back to Services

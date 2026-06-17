@@ -6,9 +6,11 @@ export function Footer() {
     <footer className="border-t border-[#b78d4b33] bg-[#f3ece0] px-4 py-12 text-[#5a4c3e] sm:px-6">
       <div className="mx-auto max-w-7xl">
         <div className="mb-10 rounded-2xl border border-[#b78d4b33] bg-[#fffaf2] p-5 sm:p-6">
-          <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">NEWSLETTER</p>
-          <h3 className="mt-2 text-2xl text-[#2b2218]">Get KIAN updates, events, and offers</h3>
-          <p className="mt-2 text-sm text-[#6f6251]">Join our list for wellness insights, retreat launches, and exclusive promotions.</p>
+          <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">GET UPDATES</p>
+          <h3 className="mt-2 text-2xl text-[#2b2218]">Stay connected with KIAN Privé</h3>
+          <p className="mt-2 text-sm text-[#6f6251]">
+            Join our list for wellness insights, retreat launches, exclusive offers, and event announcements.
+          </p>
           <form className="mt-4 flex flex-wrap gap-2" action="#">
             <input
               type="email"

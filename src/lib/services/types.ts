@@ -14,6 +14,10 @@ export type ServiceDetail = {
   slug: string;
   title: string;
   image: string;
+  partnerLogo?: string;
+  partnerName?: string;
+  externalBookingUrl?: string;
+  isPartnerService?: boolean;
   /** Optional hero/flyer for detail page and modal (falls back to image). */
   promoImage?: string;
   gallery?: ServiceMediaItem[];

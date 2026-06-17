@@ -13,6 +13,16 @@ function isNutritionService(service: Pick<ServiceListingItem, "slug">) {
   return service.slug === NUTRITION_SERVICE_SLUG;
 }
 
+function getServiceBookingHref(service: ServiceListingItem) {
+  if (service.externalBookingUrl) return service.externalBookingUrl;
+  if (service.slug === "glp1-peptides") return "https://shop.kianprive.com/";
+  return service.slug ? `/book-online?service=${service.slug}` : "/book-online";
+}
+
+function isExternalHref(href: string) {
+  return href.startsWith("http://") || href.startsWith("https://");
+}
+
 type ServiceCardsWithModalProps = {
   services: ServiceListingItem[];
   label: string;
@@ -71,6 +81,14 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                 </h3>
               </div>
               <div className="flex flex-1 flex-col p-5">
+                {service.partnerLogo ? (
+                  <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#1f7a7a2e] bg-[#f8fcfc] px-3 py-1">
+                    <div className="relative h-5 w-16">
+                      <Image src={service.partnerLogo} alt={`${service.partnerName ?? "Partner"} logo`} fill className="object-contain" />
+                    </div>
+                    <span className="text-[10px] tracking-[0.14em] text-[#1f6f75]">{service.partnerName ?? "PARTNER"}</span>
+                  </div>
+                ) : null}
                 <p className="flex-1 text-sm leading-relaxed text-[#5f5344]">
                   {shortDescription(service.description)}
                 </p>
@@ -91,12 +109,19 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                     >
                       Quick view
                     </button>
-                    <Link
-                      href={service.slug ? `/book-online?service=${service.slug}` : "/book-online"}
-                      className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-2xl bg-gradient-to-r from-[#b78d4b] to-[#a67d42] text-sm font-semibold text-white"
-                    >
-                      Book
-                    </Link>
+                    {(() => {
+                      const href = getServiceBookingHref(service);
+                      return (
+                        <Link
+                          href={href}
+                          target={isExternalHref(href) ? "_blank" : undefined}
+                          rel={isExternalHref(href) ? "noreferrer" : undefined}
+                          className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-2xl bg-gradient-to-r from-[#b78d4b] to-[#a67d42] text-sm font-semibold text-white"
+                        >
+                          {service.externalBookingUrl ? "Book with Partner" : "Book"}
+                        </Link>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
@@ -118,6 +143,14 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                   {label} {String(index + 1).padStart(2, "0")}
                 </p>
                 <h3 className="mt-2 text-2xl text-[#2b2218]">{service.title}</h3>
+                {service.partnerLogo ? (
+                  <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-[#1f7a7a2e] bg-[#f8fcfc] px-3 py-1">
+                    <div className="relative h-5 w-16">
+                      <Image src={service.partnerLogo} alt={`${service.partnerName ?? "Partner"} logo`} fill className="object-contain" />
+                    </div>
+                    <span className="text-[10px] tracking-[0.14em] text-[#1f6f75]">{service.partnerName ?? "PARTNER"}</span>
+                  </div>
+                ) : null}
                 <p className="mt-4 leading-relaxed text-[#5f5344]">
                   {service.description.length > 280 ? `${service.description.slice(0, 280)}...` : service.description}
                 </p>
@@ -145,14 +178,21 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                       Service Page
                     </Link>
                   ) : null}
-                  <Link
-                    href={service.slug ? `/book-online?service=${service.slug}` : "/book-online"}
-                    className={`inline-flex rounded-full px-5 py-2 text-sm text-white ${
-                      isPriorityGroup ? "bg-gradient-to-r from-[#1f7a7a] to-[#174f63]" : "bg-[#b78d4b]"
-                    }`}
-                  >
-                    Book Now
-                  </Link>
+                  {(() => {
+                    const href = getServiceBookingHref(service);
+                    return (
+                      <Link
+                        href={href}
+                        target={isExternalHref(href) ? "_blank" : undefined}
+                        rel={isExternalHref(href) ? "noreferrer" : undefined}
+                        className={`inline-flex rounded-full px-5 py-2 text-sm text-white ${
+                          isPriorityGroup ? "bg-gradient-to-r from-[#1f7a7a] to-[#174f63]" : "bg-[#b78d4b]"
+                        }`}
+                      >
+                        {service.externalBookingUrl ? "Book with Partner" : "Book Now"}
+                      </Link>
+                    );
+                  })()}
                 </div>
               </div>
             </article>
@@ -219,6 +259,14 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
               </div>
             )}
             <p className="mt-5 leading-relaxed text-[#5f5344]">{selectedService.description}</p>
+            {selectedService.partnerLogo ? (
+              <div className="mt-4 inline-flex items-center gap-3 rounded-full border border-[#1f7a7a33] bg-white px-4 py-2">
+                <div className="relative h-8 w-24">
+                  <Image src={selectedService.partnerLogo} alt={`${selectedService.partnerName ?? "Partner"} logo`} fill className="object-contain" />
+                </div>
+                <span className="text-xs tracking-[0.12em] text-[#1f6f75]">{selectedService.partnerName ?? "PARTNER SERVICE"}</span>
+              </div>
+            ) : null}
             {selectedService.details && selectedService.details.length > 0 ? (
               <div className="mt-5">
                 <p className="text-xs tracking-[0.16em] text-[#1f6f75]">DETAILS</p>
@@ -321,12 +369,19 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
               </div>
             ) : null}
             <div className="mt-6">
-              <Link
-                href={selectedService.slug ? `/book-online?service=${selectedService.slug}` : "/book-online"}
-                className="inline-flex rounded-full bg-gradient-to-r from-[#1f7a7a] to-[#174f63] px-5 py-2 text-sm text-white"
-              >
-                Book This Service
-              </Link>
+              {(() => {
+                const href = getServiceBookingHref(selectedService);
+                return (
+                  <Link
+                    href={href}
+                    target={isExternalHref(href) ? "_blank" : undefined}
+                    rel={isExternalHref(href) ? "noreferrer" : undefined}
+                    className="inline-flex rounded-full bg-gradient-to-r from-[#1f7a7a] to-[#174f63] px-5 py-2 text-sm text-white"
+                  >
+                    {selectedService.externalBookingUrl ? "Book on Partner Site" : "Book This Service"}
+                  </Link>
+                );
+              })()}
             </div>
           </div>
         </div>

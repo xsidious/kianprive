@@ -10,6 +10,7 @@ import { AcuityApiError } from "@/lib/acuity/client";
 import { isAcuitySchedulingEnabled } from "@/lib/acuity/config";
 import { resolveBookingDatetime } from "@/lib/acuity/datetime";
 import { computeSlotEnd, isSlotAvailable, parseSlotId } from "@/lib/scheduling/slots";
+import { sendTransactionalEmail } from "@/lib/email";
 
 const createBookingSchema = z.object({
   fullName: z.string().min(2),
@@ -22,6 +23,8 @@ const createBookingSchema = z.object({
   timezone: z.string().optional(),
   memberPricingActive: z.boolean().optional(),
 });
+
+const PARTNER_BOOKING_IDS = new Set(["beauty-hair-nails", "mindtap"]);
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -176,6 +179,39 @@ export async function POST(req: Request) {
         { status: 500 },
       );
     }
+  }
+
+  try {
+    const reportInbox = process.env.BOOKING_REPORT_EMAIL;
+    if (reportInbox) {
+      const bookingType = parsed.data.serviceIds.some((id) => PARTNER_BOOKING_IDS.has(id)) ? "PARTNER" : "DIRECT";
+      const recipients = reportInbox
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+      await Promise.all(
+        recipients.map((to) =>
+          sendTransactionalEmail({
+            to,
+            subject: `[${bookingType}] New booking request - ${parsed.data.fullName}`,
+            text: [
+              `Booking type: ${bookingType}`,
+              `Name: ${parsed.data.fullName}`,
+              `Email: ${parsed.data.email}`,
+              `Phone: ${parsed.data.phone}`,
+              `Services: ${serviceTitles.join(", ")}`,
+              `Location: ${parsed.data.preferredLocation}`,
+              `Time: ${scheduledStart.toISOString()}`,
+              `Timezone: ${timezone}`,
+              `Acuity appointment: ${acuityAppointmentId ?? "Not created"}`,
+              `Booking id: ${booking?.id ?? "Not saved"}`,
+            ].join("\n"),
+          }),
+        ),
+      );
+    }
+  } catch (emailError) {
+    console.error("[bookings] Could not send booking report email:", emailError);
   }
 
   return NextResponse.json({

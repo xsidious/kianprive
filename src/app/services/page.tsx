@@ -8,10 +8,11 @@ import { ServiceCardsWithModal } from "@/components/services/ServiceCardsWithMod
 import {
   allCatalogServices,
   brandIntro,
+  featuredProviderLogos,
   partnerAddOnServices,
-  preferredProviders,
   serviceAccessNotes,
 } from "@/lib/services/groups";
+import { PartnerServicesShowcase } from "@/components/services/PartnerServicesShowcase";
 
 const koreanAndRecoveryPricing = [
   { service: "Korean & Organic Skincare Facial", price: "Single $195 | 4-Session $725", note: "Save $55" },
@@ -501,7 +502,7 @@ const powerPlateDescription =
 
 export default async function ServicesPage() {
   const cms = await getCmsPageContent("services");
-  const hiddenServiceSlugs = new Set(["inbody-scan", "power-plate"]);
+  const hiddenServiceSlugs = new Set(["inbody-scan", "power-plate", "mindtap", "beauty-hair-nails"]);
   const visibleCatalogServices = allCatalogServices.filter(
     (service) => !service.slug || !hiddenServiceSlugs.has(service.slug),
   );
@@ -609,15 +610,25 @@ export default async function ServicesPage() {
 
       {partnerAddOnServices.length > 0 ? (
         <SectionWrapper>
+          <PartnerServicesShowcase services={partnerAddOnServices} />
           <div className="mb-8 max-w-3xl">
             <p className="text-xs tracking-[0.2em] text-[#1f6f75]">PARTNER ENHANCEMENTS</p>
             <h2 className="mt-2 text-3xl text-[#1f1a15] md:text-4xl">Add-ons &amp; partner services</h2>
             <p className="mt-3 text-[#6f6251]">
-              Salt therapy, PEMF, infrared, performance gym partners, and more — coordinated through KIAN Privé
-              concierge.
+              MindTap, beauty partner services, salt therapy, PEMF, infrared, and additional partner offerings coordinated by KIAN Privé concierge.
             </p>
           </div>
           <ServiceCardsWithModal services={partnerAddOnServices} label="PARTNER" layout="grid" />
+          <div className="mt-8">
+            <p className="text-xs tracking-[0.18em] text-[#8f6f3e]">FEATURED PROVIDER PROGRAMS</p>
+            <div className="mt-3 flex flex-wrap items-center gap-4">
+              {featuredProviderLogos.map((provider) => (
+                <div key={provider.name} className="relative h-14 w-28">
+                  <Image src={provider.logo} alt={provider.name} fill className="object-contain" />
+                </div>
+              ))}
+            </div>
+          </div>
         </SectionWrapper>
       ) : null}
 
@@ -640,9 +651,6 @@ export default async function ServicesPage() {
 
       <SectionWrapper>
         <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Service Availability</h2>
-        <p className="mb-6 max-w-3xl text-[#6f6251]">
-          Availability notes extracted from your service menu so clients understand which services are in-home eligible.
-        </p>
         <div className="rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
           <ul className="space-y-2">
             {serviceAccessNotes.map((note) => (
@@ -651,44 +659,6 @@ export default async function ServicesPage() {
               </li>
             ))}
           </ul>
-        </div>
-      </SectionWrapper>
-
-      <SectionWrapper>
-        <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Preferred Providers</h2>
-        <p className="mb-6 max-w-3xl text-[#6f6251]">
-          Trusted preferred providers integrated into the KIAN Privé care experience.
-        </p>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {preferredProviders.map((provider) => (
-            <article key={provider.name} className="rounded-2xl border border-[#1f7a7a33] bg-[linear-gradient(160deg,#ffffff_20%,#f3fbfb_100%)] p-5 shadow-[0_18px_45px_-35px_rgba(20,58,58,0.45)]">
-              <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">PROVIDER</p>
-              <h3 className="mt-2 text-xl text-[#2b2218]">{provider.name}</h3>
-              <div className="mt-4 rounded-xl border border-[#1f7a7a2e] bg-white p-3 shadow-[inset_0_0_0_1px_rgba(31,122,122,0.06)]">
-                <div className="relative h-28 w-full overflow-hidden rounded-lg bg-[#f8fcfc]">
-                {provider.logo ? (
-                    <Image
-                      src={provider.logo}
-                      alt={`${provider.name} logo`}
-                      fill
-                      sizes="(max-width: 1024px) 50vw, 33vw"
-                      className="object-contain p-3"
-                    />
-                ) : (
-                    <div className="flex h-full items-center justify-center">
-                      <span className="text-xs tracking-[0.18em] text-[#8f6f3e]">LOGO COMING SOON</span>
-                    </div>
-                )}
-                </div>
-              </div>
-              <Link
-                href={provider.href}
-                className="mt-4 inline-flex rounded-full border border-[#1f7a7a66] bg-[#e9f7f7] px-4 py-2 text-xs tracking-[0.14em] text-[#1f6f75] transition hover:bg-[#dff3f2]"
-              >
-                Contact for Provider Details
-              </Link>
-            </article>
-          ))}
         </div>
       </SectionWrapper>
     </div>

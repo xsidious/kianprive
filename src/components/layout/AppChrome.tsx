@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
-import { TrustBadges } from "@/components/layout/TrustBadges";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { FloatingWhatsAppButton } from "@/components/layout/FloatingWhatsAppButton";
+import { FloatingMedicalDisclaimer } from "@/components/layout/FloatingMedicalDisclaimer";
 
 function SignedInContextBar() {
   const { data, status } = useSession();
@@ -46,10 +46,10 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
     <>
       <Navbar />
       <SignedInContextBar />
-      <TrustBadges />
       <main className="flex-1 bg-[var(--bg)]">{children}</main>
       <Footer />
       <CartDrawer />
+      <FloatingMedicalDisclaimer />
       <FloatingWhatsAppButton />
     </>
   );

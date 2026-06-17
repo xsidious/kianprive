@@ -16,6 +16,7 @@ const links = [
 
 const whatWeDoLinks = [
   { href: "/services", label: "Privé Services" },
+  { href: "/client-testimonials", label: "Client Testimonials" },
   { href: "/about", label: "About" },
   { href: "/corporate-wellness", label: "Corporate Wellness" },
 ];
