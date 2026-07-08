@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
+import { formatBookingDateTime } from "@/lib/admin/booking-display";
 import { prisma } from "@/lib/prisma";
 import { canAccessAdmin } from "@/lib/rbac";
 
@@ -79,30 +80,54 @@ export default async function AdminPage() {
         </table>
       </div>
 
-      <div className="mt-8 overflow-hidden rounded-2xl border border-[#d7b67666]">
-        <table className="w-full text-left text-sm text-[#3b3024]">
-          <thead className="bg-[#fff6e8]">
-            <tr>
-              <th className="p-3">Client</th>
-              <th className="p-3">Services</th>
-              <th className="p-3">Date</th>
-              <th className="p-3">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookingRequests.map((booking) => (
-              <tr key={booking.id} className="border-t border-[#d7b67633]">
-                <td className="p-3">
-                  <p>{booking.fullName}</p>
-                  <p className="text-xs text-[#6f6251]">{booking.email}</p>
-                </td>
-                <td className="p-3">{booking.serviceTitles.join(", ")}</td>
-                <td className="p-3">{booking.preferredDate.toISOString().slice(0, 10)}</td>
-                <td className="p-3">{booking.status}</td>
+      <div className="mt-8">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <h2 className="text-lg text-[#1f1a15]">Recent bookings</h2>
+          <Link
+            href="/admin/bookings"
+            className="rounded-full border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024] hover:bg-[#fff6e8]"
+          >
+            View all bookings
+          </Link>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-[#d7b67666] bg-white">
+          <table className="w-full text-left text-sm text-[#3b3024]">
+            <thead className="bg-[#fff6e8]">
+              <tr>
+                <th className="p-3">Client</th>
+                <th className="p-3">Services</th>
+                <th className="p-3">When</th>
+                <th className="p-3">Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {bookingRequests.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="p-6 text-center text-[#6f6251]">
+                    No bookings yet. They appear here after someone completes book online.
+                  </td>
+                </tr>
+              ) : (
+                bookingRequests.map((booking) => (
+                  <tr key={booking.id} className="border-t border-[#d7b67633]">
+                    <td className="p-3">
+                      <p>{booking.fullName}</p>
+                      <p className="text-xs text-[#6f6251]">{booking.email}</p>
+                    </td>
+                    <td className="p-3">{booking.serviceTitles.join(", ")}</td>
+                    <td className="p-3">
+                      {formatBookingDateTime(
+                        booking.scheduledStart ?? booking.preferredDate,
+                        booking.timezone ?? "America/New_York",
+                      )}
+                    </td>
+                    <td className="p-3">{booking.status}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

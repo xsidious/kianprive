@@ -1,4 +1,5 @@
 import { acuityRequest } from "@/lib/acuity/client";
+import { resolveAcuityCalendarId } from "@/lib/acuity/calendars";
 import { getAcuityAppointmentTypeId } from "@/lib/acuity/map";
 import type { TimeSlot } from "@/lib/scheduling/slots";
 import { DEFAULT_TIMEZONE } from "@/lib/scheduling/config";
@@ -33,28 +34,34 @@ function formatSlotLabel(start: Date, end: Date, timezone: string) {
   return `${formatter.format(start)} · ${timeFormatter.format(start)} – ${timeFormatter.format(end)}`;
 }
 
-async function fetchAvailableDates(appointmentTypeID: number, month: string, timezone: string) {
-  return acuityRequest<AcuityDate[]>("/availability/dates", {
-    searchParams: {
-      appointmentTypeID,
-      month,
-      timezone,
-    },
-  });
+async function fetchAvailableDates(
+  appointmentTypeID: number,
+  month: string,
+  timezone: string,
+  calendarID: number | null,
+) {
+  const searchParams: Record<string, string | number> = {
+    appointmentTypeID,
+    month,
+    timezone,
+  };
+  if (calendarID) searchParams.calendarID = calendarID;
+  return acuityRequest<AcuityDate[]>("/availability/dates", { searchParams });
 }
 
 async function fetchAvailableTimes(
   appointmentTypeID: number,
   date: string,
   timezone: string,
+  calendarID: number | null,
 ) {
-  return acuityRequest<AcuityTime[]>("/availability/times", {
-    searchParams: {
-      appointmentTypeID,
-      date,
-      timezone,
-    },
-  });
+  const searchParams: Record<string, string | number> = {
+    appointmentTypeID,
+    date,
+    timezone,
+  };
+  if (calendarID) searchParams.calendarID = calendarID;
+  return acuityRequest<AcuityTime[]>("/availability/times", { searchParams });
 }
 
 export async function fetchAcuitySlots(input: {
@@ -69,12 +76,16 @@ export async function fetchAcuitySlots(input: {
     throw new Error(`No Acuity appointment type for "${input.serviceId}".`);
   }
 
+  const calendarID = await resolveAcuityCalendarId(input.serviceId);
+
   const now = new Date();
   const months = [monthKey(now, timezone), monthKey(new Date(now.getFullYear(), now.getMonth() + 1, 1), timezone)];
   const uniqueMonths = [...new Set(months)];
 
   const dateLists = await Promise.all(
-    uniqueMonths.map((month) => fetchAvailableDates(appointmentTypeID, month, timezone)),
+    uniqueMonths.map((month) =>
+      fetchAvailableDates(appointmentTypeID, month, timezone, calendarID),
+    ),
   );
 
   const dates = [...new Set(dateLists.flat().map((entry) => entry.date))]
@@ -84,7 +95,12 @@ export async function fetchAcuitySlots(input: {
   const timeResults = await Promise.all(
     dates.map(async (date) => {
       try {
-        const times = await fetchAvailableTimes(appointmentTypeID, date, timezone);
+        const times = await fetchAvailableTimes(
+          appointmentTypeID,
+          date,
+          timezone,
+          calendarID,
+        );
         return times.map((entry) => ({ date, time: entry.time }));
       } catch {
         return [];

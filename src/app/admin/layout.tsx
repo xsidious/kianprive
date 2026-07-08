@@ -7,6 +7,7 @@ const adminLinks = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/users", label: "Users" },
   { href: "/admin/bookings", label: "Bookings" },
+  { href: "/admin/intake", label: "Clinical Intake" },
   { href: "/admin/products", label: "Products" },
   { href: "/admin/orders", label: "Orders" },
   { href: "/admin/communications", label: "Communications" },

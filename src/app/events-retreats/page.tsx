@@ -200,7 +200,7 @@ export default function EventsRetreatsPage() {
         <h2 className="mb-4 text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">My Journey to KIAN</h2>
         <div className="grid gap-8 rounded-3xl border border-[#b78d4b2d] bg-white p-8 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)] lg:grid-cols-[0.45fr_0.55fr]">
           <div className="relative h-[340px] overflow-hidden rounded-2xl border border-[#b78d4b2d]">
-            <Image src="/images/AlyciaLerer.avif" alt="Alycia Lerer founder" fill className="object-cover" />
+            <Image src="/images/AlyciaLerer.png" alt="Alycia Lerer founder" fill className="object-cover" />
           </div>
           <div className="space-y-4 text-[#5f5344]">
             <p>

@@ -3,10 +3,10 @@ import Image from "next/image";
 import { getCmsPageContent } from "@/lib/cms/pages";
 
 const aboutTeam = [
-  { name: "Alycia Lerer", title: "Founder", subtitle: "Wellness Coach", image: "/images/AlyciaLerer.avif" },
+  { name: "Alycia Lerer", title: "Founder", subtitle: "Wellness Coach", image: "/images/AlyciaLerer.png" },
   { name: "Cherie Johnson", title: "Co-Founder", subtitle: "Nutritionist", image: "/images/NutritionServices.jpeg" },
   { name: "Chyle Beaird, M.D.", title: "Medical Director", subtitle: "Physician", image: "/images/ChyleBeaird.avif" },
-  { name: "Jacquiline Hayes", title: "Pharmacy Technician", subtitle: "Clinical Support", image: "/images/JacquilineHayes.avif" },
+  { name: "Jacqueline Hayes", title: "Pharmacy Technician", subtitle: "Clinical Support", image: "/images/JacquelineHayes.png" },
   { name: "Dr. Karl Ryan, DDS", title: "Aesthetic Injector", subtitle: "Provider", image: "/images/KarlRyan.avif" },
   {
     name: "Carolina Millan",
@@ -20,6 +20,12 @@ const aboutTeam = [
     subtitle: "Family & Sports Medicine",
     image: "/images/JohnMaarouf.jpeg",
     bio: "Dr. Maarouf is a dual board certified physician in Family and Sports Medicine who specializes in non surgical orthopedics and orthobiologics to remedy common injuries for every level of athlete like knee pain, meniscus injuries, rotator cuff tears, tennis/golfers elbow, plantar fasciitis and more. With a calm presence, sharp diagnostics, and an eye for detail, Dr. Maarouf guides personalized care that gets results.",
+  },
+  {
+    name: "Dr. Carmen Ramirez",
+    title: "Physician",
+    subtitle: "Clinical Care",
+    image: "/images/CarmenRamirez.png",
   },
 ];
 

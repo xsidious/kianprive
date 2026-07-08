@@ -315,7 +315,7 @@ export function BookOnlineWizard() {
 
   function toggleService(id: string) {
     if (id === "glp1-peptides") {
-      window.open("https://shop.kianprive.com/", "_blank", "noopener,noreferrer");
+      window.location.href = "/intake/peptides-glp";
       return;
     }
     const next = computeNextServices(selectedServices, id);

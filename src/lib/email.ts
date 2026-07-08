@@ -1,18 +1,29 @@
 type SendEmailInput = {
-  to: string;
+  to: string | string[];
   subject: string;
   text?: string;
   html?: string;
 };
 
+function normalizeRecipients(to: string | string[]) {
+  const list = Array.isArray(to) ? to : [to];
+  return [...new Set(list.map((item) => item.trim()).filter(Boolean))];
+}
+
 export async function sendTransactionalEmail(input: SendEmailInput) {
   const from = process.env.EMAIL_FROM ?? "KIAN Prive <no-reply@kianprive.com>";
   const resendKey = process.env.RESEND_API_KEY;
+  const recipients = normalizeRecipients(input.to);
+
+  if (!recipients.length) {
+    throw new Error("At least one email recipient is required.");
+  }
 
   if (!resendKey) {
-    console.info("Email provider not configured. Logging email payload instead.", {
+    console.info("Email provider not configured. Logging email metadata only.", {
       from,
-      ...input,
+      toCount: recipients.length,
+      subject: input.subject,
     });
     return { ok: true, provider: "log" as const };
   }
@@ -25,7 +36,7 @@ export async function sendTransactionalEmail(input: SendEmailInput) {
     },
     body: JSON.stringify({
       from,
-      to: [input.to],
+      to: recipients,
       subject: input.subject,
       text: input.text,
       html: input.html,

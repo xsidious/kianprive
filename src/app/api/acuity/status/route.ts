@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { acuityRequest } from "@/lib/acuity/client";
 import { getAcuityCredentials, getAcuitySchedulerBaseUrl, isAcuitySchedulingEnabled } from "@/lib/acuity/config";
-import { getAcuityAppointmentTypeId } from "@/lib/acuity/map";
+import { ACUITY_CALENDAR_LABELS } from "@/lib/acuity/calendar-ids";
+import { getAcuityAppointmentTypeId, getAcuityCalendarId } from "@/lib/acuity/map";
 import { getBookingOptionIds } from "@/lib/services/booking-options";
 
 /** Health check for Acuity credentials and service mappings (admin/debug). */
@@ -32,13 +33,25 @@ export async function GET() {
   }
 
   const mappings = Object.fromEntries(
-    getBookingOptionIds().map((slug) => [slug, getAcuityAppointmentTypeId(slug)]),
+    getBookingOptionIds().map((slug) => {
+      const typeId = getAcuityAppointmentTypeId(slug);
+      const calendarId = getAcuityCalendarId(slug);
+      return [
+        slug,
+        {
+          appointmentTypeId: typeId,
+          calendarId,
+          calendarName: calendarId ? ACUITY_CALENDAR_LABELS[calendarId] ?? null : null,
+        },
+      ];
+    }),
   );
 
   return NextResponse.json({
     configured: true,
     schedulingEnabled: isAcuitySchedulingEnabled(),
     schedulerBaseUrl: getAcuitySchedulerBaseUrl(),
+    calendars: ACUITY_CALENDAR_LABELS,
     mappings,
   });
 }

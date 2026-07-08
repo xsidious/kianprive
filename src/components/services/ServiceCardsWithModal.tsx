@@ -15,7 +15,7 @@ function isNutritionService(service: Pick<ServiceListingItem, "slug">) {
 
 function getServiceBookingHref(service: ServiceListingItem) {
   if (service.externalBookingUrl) return service.externalBookingUrl;
-  if (service.slug === "glp1-peptides") return "https://shop.kianprive.com/";
+  if (service.slug === "glp1-peptides") return "/intake/peptides-glp";
   return service.slug ? `/book-online?service=${service.slug}` : "/book-online";
 }
 
@@ -31,6 +31,7 @@ type ServiceCardsWithModalProps = {
 
 export function ServiceCardsWithModal({ services, label, layout = "list" }: ServiceCardsWithModalProps) {
   const [selectedService, setSelectedService] = useState<ServiceListingItem | null>(null);
+  const [sliderIndexByService, setSliderIndexByService] = useState<Record<string, number>>({});
   const { data } = useSession();
   const isPriorityGroup = label === "ADD-ON" || label === "SAME-LOCATION";
   const canViewPricing =
@@ -55,18 +56,46 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
   const shortDescription = (text: string, max = 140) =>
     text.length > max ? `${text.slice(0, max).trim()}…` : text;
 
+  const serviceKey = (service: ServiceListingItem, index: number) => service.slug ?? `${service.title}-${index}`;
+
+  const getSlides = (service: ServiceListingItem) => {
+    const sources = [service.image, ...(service.gallery?.map((item) => item.src) ?? [])];
+    return [...new Set(sources)];
+  };
+
+  useEffect(() => {
+    if (!isPriorityGroup) return;
+    if (!services.some((service) => getSlides(service).length > 1)) return;
+    const timer = window.setInterval(() => {
+      setSliderIndexByService((previous) => {
+        const next = { ...previous };
+        services.forEach((service, index) => {
+          const slides = getSlides(service);
+          if (slides.length <= 1) return;
+          const key = serviceKey(service, index);
+          next[key] = ((previous[key] ?? 0) + 1) % slides.length;
+        });
+        return next;
+      });
+    }, 3500);
+    return () => window.clearInterval(timer);
+  }, [isPriorityGroup, services]);
+
   return (
     <>
       <div className={layout === "grid" ? "grid gap-5 sm:grid-cols-2 xl:grid-cols-3" : "space-y-6"}>
-        {services.map((service, index) =>
-          layout === "grid" ? (
+        {services.map((service, index) => {
+          const key = serviceKey(service, index);
+          const slides = getSlides(service);
+          const activeSlide = slides[sliderIndexByService[key] ?? 0] ?? service.image;
+          return layout === "grid" ? (
             <article
-              key={service.slug ?? `${service.title}-${index}`}
+              key={key}
               className="group flex flex-col overflow-hidden rounded-[1.75rem] border border-[#b78d4b22] bg-white shadow-[0_22px_50px_-38px_rgba(66,45,14,0.5)] transition hover:border-[#b78d4b55] hover:shadow-[0_28px_55px_-32px_rgba(66,45,14,0.45)]"
             >
               <div className="relative h-48 overflow-hidden">
                 <Image
-                  src={service.image}
+                  src={activeSlide}
                   alt=""
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
@@ -79,14 +108,28 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                 <h3 className="absolute bottom-4 left-4 right-4 text-xl font-medium leading-snug text-white">
                   {service.title}
                 </h3>
+                {isPriorityGroup && slides.length > 1 ? (
+                  <div className="absolute bottom-2 right-3 flex gap-1.5 rounded-full bg-white/80 px-2 py-1">
+                    {slides.map((slide, slideIndex) => (
+                      <button
+                        key={slide}
+                        type="button"
+                        onClick={() => setSliderIndexByService((prev) => ({ ...prev, [key]: slideIndex }))}
+                        aria-label={`Show slide ${slideIndex + 1}`}
+                        className={`h-2 rounded-full transition-all ${
+                          slideIndex === (sliderIndexByService[key] ?? 0) ? "w-5 bg-[#1f7a7a]" : "w-2 bg-[#9cbec0]"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                ) : null}
               </div>
               <div className="flex flex-1 flex-col p-5">
                 {service.partnerLogo ? (
-                  <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#1f7a7a2e] bg-[#f8fcfc] px-3 py-1">
-                    <div className="relative h-5 w-16">
+                  <div className="mb-3 inline-flex items-center rounded-full border border-[#1f7a7a2e] bg-[#f8fcfc] px-3 py-1.5">
+                    <div className="relative h-7 w-24">
                       <Image src={service.partnerLogo} alt={`${service.partnerName ?? "Partner"} logo`} fill className="object-contain" />
                     </div>
-                    <span className="text-[10px] tracking-[0.14em] text-[#1f6f75]">{service.partnerName ?? "PARTNER"}</span>
                   </div>
                 ) : null}
                 <p className="flex-1 text-sm leading-relaxed text-[#5f5344]">
@@ -128,7 +171,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
             </article>
           ) : (
             <article
-              key={service.slug ?? `${service.title}-${index}`}
+              key={key}
               className={`grid gap-6 overflow-hidden rounded-3xl border p-5 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)] md:grid-cols-[0.42fr_0.58fr] md:items-start ${
                 isPriorityGroup
                   ? "border-[#1f7a7a4d] bg-[linear-gradient(160deg,#ffffff_35%,#eef8f7_100%)]"
@@ -136,7 +179,22 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
               }`}
             >
               <div className="relative h-64 overflow-hidden rounded-2xl">
-                <Image src={service.image} alt="" fill sizes="(max-width: 768px) 100vw, 42vw" className="object-cover" />
+                <Image src={activeSlide} alt="" fill sizes="(max-width: 768px) 100vw, 42vw" className="object-cover" />
+                {isPriorityGroup && slides.length > 1 ? (
+                  <div className="absolute bottom-2 right-3 flex gap-1.5 rounded-full bg-white/80 px-2 py-1">
+                    {slides.map((slide, slideIndex) => (
+                      <button
+                        key={slide}
+                        type="button"
+                        onClick={() => setSliderIndexByService((prev) => ({ ...prev, [key]: slideIndex }))}
+                        aria-label={`Show slide ${slideIndex + 1}`}
+                        className={`h-2 rounded-full transition-all ${
+                          slideIndex === (sliderIndexByService[key] ?? 0) ? "w-5 bg-[#1f7a7a]" : "w-2 bg-[#9cbec0]"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                ) : null}
               </div>
               <div>
                 <p className={`text-xs tracking-[0.2em] ${isPriorityGroup ? "text-[#1f6f75]" : "text-[#8f6f3e]"}`}>
@@ -144,11 +202,10 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                 </p>
                 <h3 className="mt-2 text-2xl text-[#2b2218]">{service.title}</h3>
                 {service.partnerLogo ? (
-                  <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-[#1f7a7a2e] bg-[#f8fcfc] px-3 py-1">
-                    <div className="relative h-5 w-16">
+                  <div className="mt-2 inline-flex items-center rounded-full border border-[#1f7a7a2e] bg-[#f8fcfc] px-3 py-1.5">
+                    <div className="relative h-7 w-24">
                       <Image src={service.partnerLogo} alt={`${service.partnerName ?? "Partner"} logo`} fill className="object-contain" />
                     </div>
-                    <span className="text-[10px] tracking-[0.14em] text-[#1f6f75]">{service.partnerName ?? "PARTNER"}</span>
                   </div>
                 ) : null}
                 <p className="mt-4 leading-relaxed text-[#5f5344]">
@@ -196,8 +253,8 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                 </div>
               </div>
             </article>
-          ),
-        )}
+          );
+        })}
       </div>
 
       {selectedService ? (
@@ -260,11 +317,10 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
             )}
             <p className="mt-5 leading-relaxed text-[#5f5344]">{selectedService.description}</p>
             {selectedService.partnerLogo ? (
-              <div className="mt-4 inline-flex items-center gap-3 rounded-full border border-[#1f7a7a33] bg-white px-4 py-2">
-                <div className="relative h-8 w-24">
+              <div className="mt-4 inline-flex items-center rounded-full border border-[#1f7a7a33] bg-white px-4 py-2">
+                <div className="relative h-10 w-28">
                   <Image src={selectedService.partnerLogo} alt={`${selectedService.partnerName ?? "Partner"} logo`} fill className="object-contain" />
                 </div>
-                <span className="text-xs tracking-[0.12em] text-[#1f6f75]">{selectedService.partnerName ?? "PARTNER SERVICE"}</span>
               </div>
             ) : null}
             {selectedService.details && selectedService.details.length > 0 ? (

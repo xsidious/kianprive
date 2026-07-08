@@ -6,13 +6,14 @@ import { getCmsPageContent } from "@/lib/cms/pages";
 import { KianPrivePaymentPolicies, PoliciesPageLinks } from "@/components/policies/KianPrivePaymentPolicies";
 import { ServiceCardsWithModal } from "@/components/services/ServiceCardsWithModal";
 import {
-  allCatalogServices,
   brandIntro,
+  categorizedMenuServices,
   featuredProviderLogos,
   partnerAddOnServices,
   serviceAccessNotes,
+  serviceMenuCategories,
+  servicesForMenuCategory,
 } from "@/lib/services/groups";
-import { PartnerServicesShowcase } from "@/components/services/PartnerServicesShowcase";
 
 const koreanAndRecoveryPricing = [
   { service: "Korean & Organic Skincare Facial", price: "Single $195 | 4-Session $725", note: "Save $55" },
@@ -502,10 +503,7 @@ const powerPlateDescription =
 
 export default async function ServicesPage() {
   const cms = await getCmsPageContent("services");
-  const hiddenServiceSlugs = new Set(["inbody-scan", "power-plate", "mindtap", "beauty-hair-nails"]);
-  const visibleCatalogServices = allCatalogServices.filter(
-    (service) => !service.slug || !hiddenServiceSlugs.has(service.slug),
-  );
+  const visibleServiceCount = categorizedMenuServices.length;
 
   const scrollTable = (header: ReactNode, body: ReactNode) => (
     <div className="overflow-x-auto rounded-3xl border border-[#b78d4b2d] bg-white shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
@@ -543,7 +541,7 @@ export default async function ServicesPage() {
               </Link>
             </div>
             <p className="mt-6 text-sm text-[#8f6f3e]">
-              {visibleCatalogServices.length} services · In-clinic, in-home, and virtual options
+              {visibleServiceCount} services · In-clinic, in-home, and virtual options
             </p>
           </div>
           <div className="relative mt-8 h-[280px] overflow-hidden rounded-3xl border border-[#b78d4b33] lg:mt-0 lg:h-[360px]">
@@ -575,11 +573,33 @@ export default async function ServicesPage() {
           <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">COMPLETE MENU</p>
           <h2 className="mt-2 font-serif text-3xl text-[#1f1a15] md:text-4xl">All KIAN Privé Services</h2>
           <p className="mt-4 text-lg leading-relaxed text-[#6f6251]">
-            Every offering in one place — tap <strong>Quick view</strong> for a summary, <strong>Full details</strong> for
+            Browse by category — tap <strong>Quick view</strong> for a summary, <strong>Full details</strong> for
             pricing and protocols, or <strong>Book</strong> to schedule online.
           </p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {serviceMenuCategories.map((category) => (
+              <a
+                key={category.id}
+                href={`#${category.id}`}
+                className="rounded-full border border-[#b78d4b40] bg-white px-4 py-2 text-sm text-[#4f4335] transition hover:border-[#b78d4b] hover:bg-[#fff6e8]"
+              >
+                {category.title}
+              </a>
+            ))}
+          </div>
         </div>
-        <ServiceCardsWithModal services={visibleCatalogServices} label="SERVICE" layout="grid" />
+        <div className="space-y-14">
+          {serviceMenuCategories.map((category) => (
+            <section key={category.id} id={category.id} className="scroll-mt-24">
+              <div className="mb-6 max-w-3xl">
+                <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">{category.eyebrow}</p>
+                <h3 className="mt-2 font-serif text-2xl text-[#1f1a15] md:text-3xl">{category.title}</h3>
+                <p className="mt-3 text-[#6f6251]">{category.description}</p>
+              </div>
+              <ServiceCardsWithModal services={servicesForMenuCategory(category)} label="SERVICE" layout="grid" />
+            </section>
+          ))}
+        </div>
       </SectionWrapper>
 
       <SectionWrapper>
@@ -610,7 +630,6 @@ export default async function ServicesPage() {
 
       {partnerAddOnServices.length > 0 ? (
         <SectionWrapper>
-          <PartnerServicesShowcase services={partnerAddOnServices} />
           <div className="mb-8 max-w-3xl">
             <p className="text-xs tracking-[0.2em] text-[#1f6f75]">PARTNER ENHANCEMENTS</p>
             <h2 className="mt-2 text-3xl text-[#1f1a15] md:text-4xl">Add-ons &amp; partner services</h2>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { auth } from "@/lib/auth";
 import { IcooneMediaGallery } from "@/components/services/IcooneMediaGallery";
+import { PeptidesInteractiveShowcase } from "@/components/services/PeptidesInteractiveShowcase";
 import { nutritionPromoImage, NUTRITION_SERVICE_SLUG } from "@/lib/media/nutrition";
 import { getServiceBySlug, serviceCatalog } from "@/lib/services/catalog";
 
@@ -33,10 +34,11 @@ export default async function ServiceDetailPage({
   const isNutrition = slug === NUTRITION_SERVICE_SLUG;
   const showPricing = canViewPricing || isNutrition;
   const heroImage = isNutrition ? service.promoImage ?? nutritionPromoImage : service.image;
+  const isPeptides = slug === "glp1-peptides";
   const bookingHref = service.externalBookingUrl
     ? service.externalBookingUrl
     : service.slug === "glp1-peptides"
-      ? "https://shop.kianprive.com/"
+      ? "/intake/peptides-glp"
       : "/book-online";
   const bookingIsExternal = bookingHref.startsWith("http://") || bookingHref.startsWith("https://");
 
@@ -90,11 +92,21 @@ export default async function ServiceDetailPage({
                   rel={bookingIsExternal ? "noreferrer" : undefined}
                   className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white"
                 >
-                  {service.externalBookingUrl ? "Book with Partner" : service.slug === "glp1-peptides" ? "Go to Shop" : "Book Consultation"}
+                  {service.externalBookingUrl ? "Book with Partner" : service.slug === "glp1-peptides" ? "Start Intake Form" : "Book Consultation"}
                 </Link>
                 <Link href="/services" className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]">
                   Back to Services
                 </Link>
+                {isPeptides ? (
+                  <a
+                    href="/documents/KIAN-Prive-Combined-Intake-Form.pdf"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-full border border-[#1f7a7a55] bg-[#eef8f8] px-5 py-2 text-sm text-[#28585a]"
+                  >
+                    Download PDF Intake
+                  </a>
+                ) : null}
               </div>
             </div>
             <div className="relative h-[300px] overflow-hidden rounded-2xl border border-[#b78d4b2d] sm:h-[360px]">
@@ -103,6 +115,33 @@ export default async function ServiceDetailPage({
           </div>
         )}
       </SectionWrapper>
+
+      {isPeptides ? (
+        <SectionWrapper>
+          <PeptidesInteractiveShowcase />
+          <div className="mt-6 rounded-3xl border border-[#1f7a7a42] bg-[#eef8f8] p-6">
+            <p className="text-xs tracking-[0.18em] text-[#1b6568]">STEP 1 — SECURE INTAKE</p>
+            <h2 className="mt-2 text-2xl text-[#1f1a15]">Complete your therapeutics intake first</h2>
+            <p className="mt-3 max-w-3xl text-sm text-[#28585a]">
+              Submit the HIPAA-protected intake form so our team and your reviewing physician can evaluate eligibility.
+              After approval, you will be contacted with booking and purchasing next steps.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Link href="/intake/peptides-glp" className="rounded-full bg-[#1f7a7a] px-5 py-2 text-sm text-white">
+                Start Secure Intake
+              </Link>
+              <a
+                href="https://shop.kianprive.com/r/NRM2TY"
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-full border border-[#1f7a7a55] bg-white px-5 py-2 text-sm text-[#28585a]"
+              >
+                Approved? Go to Shop
+              </a>
+            </div>
+          </div>
+        </SectionWrapper>
+      ) : null}
 
       {service.gallery?.length ? (
         <SectionWrapper>

@@ -7,7 +7,64 @@ function bySlug(slug: string) {
   return service;
 }
 
-/** Every catalog service with a detail page — use for full services listing. */
+/** Slugs omitted from the public services menu (shown under partner add-ons or retired). */
+export const hiddenServiceMenuSlugs = new Set([
+  "inbody-scan",
+  "power-plate",
+  "mindtap",
+  "beauty-hair-nails",
+]);
+
+export type ServiceMenuCategory = {
+  id: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  slugs: string[];
+};
+
+export const serviceMenuCategories: ServiceMenuCategory[] = [
+  {
+    id: "face-body-wellness",
+    eyebrow: "FACE, BODY & WELLNESS",
+    title: "Face, Body & Wellness",
+    description:
+      "Aesthetic, skincare, body contouring, nutrition, and restorative treatments designed for visible refinement and whole-body wellness.",
+    slugs: [
+      "icoone-laser",
+      "korean-organic-skincare",
+      "microneedling-with-exosomes",
+      "facial-aesthetics",
+      "hair-restoration",
+      "nutrition",
+    ],
+  },
+  {
+    id: "physician",
+    eyebrow: "PHYSICIAN SERVICES",
+    title: "Physician Services",
+    description:
+      "Physician-led telemedicine, diagnostics, and clinical wellness pathways—including blood work review and IV therapy planning.",
+    slugs: ["telemedicine", "comprehensive-bloodwork", "iv-therapy"],
+  },
+  {
+    id: "compounding-peptides",
+    eyebrow: "COMPOUNDING & PEPTIDES",
+    title: "Compounding, Wellness & Peptides",
+    description:
+      "Physician-supervised GLP-1, peptide, and compounded wellness protocols with intake, approval, and personalized treatment planning.",
+    slugs: ["glp1-peptides"],
+  },
+];
+
+export function servicesForMenuCategory(category: ServiceMenuCategory): ServiceListingItem[] {
+  return category.slugs.map((slug) => bySlug(slug));
+}
+
+export const categorizedMenuServices: ServiceListingItem[] = serviceMenuCategories.flatMap((category) =>
+  servicesForMenuCategory(category),
+);
+
 export const allCatalogServices: ServiceListingItem[] = serviceCatalog.map((entry) => entry);
 
 export const coreServices: ServiceListingItem[] = [
@@ -34,7 +91,21 @@ export const sameLocationAddOns: ServiceListingItem[] = [
   {
     slug: "salt-therapy",
     title: "Salt Therapy",
-    image: "/images/stock/service-wellness.jpg",
+    image: "/images/holistic-salt-therapy/photo-1.jpg",
+    gallery: [
+      {
+        src: "/images/holistic-salt-therapy/photo-3.jpg",
+        alt: "Holistic Salt Therapy Center kids halotherapy play room",
+      },
+      {
+        src: "/images/holistic-salt-therapy/photo-7.jpg",
+        alt: "Holistic Salt Therapy Center halotherapy wellness information",
+      },
+      {
+        src: "/images/holistic-salt-therapy/photo-2.jpg",
+        alt: "Holistic Salt Therapy Center reception and waiting area",
+      },
+    ],
     partnerName: "Holistic Therapy Place",
     partnerLogo: "/images/providers/holistic-salt-therapy-center.png",
     externalBookingUrl: "/contact",
@@ -47,7 +118,17 @@ export const sameLocationAddOns: ServiceListingItem[] = [
   {
     slug: "pemf",
     title: "PEMF",
-    image: "/images/stock/service-medical-aesthetics.jpg",
+    image: "/images/holistic-salt-therapy/photo-6.jpg",
+    gallery: [
+      {
+        src: "/images/holistic-salt-therapy/photo-4.jpg",
+        alt: "Holistic Salt Therapy Center infrared sauna and PEMF session room",
+      },
+      {
+        src: "/images/holistic-salt-therapy/photo-5.jpg",
+        alt: "Holistic Salt Therapy Center wellness facility interior",
+      },
+    ],
     partnerName: "Holistic Therapy Place",
     partnerLogo: "/images/providers/holistic-salt-therapy-center.png",
     externalBookingUrl: "/contact",
@@ -60,7 +141,17 @@ export const sameLocationAddOns: ServiceListingItem[] = [
   {
     slug: "far-infrared",
     title: "Far Infrared",
-    image: "/images/stock/service-esthetics.jpg",
+    image: "/images/holistic-salt-therapy/photo-4.jpg",
+    gallery: [
+      {
+        src: "/images/holistic-salt-therapy/photo-6.jpg",
+        alt: "Holistic Salt Therapy Center far infrared sauna interior",
+      },
+      {
+        src: "/images/holistic-salt-therapy/photo-2.jpg",
+        alt: "Holistic Salt Therapy Center reception and waiting area",
+      },
+    ],
     partnerName: "Holistic Therapy Place",
     partnerLogo: "/images/providers/holistic-salt-therapy-center.png",
     externalBookingUrl: "/contact",

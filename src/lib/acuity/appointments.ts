@@ -1,5 +1,5 @@
 import { acuityRequest } from "@/lib/acuity/client";
-import { getAcuityCalendarIdForType } from "@/lib/acuity/calendars";
+import { resolveAcuityCalendarId } from "@/lib/acuity/calendars";
 import { getAcuityAppointmentTypeId } from "@/lib/acuity/map";
 
 export type AcuityAppointment = {
@@ -33,7 +33,7 @@ export async function createAcuityAppointment(input: {
   const lastName = input.lastName.trim() || lastNameFromFirst || firstName;
 
   const bookAsAdmin = process.env.ACUITY_BOOK_AS_ADMIN !== "false";
-  const calendarID = bookAsAdmin ? await getAcuityCalendarIdForType(appointmentTypeID) : null;
+  const calendarID = bookAsAdmin ? await resolveAcuityCalendarId(input.serviceSlug) : null;
 
   const body: Record<string, unknown> = {
     appointmentTypeID,
