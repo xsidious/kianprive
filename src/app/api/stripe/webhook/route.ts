@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
+import { createProductCommissionsForOrder } from "@/lib/commissions";
 
 export async function POST(req: Request) {
   if (!stripe || !process.env.STRIPE_WEBHOOK_SECRET) {
@@ -41,6 +42,7 @@ export async function POST(req: Request) {
           stripePaymentIntentId: session.payment_intent?.toString() ?? undefined,
         },
       });
+      await createProductCommissionsForOrder(session.metadata.orderId);
     }
 
     const userId = session.metadata?.userId;
@@ -94,6 +96,7 @@ export async function POST(req: Request) {
           paymentStatus: "PAID",
         },
       });
+      await createProductCommissionsForOrder(order.id);
     }
   }
 

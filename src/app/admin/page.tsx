@@ -30,36 +30,36 @@ export default async function AdminPage() {
     <div>
       <h1 className="text-3xl text-[#1f1a15] md:text-4xl">Admin Panel</h1>
       <div className="mt-6 grid gap-3 md:grid-cols-4">
-        <article className="rounded-2xl border border-[#b78d4b2d] bg-white p-4">
+        <article className="rounded-sm border border-[#b78d4b2d] bg-white p-4">
           <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">ORDERS</p>
           <p className="mt-1 text-2xl text-[#1f1a15]">{orderCount}</p>
         </article>
-        <article className="rounded-2xl border border-[#b78d4b2d] bg-white p-4">
+        <article className="rounded-sm border border-[#b78d4b2d] bg-white p-4">
           <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">PAGES</p>
           <p className="mt-1 text-2xl text-[#1f1a15]">{pageCount}</p>
         </article>
-        <article className="rounded-2xl border border-[#b78d4b2d] bg-white p-4">
+        <article className="rounded-sm border border-[#b78d4b2d] bg-white p-4">
           <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">PRODUCTS</p>
           <p className="mt-1 text-2xl text-[#1f1a15]">{productCount}</p>
         </article>
-        <article className="rounded-2xl border border-[#b78d4b2d] bg-white p-4">
+        <article className="rounded-sm border border-[#b78d4b2d] bg-white p-4">
           <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">BOOKINGS</p>
           <p className="mt-1 text-2xl text-[#1f1a15]">{bookingCount}</p>
         </article>
-        <article className="rounded-2xl border border-[#b78d4b2d] bg-white p-4">
+        <article className="rounded-sm border border-[#b78d4b2d] bg-white p-4">
           <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">BLOG POSTS</p>
           <p className="mt-1 text-2xl text-[#1f1a15]">{postsCount}</p>
         </article>
       </div>
       <div className="mt-5 flex flex-wrap gap-2">
-        <Link href="/admin/users" className="rounded-full border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage Users</Link>
-        <Link href="/admin/bookings" className="rounded-full border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage Bookings</Link>
-        <Link href="/admin/blog" className="rounded-full border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage Blog</Link>
-        <Link href="/admin/commerce" className="rounded-full border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage Commerce</Link>
-        <Link href="/admin/cms" className="rounded-full border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage CMS</Link>
-        <Link href="/admin/retreats" className="rounded-full border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage Retreats</Link>
+        <Link href="/admin/users" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage Users</Link>
+        <Link href="/admin/bookings" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage Bookings</Link>
+        <Link href="/admin/blog" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage Blog</Link>
+        <Link href="/admin/commerce" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage Commerce</Link>
+        <Link href="/admin/cms" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage CMS</Link>
+        <Link href="/admin/retreats" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage Retreats</Link>
       </div>
-      <div className="mt-8 overflow-hidden rounded-2xl border border-[#d7b67666]">
+      <div className="mt-8 overflow-hidden rounded-sm border border-[#d7b67666]">
         <table className="w-full text-left text-sm text-[#3b3024]">
           <thead className="bg-[#fff6e8]">
             <tr>
@@ -85,12 +85,12 @@ export default async function AdminPage() {
           <h2 className="text-lg text-[#1f1a15]">Recent bookings</h2>
           <Link
             href="/admin/bookings"
-            className="rounded-full border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024] hover:bg-[#fff6e8]"
+            className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024] hover:bg-[#fff6e8]"
           >
             View all bookings
           </Link>
         </div>
-        <div className="overflow-hidden rounded-2xl border border-[#d7b67666] bg-white">
+        <div className="overflow-hidden rounded-sm border border-[#d7b67666] bg-white">
           <table className="w-full text-left text-sm text-[#3b3024]">
             <thead className="bg-[#fff6e8]">
               <tr>

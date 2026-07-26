@@ -49,12 +49,17 @@ export function PricingTable() {
   return (
     <div className="grid gap-6 md:grid-cols-2">
       {plans.map((plan) => (
-        <article key={plan.id} className="rounded-3xl border border-[#b78d4b2d] bg-white p-8 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)]">
-          <h3 className="text-2xl text-[#1f1a15]">{plan.name}</h3>
+        <article key={plan.id} className="rounded-sm border border-[#e4d9c8] bg-[#fffcf7] p-8">
+          <h3 className="font-serif text-2xl text-[#1f1a15]">{plan.name}</h3>
           <p className="mt-3 text-[#6f6251]">{plan.description}</p>
           <ul className="mt-5 space-y-2 text-sm text-[#5f5344]">
             {plan.features.map((feature) => (
-              <li key={feature}>• {feature}</li>
+              <li key={feature} className="flex items-start gap-2">
+                <span className="text-[#b78d4b]" aria-hidden>
+                  ✦
+                </span>
+                <span>{feature}</span>
+              </li>
             ))}
           </ul>
           {status === "loading" ? (
@@ -64,27 +69,27 @@ export function PricingTable() {
               type="button"
               onClick={() => startCheckout(plan.id)}
               disabled={loadingPlan === plan.id}
-              className="mt-7 rounded-full bg-[#b78d4b] px-5 py-2 text-white disabled:opacity-60"
+              className="mt-7 rounded-sm bg-[#b78d4b] px-5 py-2 text-[11px] tracking-[0.16em] text-white disabled:opacity-60"
             >
-              {loadingPlan === plan.id ? "Redirecting..." : `Choose ${plan.name}`}
+              {loadingPlan === plan.id ? "REDIRECTING..." : `CHOOSE ${plan.name.toUpperCase()}`}
             </button>
           ) : (
             <div className="mt-7 space-y-3">
-              <p className="rounded-xl border border-[#b78d4b30] bg-[#fffaf4] px-4 py-3 text-xs text-[#6f6251]">
+              <p className="rounded-sm border border-[#e4d9c8] bg-[#fffaf4] px-4 py-3 text-xs text-[#6f6251]">
                 New membership requires consultation, onboarding fee payment, and approval before account activation.
               </p>
               <div className="flex flex-wrap gap-2">
                 <Link
                   href="/book-online?service=telemedicine"
-                  className="inline-flex rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white"
+                  className="inline-flex rounded-sm bg-[#b78d4b] px-5 py-2 text-[11px] tracking-[0.16em] text-white"
                 >
-                  Schedule consultation
+                  SCHEDULE CONSULTATION
                 </Link>
                 <Link
                   href="/signup"
-                  className="inline-flex rounded-full border border-[#b78d4b70] bg-white px-5 py-2 text-sm text-[#3b3024]"
+                  className="inline-flex rounded-sm border border-[#b78d4b70] bg-white px-5 py-2 text-[11px] tracking-[0.16em] text-[#3b3024]"
                 >
-                  Start account onboarding
+                  START ACCOUNT ONBOARDING
                 </Link>
               </div>
             </div>

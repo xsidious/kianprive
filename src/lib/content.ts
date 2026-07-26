@@ -10,6 +10,12 @@ export type BlogPost = {
   readTime: string;
   image: string;
   content: string[];
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  seoImage?: string | null;
+  canonicalUrl?: string | null;
+  noIndex?: boolean;
+  updatedAt?: string;
 };
 
 export const blogPostsData: BlogPost[] = [
@@ -92,7 +98,7 @@ export const blogPostsData: BlogPost[] = [
     publishedAt: "2026-03-21",
     category: "Beauty",
     readTime: "5 min read",
-    image: "/images/facial-treatments.jpg",
+    image: "/images/facial-treatments.webp",
     content: [
       "Luxury skincare outcomes are built on consistency, not intensity. A simplified structure that protects barrier function can outperform aggressive treatment stacking over time.",
       "Hydration, antioxidant support, and gentle stimulation techniques can preserve glow and reduce visible stress markers. The right cadence matters more than the number of products.",
@@ -149,8 +155,14 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
     publishedAt: (post.publishedAt ?? post.updatedAt).toISOString(),
     category: post.category?.name ?? "General",
     readTime: post.readTime ?? "5 min read",
-    image: post.featuredImage ?? "/images/beauty.avif",
+    image: post.featuredImage ?? post.seoImage ?? "/images/og-default.jpg",
     content: Array.isArray(post.content) ? (post.content as string[]) : [],
+    seoTitle: post.seoTitle,
+    seoDescription: post.seoDescription,
+    seoImage: post.seoImage,
+    canonicalUrl: post.canonicalUrl,
+    noIndex: post.noIndex,
+    updatedAt: post.updatedAt.toISOString(),
   }));
 }
 
@@ -173,8 +185,14 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
       publishedAt: (dbPost.publishedAt ?? dbPost.updatedAt).toISOString(),
       category: dbPost.category?.name ?? "General",
       readTime: dbPost.readTime ?? "5 min read",
-      image: dbPost.featuredImage ?? "/images/beauty.avif",
+      image: dbPost.featuredImage ?? dbPost.seoImage ?? "/images/og-default.jpg",
       content: Array.isArray(dbPost.content) ? (dbPost.content as string[]) : [],
+      seoTitle: dbPost.seoTitle,
+      seoDescription: dbPost.seoDescription,
+      seoImage: dbPost.seoImage,
+      canonicalUrl: dbPost.canonicalUrl,
+      noIndex: dbPost.noIndex,
+      updatedAt: dbPost.updatedAt.toISOString(),
     };
   }
 

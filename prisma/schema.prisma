@@ -22,6 +22,7 @@ model User {
   role            Role           @default(GUEST)
   subscription    Subscription?
   profile         Profile?
+  partnerProfile  PartnerProfile?
   stripeCustomerId String?       @unique
   accounts        Account[]
   sessions        Session[]
@@ -40,6 +41,7 @@ model User {
 model BookingRequest {
   id                String        @id @default(cuid())
   userId            String?
+  partnerId         String?
   fullName          String
   email             String
   phone             String
@@ -49,17 +51,21 @@ model BookingRequest {
   scheduledEnd      DateTime?
   timezone          String?       @default("America/New_York")
   notes             String?
+  partnerNotes      String?
   serviceIds        String[]
   serviceTitles     String[]
   guestTotal        Decimal       @default(0) @db.Decimal(10, 2)
   memberTotal       Decimal       @default(0) @db.Decimal(10, 2)
   status            BookingStatus @default(PENDING)
   user              User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  partner           PartnerProfile? @relation(fields: [partnerId], references: [id], onDelete: SetNull)
+  commissionEntries CommissionLedgerEntry[]
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
   @@index([status, createdAt])
   @@index([userId, createdAt])
+  @@index([partnerId, status, createdAt])
 }
 
 model TherapeuticsIntakeSubmission {
@@ -263,6 +269,7 @@ model Product {
   variants       ProductVariant[]
   orderItems     OrderItem[]
   cartItems      CartItem[]
+  partnerAssignments PartnerProductAssignment[]
   collection     ProductCollection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
@@ -317,6 +324,7 @@ model Order {
   id                   String       @id @default(cuid())
   orderNumber          String       @unique
   userId               String?
+  partnerId            String?
   email                String?
   phone                String?
   status               OrderStatus  @default(PENDING)
@@ -338,14 +346,18 @@ model Order {
   payments             PaymentRecord[]
   refunds              RefundRecord[]
   user                 User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  partner              PartnerProfile? @relation(fields: [partnerId], references: [id], onDelete: SetNull)
   createdAt            DateTime     @default(now())
   updatedAt            DateTime     @updatedAt
+
+  @@index([partnerId, createdAt])
 }
 
 model OrderItem {
   id          String   @id @default(cuid())
   orderId     String
   productId   String
+  partnerId   String?
   title       String
   sku         String?
   quantity    Int
@@ -353,10 +365,13 @@ model OrderItem {
   lineTotal   Decimal  @db.Decimal(10, 2)
   order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product     Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  partner     PartnerProfile? @relation(fields: [partnerId], references: [id], onDelete: SetNull)
+  commissionEntries CommissionLedgerEntry[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([orderId])
+  @@index([partnerId])
 }
 
 model Fulfillment {
@@ -480,12 +495,201 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model PartnerProfile {
+  id                           String           @id @default(cuid())
+  userId                       String           @unique
+  displayName                  String
+  legalName                    String?
+  type                         PartnerType      @default(CLINICAL)
+  specialty                    String?
+  specialtyTags                String[]         @default([])
+  bio                          String?
+  phone                        String?
+  avatarUrl                    String?
+  partnerCode                  String           @unique
+  taxId                        String?
+  payoutMethod                 String?
+  payoutDetails                Json?
+  status                       PartnerStatus    @default(INVITED)
+  defaultServiceCommissionPct  Decimal          @default(20) @db.Decimal(5, 2)
+  defaultProductCommissionPct  Decimal          @default(10) @db.Decimal(5, 2)
+  onboardingComplete           Boolean          @default(false)
+  user                         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  serviceAssignments           PartnerServiceAssignment[]
+  productAssignments           PartnerProductAssignment[]
+  bookings                     BookingRequest[]
+  orders                       Order[]
+  orderItems                   OrderItem[]
+  commissionEntries            CommissionLedgerEntry[]
+  payouts                      PartnerPayout[]
+  guidelineGrants              PartnerGuidelineGrant[]
+  guidelineAcks                PartnerGuidelineAck[]
+  createdAt                    DateTime         @default(now())
+  updatedAt                    DateTime         @updatedAt
+
+  @@index([status, createdAt])
+  @@index([partnerCode])
+}
+
+model PartnerServiceAssignment {
+  id             String         @id @default(cuid())
+  partnerId      String
+  serviceSlug    String
+  active         Boolean        @default(true)
+  commissionPct  Decimal?       @db.Decimal(5, 2)
+  partner        PartnerProfile @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@unique([partnerId, serviceSlug])
+  @@index([serviceSlug, active])
+}
+
+model PartnerProductAssignment {
+  id             String         @id @default(cuid())
+  partnerId      String
+  productId      String
+  active         Boolean        @default(true)
+  commissionPct  Decimal?       @db.Decimal(5, 2)
+  partnerSku     String?
+  partner        PartnerProfile @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  product        Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@unique([partnerId, productId])
+  @@index([productId, active])
+}
+
+model CommissionLedgerEntry {
+  id                String              @id @default(cuid())
+  partnerId         String
+  sourceType        CommissionSourceType
+  bookingId         String?
+  orderItemId       String?
+  description       String?
+  grossAmount       Decimal             @db.Decimal(10, 2)
+  commissionPct     Decimal             @db.Decimal(5, 2)
+  commissionAmount  Decimal             @db.Decimal(10, 2)
+  status            CommissionStatus    @default(PENDING)
+  earnedAt          DateTime            @default(now())
+  payoutId          String?
+  partner           PartnerProfile      @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  booking           BookingRequest?     @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  orderItem         OrderItem?          @relation(fields: [orderItemId], references: [id], onDelete: SetNull)
+  payout            PartnerPayout?      @relation(fields: [payoutId], references: [id], onDelete: SetNull)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  @@index([partnerId, status, earnedAt])
+  @@index([bookingId])
+  @@index([orderItemId])
+  @@index([payoutId])
+}
+
+model PartnerPayout {
+  id          String       @id @default(cuid())
+  partnerId   String
+  periodStart DateTime
+  periodEnd   DateTime
+  totalAmount Decimal      @default(0) @db.Decimal(10, 2)
+  status      PayoutStatus @default(DRAFT)
+  paidAt      DateTime?
+  exportNote  String?
+  partner     PartnerProfile @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  entries     CommissionLedgerEntry[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([partnerId, status, createdAt])
+}
+
+model PartnerGuideline {
+  id          String                  @id @default(cuid())
+  title       String
+  category    PartnerGuidelineCategory @default(GENERAL)
+  body        String?
+  documentUrl String?
+  version     String                  @default("1.0")
+  publishedAt DateTime?
+  requiresAck Boolean                 @default(false)
+  grants      PartnerGuidelineGrant[]
+  acks        PartnerGuidelineAck[]
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+
+  @@index([category, publishedAt])
+}
+
+model PartnerGuidelineGrant {
+  id           String           @id @default(cuid())
+  guidelineId  String
+  partnerId    String?
+  allPartners  Boolean          @default(false)
+  guideline    PartnerGuideline @relation(fields: [guidelineId], references: [id], onDelete: Cascade)
+  partner      PartnerProfile?  @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  createdAt    DateTime         @default(now())
+
+  @@index([guidelineId])
+  @@index([partnerId])
+}
+
+model PartnerGuidelineAck {
+  id           String           @id @default(cuid())
+  guidelineId  String
+  partnerId    String
+  acknowledgedAt DateTime       @default(now())
+  guideline    PartnerGuideline @relation(fields: [guidelineId], references: [id], onDelete: Cascade)
+  partner      PartnerProfile   @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  @@unique([guidelineId, partnerId])
+}
+
 enum Role {
   GUEST
   MEMBER
   EDITOR
   OPERATIONS
   ADMIN
+  PARTNER
+}
+
+enum PartnerType {
+  CLINICAL
+  BRAND
+  BOTH
+}
+
+enum PartnerStatus {
+  INVITED
+  ACTIVE
+  SUSPENDED
+}
+
+enum CommissionSourceType {
+  SERVICE
+  PRODUCT
+}
+
+enum CommissionStatus {
+  PENDING
+  ELIGIBLE
+  INCLUDED_IN_PAYOUT
+  VOID
+}
+
+enum PayoutStatus {
+  DRAFT
+  APPROVED
+  PAID
+}
+
+enum PartnerGuidelineCategory {
+  PEPTIDES
+  GLP
+  GENERAL
+  CLINICAL
+  OPERATIONS
 }
 
 enum SubscriptionTier {

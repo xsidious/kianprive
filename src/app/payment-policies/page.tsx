@@ -19,10 +19,10 @@ export default function PaymentPoliciesPage() {
         <KianPrivePaymentPolicies showMembershipSummary />
       </div>
       <div className="mt-8 flex flex-wrap gap-3">
-        <Link href="/pricing" className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
+        <Link href="/pricing" className="rounded-sm bg-[#b78d4b] px-5 py-2 text-sm text-white">
           View membership pricing
         </Link>
-        <Link href="/book-online" className="rounded-full border border-[#b78d4b70] bg-white px-5 py-2 text-sm text-[#3b3024]">
+        <Link href="/book-online" className="rounded-sm border border-[#b78d4b70] bg-white px-5 py-2 text-sm text-[#3b3024]">
           Book consultation
         </Link>
       </div>

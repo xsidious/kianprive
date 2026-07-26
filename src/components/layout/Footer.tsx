@@ -5,9 +5,9 @@ export function Footer() {
   return (
     <footer className="border-t border-[#b78d4b33] bg-[#f3ece0] px-4 py-12 text-[#5a4c3e] sm:px-6">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-10 rounded-2xl border border-[#b78d4b33] bg-[#fffaf2] p-5 sm:p-6">
-          <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">GET UPDATES</p>
-          <h3 className="mt-2 text-2xl text-[#2b2218]">Stay connected with KIAN Privé</h3>
+        <div className="mb-10 rounded-sm border border-[#e4d9c8] bg-[#fffcf7] p-5 sm:p-6">
+            <p className="text-xs tracking-[0.2em] text-[#7a5c32]">GET UPDATES</p>
+          <h3 className="mt-2 font-serif text-2xl text-[#2b2218]">Stay connected with KIAN Privé</h3>
           <p className="mt-2 text-sm text-[#6f6251]">
             Join our list for wellness insights, retreat launches, exclusive offers, and event announcements.
           </p>
@@ -16,10 +16,10 @@ export function Footer() {
               type="email"
               required
               placeholder="Enter your email"
-              className="min-w-[230px] flex-1 rounded-xl border border-[#b78d4b35] bg-white p-3 text-sm text-[#2b2218]"
+              className="min-w-[230px] flex-1 rounded-sm border border-[#e4d9c8] bg-white p-3 text-sm text-[#2b2218]"
             />
-            <button type="submit" className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
-              Subscribe
+            <button type="submit" className="rounded-sm bg-[#8a682e] px-5 py-2 text-[11px] tracking-[0.16em] text-white">
+              SUBSCRIBE
             </button>
           </form>
         </div>
@@ -27,7 +27,7 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <Image src="/images/kianprivelogo.png" alt="KIAN Privé logo" width={58} height={58} />
-            <p className="mt-4 text-xs tracking-[0.2em] text-[#8f6f3e]">CONCIERGE WELLNESS</p>
+            <p className="mt-4 text-xs tracking-[0.2em] text-[#7a5c32]">CONCIERGE WELLNESS</p>
             <p className="mt-2 text-sm">Private. Precise. Performance-centered care for elite outcomes.</p>
           </div>
 
@@ -73,17 +73,19 @@ export function Footer() {
           <div>
             <p className="text-sm font-medium text-[#3f3327]">Contact</p>
             <div className="mt-3 space-y-2 text-sm">
-              <a href="tel:3059182570" className="block hover:text-[#8f6f3e] hover:underline">
+              <p className="text-[#4f4335]">North Miami Beach, FL</p>
+              <p className="text-[#4f4335]">Serving Miami &amp; Miami-Dade</p>
+              <a href="tel:3059182570" className="block hover:text-[#7a5c32] hover:underline">
                 305-918-2570
               </a>
-              <a href="mailto:contact@kianprive.com" className="block hover:text-[#8f6f3e] hover:underline">
+              <a href="mailto:contact@kianprive.com" className="block hover:text-[#7a5c32] hover:underline">
                 contact@kianprive.com
               </a>
               <a
                 href="https://www.facebook.com/KIAN4Life/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block hover:text-[#8f6f3e] hover:underline"
+                className="block hover:text-[#7a5c32] hover:underline"
               >
                 Facebook
               </a>
@@ -91,7 +93,7 @@ export function Footer() {
                 href="https://instagram.com/keepingitallnatural"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block hover:text-[#8f6f3e] hover:underline"
+                className="block hover:text-[#7a5c32] hover:underline"
               >
                 Instagram
               </a>
@@ -99,12 +101,12 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-[#b78d4b24] pt-4 text-xs text-[#7d6d58]">
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-[#b78d4b24] pt-4 text-xs text-[#5f5344]">
           <p>© {new Date().getFullYear()} KIAN Privé. All rights reserved.</p>
-          <Link href="/payment-policies" className="hover:text-[#8f6f3e] hover:underline">
+          <Link href="/payment-policies" className="hover:text-[#7a5c32] hover:underline">
             Payment & Policies
           </Link>
-          <Link href="/terms-and-conditions" className="hover:text-[#8f6f3e] hover:underline">
+          <Link href="/terms-and-conditions" className="hover:text-[#7a5c32] hover:underline">
             Retreats & Events Terms
           </Link>
         </div>

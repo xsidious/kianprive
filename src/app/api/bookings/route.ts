@@ -11,6 +11,8 @@ import { isAcuitySchedulingEnabled } from "@/lib/acuity/config";
 import { resolveBookingDatetime } from "@/lib/acuity/datetime";
 import { computeSlotEnd, isSlotAvailable, parseSlotId } from "@/lib/scheduling/slots";
 import { sendTransactionalEmail } from "@/lib/email";
+import { resolvePartnerIdForServices } from "@/lib/partners";
+import { createServiceCommissionForBooking } from "@/lib/commissions";
 
 const createBookingSchema = z.object({
   fullName: z.string().min(2),
@@ -22,6 +24,7 @@ const createBookingSchema = z.object({
   scheduledSlotId: z.string().min(1),
   timezone: z.string().optional(),
   memberPricingActive: z.boolean().optional(),
+  partnerCode: z.string().optional(),
 });
 
 const PARTNER_BOOKING_IDS = new Set(["beauty-hair-nails", "mindtap"]);
@@ -133,6 +136,18 @@ export async function POST(req: Request) {
     memberTotal += option.memberPrice;
   }
 
+  let preferredProvider: string | null = null;
+  const preferredMatch = parsed.data.notes?.match(/Preferred provider:\s*(.+)/i);
+  if (preferredMatch?.[1]) preferredProvider = preferredMatch[1].trim();
+
+  let partnerId = await resolvePartnerIdForServices(parsed.data.serviceIds, preferredProvider);
+  if (parsed.data.partnerCode) {
+    const byCode = await prisma.partnerProfile.findUnique({
+      where: { partnerCode: parsed.data.partnerCode.toUpperCase() },
+    });
+    if (byCode && byCode.status === "ACTIVE") partnerId = byCode.id;
+  }
+
   let booking: {
     id: string;
     status: string;
@@ -144,6 +159,7 @@ export async function POST(req: Request) {
     booking = await prisma.bookingRequest.create({
       data: {
         userId: session?.user?.id || null,
+        partnerId,
         fullName: parsed.data.fullName,
         email: parsed.data.email.toLowerCase(),
         phone: parsed.data.phone,
@@ -162,7 +178,7 @@ export async function POST(req: Request) {
         serviceTitles,
         guestTotal,
         memberTotal,
-        status: "CONFIRMED",
+        status: partnerId ? "PENDING" : "CONFIRMED",
       },
       select: {
         id: true,
@@ -171,6 +187,11 @@ export async function POST(req: Request) {
         scheduledEnd: true,
       },
     });
+    if (booking && partnerId) {
+      await createServiceCommissionForBooking(booking.id);
+      const { notifyPartnerNewBooking } = await import("@/lib/partner-notify");
+      await notifyPartnerNewBooking(booking.id);
+    }
   } catch (dbError) {
     console.error("[bookings] Could not save booking request to database:", dbError);
     if (!acuityAppointmentId) {

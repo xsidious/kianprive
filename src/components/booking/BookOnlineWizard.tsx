@@ -18,6 +18,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { bookingServiceOptions, getBookingOptionById } from "@/lib/services/booking-options";
 import { DEFAULT_TIMEZONE } from "@/lib/scheduling/config";
+import { capturePartnerReferralFromUrl, readPartnerReferralClient } from "@/lib/partner-referral";
 
 type WizardStep = "welcome" | "count" | "services" | "provider" | "schedule" | "details" | "complete";
 type VisitorType = "member" | "guest" | null;
@@ -125,7 +126,7 @@ function WizardCard({ children, className = "" }: { children: React.ReactNode; c
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -12 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className={`overflow-hidden rounded-[2rem] border border-[#b78d4b22] bg-white/90 p-6 shadow-[0_28px_60px_-40px_rgba(66,45,14,0.55)] backdrop-blur-sm sm:p-8 ${className}`}
+      className={`overflow-hidden rounded-sm border border-[#b78d4b22] bg-white/90 p-6 shadow-[0_28px_60px_-40px_rgba(66,45,14,0.55)] backdrop-blur-sm sm:p-8 ${className}`}
     >
       {children}
     </motion.div>
@@ -196,6 +197,10 @@ export function BookOnlineWizard() {
     if (serviceInterest === "two") return `Choose two services (${selectedServices.length}/2)`;
     return `Choose your services (${selectedServices.length} selected)`;
   }, [serviceInterest, selectedServices.length]);
+
+  useEffect(() => {
+    capturePartnerReferralFromUrl(searchParams);
+  }, [searchParams]);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -365,6 +370,7 @@ export function BookOnlineWizard() {
     setSubmitError("");
     setSubmitting(true);
     try {
+      const partnerCode = readPartnerReferralClient() ?? undefined;
       const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -377,6 +383,7 @@ export function BookOnlineWizard() {
           serviceIds: selectedServices,
           scheduledSlotId: selectedSlotId,
           timezone: DEFAULT_TIMEZONE,
+          partnerCode,
         }),
       });
       if (!res.ok) {
@@ -415,16 +422,16 @@ export function BookOnlineWizard() {
         className="pointer-events-none absolute inset-0 -z-10"
         aria-hidden
       >
-        <div className="absolute -left-32 top-20 h-72 w-72 rounded-full bg-[#b78d4b18] blur-3xl" />
-        <div className="absolute -right-24 top-40 h-96 w-96 rounded-full bg-[#1f7a7a12] blur-3xl" />
-        <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-[#b78d4b10] blur-3xl" />
+        <div className="absolute -left-32 top-20 h-72 w-72 rounded-sm bg-[#b78d4b18] blur-3xl" />
+        <div className="absolute -right-24 top-40 h-96 w-96 rounded-sm bg-[#1f7a7a12] blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-sm bg-[#b78d4b10] blur-3xl" />
       </div>
 
       <div className="mx-auto max-w-3xl px-4 pt-10 text-center sm:pt-14">
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="inline-flex items-center gap-2 rounded-full border border-[#b78d4b33] bg-white/70 px-4 py-1.5 text-sm text-[#8f6f3e]"
+          className="inline-flex items-center gap-2 rounded-sm border border-[#b78d4b33] bg-white/70 px-4 py-1.5 text-sm text-[#8f6f3e]"
         >
           <Sparkles size={16} />
           KIAN Privé · Concierge booking
@@ -456,7 +463,7 @@ export function BookOnlineWizard() {
                 <motion.div
                   initial={{ scale: 0.98 }}
                   animate={{ scale: 1 }}
-                  className="mt-8 rounded-2xl border-2 border-[#2e7d3240] bg-gradient-to-br from-[#f4fbf4] to-white p-6 text-center"
+                  className="mt-8 rounded-sm border-2 border-[#2e7d3240] bg-gradient-to-br from-[#f4fbf4] to-white p-6 text-center"
                 >
                   <p className="text-sm font-medium tracking-wide text-[#2e7d32]">WELCOME BACK</p>
                   <p className="mt-2 text-xl text-[#1f1a15]">{session?.user?.name ?? "Member"}</p>
@@ -464,7 +471,7 @@ export function BookOnlineWizard() {
                   <button
                     type="button"
                     onClick={() => chooseVisitor("member")}
-                    className="mt-6 w-full rounded-2xl bg-[#b78d4b] py-4 text-lg font-semibold text-white"
+                    className="mt-6 w-full rounded-sm bg-[#b78d4b] py-4 text-lg font-semibold text-white"
                   >
                     Continue as member
                   </button>
@@ -474,7 +481,7 @@ export function BookOnlineWizard() {
                   <button
                     type="button"
                     onClick={() => chooseVisitor("member")}
-                    className={`group rounded-2xl border-2 p-6 text-left transition-all ${
+                    className={`group rounded-sm border-2 p-6 text-left transition-all ${
                       visitorType === "member"
                         ? "border-[#b78d4b] bg-[#fff8ed] shadow-lg shadow-[#b78d4b22]"
                         : "border-[#e8dcc8] bg-white hover:border-[#b78d4b66]"
@@ -487,7 +494,7 @@ export function BookOnlineWizard() {
                       <Link
                         href="/login?callbackUrl=/book-online"
                         onClick={(e) => e.stopPropagation()}
-                        className="mt-4 inline-flex rounded-full bg-[#1f1a15] px-4 py-2 text-sm text-white"
+                        className="mt-4 inline-flex rounded-sm bg-[#1f1a15] px-4 py-2 text-sm text-white"
                       >
                         Sign in now
                       </Link>
@@ -497,7 +504,7 @@ export function BookOnlineWizard() {
                   <button
                     type="button"
                     onClick={() => chooseVisitor("guest")}
-                    className={`group rounded-2xl border-2 p-6 text-left transition-all ${
+                    className={`group rounded-sm border-2 p-6 text-left transition-all ${
                       visitorType === "guest"
                         ? "border-[#b78d4b] bg-[#fff8ed] shadow-lg shadow-[#b78d4b22]"
                         : "border-[#e8dcc8] bg-white hover:border-[#b78d4b66]"
@@ -535,14 +542,14 @@ export function BookOnlineWizard() {
                       key={opt.id}
                       type="button"
                       onClick={() => chooseServiceInterest(opt.id)}
-                      className={`flex w-full items-center gap-4 rounded-2xl border-2 px-5 py-5 text-left transition-all ${
+                      className={`flex w-full items-center gap-4 rounded-sm border-2 px-5 py-5 text-left transition-all ${
                         active
                           ? "border-[#b78d4b] bg-gradient-to-r from-[#fff8ed] to-white shadow-md"
                           : "border-[#e8dcc8] bg-white hover:border-[#b78d4b55]"
                       }`}
                     >
                       <span
-                        className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-xl font-semibold ${
+                        className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-sm text-xl font-semibold ${
                           active ? "bg-[#b78d4b] text-white" : "bg-[#f4efe6] text-[#8f6f3e]"
                         }`}
                       >
@@ -575,7 +582,7 @@ export function BookOnlineWizard() {
                     {selectedRows.map((s) => (
                       <span
                         key={s.id}
-                        className="inline-flex items-center gap-1 rounded-full bg-[#fff3df] px-3 py-1 text-sm font-medium text-[#8f6f3e]"
+                        className="inline-flex items-center gap-1 rounded-sm bg-[#fff3df] px-3 py-1 text-sm font-medium text-[#8f6f3e]"
                       >
                         <Check size={14} />
                         {s.title}
@@ -595,7 +602,7 @@ export function BookOnlineWizard() {
                       type="button"
                       disabled={disabled}
                       onClick={() => toggleService(service.id)}
-                      className={`relative overflow-hidden rounded-2xl border-2 text-left transition-all ${
+                      className={`relative overflow-hidden rounded-sm border-2 text-left transition-all ${
                         active
                           ? "border-[#b78d4b] ring-2 ring-[#b78d4b33]"
                           : disabled
@@ -607,7 +614,7 @@ export function BookOnlineWizard() {
                         <Image src={service.image} alt="" fill className="object-cover" sizes="(max-width:640px) 100vw, 50vw" />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#1f1a15]/75 via-transparent to-transparent" />
                         {active ? (
-                          <span className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-[#b78d4b] text-white">
+                          <span className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-sm bg-[#b78d4b] text-white">
                             <Check size={18} />
                           </span>
                         ) : null}
@@ -639,16 +646,16 @@ export function BookOnlineWizard() {
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
-                    className="h-10 w-10 rounded-full border-2 border-[#e8dcc8] border-t-[#b78d4b]"
+                    className="h-10 w-10 rounded-sm border-2 border-[#e8dcc8] border-t-[#b78d4b]"
                   />
                   <p className="text-[#6f6251]">Finding open times…</p>
                 </div>
               ) : slotsError ? (
-                <div className="mt-8 rounded-2xl bg-red-50 p-5 text-center text-red-700">{slotsError}</div>
+                <div className="mt-8 rounded-sm bg-red-50 p-5 text-center text-red-700">{slotsError}</div>
               ) : availableSlots.length === 0 ? (
-                <div className="mt-8 rounded-2xl border border-[#e8dcc8] bg-[#fffaf2] p-6 text-center">
+                <div className="mt-8 rounded-sm border border-[#e8dcc8] bg-[#fffaf2] p-6 text-center">
                   <p className="text-[#5f5344]">No times online — our team can help.</p>
-                  <a href="tel:3059182570" className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#b78d4b] px-6 py-3 text-white">
+                  <a href="tel:3059182570" className="mt-4 inline-flex items-center gap-2 rounded-sm bg-[#b78d4b] px-6 py-3 text-white">
                     <Phone size={18} /> 305-918-2570
                   </a>
                 </div>
@@ -664,7 +671,7 @@ export function BookOnlineWizard() {
                           setSelectedDateKey(group.key);
                           setSelectedSlotId("");
                         }}
-                        className={`rounded-2xl border-2 px-4 py-3 text-sm sm:text-base ${
+                        className={`rounded-sm border-2 px-4 py-3 text-sm sm:text-base ${
                           selectedDateKey === group.key
                             ? "border-[#b78d4b] bg-[#fff5e6] font-medium"
                             : "border-[#e8dcc8] bg-white"
@@ -681,7 +688,7 @@ export function BookOnlineWizard() {
                         key={slot.id}
                         type="button"
                         onClick={() => selectTimeSlot(slot.id)}
-                        className={`min-h-[48px] rounded-2xl border-2 py-3 text-base ${
+                        className={`min-h-[48px] rounded-sm border-2 py-3 text-base ${
                           selectedSlotId === slot.id
                             ? "border-[#b78d4b] bg-[#fff5e6] font-semibold"
                             : "border-[#e8dcc8] bg-white"
@@ -708,7 +715,7 @@ export function BookOnlineWizard() {
                       key={provider.id}
                       type="button"
                       onClick={() => setSelectedProvider(provider.label)}
-                      className={`rounded-2xl border-2 px-5 py-4 text-left transition ${
+                      className={`rounded-sm border-2 px-5 py-4 text-left transition ${
                         active ? "border-[#b78d4b] bg-[#fff5e6]" : "border-[#e8dcc8] bg-white hover:border-[#b78d4b66]"
                       }`}
                     >
@@ -744,7 +751,7 @@ export function BookOnlineWizard() {
                       onChange={(e) => field.set(e.target.value)}
                       type={field.type}
                       autoComplete={field.auto}
-                      className="w-full rounded-2xl border-2 border-[#e8dcc8] bg-[#fffdf9] px-4 py-4 text-lg text-[#1f1a15] outline-none transition focus:border-[#b78d4b] focus:ring-4 focus:ring-[#b78d4b18]"
+                      className="w-full rounded-sm border-2 border-[#e8dcc8] bg-[#fffdf9] px-4 py-4 text-lg text-[#1f1a15] outline-none transition focus:border-[#b78d4b] focus:ring-4 focus:ring-[#b78d4b18]"
                     />
                   </label>
                 ))}
@@ -757,7 +764,7 @@ export function BookOnlineWizard() {
                     key={opt.value}
                     type="button"
                     onClick={() => setPreferredLocation(opt.value)}
-                    className={`rounded-2xl border-2 px-3 py-4 text-center transition ${
+                    className={`rounded-sm border-2 px-3 py-4 text-center transition ${
                       preferredLocation === opt.value
                         ? "border-[#b78d4b] bg-[#fff5e6]"
                         : "border-[#e8dcc8] bg-white"
@@ -770,7 +777,7 @@ export function BookOnlineWizard() {
               </div>
 
               {submitError ? (
-                <p className="mt-4 rounded-xl bg-red-50 p-3 text-center text-red-700">{submitError}</p>
+                <p className="mt-4 rounded-sm bg-red-50 p-3 text-center text-red-700">{submitError}</p>
               ) : null}
             </WizardCard>
           ) : null}
@@ -781,7 +788,7 @@ export function BookOnlineWizard() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 200, damping: 14 }}
-                className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[#b78d4b] to-[#8f6f3e] text-white shadow-lg"
+                className="mx-auto flex h-24 w-24 items-center justify-center rounded-sm bg-gradient-to-br from-[#b78d4b] to-[#8f6f3e] text-white shadow-lg"
               >
                 <Check size={48} strokeWidth={2.5} />
               </motion.div>
@@ -789,7 +796,7 @@ export function BookOnlineWizard() {
               <p className="mx-auto mt-3 max-w-md text-lg text-[#6f6251]">
                 {fullName.split(" ")[0] || "Friend"}, your appointment is confirmed. Check your email for details.
               </p>
-              <p className="mx-auto mt-6 rounded-2xl border border-[#b78d4b33] bg-[#fffaf2] px-5 py-4 text-[#3b3024]">
+              <p className="mx-auto mt-6 rounded-sm border border-[#b78d4b33] bg-[#fffaf2] px-5 py-4 text-[#3b3024]">
                 {confirmedSummary}
               </p>
               {selectedServices.length > 1 ? (
@@ -800,21 +807,21 @@ export function BookOnlineWizard() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
                 <Link
                   href="/"
-                  className="rounded-2xl bg-[#b78d4b] px-8 py-4 text-lg font-semibold text-white"
+                  className="rounded-sm bg-[#b78d4b] px-8 py-4 text-lg font-semibold text-white"
                 >
                   Explore KIAN Privé
                 </Link>
                 {visitorType === "member" || isLoggedIn ? (
                   <Link
                     href="/dashboard"
-                    className="rounded-2xl border-2 border-[#b78d4b] px-8 py-4 text-lg text-[#3b3024]"
+                    className="rounded-sm border-2 border-[#b78d4b] px-8 py-4 text-lg text-[#3b3024]"
                   >
                     My dashboard
                   </Link>
                 ) : (
                   <Link
                     href="/signup"
-                    className="rounded-2xl border-2 border-[#b78d4b] px-8 py-4 text-lg text-[#3b3024]"
+                    className="rounded-sm border-2 border-[#b78d4b] px-8 py-4 text-lg text-[#3b3024]"
                   >
                     Join as a member
                   </Link>
@@ -842,7 +849,7 @@ export function BookOnlineWizard() {
               <button
                 type="button"
                 onClick={goBack}
-                className="inline-flex min-h-[56px] items-center justify-center gap-1 rounded-2xl border-2 border-[#e8dcc8] px-6 text-lg text-[#3b3024]"
+                className="inline-flex min-h-[56px] items-center justify-center gap-1 rounded-sm border-2 border-[#e8dcc8] px-6 text-lg text-[#3b3024]"
               >
                 <ChevronLeft size={22} />
                 Back
@@ -853,7 +860,7 @@ export function BookOnlineWizard() {
                 type="button"
                 onClick={goNext}
                 disabled={!canContinue || submitting}
-                className="min-h-[56px] flex-1 rounded-2xl bg-gradient-to-r from-[#b78d4b] to-[#a67d42] text-lg font-semibold text-white shadow-[0_12px_28px_-12px_rgba(183,141,75,0.8)] disabled:opacity-50"
+                className="min-h-[56px] flex-1 rounded-sm bg-gradient-to-r from-[#b78d4b] to-[#a67d42] text-lg font-semibold text-white shadow-[0_12px_28px_-12px_rgba(183,141,75,0.8)] disabled:opacity-50"
               >
                 {continueLabel}
               </button>

@@ -1,645 +1,406 @@
-import { SectionWrapper } from "@/components/ui/SectionWrapper";
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import type { ReactNode } from "react";
 import { getCmsPageContent } from "@/lib/cms/pages";
-import { KianPrivePaymentPolicies, PoliciesPageLinks } from "@/components/policies/KianPrivePaymentPolicies";
+import { CinematicHero } from "@/components/ui/CinematicHero";
+import { ServicesPageNav } from "@/components/services/ServicesPageNav";
 import { ServiceCardsWithModal } from "@/components/services/ServiceCardsWithModal";
 import {
+  EditorialEyebrow,
+  EditorialSection,
+  ServiceMenuTable,
+  ProtocolCard,
+  WellnessInfoCard,
+  PeptideCategoryCard,
+  TakeHomeCard,
+  EditorialCtaLink,
+} from "@/components/services/editorial";
+import {
   brandIntro,
-  categorizedMenuServices,
   featuredProviderLogos,
   partnerAddOnServices,
   serviceAccessNotes,
-  serviceMenuCategories,
-  servicesForMenuCategory,
 } from "@/lib/services/groups";
+import {
+  acceptedPaymentMethods,
+  financingAndInsurancePolicies,
+  gratuityPolicy,
+  medicalDisclaimerParagraphs,
+  membershipPolicySummary,
+} from "@/lib/policies/kian-prive-policies";
+import { buildSeoMetadata } from "@/lib/seo/metadata";
 
-const koreanAndRecoveryPricing = [
-  { service: "Korean & Organic Skincare Facial", price: "Single $195 | 4-Session $725", note: "Save $55" },
-  { service: "Microneedling with Exosomes", price: "Single $600 | 4-Session $1,800", note: "Save $600" },
-  { service: "Microneedling with Exosomes", price: "5-Session $2,700 | 10-Session $5,000", note: "Save up to $1,000" },
-  { service: "Nutrition & Wellness Coaching", price: "Single $150 | 4-Session $500 | 8-Session $950", note: "Save up to $250" },
+export async function generateMetadata(): Promise<Metadata> {
+  const cms = await getCmsPageContent("services");
+  return buildSeoMetadata({
+    title: cms.seoTitle || "Services Menu",
+    description:
+      cms.seoDescription ||
+      "Explore KIAN Privé services in Miami — Icoone, peptides, IV therapy, medical aesthetics, blood work, hair restoration, and concierge care.",
+    canonicalPath: cms.canonicalUrl?.startsWith("/") ? cms.canonicalUrl : "/services",
+    image: cms.seoImage || "/images/og-default.jpg",
+    noIndex: Boolean(cms.noIndex),
+  });
+}
+
+const icooneAlaCarte = [
+  "Single Session — 40 minutes",
+  "5-Session Package — 40 min",
+  "10-Session Package — 40 min",
+  "Single Session — 50 minutes",
+  "5-Session Package — 50 min",
+  "10-Session Package — 50 min",
 ];
 
-const compoundedRxReference = {
-  title: "503A & 503B Compounded Rx",
-  subtitle: "Product Information, Nature Classification & Side Effect Reference",
-  natureLegend: [
-    {
-      code: "NATURAL",
-      label: "Natural/Bioidentical",
-      detail: "identical or derived from naturally occurring compounds",
-    },
-    {
-      code: "SEMI-SYN",
-      label: "Semi-Synthetic",
-      detail: "structurally modified analog of a natural compound",
-    },
-    {
-      code: "SYNTHETIC",
-      label: "Synthetic",
-      detail: "fully laboratory-synthesized; no direct natural counterpart",
-    },
-  ],
-  sideEffectsNote:
-    "Side Effects Column — Lists the most commonly reported adverse effects. This is a clinical reference, not an exhaustive list. Individual responses vary. Always conduct a full patient assessment before prescribing.",
-  understanding503A: {
-    title: "503A — Traditional Patient-Specific",
-    lead:
-      "Requires a valid individual patient prescription. Regulated by state pharmacy boards. Must comply with USP <795>/<797> standards.",
-    bullets: [
-      "Patient-specific Rx required",
-      "State pharmacy board oversight",
-      "Custom dose & formulation",
-      "No FDA batch approval",
-    ],
-  },
-  understanding503B: {
-    title: "503B — FDA-Registered Outsourcing",
-    lead:
-      "Federally registered under FDA oversight. May produce large batches for healthcare facilities without individual Rx. Operates under CGMP standards.",
-    bullets: [
-      "FDA-registered & inspected",
-      "CGMP manufacturing standards",
-      "Can supply facilities without Rx",
-      "Consistent batch quality controls",
-    ],
-  },
-  glp1Intro:
-    "GLP-1 & Metabolic Agents — Semaglutide and Tirzepatide are fully synthetic incretin mimetics. Most side effects are GI-related and dose-dependent, typically improving with titration.",
-  sublingualIntro:
-    "Sublingual Formulations — Needle-free delivery. GI side effects may be milder than injectable forms due to lower peak plasma concentrations.",
-  peptideIntro:
-    "Peptide & Regenerative Agents — Peptides range from bioidentical to fully synthetic. Side effects are generally mild; most commonly injection site reactions and transient GI or neurological symptoms.",
-  combinationIntro:
-    "Combination Peptide Protocols — Side effects reflect the combined profile of each component. Additive GI or CNS effects are possible. Start at lower frequencies when introducing combination protocols.",
-  importantNotice:
-    "IMPORTANT NOTICE: This document is intended for licensed healthcare practitioners only. All compounded medications require a valid patient-practitioner relationship and appropriate clinical evaluation. Side effects listed are the most commonly reported; this is not an exhaustive safety profile. These products have not been evaluated or approved by the FDA for the specific indications listed. 503A products require individual patient prescriptions. 503B products may be distributed to registered healthcare facilities per federal guidelines. 'Natural' classifications refer to structural origin only and do not imply greater safety or efficacy. For professional use only — not for retail distribution.",
-};
+const icooneMonthly50 = [
+  "2 × 50-min Treatments / month",
+  "4 × 50-min Treatments / month",
+  "10 × 50-min Customized",
+  "10 × 40-min — Lymphatic Drainage",
+];
 
-const glp1MetabolicRows = [
+const icooneMonthly80 = [
+  "2 × 80-min Treatments / month",
+  "4 × 80-min treatments / month",
+  "Single Session — 80 minutes",
+  "5-Session Package — 80 min",
+  "10-Session Package — 80 min",
+];
+
+const aftercareColumns = [
   {
-    product: "Semaglutide + Glycine (2.5mg)",
-    concentration: "2.5mg/5mg/mL",
-    vial: "1 mL",
-    nature: "SYNTHETIC",
-    sideEffects: "Nausea, vomiting, diarrhea, constipation, injection site reaction",
-    notes: "Starter dose; weekly SC. Glycine is a natural amino acid",
+    label: "AFTERCARE · IMMEDIATE",
+    text: "A profound sense of lightness. Increased elimination, gentle warmth, deep relaxation.",
   },
   {
-    product: "Semaglutide + Glycine (5mg)",
-    concentration: "2.5mg/5mg/mL",
-    vial: "2 mL",
-    nature: "SYNTHETIC",
-    sideEffects: "Nausea, fatigue, reduced appetite, GI discomfort",
-    notes: "Standard maintenance dose",
+    label: "AFTERCARE · SHORT-TERM",
+    text: "Visible reduction in puffiness, swelling and water retention. Skin appears toned and radiant.",
   },
   {
-    product: "Semaglutide + Glycine (12.5mg)",
-    concentration: "2.5mg/5mg/mL",
-    vial: "5 mL",
-    nature: "SYNTHETIC",
-    sideEffects: "GI upset, pancreatitis risk (rare), headache",
-    notes: "Higher-dose / longer supply",
-  },
-  {
-    product: "Semaglutide + B12 (2.5mg)",
-    concentration: "1.25mg/0.5mg/mL",
-    vial: "2 mL",
-    nature: "SYNTHETIC",
-    sideEffects: "Nausea, injection site pain; B12 generally well tolerated",
-    notes: "B12 supports energy & tolerability",
-  },
-  {
-    product: "Semaglutide + B12 (5mg)",
-    concentration: "2.5mg/0.5mg/mL",
-    vial: "2 mL",
-    nature: "SYNTHETIC",
-    sideEffects: "GI symptoms, decreased appetite, mild dizziness",
-    notes: "Common titration step",
-  },
-  {
-    product: "Semaglutide + B12 (12.5mg)",
-    concentration: "3.125mg/0.5mg/mL",
-    vial: "4 mL",
-    nature: "SYNTHETIC",
-    sideEffects: "Nausea, vomiting, gallbladder issues (long-term)",
-    notes: "Extended supply",
-  },
-  {
-    product: "Tirzepatide (18mg)",
-    concentration: "9mg/mL",
-    vial: "2 mL",
-    nature: "SYNTHETIC",
-    sideEffects: "Nausea, diarrhea, vomiting, decreased appetite, fatigue",
-    notes: "Dual GIP/GLP-1; potent metabolic",
-  },
-  {
-    product: "Tirzepatide (36mg)",
-    concentration: "18mg/mL",
-    vial: "2 mL",
-    nature: "SYNTHETIC",
-    sideEffects: "GI upset, injection site reactions, hypoglycemia risk",
-    notes: "Mid-range maintenance",
-  },
-  {
-    product: "Tirzepatide (72mg)",
-    concentration: "18mg/mL",
-    vial: "4 mL",
-    nature: "SYNTHETIC",
-    sideEffects: "Nausea, constipation, pancreatitis risk (rare), hair loss",
-    notes: "High-dose / 4-week supply",
-  },
-  {
-    product: "Tirzepatide + B12 (17mg)",
-    concentration: "8.5mg/0.5mg/mL",
-    vial: "2 mL",
-    nature: "SYNTHETIC",
-    sideEffects: "GI symptoms, injection site irritation",
-    notes: "Enhanced energy support",
-  },
-  {
-    product: "Tirzepatide + B12 (34mg)",
-    concentration: "17mg/0.5mg/mL",
-    vial: "2 mL",
-    nature: "SYNTHETIC",
-    sideEffects: "Nausea, diarrhea, reduced appetite",
-    notes: "Mid-dose with B12",
-  },
-  {
-    product: "Tirzepatide + B12 (68mg)",
-    concentration: "17mg/0.5mg/mL",
-    vial: "4 mL",
-    nature: "SYNTHETIC",
-    sideEffects: "GI effects, gallbladder disease risk (long-term)",
-    notes: "High-dose long-acting",
+    label: "AFTERCARE · CUMULATIVE",
+    text: "Measurable contour reduction, firmer skin, lasting improvements in detox and recovery.",
   },
 ];
 
-const sublingualRows = [
+const essentialProtocol = [
+  "2 Icoone® Laser sessions",
+  "1 Holistic Salt Therapy session",
+  "1 PEMF Therapy Bed session",
+  "1 Red Light Therapy session",
+  "Ionic Foot Bath",
+  "InBody Scan — recovery tracking",
+];
+
+const advancedProtocol = [
+  "4 Icoone® Laser sessions",
+  "1 Holistic Salt Therapy session",
+  "2 PEMF Therapy Bed sessions",
+  "Ionic Foot Bath",
+  "InBody Scan + Power Plate",
+  "Telemedicine access",
+];
+
+const koreanFacialMenu = ["Single Session Facial", "4-Session Facial Package"];
+
+const microneedlingMenu = [
+  "Single Session",
+  "4-Session Package",
+  "5-Session Package",
+  "10-Session Package",
+];
+
+const takeHomeProducts = [
   {
-    product: "Sublingual Tirzepatide + NAD+",
-    strength: "5–17.5mg/100mg",
-    volume: "8 mL",
-    nature: "SYNTHETIC",
-    sideEffects: "Nausea, oral mucosal irritation, mild flushing (NAD+)",
-    benefit: "Synthetic GLP-1 + bioidentical NAD+ (6 strengths)",
+    title: "Post-Procedure Serums",
+    description:
+      "Growth-factor and peptide formulations that support healing, collagen production and skin renewal after microneedling and regenerative treatments.",
   },
   {
-    product: "Sublingual Semaglutide",
-    strength: "2–10mg",
-    volume: "8 mL",
-    nature: "SYNTHETIC",
-    sideEffects: "Nausea, taste disturbance, dry mouth, mild GI upset",
-    benefit: "Needle-free GLP-1; 5 strengths",
+    title: "Barrier-Repair Creams",
+    description:
+      "Ceramide, lipid and hyaluronic acid formulas that restore barrier integrity, lock in hydration and protect sensitive post-treatment skin.",
   },
   {
-    product: "Sublingual Tirzepatide",
-    strength: "5–30mg",
-    volume: "8 mL",
-    nature: "SYNTHETIC",
-    sideEffects: "Nausea, reduced appetite, oral irritation, headache",
-    benefit: "Needle-free dual agonist; 6 strengths",
+    title: "Exosome Recovery Sprays",
+    description:
+      "Concentrated signaling molecules designed to accelerate repair, calm inflammation and extend regenerative results between visits.",
+  },
+  {
+    title: "Mineral SPF & Photoprotection",
+    description:
+      "Medical-grade zinc and titanium dioxide protection that shields treated skin from UV and environmental stressors.",
+  },
+  {
+    title: "Calming & Hydrating Masks",
+    description:
+      "Soothing botanical and hyaluronic sheet and cream masks for immediate relief, deep hydration and visible plumping.",
+  },
+  {
+    title: "Wellness Supplements",
+    description:
+      "Physician-selected nutraceuticals supporting collagen synthesis, cellular detoxification, mitochondrial energy and gut-skin axis health.",
+  },
+  {
+    title: "Exosome & Skincare",
+    description:
+      "Targeted exosome and peptide creams and eye serums that continue the work of injectable protocols at the surface level.",
+  },
+  {
+    title: "Scalp & Hair Care",
+    description:
+      "Exosome-enriched scalp serums and follicle-stimulating formulations that extend hair restoration results between sessions.",
   },
 ];
 
-const peptideRegenerativeRows = [
+const peptideCategories = [
   {
-    peptide: "AOD-9604",
-    concentration: "1.2mg/mL • 5mL",
-    nature: "SEMI-SYN",
-    sideEffects: "Injection site redness, nausea (rare), headache",
-    action: "Modified GH fragment; fat lipolysis; no IGF-1 effects",
+    title: "Longevity & Repair",
+    description: "Cellular regeneration, mitochondrial support, tissue repair and systemic anti-aging protocols.",
   },
   {
-    peptide: "BPC-157",
-    concentration: "3mg/mL • 5mL",
-    nature: "SEMI-SYN",
-    sideEffects: "Mild nausea, dizziness, transient fatigue",
-    action: "Gut & tissue repair; anti-inflammatory; tendon healing",
+    title: "Metabolic & Body Composition",
+    description: "GLP-1 class therapies, lean-mass preservation, appetite regulation and metabolic optimization.",
   },
   {
-    peptide: "DSIP",
-    concentration: "1mg/mL • 5mL",
-    nature: "NATURAL",
-    sideEffects: "Excessive drowsiness, headache, mild hypotension",
-    action: "Natural brain peptide; sleep architecture & stress",
+    title: "Recovery & Performance",
+    description: "Injury recovery, joint and tendon support, sleep quality, cognition and energy.",
   },
   {
-    peptide: "EPITHALON",
-    concentration: "2mg/mL • 5mL",
-    nature: "SYNTHETIC",
-    sideEffects: "Injection site reactions, transient fatigue, vivid dreams",
-    action: "Telomerase activation; anti-aging; pineal regulation",
+    title: "Aesthetic & Skin",
+    description: "Collagen synthesis, pigment regulation, hair restoration and dermal renewal.",
   },
   {
-    peptide: "GHK-Cu",
-    concentration: "10mg/mL • 5mL",
-    nature: "NATURAL",
-    sideEffects: "Skin flushing (topical), mild injection site irritation",
-    action: "Copper peptide; collagen synthesis; wound & skin healing",
+    title: "Immune & Hormonal",
+    description: "Immune modulation, thymic support and hormonal balance for women and men.",
   },
   {
-    peptide: "GONADORELIN",
-    concentration: "1mg/mL • 5mL",
-    nature: "NATURAL",
-    sideEffects: "Hot flashes, headache, mood changes, testicular ache",
-    action: "Bioidentical GnRH; LH/FSH support; TRT adjunct",
-  },
-  {
-    peptide: "IGF-LR3",
-    concentration: "200mcg/mL • 5mL",
-    nature: "SEMI-SYN",
-    sideEffects: "Hypoglycemia, headache, joint pain, fluid retention",
-    action: "Long-arg3 analog; muscle growth; anabolic signaling",
-  },
-  {
-    peptide: "Kisspeptin",
-    concentration: "1mg/mL • 5mL",
-    nature: "NATURAL",
-    sideEffects: "Flushing, mild GnRH-related hormonal shifts",
-    action: "Endogenous neuropeptide; reproductive hormone regulation",
-  },
-  {
-    peptide: "MOTS-C",
-    concentration: "2mg/mL • 5mL",
-    nature: "NATURAL",
-    sideEffects: "Injection site reactions, mild GI upset (rare)",
-    action: "Mitochondrial peptide; metabolic flexibility; exercise",
-  },
-  {
-    peptide: "NAD+",
-    concentration: "100mg/mL • 10mL",
-    nature: "NATURAL",
-    sideEffects: "Flushing, nausea, headache, chest tightness (IV rapid)",
-    action: "Bioidentical coenzyme; cellular energy & DNA repair",
-  },
-  {
-    peptide: "PT-141",
-    concentration: "2mg/mL • 5mL",
-    nature: "SEMI-SYN",
-    sideEffects: "Nausea, flushing, headache, transient hypertension",
-    action: "Melanocortin analog; CNS-mediated libido enhancement",
-  },
-  {
-    peptide: "Sermorelin",
-    concentration: "3mg/mL • 5mL",
-    nature: "SEMI-SYN",
-    sideEffects: "Injection site pain, flushing, dizziness, headache",
-    action: "Synthetic GHRH analog (1-29); stimulates GH release",
-  },
-  {
-    peptide: "Tesamorelin",
-    concentration: "3mg/mL • 5mL",
-    nature: "SEMI-SYN",
-    sideEffects: "Injection site reactions, fluid retention, joint pain",
-    action: "FDA-approved GHRH; visceral fat reduction; IGF-1 stimulation",
-  },
-  {
-    peptide: "Thymosin A-1",
-    concentration: "1mg/mL • 5mL",
-    nature: "NATURAL",
-    sideEffects: "Generally well tolerated; mild injection site reactions",
-    action: "Immune modulation; anti-viral; autoimmune support",
-  },
-  {
-    peptide: "Lipo-B",
-    concentration: "50/50/25/1mg/mL",
-    nature: "SYNTHETIC",
-    sideEffects: "Injection site pain, urinary odor, mild GI effects",
-    action: "MIC + B12; lipotropic; liver detox support",
-  },
-  {
-    peptide: "Glutathione",
-    concentration: "200mg/mL • 10mL",
-    nature: "NATURAL",
-    sideEffects: "Skin lightening (with frequent use), mild GI, cramping",
-    action: "Master antioxidant; detoxification; skin brightening",
+    title: "Sexual Wellness",
+    description: "Libido, performance and intimacy protocols for women and men.",
   },
 ];
 
-const combinationPeptideRows = [
-  {
-    combination: "AOD-9604 + MOTS-C",
-    dosePerMl: "1.2/2mg",
-    nature: "SEMI-SYN",
-    sideEffects: "Injection site reaction, mild nausea (rare)",
-    goal: "Fat oxidation + mitochondrial metabolism",
-  },
-  {
-    combination: "AOD-9604 + MOTS-C + Tesamorelin",
-    dosePerMl: "1.2/2/3mg",
-    nature: "SEMI-SYN",
-    sideEffects: "Fluid retention, joint pain, injection site effects",
-    goal: "Full body recomposition stack",
-  },
-  {
-    combination: "BPC-157 + TB-500",
-    dosePerMl: "3/3mg",
-    nature: "SEMI-SYN",
-    sideEffects: "Mild fatigue, dizziness, transient headache",
-    goal: "Accelerated tissue & injury repair",
-  },
-  {
-    combination: "BPC-157 + KPV + TB-500",
-    dosePerMl: "3/3/3mg",
-    nature: "SEMI-SYN",
-    sideEffects: "Nausea, mild lethargy, injection site reactions",
-    goal: "Repair + gut inflammation + healing",
-  },
-  {
-    combination: "BPC-157 + GHK-Cu + KPV + TB-500",
-    dosePerMl: "3/10/3/3mg",
-    nature: "SEMI-SYN",
-    sideEffects: "Flushing, injection site irritation, mild fatigue",
-    goal: "Full-spectrum regenerative protocol",
-  },
-  {
-    combination: "CJC-1295 + Ipamorelin",
-    dosePerMl: "1.2/2mg",
-    nature: "SYNTHETIC",
-    sideEffects: "Water retention, tingling, mild hunger, headache",
-    goal: "GH pulse optimization; body composition",
-  },
-  {
-    combination: "Tesamorelin + Ipamorelin",
-    dosePerMl: "3/2mg",
-    nature: "SEMI-SYN",
-    sideEffects: "Fluid retention, joint pain, injection site pain",
-    goal: "Visceral fat + GH secretagogue synergy",
-  },
-  {
-    combination: "DSIP + BPC-157 + CJC-1295",
-    dosePerMl: "1/2/2mg",
-    nature: "SEMI-SYN",
-    sideEffects: "Drowsiness, headache, mild fluid retention",
-    goal: "Sleep, repair & GH — recovery stack",
-  },
-  {
-    combination: "GHK-Cu + Epithalon",
-    dosePerMl: "10/2mg",
-    nature: "SEMI-SYN",
-    sideEffects: "Injection site reactions, transient fatigue",
-    goal: "Skin rejuvenation + telomere anti-aging",
-  },
-  {
-    combination: "SEMAX + SELANK",
-    dosePerMl: "1/1mg",
-    nature: "SEMI-SYN",
-    sideEffects: "Mild headache, nasal irritation (intranasal), fatigue",
-    goal: "Cognitive clarity + anxiolytic balance",
-  },
-  {
-    combination: "Pinealon + PE22-28 + SELANK",
-    dosePerMl: "2/2/2mg",
-    nature: "SYNTHETIC",
-    sideEffects: "Transient headache, dizziness, drowsiness",
-    goal: "Neuroprotection + memory + calm focus",
-  },
-];
-
-const oralCapsuleRows = [
-  {
-    product: "BPC-157",
-    dose: "500mcg capsule",
-    nature: "SEMI-SYN",
-    sideEffects: "Mild nausea, GI discomfort (rare at oral doses)",
-    indication: "Gut healing & systemic anti-inflammatory",
-  },
-  {
-    product: "Ondansetron",
-    dose: "4mg tablet",
-    nature: "SYNTHETIC",
-    sideEffects: "Headache, constipation, QT prolongation (rare)",
-    indication: "Anti-nausea; GLP-1 side-effect management",
-  },
-  {
-    product: "SLU-PP 332",
-    dose: "250mcg capsule",
-    nature: "SYNTHETIC",
-    sideEffects: "Limited human data; potential GI upset, insomnia",
-    indication: "Exercise mimetic; mitochondrial biogenesis",
-  },
-  {
-    product: "5-Amino (5-AMP)",
-    dose: "50mg capsule",
-    nature: "NATURAL",
-    sideEffects: "Mild GI upset, fatigue at higher doses",
-    indication: "AMPK activator; metabolic & cellular energy",
-  },
-  {
-    product: "Ibutamoren (MK-677)",
-    dose: "25mg capsule",
-    nature: "SYNTHETIC",
-    sideEffects: "Increased appetite, water retention, fatigue, numbness",
-    indication: "Oral GH secretagogue; deep sleep; recovery",
-  },
-  {
-    product: "Dihexa",
-    dose: "5mg capsule",
-    nature: "SYNTHETIC",
-    sideEffects: "Headache, irritability, vivid dreams (limited human data)",
-    indication: "Nootropic; synaptic formation; memory & learning",
-  },
-  {
-    product: "SLU-PP 332 + BAM",
-    dose: "100mcg/15mg",
-    nature: "SYNTHETIC",
-    sideEffects: "GI discomfort, potential CNS stimulation",
-    indication: "Dual metabolic activator combo",
-  },
-  {
-    product: "Dihexa + Tesofensine",
-    dose: "5mg/500mcg",
-    nature: "SYNTHETIC",
-    sideEffects: "Elevated HR/BP, dry mouth, insomnia, nausea",
-    indication: "Cognitive + appetite control synergy",
-  },
-];
-
-const ancillaryAgentRows = [
-  {
-    agent: "NAD+ (1200mg)",
-    concentration: "200mg/mL • 6mL",
-    nature: "NATURAL",
-    sideEffects: "Flushing, nausea, chest tightness, headache (rate-dependent)",
-    application: "IV/IM; bioidentical coenzyme; energy, detox, longevity",
-  },
-  {
-    agent: "Glutathione (2000mg)",
-    concentration: "200mg/mL • 10mL",
-    nature: "NATURAL",
-    sideEffects: "Skin lightening with frequent IV use, abdominal cramping",
-    application: "IV push antioxidant; liver, immune, skin brightening",
-  },
-  {
-    agent: "Methylcobalamin B12 (10mg)",
-    concentration: "1mg/mL • 10mL",
-    nature: "NATURAL",
-    sideEffects: "Generally very well tolerated; rare acne, mild diarrhea",
-    application: "Bioidentical active B12; neuro support; methylation",
-  },
-  {
-    agent: "Sermorelin (15mg)",
-    concentration: "2.5mg/mL • 6mL",
-    nature: "SEMI-SYN",
-    sideEffects: "Injection site pain, flushing, headache, fluid retention",
-    application: "Synthetic GHRH analog; anti-aging; GH stimulation",
-  },
-];
-
-const koreanSkincareIntro =
-  "KIAN Privé is a concierge wellness company dedicated to delivering the finest services for a truly private wellness experience — provided by dedicated professionals at your location or ours. No busy waiting rooms, no hustle or bustle. Just uninterrupted, personalized care in a serene and intimate setting. In-home and on-location services are available for most treatments, bringing the full KIAN Privé experience directly to you. Please note that Icoone® Lymphatic Drainage, Holistic Salt Therapy, and MINDTAP coaching sessions are available at our facility only and are not offered as in-home services.";
-
-const inBodyDescription =
-  "The InBody Scan provides a comprehensive, non-invasive assessment of your body composition — measuring muscle mass, body fat percentage, visceral fat, hydration levels, and metabolic rate with clinical precision. Included monthly in all membership tiers, your InBody results are reviewed alongside your physician's wellness roadmap to track progress, adjust protocols, and optimize every dimension of your transformation.";
-
-const nutritionDescription =
-  "Our certified nutrition specialists work alongside physicians to design individualized nutrition plans rooted in science and lifestyle. Whether your goals are weight optimization, gut health, hormonal balance, anti-aging, or sustained energy, we create strategies that work in harmony with your body — from guided meal planning to nutraceutical recommendations.";
-
-const powerPlateDescription =
-  "The Power Plate uses advanced Precision Vibration Technology™ to deliver rapid, multi-directional vibrations throughout the entire body — stimulating muscles to contract and relax up to 50 times per second. Power Plate therapy accelerates muscle recovery, enhances circulation and lymphatic flow, improves balance and neuromuscular function, increases bone density, and promotes fat metabolism. Complimentary with any active membership.";
+const paymentMethodsClean = acceptedPaymentMethods.map((item) =>
+  item
+    .replace(/\s*—\s*a 3% processing fee applies\./gi, ".")
+    .replace(/\s*—\s*a 3% processing fee applies/gi, "")
+    .replace(/\s*with no additional fee\./gi, ".")
+    .trim(),
+);
 
 export default async function ServicesPage() {
   const cms = await getCmsPageContent("services");
-  const visibleServiceCount = categorizedMenuServices.length;
-
-  const scrollTable = (header: ReactNode, body: ReactNode) => (
-    <div className="overflow-x-auto rounded-3xl border border-[#b78d4b2d] bg-white shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-      <div className="min-w-[720px]">
-        {header}
-        {body}
-      </div>
-    </div>
-  );
 
   return (
-    <div>
-      <SectionWrapper className="pt-14 sm:pt-16">
-        <div className="relative overflow-hidden rounded-[2rem] border border-[#b78d4b22] bg-gradient-to-br from-[#fffaf2] via-white to-[#f4efe6] p-8 shadow-[0_28px_60px_-40px_rgba(66,45,14,0.45)] sm:p-10 lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-10">
-          <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-[#b78d4b15] blur-3xl" aria-hidden />
-          <div>
-            <p className="inline-flex rounded-full border border-[#b78d4b33] bg-white/80 px-4 py-1.5 text-xs tracking-[0.2em] text-[#8f6f3e]">
-              {cms.eyebrow ?? "PRIVÉ SERVICES"}
-            </p>
-            <h1 className="mt-5 font-serif text-4xl tracking-tight text-[#1f1a15] md:text-5xl">{cms.title}</h1>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-[#6f6251]">{cms.description}</p>
-            <p className="mt-3 max-w-xl text-[#8f6f3e]">{brandIntro.tagline}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/book-online"
-                className="inline-flex min-h-[48px] items-center rounded-2xl bg-gradient-to-r from-[#b78d4b] to-[#a67d42] px-6 text-base font-semibold text-white shadow-[0_12px_28px_-12px_rgba(183,141,75,0.75)]"
-              >
-                Book an appointment
-              </Link>
-              <Link
-                href="/pricing"
-                className="inline-flex min-h-[48px] items-center rounded-2xl border-2 border-[#b78d4b55] bg-white px-6 text-base text-[#3b3024]"
-              >
-                Membership
-              </Link>
-            </div>
-            <p className="mt-6 text-sm text-[#8f6f3e]">
-              {visibleServiceCount} services · In-clinic, in-home, and virtual options
-            </p>
-          </div>
-          <div className="relative mt-8 h-[280px] overflow-hidden rounded-3xl border border-[#b78d4b33] lg:mt-0 lg:h-[360px]">
-            <Image src="/images/wellness.avif" alt="KIAN Privé services overview" fill className="object-cover" priority />
-          </div>
-        </div>
-      </SectionWrapper>
+    <div className="-mt-[1px]">
+      <ServicesPageNav />
+      <CinematicHero
+        description={cms.description ?? brandIntro.lead}
+        primaryCta={{ label: "View the Menu", href: "#all-services" }}
+        secondaryCta={{ label: "Reserve a Session", href: "/book-online" }}
+        imageSrc="/images/facial-treatments.webp"
+        imageAlt="KIAN Privé luxury wellness treatment suite"
+        priority={false}
+      />
 
-      <SectionWrapper>
-        <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">{brandIntro.tagline}</p>
-        <h2 className="mt-3 text-3xl text-[#1f1a15] md:text-4xl">Luxury Wellness Services Designed Around Your Personal needs &amp; Goals</h2>
-        <p className="mt-4 max-w-3xl leading-relaxed text-[#6f6251]">
-          Clinically grounded, hospitality-led, and designed for measurable transformation.
+      <EditorialSection id="all-services">
+        <EditorialEyebrow>ICOONE® LASER</EditorialEyebrow>
+        <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#1f1a15] sm:text-4xl md:text-[2.75rem]">
+          Lymphatic drainage &amp; body wellness.
+        </h2>
+        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#6f6251] sm:text-base">
+          Physician-guided Icoone® lymphatic drainage using Roboderm® microstimulation to support detox, circulation,
+          and recovery—while helping reduce puffiness, refine contour, and improve skin quality. Sessions support
+          swelling, post-travel recovery, contour refinement, and inflammation reduction within your wellness plan.
         </p>
-        <p className="mt-4 max-w-3xl leading-relaxed text-[#6f6251]">{brandIntro.team}</p>
-      </SectionWrapper>
+        <div className="mt-10 grid gap-10 lg:grid-cols-2">
+          <ServiceMenuTable title="À la carte & minute packages" services={icooneAlaCarte} />
+          <ServiceMenuTable
+            title="50-minute monthly programs"
+            services={icooneMonthly50}
+            footnote="Monthly packages require a one-month security deposit upon signing. 3 month minimum."
+          />
+        </div>
+        <div className="mt-10 max-w-xl">
+          <ServiceMenuTable title="80-minute monthly programs" services={icooneMonthly80} />
+        </div>
+        <div className="mt-8">
+          <Link href="/services/icoone-laser" className="text-sm text-[#b78d4b] underline underline-offset-4">
+            View full Icoone® service details
+          </Link>
+        </div>
+      </EditorialSection>
 
-      <SectionWrapper>
-        <div className="rounded-2xl border border-[#1f7a7a4f] bg-[#eef8f8] p-4">
-          <p className="text-xs tracking-[0.2em] text-[#1b6568]">PRIVATE MEMBERS UPDATE</p>
-          <p className="mt-2 text-sm text-[#28585a]">
-            Additional add-ons will be released separately. Corporate Health &amp; Wellness Day is coming soon. Retreats start in September.
-          </p>
-        </div>
-      </SectionWrapper>
-
-      <SectionWrapper id="all-services">
-        <div className="mb-8 max-w-3xl">
-          <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">COMPLETE MENU</p>
-          <h2 className="mt-2 font-serif text-3xl text-[#1f1a15] md:text-4xl">All KIAN Privé Services</h2>
-          <p className="mt-4 text-lg leading-relaxed text-[#6f6251]">
-            Browse by category — tap <strong>Quick view</strong> for a summary, <strong>Full details</strong> for
-            pricing and protocols, or <strong>Book</strong> to schedule online.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-2">
-            {serviceMenuCategories.map((category) => (
-              <a
-                key={category.id}
-                href={`#${category.id}`}
-                className="rounded-full border border-[#b78d4b40] bg-white px-4 py-2 text-sm text-[#4f4335] transition hover:border-[#b78d4b] hover:bg-[#fff6e8]"
-              >
-                {category.title}
-              </a>
-            ))}
-          </div>
-        </div>
-        <div className="space-y-14">
-          {serviceMenuCategories.map((category) => (
-            <section key={category.id} id={category.id} className="scroll-mt-24">
-              <div className="mb-6 max-w-3xl">
-                <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">{category.eyebrow}</p>
-                <h3 className="mt-2 font-serif text-2xl text-[#1f1a15] md:text-3xl">{category.title}</h3>
-                <p className="mt-3 text-[#6f6251]">{category.description}</p>
-              </div>
-              <ServiceCardsWithModal services={servicesForMenuCategory(category)} label="SERVICE" layout="grid" />
-            </section>
-          ))}
-        </div>
-      </SectionWrapper>
-
-      <SectionWrapper>
-        <div className="mb-8 max-w-3xl">
-          <p className="text-xs tracking-[0.2em] text-[#1f6f75]">PRICING OVERVIEW</p>
-          <h2 className="mt-2 text-3xl text-[#1f1a15] md:text-4xl">Popular packages &amp; sessions</h2>
-          <p className="mt-3 text-[#6f6251]">
-            Member pricing and full protocol menus are on each service page. Icoone® packages are listed on the{" "}
-            <Link href="/services/icoone-laser" className="text-[#8f6f3e] underline">
-              Icoone service page
-            </Link>
-            .
-          </p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {koreanAndRecoveryPricing.map((row) => (
-            <article
-              key={row.service}
-              className="rounded-2xl border border-[#b78d4b2d] bg-white p-5 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)]"
-            >
-              <h3 className="text-lg font-medium text-[#1f1a15]">{row.service}</h3>
-              <p className="mt-2 text-sm font-medium text-[#8f6f3e]">{row.price}</p>
-              {row.note ? <p className="mt-2 text-sm text-[#6f6251]">{row.note}</p> : null}
+      <section className="bg-[#1a1612] px-4 py-14 sm:px-6 sm:py-16">
+        <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-3 md:gap-8">
+          {aftercareColumns.map((column) => (
+            <article key={column.label}>
+              <p className="text-[11px] tracking-[0.22em] text-[#c9a86a]">{column.label}</p>
+              <p className="mt-4 font-serif text-xl leading-snug text-[#f7f1e8] sm:text-[1.35rem]">{column.text}</p>
             </article>
           ))}
         </div>
-      </SectionWrapper>
+      </section>
+
+      <EditorialSection id="recovery">
+        <EditorialEyebrow>PAIN RELIEF &amp; SURGICAL RECOVERY</EditorialEyebrow>
+        <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#1f1a15] sm:text-4xl md:text-[2.75rem]">
+          Physician-supported monthly recovery protocols.
+        </h2>
+        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#6f6251] sm:text-base">
+          Designed for clients managing chronic pain or preparing for and recovering from surgical procedures. The most
+          clinically effective non-invasive therapies, combined into one deeply restorative monthly protocol —
+          personalized to your condition and timeline.
+        </p>
+        <div className="mt-10 grid gap-6 lg:grid-cols-2">
+          <ProtocolCard eyebrow="PAIN RELIEF & RECOVERY" title="Essential" items={essentialProtocol} />
+          <ProtocolCard eyebrow="PAIN RELIEF & RECOVERY" title="Advanced" items={advancedProtocol} featured />
+        </div>
+      </EditorialSection>
+
+      <EditorialSection id="face-body-wellness">
+        <EditorialEyebrow>KOREAN &amp; ORGANIC SKINCARE</EditorialEyebrow>
+        <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#1f1a15] sm:text-4xl md:text-[2.75rem]">
+          Bespoke facial protocols and regenerative microneedling.
+        </h2>
+        <div className="mt-10 grid gap-10 lg:grid-cols-2">
+          <ServiceMenuTable title="Korean & Organic Facial" services={koreanFacialMenu} />
+          <ServiceMenuTable title="Microneedling with Exosomes" services={microneedlingMenu} />
+        </div>
+
+        <div className="mt-16">
+          <EditorialEyebrow>HAIR RESTORATION</EditorialEyebrow>
+          <h3 className="mt-4 font-serif text-3xl text-[#1f1a15] sm:text-4xl">Exosome-based scalp &amp; hair protocols.</h3>
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#6f6251] sm:text-base">
+            Physician-guided hair restoration programs combining diagnostics and regenerative options to support
+            healthier density and scalp vitality. Treatment planning may include regenerative pathways, protocol
+            sequencing, and follow-up optimization.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link href="/services/hair-restoration" className="text-sm text-[#b78d4b] underline underline-offset-4">
+              Hair restoration details
+            </Link>
+            <Link href="/services/microneedling-with-exosomes" className="text-sm text-[#b78d4b] underline underline-offset-4">
+              Microneedling details
+            </Link>
+            <Link href="/services/korean-organic-skincare" className="text-sm text-[#b78d4b] underline underline-offset-4">
+              Skincare details
+            </Link>
+          </div>
+        </div>
+      </EditorialSection>
+
+      <EditorialSection dark>
+        <EditorialEyebrow tone="dark">TAKE-HOME CARE</EditorialEyebrow>
+        <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#f7f1e8] sm:text-4xl md:text-[2.75rem]">
+          Maintain your results between visits.
+        </h2>
+        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#cbbba5] sm:text-base">
+          Physician-curated products selected to support healing, barrier repair, photoprotection, and ongoing
+          regenerative progress at home — coordinated with your in-suite protocols.
+        </p>
+        <EditorialCtaLink href="/shop">ASK FOR PRODUCT RECOMMENDATIONS →</EditorialCtaLink>
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {takeHomeProducts.map((product) => (
+            <TakeHomeCard key={product.title} title={product.title} description={product.description} />
+          ))}
+        </div>
+        <p className="mt-8 max-w-4xl text-xs italic leading-relaxed text-[#a89884]">
+          All take-home products are recommended by your provider based on your treatment history, skin type and wellness
+          goals. Ask your specialist during your next visit for a personalized home-care regimen.
+        </p>
+      </EditorialSection>
+
+      <EditorialSection id="compounding-peptides">
+        <EditorialEyebrow>PHYSICIAN-LED PEPTIDE THERAPY</EditorialEyebrow>
+        <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#1f1a15] sm:text-4xl md:text-[2.75rem]">
+          Over 100 peptides, precisely prescribed.
+        </h2>
+        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#6f6251] sm:text-base">
+          Board-certified physicians curate personalized protocols from a clinical formulary spanning longevity,
+          recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. Complete secure
+          intake first for physician review and approval.
+        </p>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {peptideCategories.map((category) => (
+            <PeptideCategoryCard key={category.title} title={category.title} description={category.description} />
+          ))}
+        </div>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link
+            href="/intake/peptides-glp"
+            className="inline-flex min-h-[44px] items-center rounded-sm bg-[#b78d4b] px-5 text-xs tracking-[0.18em] text-white"
+          >
+            START SECURE INTAKE
+          </Link>
+          <Link
+            href="/services/glp1-peptides"
+            className="inline-flex min-h-[44px] items-center rounded-sm border border-[#b78d4b80] px-5 text-xs tracking-[0.18em] text-[#3b3024]"
+          >
+            VIEW PROGRAM DETAILS
+          </Link>
+        </div>
+      </EditorialSection>
+
+      <EditorialSection id="physician">
+        <EditorialEyebrow>BODY &amp; WELLNESS</EditorialEyebrow>
+        <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#1f1a15] sm:text-4xl md:text-[2.75rem]">
+          Composition, nutrition, vibration.
+        </h2>
+        <div className="mt-10 grid gap-5 md:grid-cols-2">
+          <WellnessInfoCard
+            eyebrow="BODY COMPOSITION ANALYSIS"
+            title="InBody Scan"
+            description="Comprehensive, non-invasive assessment — muscle mass, body fat, visceral fat, hydration and metabolic rate. Reviewed alongside your physician's wellness roadmap."
+            items={["Single Scan (non-member)", "Members — monthly"]}
+          />
+          <WellnessInfoCard
+            eyebrow="WITH CERTIFIED SPECIALISTS"
+            title="Nutrition & Wellness Coaching"
+            description="Individualized nutrition plans rooted in science and lifestyle — from weight optimization to hormonal balance and sustained energy. Led by Cherie Johnson, Certified Nutritionist."
+            items={["Single Session", "4-Session Package", "8-Session Package"]}
+          />
+          <WellnessInfoCard
+            eyebrow="WHOLE-BODY VIBRATION THERAPY"
+            title="Power Plate"
+            description="Precision Vibration Technology™ stimulating muscles up to 50 times per second — circulation, recovery, balance and bone density."
+            items={["9-Minute Session (non-member)", "Active membership — Included"]}
+          />
+          <WellnessInfoCard
+            eyebrow="VIRTUAL PHYSICIAN CONSULTATIONS"
+            title="Telemedicine"
+            description="Board-certified physicians available for virtual visits — prescription management, peptide protocols, wellness reviews and ongoing care coordination from wherever you are."
+            items={["Initial Consultation", "Follow-up Visit"]}
+          />
+        </div>
+        <div className="mt-8 flex flex-wrap gap-4 text-sm">
+          <Link href="/services/nutrition" className="text-[#b78d4b] underline underline-offset-4">
+            Nutrition details
+          </Link>
+          <Link href="/services/telemedicine" className="text-[#b78d4b] underline underline-offset-4">
+            Telemedicine details
+          </Link>
+          <Link href="/services/comprehensive-bloodwork" className="text-[#b78d4b] underline underline-offset-4">
+            Blood work details
+          </Link>
+          <Link href="/services/iv-therapy" className="text-[#b78d4b] underline underline-offset-4">
+            IV therapy details
+          </Link>
+        </div>
+      </EditorialSection>
 
       {partnerAddOnServices.length > 0 ? (
-        <SectionWrapper>
-          <div className="mb-8 max-w-3xl">
-            <p className="text-xs tracking-[0.2em] text-[#1f6f75]">PARTNER ENHANCEMENTS</p>
-            <h2 className="mt-2 text-3xl text-[#1f1a15] md:text-4xl">Add-ons &amp; partner services</h2>
-            <p className="mt-3 text-[#6f6251]">
-              MindTap, beauty partner services, salt therapy, PEMF, infrared, and additional partner offerings coordinated by KIAN Privé concierge.
-            </p>
+        <EditorialSection>
+          <EditorialEyebrow>PARTNER ENHANCEMENTS</EditorialEyebrow>
+          <h2 className="mt-4 font-serif text-3xl text-[#1f1a15] sm:text-4xl">Add-ons &amp; partner services</h2>
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#6f6251] sm:text-base">
+            MindTap, beauty partner services, salt therapy, PEMF, infrared, and additional partner offerings coordinated
+            by KIAN Privé concierge.
+          </p>
+          <div className="mt-10">
+            <ServiceCardsWithModal services={partnerAddOnServices} label="PARTNER" layout="grid" />
           </div>
-          <ServiceCardsWithModal services={partnerAddOnServices} label="PARTNER" layout="grid" />
           <div className="mt-8">
-            <p className="text-xs tracking-[0.18em] text-[#8f6f3e]">FEATURED PROVIDER PROGRAMS</p>
+            <p className="text-[11px] tracking-[0.18em] text-[#b78d4b]">FEATURED PROVIDER PROGRAMS</p>
             <div className="mt-3 flex flex-wrap items-center gap-4">
               {featuredProviderLogos.map((provider) => (
                 <div key={provider.name} className="relative h-14 w-28">
@@ -648,38 +409,91 @@ export default async function ServicesPage() {
               ))}
             </div>
           </div>
-        </SectionWrapper>
+        </EditorialSection>
       ) : null}
 
-
-      <SectionWrapper>
-        <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">{brandIntro.tagline}</p>
-        <h2 className="mb-2 mt-3 text-3xl text-[#1f1a15] md:text-4xl">Payment & Policies</h2>
-        <PoliciesPageLinks className="mb-6" />
-        <KianPrivePaymentPolicies />
-        <div className="mt-6 rounded-2xl border border-[#1f7a7a42] bg-[linear-gradient(120deg,#eff9f9_0%,#e4f4f4_100%)] p-4">
-          <p className="text-xs tracking-[0.18em] text-[#1b6568]">READY TO START</p>
-          <p className="mt-2 text-sm text-[#28585a]">
-            New and current members can begin with a physician-led consultation to match services, add-ons, and protocol intensity to your goals.
-          </p>
-          <Link href="/book-online" className="mt-3 inline-flex rounded-full bg-gradient-to-r from-[#1f7a7a] to-[#174f63] px-5 py-2 text-sm text-white">
-            Start Membership Journey
+      <EditorialSection dark id="policies">
+        <EditorialEyebrow tone="dark">PAYMENT &amp; POLICIES</EditorialEyebrow>
+        <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#f7f1e8] sm:text-4xl md:text-[2.75rem]">
+          Transparent terms, considered care.
+        </h2>
+        <div className="mt-10 grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+          <article className="rounded-sm border border-[#c9a86a33] bg-[#221c17] p-6 sm:p-7">
+            <h3 className="font-serif text-2xl text-[#c9a86a]">Membership Summary</h3>
+            <ul className="mt-5 space-y-3">
+              {membershipPolicySummary.map((rule) => (
+                <li key={rule} className="flex items-start gap-3 text-sm leading-relaxed text-[#e8dccb]">
+                  <span className="mt-1 text-[#c9a86a]" aria-hidden>
+                    ✦
+                  </span>
+                  <span>{rule}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+          <div className="space-y-8">
+            <div>
+              <h3 className="font-serif text-xl text-[#c9a86a]">Gratuity</h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#e8dccb]">{gratuityPolicy}</p>
+            </div>
+            <div>
+              <h3 className="font-serif text-xl text-[#c9a86a]">Financing &amp; Insurance</h3>
+              <ul className="mt-2 space-y-2">
+                {financingAndInsurancePolicies.map((item) => (
+                  <li key={item} className="text-sm leading-relaxed text-[#e8dccb]">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-serif text-xl text-[#c9a86a]">Accepted Payments</h3>
+              <ul className="mt-2 space-y-2">
+                {paymentMethodsClean.map((item) => (
+                  <li key={item} className="text-sm leading-relaxed text-[#e8dccb]">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div className="mt-10 max-w-4xl space-y-2 text-xs leading-relaxed text-[#a89884]">
+          {medicalDisclaimerParagraphs.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link
+            href="/payment-policies"
+            className="inline-flex min-h-[44px] items-center border border-[#c9a86a] px-5 text-[11px] tracking-[0.18em] text-[#c9a86a]"
+          >
+            FULL POLICY PAGES
+          </Link>
+          <Link
+            href="/book-online"
+            className="inline-flex min-h-[44px] items-center bg-[#b78d4b] px-5 text-[11px] tracking-[0.18em] text-white"
+          >
+            RESERVE A SESSION
           </Link>
         </div>
-      </SectionWrapper>
+      </EditorialSection>
 
-      <SectionWrapper>
-        <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Service Availability</h2>
-        <div className="rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
-          <ul className="space-y-2">
-            {serviceAccessNotes.map((note) => (
-              <li key={note} className="text-[#5f5344]">
-                {note}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </SectionWrapper>
+      <EditorialSection>
+        <EditorialEyebrow>SERVICE AVAILABILITY</EditorialEyebrow>
+        <h2 className="mt-4 font-serif text-3xl text-[#1f1a15] sm:text-4xl">Where care happens</h2>
+        <ul className="mt-6 max-w-3xl space-y-3">
+          {serviceAccessNotes.map((note) => (
+            <li key={note} className="flex items-start gap-3 text-sm leading-relaxed text-[#5f5344]">
+              <span className="mt-1 text-[#b78d4b]" aria-hidden>
+                ✦
+              </span>
+              <span>{note}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-8 text-sm text-[#8a7a66]">{brandIntro.team}</p>
+      </EditorialSection>
     </div>
   );
 }

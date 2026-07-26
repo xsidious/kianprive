@@ -22,15 +22,15 @@ services:
       - db
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/kianprive?schema=public
-      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_URL: http://localhost:3005
       NEXTAUTH_SECRET: dev-secret-change-this
-      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_APP_URL: http://localhost:3005
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
       STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
       STRIPE_PRICE_BASIC: ${STRIPE_PRICE_BASIC:-price_basic_placeholder}
       STRIPE_PRICE_PREMIUM: ${STRIPE_PRICE_PREMIUM:-price_premium_placeholder}
     ports:
-      - "3000:3000"
+      - "3005:3000"
 
 volumes:
   kianprive-db-data:

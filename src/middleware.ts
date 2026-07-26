@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { canAccessAdmin } from "@/lib/rbac";
+import { canAccessAdmin, canAccessPartnerPortal } from "@/lib/rbac";
 
 const adminPaths = ["/admin"];
+const partnerPaths = ["/partner"];
 const memberOnlyPaths = ["/practitioners", "/athletes"];
 
 export async function middleware(req: Request & { nextUrl: URL }) {
   const { pathname } = req.nextUrl;
   const isAdminRoute = adminPaths.some((path) => pathname.startsWith(path));
+  const isPartnerRoute = partnerPaths.some((path) => pathname.startsWith(path));
   const isMemberOnlyRoute = memberOnlyPaths.some((path) => pathname.startsWith(path));
-  if (!isAdminRoute && !isMemberOnlyRoute) return NextResponse.next();
+  if (!isAdminRoute && !isPartnerRoute && !isMemberOnlyRoute) return NextResponse.next();
 
   const token = await getToken({
     req: req as never,
@@ -28,7 +30,17 @@ export async function middleware(req: Request & { nextUrl: URL }) {
     return NextResponse.next();
   }
 
+  if (isPartnerRoute) {
+    if (!canAccessPartnerPortal(token.role as never)) {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+    return NextResponse.next();
+  }
+
   if (!canAccessAdmin(token.role as never)) {
+    if ((token.role as string) === "PARTNER") {
+      return NextResponse.redirect(new URL("/partner", req.url));
+    }
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
@@ -36,5 +48,5 @@ export async function middleware(req: Request & { nextUrl: URL }) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/practitioners/:path*", "/athletes/:path*"],
+  matcher: ["/admin/:path*", "/partner/:path*", "/practitioners/:path*", "/athletes/:path*"],
 };

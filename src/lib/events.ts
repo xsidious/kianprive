@@ -51,7 +51,7 @@ export const retreatEvents: RetreatEvent[] = [
       "Private turnkey wellness event production for hosts, founders, and brands that want a luxury beauty and wellness experience designed around their audience.",
     location: "Custom location",
     when: "Scheduled on demand",
-    image: "/images/facial-treatments.jpg",
+    image: "/images/facial-treatments.webp",
   },
   {
     slug: "love-yourself-first-beauty-spa-morning",

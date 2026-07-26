@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { calculateShipping } from "@/lib/commerce/shipping";
 import { createOrderFromCart, createStripeCheckoutForOrder } from "@/lib/commerce/service";
+import { readPartnerReferralFromRequest } from "@/lib/partner-referral";
 
 const checkoutSchema = z.object({
   cartId: z.string().min(1),
@@ -9,6 +10,7 @@ const checkoutSchema = z.object({
   phone: z.string().optional(),
   shippingAddress: z.record(z.string(), z.unknown()).optional(),
   billingAddress: z.record(z.string(), z.unknown()).optional(),
+  partnerCode: z.string().optional(),
 });
 
 export async function POST(req: Request) {
@@ -27,6 +29,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Cart not found or expired." }, { status: 404 });
     }
 
+    const partnerCode = parsed.data.partnerCode ?? readPartnerReferralFromRequest(req) ?? undefined;
     const shippingTotal = calculateShipping(Number(cart.subtotal));
     const order = await createOrderFromCart(parsed.data.cartId, {
       email: parsed.data.email,
@@ -34,6 +37,7 @@ export async function POST(req: Request) {
       shippingAddress: parsed.data.shippingAddress,
       billingAddress: parsed.data.billingAddress,
       shippingTotal,
+      partnerCode,
     });
 
     const session = await createStripeCheckoutForOrder(order.id);

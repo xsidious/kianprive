@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 
 const fieldClass =
-  "mt-1 w-full rounded-xl border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm text-[#2b2218] outline-none focus:border-[#b78d4b]";
+  "mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm text-[#2b2218] outline-none focus:border-[#b78d4b]";
 const labelClass = "text-sm font-medium text-[#3b3024]";
 
 export function Field({
@@ -89,7 +89,7 @@ export function CheckboxGroup({
         return (
           <label
             key={option}
-            className={`flex cursor-pointer items-start gap-2 rounded-xl border px-3 py-2 text-sm ${
+            className={`flex cursor-pointer items-start gap-2 rounded-sm border px-3 py-2 text-sm ${
               checked ? "border-[#b78d4b] bg-[#fff6e8] text-[#3b3024]" : "border-[#b78d4b2d] bg-white text-[#5f5344]"
             }`}
           >

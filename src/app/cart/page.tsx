@@ -34,17 +34,17 @@ export default function CartPage() {
         <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
           <div className="space-y-4">
             {items.length === 0 ? (
-              <div className="rounded-2xl border border-[#b78d4b2d] bg-white p-6">
+              <div className="rounded-sm border border-[#b78d4b2d] bg-white p-6">
                 <p className="text-[#2b2218]">Your cart is currently empty.</p>
-                <Link href="/shop" className="mt-4 inline-flex rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
+                <Link href="/shop" className="mt-4 inline-flex rounded-sm bg-[#b78d4b] px-5 py-2 text-sm text-white">
                   Continue Shopping
                 </Link>
               </div>
             ) : (
               items.map((item) => (
-                <article key={item.id} className="rounded-2xl border border-[#b78d4b2d] bg-white p-4">
+                <article key={item.id} className="rounded-sm border border-[#b78d4b2d] bg-white p-4">
                   <div className="grid gap-4 sm:grid-cols-[110px_1fr_auto] sm:items-center">
-                    <div className="relative h-24 overflow-hidden rounded-xl border border-[#b78d4b2d]">
+                    <div className="relative h-24 overflow-hidden rounded-sm border border-[#b78d4b2d]">
                       <Image src={item.image} alt={item.name} fill className="object-cover" />
                     </div>
                     <div>
@@ -56,7 +56,7 @@ export default function CartPage() {
                     </div>
                     <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end">
                       <p className="text-lg text-[#1f1a15]">${(item.price * item.quantity).toFixed(2)}</p>
-                      <div className="inline-flex items-center gap-2 rounded-full border border-[#b78d4b42] px-2 py-1">
+                      <div className="inline-flex items-center gap-2 rounded-sm border border-[#b78d4b42] px-2 py-1">
                         <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-1 text-[#5f5344]">
                           <Minus size={14} />
                         </button>
@@ -72,9 +72,9 @@ export default function CartPage() {
             )}
           </div>
 
-          <aside className="h-fit rounded-2xl border border-[#b78d4b2d] bg-white p-5 lg:sticky lg:top-24">
+          <aside className="h-fit rounded-sm border border-[#b78d4b2d] bg-white p-5 lg:sticky lg:top-24">
             <h2 className="text-xl text-[#1f1a15]">Order Summary</h2>
-            <div className="mt-4 rounded-xl border border-[#b78d4b2d] bg-[#fff8ef] p-3">
+            <div className="mt-4 rounded-sm border border-[#b78d4b2d] bg-[#fff8ef] p-3">
               <p className="text-sm text-[#4f4335]">
                 {amountToFreeShipping > 0
                   ? `Add $${amountToFreeShipping.toFixed(2)} to unlock free shipping.`
@@ -82,7 +82,7 @@ export default function CartPage() {
               </p>
               <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#ead8bc]">
                 <div
-                  className="h-full rounded-full bg-[#b78d4b] transition-all duration-300"
+                  className="h-full rounded-sm bg-[#b78d4b] transition-all duration-300"
                   style={{ width: `${shippingProgress}%` }}
                 />
               </div>
@@ -103,7 +103,7 @@ export default function CartPage() {
                 <span>${total.toFixed(2)}</span>
               </div>
             </div>
-            <Link href="/checkout" className="mt-5 block rounded-full bg-[#b78d4b] px-5 py-3 text-center text-sm text-white">
+            <Link href="/checkout" className="mt-5 block rounded-sm bg-[#b78d4b] px-5 py-3 text-center text-sm text-white">
               Checkout
             </Link>
             <p className="mt-3 text-center text-xs text-[#8f6f3e]">Most members complete checkout in under 60 seconds.</p>
@@ -117,15 +117,15 @@ export default function CartPage() {
 
       {items.length > 0 ? (
         <SectionWrapper className="pt-0">
-          <div className="rounded-2xl border border-[#b78d4b2d] bg-white p-5">
+          <div className="rounded-sm border border-[#b78d4b2d] bg-white p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h2 className="text-2xl text-[#1f1a15]">Recommended For Your Cart</h2>
               <p className="text-sm text-[#8f6f3e]">Frequently bought together</p>
             </div>
             <div className="mt-4 grid gap-4 md:grid-cols-3">
               {recommendedProducts.map((product) => (
-                <article key={product.id} className="rounded-2xl border border-[#b78d4b2d] bg-[#fffdf9] p-3">
-                  <div className="relative h-36 overflow-hidden rounded-xl border border-[#b78d4b2d]">
+                <article key={product.id} className="rounded-sm border border-[#b78d4b2d] bg-[#fffdf9] p-3">
+                  <div className="relative h-36 overflow-hidden rounded-sm border border-[#b78d4b2d]">
                     <Image src={product.image} alt={product.name} fill className="object-cover" />
                   </div>
                   <p className="mt-3 text-xs tracking-[0.14em] text-[#8f6f3e]">{product.category}</p>
@@ -143,7 +143,7 @@ export default function CartPage() {
                           category: product.category,
                         })
                       }
-                      className="rounded-full bg-[#b78d4b] px-4 py-2 text-xs text-white"
+                      className="rounded-sm bg-[#b78d4b] px-4 py-2 text-xs text-white"
                     >
                       Add
                     </button>

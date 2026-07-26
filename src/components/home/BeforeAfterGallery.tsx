@@ -24,12 +24,12 @@ const beforeAfterByCategory: Record<Category, ShowcaseItem[]> = {
     {
       treatment: "Skin Renewal Program",
       beforeImage: "/images/esthetics.avif",
-      afterImage: "/images/facial-treatments.jpg",
+      afterImage: "/images/facial-treatments.webp",
     },
     {
       treatment: "Korean Luxury Skincare Series",
       beforeImage: "/images/medicalaesthetics.avif",
-      afterImage: "/images/facial-treatments.jpg",
+      afterImage: "/images/facial-treatments.webp",
     },
   ],
   Hair: [
@@ -55,39 +55,52 @@ export function BeforeAfterGallery() {
             key={category}
             type="button"
             onClick={() => setActive(category)}
-            className={`rounded-full border px-4 py-2 text-sm transition ${
+            className={`rounded-sm border px-4 py-2 text-[11px] tracking-[0.16em] transition ${
               active === category
-                ? "border-[#b78d4b] bg-[#fff3df] text-[#8f6f3e]"
-                : "border-[#b78d4b3e] bg-white text-[#5f5344] hover:bg-[#fffaf2]"
+                ? "border-[#7a5c32] bg-[#fff3df] text-[#5c4524]"
+                : "border-[#e4d9c8] bg-white text-[#5f5344] hover:bg-[#fffaf2]"
             }`}
           >
-            {category}
+            {category.toUpperCase()}
           </button>
         ))}
       </div>
       <div className="grid gap-5 lg:grid-cols-2">
         {items.map((item) => (
-          <article
-            key={item.treatment}
-            className="rounded-2xl border border-[#b78d4b2d] bg-white p-4 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)]"
-          >
+          <article key={item.treatment} className="rounded-sm border border-[#e4d9c8] bg-[#fffcf7] p-4">
             <p className="mb-1 text-xs tracking-[0.18em] text-[#8f6f3e]">{active.toUpperCase()}</p>
-            <p className="mb-3 text-lg text-[#2b2218]">{item.treatment}</p>
+            <p className="mb-3 font-serif text-lg text-[#2b2218]">{item.treatment}</p>
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <p className="mb-2 text-xs tracking-[0.18em] text-[#8f6f3e]">BEFORE</p>
-                <div className="relative h-48 overflow-hidden rounded-xl border border-[#b78d4b2d]">
-                  <Image src={item.beforeImage} alt={`${item.treatment} before`} fill className="object-cover" />
+                <div className="relative h-48 overflow-hidden rounded-sm border border-[#e4d9c8]">
+                  <Image
+                    src={item.beforeImage}
+                    alt={`${item.treatment} before`}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                    quality={70}
+                    className="object-cover"
+                    loading="lazy"
+                  />
                 </div>
               </div>
               <div>
                 <p className="mb-2 text-xs tracking-[0.18em] text-[#8f6f3e]">AFTER</p>
-                <div className="relative h-48 overflow-hidden rounded-xl border border-[#b78d4b2d]">
-                  <Image src={item.afterImage} alt={`${item.treatment} after`} fill className="object-cover" />
+                <div className="relative h-48 overflow-hidden rounded-sm border border-[#e4d9c8]">
+                  <Image
+                    src={item.afterImage}
+                    alt={`${item.treatment} after`}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                    quality={70}
+                    className="object-cover"
+                    loading="lazy"
+                  />
                 </div>
               </div>
             </div>
-            <p className="mt-3 text-xs text-[#8a7a66]">Placeholder imagery — final before & after assets can be added from Canva.</p>
+            <p className="mt-3 text-xs text-[#5f5344]">Placeholder imagery — final before & after assets can be added from Canva.</p>
           </article>
         ))}
       </div>

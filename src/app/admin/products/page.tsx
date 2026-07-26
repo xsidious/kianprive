@@ -71,12 +71,12 @@ export default function AdminProductsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-3xl text-[#1f1a15]">Products</h1>
-        <Link href="/shop" className="rounded-full border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">
+        <Link href="/shop" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">
           Preview Shop
         </Link>
       </div>
 
-      <section className="rounded-2xl border border-[#b78d4b2d] bg-white p-5">
+      <section className="rounded-sm border border-[#b78d4b2d] bg-white p-5">
         <h2 className="text-xl text-[#1f1a15]">Create Product</h2>
         <form
           className="mt-4 grid gap-3 md:grid-cols-2"
@@ -85,35 +85,35 @@ export default function AdminProductsPage() {
             void createProduct(new FormData(event.currentTarget));
           }}
         >
-          <input name="title" placeholder="Product title" className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" required />
-          <input name="slug" placeholder="Slug" className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" required />
-          <input name="price" type="number" step="0.01" placeholder="Price (USD)" className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" required />
-          <select name="status" className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3">
+          <input name="title" placeholder="Product title" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" required />
+          <input name="slug" placeholder="Slug" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" required />
+          <input name="price" type="number" step="0.01" placeholder="Price (USD)" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" required />
+          <select name="status" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3">
             {productStatuses.map((entry) => <option key={entry} value={entry}>{entry}</option>)}
           </select>
-          <input name="category" placeholder="Category" className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" />
-          <input name="inventoryQty" type="number" placeholder="Inventory quantity" className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" />
-          <input name="featuredImage" placeholder="Featured image URL/path" className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3 md:col-span-2" />
-          <button className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white md:col-span-2">Create Product</button>
+          <input name="category" placeholder="Category" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" />
+          <input name="inventoryQty" type="number" placeholder="Inventory quantity" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" />
+          <input name="featuredImage" placeholder="Featured image URL/path" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3 md:col-span-2" />
+          <button className="rounded-sm bg-[#b78d4b] px-5 py-2 text-sm text-white md:col-span-2">Create Product</button>
         </form>
       </section>
 
       <section className="grid gap-3">
         {products.map((product) => (
-          <article key={product.id} className="rounded-2xl border border-[#b78d4b2d] bg-white p-4">
+          <article key={product.id} className="rounded-sm border border-[#b78d4b2d] bg-white p-4">
             <div className="grid gap-3 md:grid-cols-3">
-              <input value={product.title} onChange={(e) => setProducts((prev) => prev.map((row) => row.id === product.id ? { ...row, title: e.target.value } : row))} className="rounded-lg border border-[#b78d4b35] bg-[#fffaf4] p-2" />
-              <input value={product.slug} onChange={(e) => setProducts((prev) => prev.map((row) => row.id === product.id ? { ...row, slug: e.target.value } : row))} className="rounded-lg border border-[#b78d4b35] bg-[#fffaf4] p-2" />
-              <input type="number" value={product.price} onChange={(e) => setProducts((prev) => prev.map((row) => row.id === product.id ? { ...row, price: Number(e.target.value) } : row))} className="rounded-lg border border-[#b78d4b35] bg-[#fffaf4] p-2" />
-              <select value={product.status} onChange={(e) => setProducts((prev) => prev.map((row) => row.id === product.id ? { ...row, status: e.target.value as Product["status"] } : row))} className="rounded-lg border border-[#b78d4b35] bg-[#fffaf4] p-2">
+              <input value={product.title} onChange={(e) => setProducts((prev) => prev.map((row) => row.id === product.id ? { ...row, title: e.target.value } : row))} className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2" />
+              <input value={product.slug} onChange={(e) => setProducts((prev) => prev.map((row) => row.id === product.id ? { ...row, slug: e.target.value } : row))} className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2" />
+              <input type="number" value={product.price} onChange={(e) => setProducts((prev) => prev.map((row) => row.id === product.id ? { ...row, price: Number(e.target.value) } : row))} className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2" />
+              <select value={product.status} onChange={(e) => setProducts((prev) => prev.map((row) => row.id === product.id ? { ...row, status: e.target.value as Product["status"] } : row))} className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2">
                 {productStatuses.map((entry) => <option key={entry} value={entry}>{entry}</option>)}
               </select>
-              <input value={product.category ?? ""} onChange={(e) => setProducts((prev) => prev.map((row) => row.id === product.id ? { ...row, category: e.target.value } : row))} placeholder="Category" className="rounded-lg border border-[#b78d4b35] bg-[#fffaf4] p-2" />
-              <input type="number" value={product.inventoryQty ?? 0} onChange={(e) => setProducts((prev) => prev.map((row) => row.id === product.id ? { ...row, inventoryQty: Number(e.target.value) } : row))} placeholder="Inventory" className="rounded-lg border border-[#b78d4b35] bg-[#fffaf4] p-2" />
+              <input value={product.category ?? ""} onChange={(e) => setProducts((prev) => prev.map((row) => row.id === product.id ? { ...row, category: e.target.value } : row))} placeholder="Category" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2" />
+              <input type="number" value={product.inventoryQty ?? 0} onChange={(e) => setProducts((prev) => prev.map((row) => row.id === product.id ? { ...row, inventoryQty: Number(e.target.value) } : row))} placeholder="Inventory" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2" />
             </div>
             <div className="mt-3 flex gap-2">
-              <button onClick={() => void saveProduct(product)} className="rounded-full border border-[#b78d4b80] px-3 py-1.5 text-xs text-[#3b3024]">Save Product</button>
-              <button onClick={() => void deleteProduct(product.id)} className="rounded-full border border-[#d07b7b80] px-3 py-1.5 text-xs text-[#7c2c2c]">Delete Product</button>
+              <button onClick={() => void saveProduct(product)} className="rounded-sm border border-[#b78d4b80] px-3 py-1.5 text-xs text-[#3b3024]">Save Product</button>
+              <button onClick={() => void deleteProduct(product.id)} className="rounded-sm border border-[#d07b7b80] px-3 py-1.5 text-xs text-[#7c2c2c]">Delete Product</button>
             </div>
           </article>
         ))}

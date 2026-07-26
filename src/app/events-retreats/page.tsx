@@ -1,10 +1,18 @@
 "use client";
 
-import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import { CinematicHero } from "@/components/ui/CinematicHero";
+import {
+  EditorialEyebrow,
+  EditorialSection,
+  editorialCtaPrimary,
+  editorialCtaSecondary,
+  editorialInput,
+  editorialPanel,
+} from "@/components/ui/editorial-primitives";
 import { getFeaturedRetreatEvent, retreatEvents, type RetreatEvent } from "@/lib/events";
 
 export default function EventsRetreatsPage() {
@@ -31,92 +39,81 @@ export default function EventsRetreatsPage() {
   }, []);
 
   return (
-    <div>
-      <SectionWrapper className="pt-10 sm:pt-12 md:pt-14 pb-6 md:pb-8">
-        <div className="grid items-center gap-8 rounded-3xl border border-[#b78d4b2e] bg-white p-5 shadow-[0_20px_50px_-38px_rgba(66,45,14,0.45)] sm:p-8 lg:grid-cols-[1.15fr_0.85fr]">
-          <div>
-            <p className="text-sm text-[#8f6f3e]">Beauty and Wellness</p>
-            <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">EVENTS & RETREATS</p>
-            <h1 className="mt-4 text-3xl text-[#1f1a15] sm:text-4xl md:text-5xl">Escape to Keeping It All Natural Retreats</h1>
-            <p className="mt-5 text-[#6f6251]">
-              We guide you through personalized, global journeys of relaxation, rejuvenation, and learning. Uncover nature&apos;s secrets to
-              longevity as you indulge in nourishing treatments, explore sustainable practices, and find blissful balance.
-            </p>
-            <p className="mt-3 text-[#6f6251]">
-              Immerse yourself in the ultimate natural wellness experience — let nature be your sanctuary.
-            </p>
-            <div className="mt-4 rounded-2xl border border-[#1f7a7a4f] bg-[#eef8f8] p-4">
-              <p className="text-xs tracking-[0.18em] text-[#1b6568]">NEXT EVENT</p>
-              <p className="mt-2 text-sm text-[#28585a]">
-                <strong>Corporate Health &amp; Wellness Day</strong> is coming soon. Retreats begin in September.
-              </p>
-            </div>
+    <div className="-mt-[1px]">
+      <CinematicHero
+        eyebrow="EVENTS & RETREATS"
+        lineOne="Escape to natural"
+        lineTwo="wellness retreats."
+        lineThree="Find your sanctuary."
+        description="We guide you through personalized, global journeys of relaxation, rejuvenation, and learning. Uncover nature's secrets to longevity as you indulge in nourishing treatments and find blissful balance."
+        primaryCta={{ label: "View Events", href: "#events" }}
+        secondaryCta={{ label: "Book Online", href: "/book-online" }}
+        imageSrc="/images/stock/hero-luxury-clinic.jpg"
+        imageAlt="Luxury retreat event"
+      />
 
-            <div className="mt-7 rounded-2xl border border-[#b78d4b30] bg-[#fffaf2] p-4">
-              <p className="text-sm text-[#8f6f3e]">Join our list to opt-in for event launches & promotions!</p>
-              <form
-                className="mt-3 flex flex-wrap gap-2"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!email) return;
-                  setSubscribed(true);
-                }}
-              >
-                <input
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="e.g., name@example.com"
-                  className="min-w-[220px] flex-1 rounded-xl border border-[#b78d4b35] bg-white p-3"
-                  type="email"
-                />
-                <button className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">Subscribe</button>
-              </form>
-              {subscribed ? <p className="mt-2 text-xs text-[#8f6f3e]">Subscribed successfully.</p> : null}
-            </div>
-
-            <div className="mt-7 flex flex-wrap gap-3">
-              <button
-                onClick={() => setOpenModal("invite")}
-                className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white"
-              >
-                Request Invite
-              </button>
-              <button
-                onClick={() => setOpenModal("consultation")}
-                className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]"
-              >
-                Book Consultation
-              </button>
-            </div>
-          </div>
-          <div className="space-y-4">
-            <div className="relative h-[220px] overflow-hidden rounded-3xl border border-[#b78d4b36] sm:h-[250px]">
-              <Image src="/images/stock/hero-luxury-clinic.jpg" alt="Luxury retreat event" fill className="object-cover" />
-            </div>
-            <div className="relative h-[120px] overflow-hidden rounded-3xl border border-[#b78d4b36] sm:h-[130px]">
-              <Image src="/images/beauty.avif" alt="Beauty and wellness gathering" fill className="object-cover" />
-            </div>
-          </div>
+      <EditorialSection>
+        <EditorialEyebrow>STAY CONNECTED</EditorialEyebrow>
+        <p className="mt-4 max-w-3xl text-[#6f6251]">
+          Immerse yourself in the ultimate natural wellness experience — let nature be your sanctuary.
+        </p>
+        <div className={`mt-6 ${editorialPanel} border-[#1f7a7a4f] bg-[#eef8f8] p-4`}>
+          <p className="text-xs tracking-[0.18em] text-[#1b6568]">NEXT EVENT</p>
+          <p className="mt-2 text-sm text-[#28585a]">
+            <strong>Corporate Health &amp; Wellness Day</strong> is coming soon. Retreats begin in September.
+          </p>
         </div>
-      </SectionWrapper>
 
-      <SectionWrapper className="py-6 md:py-8">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">Upcoming Events</h2>
+        <div className={`mt-6 ${editorialPanel} p-5`}>
+          <p className="text-sm text-[#8f6f3e]">Join our list to opt-in for event launches &amp; promotions!</p>
+          <form
+            className="mt-3 flex flex-wrap gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!email) return;
+              setSubscribed(true);
+            }}
+          >
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="e.g., name@example.com"
+              className={`min-w-[220px] flex-1 ${editorialInput}`}
+              type="email"
+            />
+            <button type="submit" className={editorialCtaPrimary}>
+              SUBSCRIBE
+            </button>
+          </form>
+          {subscribed ? <p className="mt-2 text-xs text-[#8f6f3e]">Subscribed successfully.</p> : null}
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-3">
+          <button type="button" onClick={() => setOpenModal("invite")} className={editorialCtaPrimary}>
+            REQUEST INVITE
+          </button>
+          <button type="button" onClick={() => setOpenModal("consultation")} className={editorialCtaSecondary}>
+            BOOK CONSULTATION
+          </button>
+        </div>
+      </EditorialSection>
+
+      <EditorialSection id="events">
+        <EditorialEyebrow>UPCOMING</EditorialEyebrow>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+          <h2 className="font-serif text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">Upcoming Events</h2>
           <span className="text-sm text-[#8f6f3e]">Facebook</span>
         </div>
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {events.map((event) => (
             <article
               key={event.slug}
-              className={`rounded-2xl border bg-white p-5 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)] ${
-                event.featured ? "border-[#1f7a7a55] ring-1 ring-[#1f7a7a33]" : "border-[#b78d4b2d]"
-              }`}
+              className={`${editorialPanel} p-5 ${event.featured ? "border-[#1f7a7a55] ring-1 ring-[#1f7a7a33]" : ""}`}
             >
               {event.featured ? (
                 <p className="mb-2 text-xs tracking-[0.16em] text-[#1b6568]">FEATURED · COMING SOON</p>
               ) : null}
-              <div className="relative mb-4 h-44 overflow-hidden rounded-xl border border-[#b78d4b2d]">
+              <div className="relative mb-4 h-44 overflow-hidden rounded-sm border border-[#e4d9c8]">
                 <Image src={event.image} alt={event.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
               </div>
               <p className="text-xl text-[#2b2218]">{event.title}</p>
@@ -126,20 +123,15 @@ export default function EventsRetreatsPage() {
                 <p className="mt-2 text-sm font-medium text-[#2b2218]">Tickets from {event.ticketPrice}</p>
               ) : null}
               <div className="mt-4 flex flex-wrap gap-2">
-                <Link href={`/events-retreats/${event.slug}`} className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-4 py-2 text-xs text-[#3b3024]">
-                  More info
+                <Link href={`/events-retreats/${event.slug}`} className={editorialCtaSecondary}>
+                  MORE INFO
                 </Link>
                 {event.ticketUrl ? (
-                  <a
-                    href={event.ticketUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-full bg-[#b78d4b] px-4 py-2 text-xs text-white"
-                  >
-                    Get Tickets
+                  <a href={event.ticketUrl} target="_blank" rel="noopener noreferrer" className={editorialCtaPrimary}>
+                    GET TICKETS
                   </a>
                 ) : (
-                  <Link href={`/events-retreats/${event.slug}?intent=rsvp`} className="rounded-full bg-[#b78d4b] px-4 py-2 text-xs text-white">
+                  <Link href={`/events-retreats/${event.slug}?intent=rsvp`} className={editorialCtaPrimary}>
                     RSVP
                   </Link>
                 )}
@@ -147,14 +139,15 @@ export default function EventsRetreatsPage() {
             </article>
           ))}
         </div>
-      </SectionWrapper>
+      </EditorialSection>
 
-      <SectionWrapper className="py-6 md:py-8">
-        <h2 className="mb-4 text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">Featured Event</h2>
-        <div className="grid items-center gap-8 rounded-3xl border border-[#1f7a7a45] bg-white p-8 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)] lg:grid-cols-[1.05fr_0.95fr]">
+      <EditorialSection>
+        <EditorialEyebrow>FEATURED</EditorialEyebrow>
+        <h2 className="mt-4 font-serif text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">Featured Event</h2>
+        <div className={`mt-6 grid items-center gap-8 ${editorialPanel} border-[#1f7a7a45] p-8 lg:grid-cols-[1.05fr_0.95fr]`}>
           <div>
             <p className="text-sm tracking-[0.16em] text-[#1b6568]">FEATURED EVENT</p>
-            <h3 className="mt-2 text-3xl text-[#1f1a15] md:text-4xl">{featuredEvent.title}</h3>
+            <h3 className="mt-2 font-serif text-3xl text-[#1f1a15] md:text-4xl">{featuredEvent.title}</h3>
             {featuredEvent.host ? (
               <p className="mt-2 text-sm text-[#8f6f3e]">Presented by {featuredEvent.host}</p>
             ) : null}
@@ -166,40 +159,33 @@ export default function EventsRetreatsPage() {
             ) : null}
             <div className="mt-5 flex flex-wrap gap-3">
               {featuredEvent.ticketUrl ? (
-                <a
-                  href={featuredEvent.ticketUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white"
-                >
-                  Get Tickets on Luma
+                <a href={featuredEvent.ticketUrl} target="_blank" rel="noopener noreferrer" className={editorialCtaPrimary}>
+                  GET TICKETS ON LUMA
                 </a>
               ) : null}
-              <Link
-                href={`/events-retreats/${featuredEvent.slug}`}
-                className="rounded-full border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-sm text-[#3b3024]"
-              >
-                Full Event Details
+              <Link href={`/events-retreats/${featuredEvent.slug}`} className={editorialCtaSecondary}>
+                FULL EVENT DETAILS
               </Link>
             </div>
           </div>
           <div className="space-y-4">
-            <div className="relative h-[220px] overflow-hidden rounded-2xl border border-[#b78d4b2d] sm:h-[260px]">
+            <div className="relative h-[220px] overflow-hidden rounded-sm border border-[#e4d9c8] sm:h-[260px]">
               <Image src={featuredEvent.image} alt={featuredEvent.title} fill className="object-cover" />
             </div>
             {featuredEvent.flyerImage ? (
-              <div className="relative h-[180px] overflow-hidden rounded-2xl border border-[#b78d4b2d] bg-[#f8faf6]">
+              <div className="relative h-[180px] overflow-hidden rounded-sm border border-[#e4d9c8] bg-[#f8faf6]">
                 <Image src={featuredEvent.flyerImage} alt={`${featuredEvent.title} flyer`} fill className="object-contain p-2" />
               </div>
             ) : null}
           </div>
         </div>
-      </SectionWrapper>
+      </EditorialSection>
 
-      <SectionWrapper className="py-6 md:py-8">
-        <h2 className="mb-4 text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">My Journey to KIAN</h2>
-        <div className="grid gap-8 rounded-3xl border border-[#b78d4b2d] bg-white p-8 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)] lg:grid-cols-[0.45fr_0.55fr]">
-          <div className="relative h-[340px] overflow-hidden rounded-2xl border border-[#b78d4b2d]">
+      <EditorialSection>
+        <EditorialEyebrow>OUR STORY</EditorialEyebrow>
+        <h2 className="mt-4 font-serif text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">My Journey to KIAN</h2>
+        <div className={`mt-6 grid gap-8 ${editorialPanel} p-8 lg:grid-cols-[0.45fr_0.55fr]`}>
+          <div className="relative h-[340px] overflow-hidden rounded-sm border border-[#e4d9c8]">
             <Image src="/images/AlyciaLerer.png" alt="Alycia Lerer founder" fill className="object-cover" />
           </div>
           <div className="space-y-4 text-[#5f5344]">
@@ -216,38 +202,36 @@ export default function EventsRetreatsPage() {
               wealth we possess. Through KIAN events, we bridge intention and action so you can live well from the inside out.
             </p>
             <p>
-              I am looking forward to seeing you there!<br />
+              I am looking forward to seeing you there!
+              <br />
               <span className="text-[#8f6f3e]">Alycia, Founder — KIAN Retreats & Events</span>
             </p>
           </div>
         </div>
-      </SectionWrapper>
+      </EditorialSection>
 
-      <SectionWrapper>
-        <div className="rounded-2xl border border-[#b78d4b30] bg-[#fffaf2] p-5">
+      <EditorialSection>
+        <div className={`${editorialPanel} p-5`}>
           <p className="text-xs tracking-[0.18em] text-[#8f6f3e]">RETREATS & EVENTS POLICIES</p>
           <p className="mt-2 text-sm text-[#6f6251]">
             Booking, cancellation, travel insurance, and event guarantees for retreats and events are covered in our dedicated
             terms — separate from KIAN Privé membership and concierge service policies.
           </p>
-          <Link
-            href="/terms-and-conditions"
-            className="mt-4 inline-flex rounded-full border border-[#b78d4b70] bg-white px-5 py-2 text-sm text-[#3b3024]"
-          >
-            View Retreats & Events Terms
+          <Link href="/terms-and-conditions" className={`mt-4 ${editorialCtaSecondary}`}>
+            VIEW RETREATS & EVENTS TERMS
           </Link>
         </div>
-      </SectionWrapper>
+      </EditorialSection>
 
       {openModal ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4">
-          <div className="w-full max-w-2xl rounded-3xl border border-[#b78d4b45] bg-white p-6 shadow-[0_25px_45px_-20px_rgba(0,0,0,0.4)]">
+          <div className={`w-full max-w-2xl ${editorialPanel} bg-white p-6 shadow-[0_25px_45px_-20px_rgba(0,0,0,0.4)]`}>
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">
                   {openModal === "invite" ? "REQUEST INVITE" : openModal === "rsvp" ? "RSVP" : "BOOK CONSULTATION"}
                 </p>
-                <h2 className="mt-2 text-2xl text-[#1f1a15]">
+                <h2 className="mt-2 font-serif text-2xl text-[#1f1a15]">
                   {openModal === "invite"
                     ? "Join Upcoming Events & Retreats"
                     : openModal === "rsvp"
@@ -255,18 +239,18 @@ export default function EventsRetreatsPage() {
                       : "Schedule Your Retreat Consultation"}
                 </h2>
               </div>
-              <button onClick={() => setOpenModal(null)} className="rounded-full border border-[#b78d4b40] p-2 text-[#6f6251]">
+              <button onClick={() => setOpenModal(null)} className="rounded-sm border border-[#b78d4b40] p-2 text-[#6f6251]">
                 <X size={16} />
               </button>
             </div>
 
             <form className="mt-6 grid gap-4 md:grid-cols-2">
-              <input className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Full Name" />
-              <input className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Email" type="email" />
-              <input className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Phone" />
-              <input className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" type="date" />
+              <input className={editorialInput} placeholder="Full Name" />
+              <input className={editorialInput} placeholder="Email" type="email" />
+              <input className={editorialInput} placeholder="Phone" />
+              <input className={editorialInput} type="date" />
               <textarea
-                className="min-h-[120px] rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3 md:col-span-2"
+                className={`min-h-[120px] ${editorialInput} md:col-span-2`}
                 placeholder={
                   openModal === "invite"
                     ? "Tell us which retreat experience interests you."
@@ -275,8 +259,8 @@ export default function EventsRetreatsPage() {
                       : "Tell us your consultation goals."
                 }
               />
-              <button type="button" className="rounded-full bg-[#b78d4b] px-6 py-3 text-white md:col-span-2">
-                Submit Request
+              <button type="button" className={`${editorialCtaPrimary} md:col-span-2`}>
+                SUBMIT REQUEST
               </button>
             </form>
           </div>

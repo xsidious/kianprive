@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Play } from "lucide-react";
-import { SectionWrapper } from "@/components/ui/SectionWrapper";
+import { CinematicHero } from "@/components/ui/CinematicHero";
+import { EditorialEyebrow, EditorialSection, editorialPanel } from "@/components/ui/editorial-primitives";
 
 const writtenTestimonials = [
   {
@@ -31,39 +32,43 @@ const videoTestimonials = [
 
 export default function ClientTestimonialsPage() {
   return (
-    <div>
-      <SectionWrapper className="pt-14 sm:pt-16">
-        <h1 className="text-3xl text-[#1f1a15] md:text-5xl">Client Testimonials</h1>
-        <p className="mt-4 max-w-3xl text-[#6f6251]">
-          Written and video stories from clients following personalized concierge wellness protocols.
-        </p>
-      </SectionWrapper>
+    <div className="-mt-[1px]">
+      <CinematicHero
+        eyebrow="CLIENT STORIES"
+        lineOne="Real clients."
+        lineTwo="Measurable change."
+        lineThree="Lasting trust."
+        description="Written and video stories from clients following personalized concierge wellness protocols."
+        primaryCta={{ label: "Book Consultation", href: "/book-online" }}
+        secondaryCta={{ label: "Explore Services", href: "/services" }}
+        imageSrc="/images/facial-treatments.webp"
+        imageAlt="KIAN Privé client results"
+      />
 
-      <SectionWrapper>
-        <p className="mb-4 text-xs tracking-[0.18em] text-[#8f6f3e]">WRITTEN</p>
-        <div className="grid gap-4 md:grid-cols-3">
+      <EditorialSection>
+        <EditorialEyebrow>WRITTEN</EditorialEyebrow>
+        <h2 className="mt-4 font-serif text-3xl text-[#1f1a15] md:text-4xl">Client Testimonials</h2>
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
           {writtenTestimonials.map((item) => (
-            <article key={item.name} className="rounded-2xl border border-[#b78d4b2d] bg-white p-5 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)]">
+            <article key={item.name} className={`${editorialPanel} p-5`}>
               <p className="text-[#4f4335]">&ldquo;{item.quote}&rdquo;</p>
               <p className="mt-4 text-[#2b2218]">{item.name}</p>
               <p className="text-sm text-[#8f6f3e]">{item.title}</p>
             </article>
           ))}
         </div>
-      </SectionWrapper>
+      </EditorialSection>
 
-      <SectionWrapper>
-        <p className="mb-4 text-xs tracking-[0.18em] text-[#8f6f3e]">VIDEO</p>
-        <div className="grid gap-4 md:grid-cols-3">
+      <EditorialSection dark>
+        <EditorialEyebrow tone="dark">VIDEO</EditorialEyebrow>
+        <h2 className="mt-4 font-serif text-3xl text-[#f7f1e8] md:text-4xl">On camera</h2>
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
           {videoTestimonials.map((item) => (
-            <article
-              key={item.title}
-              className="overflow-hidden rounded-2xl border border-[#b78d4b2d] bg-[#2b2218] shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)]"
-            >
+            <article key={item.title} className="overflow-hidden rounded-sm border border-[#c9a86a33] bg-[#221c17]">
               <div className="relative h-44">
-                <Image src="/images/facial-treatments.jpg" alt="" fill className="object-cover opacity-40" />
+                <Image src="/images/facial-treatments.webp" alt="" fill className="object-cover opacity-40" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full border border-white/40 bg-white/15 text-white backdrop-blur-sm">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-sm border border-white/40 bg-white/15 text-white backdrop-blur-sm">
                     <Play size={22} fill="currentColor" />
                   </span>
                   <p className="text-xs tracking-[0.14em] text-white/80">{item.category.toUpperCase()}</p>
@@ -76,7 +81,7 @@ export default function ClientTestimonialsPage() {
             </article>
           ))}
         </div>
-      </SectionWrapper>
+      </EditorialSection>
     </div>
   );
 }

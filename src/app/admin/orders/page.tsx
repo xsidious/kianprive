@@ -64,22 +64,22 @@ export default function AdminOrdersPage() {
 
       <div className="space-y-3">
         {orders.map((order) => (
-          <article key={order.id} className="rounded-2xl border border-[#b78d4b2d] bg-white p-5">
+          <article key={order.id} className="rounded-sm border border-[#b78d4b2d] bg-white p-5">
             <div className="grid gap-3 md:grid-cols-4">
               <div className="md:col-span-4">
                 <p className="text-lg text-[#1f1a15]">{order.orderNumber}</p>
                 <p className="text-sm text-[#6f6251]">{order.email ?? "No email"}</p>
               </div>
-              <select value={order.status} onChange={(e) => setOrders((prev) => prev.map((row) => row.id === order.id ? { ...row, status: e.target.value as Order["status"] } : row))} className="rounded-lg border border-[#b78d4b35] bg-[#fffaf4] p-2">
+              <select value={order.status} onChange={(e) => setOrders((prev) => prev.map((row) => row.id === order.id ? { ...row, status: e.target.value as Order["status"] } : row))} className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2">
                 {orderStatuses.map((entry) => <option key={entry} value={entry}>{entry}</option>)}
               </select>
-              <select value={order.paymentStatus} onChange={(e) => setOrders((prev) => prev.map((row) => row.id === order.id ? { ...row, paymentStatus: e.target.value as Order["paymentStatus"] } : row))} className="rounded-lg border border-[#b78d4b35] bg-[#fffaf4] p-2">
+              <select value={order.paymentStatus} onChange={(e) => setOrders((prev) => prev.map((row) => row.id === order.id ? { ...row, paymentStatus: e.target.value as Order["paymentStatus"] } : row))} className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2">
                 {paymentStatuses.map((entry) => <option key={entry} value={entry}>{entry}</option>)}
               </select>
-              <select value={order.fulfillmentStatus} onChange={(e) => setOrders((prev) => prev.map((row) => row.id === order.id ? { ...row, fulfillmentStatus: e.target.value as Order["fulfillmentStatus"] } : row))} className="rounded-lg border border-[#b78d4b35] bg-[#fffaf4] p-2">
+              <select value={order.fulfillmentStatus} onChange={(e) => setOrders((prev) => prev.map((row) => row.id === order.id ? { ...row, fulfillmentStatus: e.target.value as Order["fulfillmentStatus"] } : row))} className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2">
                 {fulfillmentStatuses.map((entry) => <option key={entry} value={entry}>{entry}</option>)}
               </select>
-              <button onClick={() => void saveOrder(order)} className="rounded-full border border-[#b78d4b80] px-3 py-2 text-sm text-[#3b3024]">Save Order</button>
+              <button onClick={() => void saveOrder(order)} className="rounded-sm border border-[#b78d4b80] px-3 py-2 text-sm text-[#3b3024]">Save Order</button>
             </div>
 
             <form
@@ -89,14 +89,14 @@ export default function AdminOrdersPage() {
                 void addFulfillment(order.id, new FormData(event.currentTarget));
               }}
             >
-              <select name="status" defaultValue="PROCESSING" className="rounded-lg border border-[#b78d4b35] bg-[#fffaf4] p-2 text-sm">
+              <select name="status" defaultValue="PROCESSING" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2 text-sm">
                 {fulfillmentStatuses.map((entry) => <option key={entry} value={entry}>{entry}</option>)}
               </select>
-              <input name="carrier" placeholder="Carrier" className="rounded-lg border border-[#b78d4b35] bg-[#fffaf4] p-2 text-sm" />
-              <input name="trackingNumber" placeholder="Tracking number" className="rounded-lg border border-[#b78d4b35] bg-[#fffaf4] p-2 text-sm" />
-              <input name="trackingUrl" placeholder="Tracking URL" className="rounded-lg border border-[#b78d4b35] bg-[#fffaf4] p-2 text-sm" />
-              <button className="rounded-full bg-[#b78d4b] px-3 py-2 text-sm text-white">Add Fulfillment</button>
-              <input name="notes" placeholder="Notes" className="md:col-span-5 rounded-lg border border-[#b78d4b35] bg-[#fffaf4] p-2 text-sm" />
+              <input name="carrier" placeholder="Carrier" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2 text-sm" />
+              <input name="trackingNumber" placeholder="Tracking number" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2 text-sm" />
+              <input name="trackingUrl" placeholder="Tracking URL" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2 text-sm" />
+              <button className="rounded-sm bg-[#b78d4b] px-3 py-2 text-sm text-white">Add Fulfillment</button>
+              <input name="notes" placeholder="Notes" className="md:col-span-5 rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2 text-sm" />
             </form>
           </article>
         ))}

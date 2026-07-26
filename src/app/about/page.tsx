@@ -1,6 +1,22 @@
-import { SectionWrapper } from "@/components/ui/SectionWrapper";
+import type { Metadata } from "next";
 import Image from "next/image";
+import { CinematicHero } from "@/components/ui/CinematicHero";
+import { EditorialEyebrow, EditorialSection, editorialPanel } from "@/components/ui/editorial-primitives";
 import { getCmsPageContent } from "@/lib/cms/pages";
+import { buildSeoMetadata } from "@/lib/seo/metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const cms = await getCmsPageContent("about");
+  return buildSeoMetadata({
+    title: cms.seoTitle || "About KIAN Privé",
+    description:
+      cms.seoDescription ||
+      "Meet the KIAN Privé team — physician-led concierge wellness, clinical aesthetics, and regenerative care in Miami and North Miami Beach.",
+    canonicalPath: cms.canonicalUrl?.startsWith("/") ? cms.canonicalUrl : "/about",
+    image: cms.seoImage || "/images/og-default.jpg",
+    noIndex: Boolean(cms.noIndex),
+  });
+}
 
 const aboutTeam = [
   { name: "Alycia Lerer", title: "Founder", subtitle: "Wellness Coach", image: "/images/AlyciaLerer.png" },
@@ -32,54 +48,49 @@ const aboutTeam = [
 export default async function AboutPage() {
   const cms = await getCmsPageContent("about");
   return (
-    <div>
-      <SectionWrapper className="pt-18">
-        <div className="grid items-center gap-10 rounded-3xl border border-[#b78d4b2e] bg-white p-8 shadow-[0_20px_50px_-38px_rgba(66,45,14,0.45)] md:grid-cols-[1.1fr_0.9fr]">
-          <div>
-            <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">{cms.eyebrow ?? "ABOUT US"}</p>
-            <h1 className="mt-4 text-4xl text-[#1f1a15] md:text-5xl">{cms.title}</h1>
-            <p className="mt-5 max-w-3xl text-[#6f6251]">
-              {cms.description}
-            </p>
-            <p className="mt-4 max-w-3xl text-[#6f6251]">
-              At KIAN Privé, we believe optimal health is not a destination, it is a continuous, deeply personal journey. We bring together
-              a distinguished team of physicians, registered nurses, licensed aestheticians, certified nutrition experts, and wellness
-              specialists to deliver a seamless fusion of clinical medicine, advanced skincare, regenerative therapies, and luxury wellness
-              tailored to every individual who walks through our doors.
-            </p>
-          </div>
-          <div className="relative h-[360px] overflow-hidden rounded-3xl border border-[#b78d4b36]">
-            <Image src="/images/abougpage.jpeg" alt="KIAN Privé team and wellness sanctuary" fill className="object-cover" />
-          </div>
-        </div>
-      </SectionWrapper>
+    <div className="-mt-[1px]">
+      <CinematicHero
+        eyebrow={cms.eyebrow ?? "ABOUT US"}
+        lineOne="A private sanctuary."
+        lineTwo="A clinical standard."
+        lineThree="A personal journey."
+        description={
+          cms.description ??
+          "At KIAN Privé, optimal health is a continuous, deeply personal journey—clinical medicine, advanced skincare, regenerative therapies, and luxury wellness in one seamless experience."
+        }
+        primaryCta={{ label: "Meet the Team", href: "#team" }}
+        secondaryCta={{ label: "Book Consultation", href: "/book-online" }}
+        imageSrc="/images/abougpage.jpeg"
+        imageAlt="KIAN Privé team and wellness sanctuary"
+        priority={false}
+      />
 
-      <SectionWrapper>
-        <div className="rounded-3xl border border-[#b78d4b2e] bg-white p-8 shadow-[0_16px_40px_-35px_rgba(66,45,14,0.45)]">
-          <h2 className="mb-2 text-3xl text-[#1f1a15] md:text-4xl">Your Pathway to Greatness</h2>
-          <p className="max-w-4xl text-[#6f6251]">
-            KIAN Privé provides a comprehensive approach to achieving maximum mental and physical wellness. Our framework encourages
-            individuals to:
-          </p>
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
-            {[
-              "Assess Their Current Lifestyle: Evaluate existing habits and identify areas for improvement.",
-              "Set Personal Goals: Establish clear, achievable health and wellness goals.",
-              "Implement Changes: Integrate new practices and products into daily routines for a balanced lifestyle.",
-              "Monitor Progress: Regularly review and adjust goals and practices to ensure continued growth and success.",
-              "Celebrate Achievements: Recognize and celebrate milestones along the wellness journey to maintain motivation and commitment.",
-            ].map((item) => (
-              <article key={item} className="rounded-xl border border-[#b78d4b2e] bg-[#fffaf2] p-4 text-[#4f4335]">
-                {item}
-              </article>
-            ))}
-          </div>
+      <EditorialSection>
+        <EditorialEyebrow>OUR APPROACH</EditorialEyebrow>
+        <h2 className="mt-4 font-serif text-3xl text-[#1f1a15] md:text-4xl">Your Pathway to Greatness</h2>
+        <p className="mt-3 max-w-4xl text-[#6f6251]">
+          KIAN Privé provides a comprehensive approach to achieving maximum mental and physical wellness. Our framework encourages
+          individuals to:
+        </p>
+        <div className="mt-6 grid gap-3 md:grid-cols-2">
+          {[
+            "Assess Their Current Lifestyle: Evaluate existing habits and identify areas for improvement.",
+            "Set Personal Goals: Establish clear, achievable health and wellness goals.",
+            "Implement Changes: Integrate new practices and products into daily routines for a balanced lifestyle.",
+            "Monitor Progress: Regularly review and adjust goals and practices to ensure continued growth and success.",
+            "Celebrate Achievements: Recognize and celebrate milestones along the wellness journey to maintain motivation and commitment.",
+          ].map((item) => (
+            <article key={item} className={`${editorialPanel} p-4 text-[#4f4335]`}>
+              {item}
+            </article>
+          ))}
         </div>
-      </SectionWrapper>
+      </EditorialSection>
 
-      <SectionWrapper>
-        <h2 className="mb-6 text-3xl text-[#1f1a15] md:text-4xl">Core Values</h2>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <EditorialSection>
+        <EditorialEyebrow>CORE VALUES</EditorialEyebrow>
+        <h2 className="mt-4 font-serif text-3xl text-[#1f1a15] md:text-4xl">What we stand for</h2>
+        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {[
             {
               title: "Commitment",
@@ -98,20 +109,21 @@ export default async function AboutPage() {
               text: "Growth requires transformation. We guide clients with support and resources through every phase of improvement.",
             },
           ].map((value) => (
-            <article key={value.title} className="rounded-2xl border border-[#b78d4b2e] bg-white p-5 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)]">
-              <h3 className="text-xl text-[#2b2218]">{value.title}</h3>
+            <article key={value.title} className={`${editorialPanel} p-5`}>
+              <h3 className="font-serif text-xl text-[#2b2218]">{value.title}</h3>
               <p className="mt-3 text-[#6f6251]">{value.text}</p>
             </article>
           ))}
         </div>
-      </SectionWrapper>
+      </EditorialSection>
 
-      <SectionWrapper>
-        <h2 className="mb-6 text-3xl text-[#1f1a15] md:text-4xl">Meet The Team</h2>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <EditorialSection id="team">
+        <EditorialEyebrow>THE TEAM</EditorialEyebrow>
+        <h2 className="mt-4 font-serif text-3xl text-[#1f1a15] md:text-4xl">Meet The Team</h2>
+        <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {aboutTeam.map((member) => (
-            <article key={member.name} className="rounded-2xl border border-[#b78d4b2e] bg-white p-4 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.45)]">
-              <div className="relative h-60 overflow-hidden rounded-xl border border-[#b78d4b1f] bg-[#f7efe3]">
+            <article key={member.name} className={`${editorialPanel} p-4`}>
+              <div className="relative h-60 overflow-hidden rounded-sm border border-[#e4d9c8] bg-[#f7efe3]">
                 <Image
                   src={member.image}
                   alt={member.name}
@@ -127,7 +139,7 @@ export default async function AboutPage() {
             </article>
           ))}
         </div>
-      </SectionWrapper>
+      </EditorialSection>
     </div>
   );
 }

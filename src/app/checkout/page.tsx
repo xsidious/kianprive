@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -6,6 +6,7 @@ import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { useCart } from "@/components/providers/cart-provider";
+import { readPartnerReferralClient } from "@/lib/partner-referral";
 
 function CheckoutForm() {
   const { items, subtotal, shipping, total } = useCart();
@@ -49,6 +50,7 @@ function CheckoutForm() {
           phone,
           shippingAddress: { firstName, lastName, address, city, zipCode },
           billingAddress: { firstName, lastName, address, city, zipCode },
+          partnerCode: readPartnerReferralClient() ?? undefined,
         }),
       });
 
@@ -73,7 +75,7 @@ function CheckoutForm() {
           <h1 className="text-3xl text-[#1f1a15]">Checkout</h1>
           <p className="mt-2 text-sm text-[#6f6251]">Secure payment powered by Stripe.</p>
           {canceled ? (
-            <p className="mt-3 rounded-xl border border-[#b78d4b40] bg-[#fff7eb] px-4 py-2 text-sm text-[#6f6251]">
+            <p className="mt-3 rounded-sm border border-[#b78d4b40] bg-[#fff7eb] px-4 py-2 text-sm text-[#6f6251]">
               Payment was canceled. Your cart is still saved.
             </p>
           ) : null}
@@ -82,16 +84,16 @@ function CheckoutForm() {
 
       <SectionWrapper className="pt-0">
         <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
-          <div className="rounded-2xl border border-[#b78d4b2d] bg-white p-5 sm:p-7">
+          <div className="rounded-sm border border-[#b78d4b2d] bg-white p-5 sm:p-7">
             <h2 className="text-xl text-[#1f1a15]">Contact & Shipping</h2>
             <form className="mt-5 grid gap-4 md:grid-cols-2">
-              <input value={email} onChange={(e) => setEmail(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Email *" type="email" required />
-              <input value={phone} onChange={(e) => setPhone(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Phone" />
-              <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="First name" />
-              <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Last name" />
-              <input value={address} onChange={(e) => setAddress(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3 md:col-span-2" placeholder="Address" />
-              <input value={city} onChange={(e) => setCity(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="City" />
-              <input value={zipCode} onChange={(e) => setZipCode(e.target.value)} className="rounded-xl border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="ZIP Code" />
+              <input value={email} onChange={(e) => setEmail(e.target.value)} className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Email *" type="email" required />
+              <input value={phone} onChange={(e) => setPhone(e.target.value)} className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Phone" />
+              <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="First name" />
+              <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="Last name" />
+              <input value={address} onChange={(e) => setAddress(e.target.value)} className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3 md:col-span-2" placeholder="Address" />
+              <input value={city} onChange={(e) => setCity(e.target.value)} className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="City" />
+              <input value={zipCode} onChange={(e) => setZipCode(e.target.value)} className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" placeholder="ZIP Code" />
             </form>
 
             <h2 className="mt-8 text-xl text-[#1f1a15]">Payment</h2>
@@ -103,7 +105,7 @@ function CheckoutForm() {
               type="button"
               onClick={handleCompletePurchase}
               disabled={submitting || items.length === 0}
-              className="mt-6 w-full rounded-full bg-[#b78d4b] px-6 py-3 text-white disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-6 w-full rounded-sm bg-[#b78d4b] px-6 py-3 text-white disabled:cursor-not-allowed disabled:opacity-60"
             >
               {submitting ? "Redirecting to Stripe..." : `Pay $${total.toFixed(2)} with Stripe`}
             </button>
@@ -113,12 +115,12 @@ function CheckoutForm() {
             </Link>
           </div>
 
-          <aside className="h-fit rounded-2xl border border-[#b78d4b2d] bg-white p-5 lg:sticky lg:top-24">
+          <aside className="h-fit rounded-sm border border-[#b78d4b2d] bg-white p-5 lg:sticky lg:top-24">
             <h3 className="text-lg text-[#1f1a15]">Order Summary</h3>
             <div className="mt-4 space-y-3">
               {items.map((item) => (
                 <div key={item.id} className="flex items-center gap-3">
-                  <div className="relative h-14 w-14 overflow-hidden rounded-lg border border-[#b78d4b2d]">
+                  <div className="relative h-14 w-14 overflow-hidden rounded-sm border border-[#b78d4b2d]">
                     <Image src={item.image} alt={item.name} fill className="object-cover" />
                   </div>
                   <div className="min-w-0 flex-1">

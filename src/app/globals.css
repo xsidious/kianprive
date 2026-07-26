@@ -5,12 +5,17 @@
   --panel: #ffffff;
   --text: #1f1a15;
   --muted: #6f6251;
-  --gold: #b78d4b;
+  --gold: #8a682e;
 }
 
 @theme inline {
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-serif: var(--font-display-serif), ui-serif, Georgia, "Times New Roman", serif;
+}
+
+.font-serif {
+  font-family: var(--font-display-serif), ui-serif, Georgia, "Times New Roman", serif;
 }
 
 body {
@@ -60,8 +65,8 @@ button:hover {
 }
 
 article,
-div[class*="rounded-2xl border"],
-div[class*="rounded-3xl border"] {
+div[class*="rounded-sm border"],
+div[class*="rounded-sm border"] {
   backdrop-filter: saturate(120%);
 }
 
@@ -79,4 +84,23 @@ div[class*="rounded-3xl border"] {
   button:hover {
     transform: none;
   }
+
+  .animate-fade-up {
+    animation: none;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.55s ease-out both;
 }

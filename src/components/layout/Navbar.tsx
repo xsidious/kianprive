@@ -61,31 +61,39 @@ export function Navbar() {
               Home
             </Link>
             <div className="group relative">
-              <button className="inline-flex items-center gap-1 transition hover:text-[#b78d4b]">
+              <button
+                type="button"
+                className="inline-flex items-center gap-1 transition hover:text-[#b78d4b]"
+                aria-label="What We Do menu"
+              >
                 What We Do
-                <ChevronDown size={14} />
+                <ChevronDown size={14} aria-hidden />
               </button>
-              <div className="invisible absolute left-0 top-full z-50 mt-2 w-72 rounded-2xl border border-[#b78d4b30] bg-white p-2 opacity-0 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)] transition-all group-hover:visible group-hover:opacity-100">
+              <div className="invisible absolute left-0 top-full z-50 mt-2 w-72 rounded-sm border border-[#e4d9c8] bg-white p-2 opacity-0 shadow-sm transition-all group-hover:visible group-hover:opacity-100">
                 {whatWeDoLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="block rounded-xl px-3 py-2 text-[#4f4335] transition hover:bg-[#fffaf2] hover:text-[#8f6f3e]"
+                    className="block rounded-sm px-3 py-2 text-[#4f4335] transition hover:bg-[#fffaf2] hover:text-[#8f6f3e]"
                   >
                     {link.label}
                   </Link>
                 ))}
                 <div className="group/icoone relative">
-                  <button className="inline-flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-[#4f4335] transition hover:bg-[#fffaf2] hover:text-[#8f6f3e]">
+                  <button
+                    type="button"
+                    className="inline-flex w-full items-center justify-between rounded-sm px-3 py-2 text-left text-[#4f4335] transition hover:bg-[#fffaf2] hover:text-[#8f6f3e]"
+                    aria-label="Icoone submenu"
+                  >
                     <span>Icoone</span>
-                    <ChevronDown size={14} />
+                    <ChevronDown size={14} aria-hidden />
                   </button>
-                  <div className="invisible absolute left-full top-0 z-50 ml-2 w-56 rounded-2xl border border-[#b78d4b30] bg-white p-2 opacity-0 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)] transition-all group-hover/icoone:visible group-hover/icoone:opacity-100">
+                  <div className="invisible absolute left-full top-0 z-50 ml-2 w-56 rounded-sm border border-[#e4d9c8] bg-white p-2 opacity-0 shadow-sm transition-all group-hover/icoone:visible group-hover/icoone:opacity-100">
                     {icooneLinks.map((link) => (
                       <Link
                         key={link.href}
                         href={link.href}
-                        className="block rounded-xl px-3 py-2 text-[#4f4335] transition hover:bg-[#fffaf2] hover:text-[#8f6f3e]"
+                        className="block rounded-sm px-3 py-2 text-[#4f4335] transition hover:bg-[#fffaf2] hover:text-[#8f6f3e]"
                       >
                         {link.label}
                       </Link>
@@ -102,20 +110,25 @@ export function Navbar() {
           </nav>
 
         <div className="hidden items-center justify-end gap-2 text-sm sm:flex">
-          <button onClick={openCart} className="relative inline-flex items-center rounded-full border border-[#b78d4b80] bg-white p-2 text-[#3b3024]">
-            <ShoppingBag size={17} />
+          <button
+            type="button"
+            onClick={openCart}
+            className="relative inline-flex items-center rounded-sm border border-[#b78d4b80] bg-white p-2 text-[#3b3024]"
+            aria-label={`Open cart${displayCount > 0 ? `, ${displayCount} items` : ""}`}
+          >
+            <ShoppingBag size={17} aria-hidden />
             <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[#b78d4b] px-1 text-[10px] text-white">
               {displayCount}
             </span>
           </button>
-          <Link href="/book-online" className="rounded-full bg-[#b78d4b] px-4 py-2 text-sm text-white">
-            Book Online
+          <Link href="/book-online" className="rounded-sm bg-[#8a682e] px-4 py-2 text-[11px] tracking-[0.16em] text-white">
+            BOOK ONLINE
           </Link>
           {data?.user ? (
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setUserMenuOpen((v) => !v)}
-                className="inline-flex items-center gap-2 rounded-full border border-[#b78d4b80] bg-white px-2 py-1.5 text-sm text-[#3b3024]"
+                className="inline-flex items-center gap-2 rounded-sm border border-[#b78d4b80] bg-white px-2 py-1.5 text-sm text-[#3b3024]"
                 aria-label="Open account menu"
               >
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#b78d4b] text-xs font-semibold text-white">
@@ -124,34 +137,39 @@ export function Navbar() {
                 <ChevronDown size={14} />
               </button>
               {userMenuOpen ? (
-                <div className="absolute right-0 top-[calc(100%+10px)] z-50 w-64 rounded-2xl border border-[#b78d4b33] bg-white p-2 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.55)]">
-                  <div className="mb-1 rounded-xl bg-[#fffaf2] px-3 py-2">
+                <div className="absolute right-0 top-[calc(100%+10px)] z-50 w-64 rounded-sm border border-[#e4d9c8] bg-white p-2 shadow-sm">
+                  <div className="mb-1 rounded-sm bg-[#fffaf2] px-3 py-2">
                     <p className="text-sm text-[#1f1a15]">{data.user.name ?? "Member"}</p>
                     <p className="text-xs text-[#6f6251]">{data.user.email}</p>
                   </div>
-                  <Link href="/dashboard" className="block rounded-xl px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
+                  <Link href="/dashboard" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                     Dashboard
                   </Link>
-                  <Link href="/dashboard/profile" className="block rounded-xl px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
+                  <Link href="/dashboard/profile" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                     Profile
                   </Link>
-                  <Link href="/dashboard/subscription" className="block rounded-xl px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
+                  <Link href="/dashboard/subscription" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                     Subscription
                   </Link>
-                  <Link href="/dashboard/services" className="block rounded-xl px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
+                  <Link href="/dashboard/services" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                     My Services
                   </Link>
-                  <Link href="/book-online" className="block rounded-xl px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
+                  <Link href="/book-online" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                     Book Consultations
                   </Link>
-                  {data.user.role === "ADMIN" ? (
-                    <Link href="/admin" className="block rounded-xl px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
+                  {data.user.role === "PARTNER" ? (
+                    <Link href="/partner" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
+                      Partner Portal
+                    </Link>
+                  ) : null}
+                  {data.user.role === "ADMIN" || data.user.role === "OPERATIONS" || data.user.role === "EDITOR" ? (
+                    <Link href="/admin" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                       Admin Dashboard
                     </Link>
                   ) : null}
                   <button
                     onClick={() => signOut({ callbackUrl: "/" })}
-                    className="mt-1 inline-flex w-full items-center gap-2 rounded-xl border border-[#b78d4b33] px-3 py-2 text-sm text-[#3b3024] hover:bg-[#fffaf2]"
+                    className="mt-1 inline-flex w-full items-center gap-2 rounded-sm border border-[#e4d9c8] px-3 py-2 text-sm text-[#3b3024] hover:bg-[#fffaf2]"
                   >
                     <LogOut size={14} />
                     Logout
@@ -162,16 +180,16 @@ export function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="rounded-full border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]"
+              className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-[11px] tracking-[0.16em] text-[#3b3024]"
             >
-              Members
+              MEMBERS
             </Link>
           )}
         </div>
         <div className="flex items-center gap-2 sm:hidden">
           <button
             onClick={openCart}
-            className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#b78d4b66] bg-white text-[#3b3024] shadow-[0_10px_18px_-14px_rgba(66,45,14,0.55)]"
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-sm border border-[#b78d4b66] bg-white text-[#3b3024]"
             aria-label="Open cart"
           >
             <ShoppingBag size={17} />
@@ -183,7 +201,7 @@ export function Navbar() {
           </button>
           <button
             onClick={() => setMobileOpen((v) => !v)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#b78d4b66] bg-white text-[#3b3024] shadow-[0_10px_18px_-14px_rgba(66,45,14,0.55)]"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-sm border border-[#b78d4b66] bg-white text-[#3b3024]"
             aria-label="Toggle menu"
           >
             {mobileOpen ? <X size={18} /> : <Menu size={18} />}
@@ -194,7 +212,7 @@ export function Navbar() {
       {mobileOpen ? (
         <div className="border-t border-[#b78d4b2f] bg-[#fffdf9] px-4 py-4 sm:hidden">
           <div className="grid gap-2 text-sm text-[#4f4335]">
-            <Link href="/" onClick={() => setMobileOpen(false)} className="rounded-xl px-3 py-2 hover:bg-[#fff7eb]">
+            <Link href="/" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 hover:bg-[#fff7eb]">
               Home
             </Link>
             <p className="px-3 pt-1 text-xs tracking-[0.18em] text-[#8f6f3e]">WHAT WE DO</p>
@@ -203,12 +221,12 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="rounded-xl px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]"
+                className="rounded-sm px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]"
               >
                 {link.label}
               </Link>
             ))}
-            <div className="rounded-xl border border-[#b78d4b2f] bg-white p-2">
+            <div className="rounded-sm border border-[#b78d4b2f] bg-white p-2">
               <p className="px-2 text-xs tracking-[0.16em] text-[#8f6f3e]">ICOONE</p>
               <div className="mt-1 grid gap-1">
                 {icooneLinks.map((link) => (
@@ -216,7 +234,7 @@ export function Navbar() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className="rounded-xl px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]"
+                    className="rounded-sm px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]"
                   >
                     {link.label}
                   </Link>
@@ -228,47 +246,52 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="rounded-xl px-3 py-2 hover:bg-[#fff7eb]"
+                className="rounded-sm px-3 py-2 hover:bg-[#fff7eb]"
               >
                 {link.label}
               </Link>
             ))}
             <div className="mt-2 grid grid-cols-2 gap-2">
-              <Link href="/book-online" onClick={() => setMobileOpen(false)} className="rounded-full bg-[#b78d4b] px-4 py-2 text-center text-white">
-                Book Online
+              <Link href="/book-online" onClick={() => setMobileOpen(false)} className="rounded-sm bg-[#8a682e] px-4 py-2 text-center text-[11px] tracking-[0.14em] text-white">
+                BOOK ONLINE
               </Link>
               <Link
                 href={data?.user ? "/dashboard" : "/login"}
                 onClick={() => setMobileOpen(false)}
-                className="rounded-full border border-[#b78d4b80] bg-white px-4 py-2 text-center text-[#3b3024]"
+                className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-center text-[11px] tracking-[0.14em] text-[#3b3024]"
               >
-                Members
+                MEMBERS
               </Link>
             </div>
             {data?.user ? (
-              <div className="mt-3 rounded-xl border border-[#b78d4b2f] bg-white p-2">
+              <div className="mt-3 rounded-sm border border-[#b78d4b2f] bg-white p-2">
                 <p className="px-2 text-xs tracking-[0.15em] text-[#8f6f3e]">MY ACCOUNT</p>
                 <div className="mt-1 grid gap-1">
-                  <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="rounded-xl px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
+                  <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
                     Dashboard
                   </Link>
-                  <Link href="/dashboard/profile" onClick={() => setMobileOpen(false)} className="rounded-xl px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
+                  <Link href="/dashboard/profile" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
                     Profile
                   </Link>
-                  <Link href="/dashboard/subscription" onClick={() => setMobileOpen(false)} className="rounded-xl px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
+                  <Link href="/dashboard/subscription" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
                     Subscription
                   </Link>
-                  <Link href="/dashboard/services" onClick={() => setMobileOpen(false)} className="rounded-xl px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
+                  <Link href="/dashboard/services" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
                     My Services
                   </Link>
-                  {data.user.role === "ADMIN" ? (
-                    <Link href="/admin" onClick={() => setMobileOpen(false)} className="rounded-xl px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
+                  {data.user.role === "PARTNER" ? (
+                    <Link href="/partner" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
+                      Partner Portal
+                    </Link>
+                  ) : null}
+                  {data.user.role === "ADMIN" || data.user.role === "OPERATIONS" || data.user.role === "EDITOR" ? (
+                    <Link href="/admin" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
                       Admin Dashboard
                     </Link>
                   ) : null}
                   <button
                     onClick={() => signOut({ callbackUrl: "/" })}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#b78d4b40] px-3 py-2 text-[#3b3024] hover:bg-[#fff7eb]"
+                    className="inline-flex items-center justify-center gap-2 rounded-sm border border-[#b78d4b40] px-3 py-2 text-[#3b3024] hover:bg-[#fff7eb]"
                   >
                     <User size={14} />
                     Logout

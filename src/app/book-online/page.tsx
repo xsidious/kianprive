@@ -1,5 +1,14 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { BookOnlineWizard } from "@/components/booking/BookOnlineWizard";
+import { buildSeoMetadata } from "@/lib/seo/metadata";
+
+export const metadata: Metadata = buildSeoMetadata({
+  title: "Book Online",
+  description:
+    "Reserve a KIAN Privé consultation or treatment — concierge wellness booking for Miami and North Miami Beach.",
+  canonicalPath: "/book-online",
+});
 
 export default function BookOnlinePage() {
   return (

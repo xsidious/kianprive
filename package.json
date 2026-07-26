@@ -12,6 +12,8 @@
     "demo:user": "node scripts/create-demo-user.mjs",
     "demo:admin": "node scripts/create-demo-admin.mjs",
     "demo:seed": "node scripts/seed-demo-data.mjs",
+    "seed:partners": "node scripts/seed-partners.mjs",
+    "seed:peptides": "node scripts/seed-peptide-guidelines.mjs",
     "seed:cms": "node scripts/seed-cms-pages.mjs",
     "seed:blog": "node scripts/seed-all-blog-posts.mjs",
     "seed:all": "npm run demo:admin && npm run demo:user && npm run demo:seed && npm run seed:cms && npm run seed:blog",
@@ -29,6 +31,7 @@
     "next-auth": "^4.24.14",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "sharp": "^0.35.3",
     "stripe": "^22.0.2",
     "tailwind-merge": "^3.5.0",
     "zod": "^4.3.6"

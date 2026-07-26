@@ -118,7 +118,7 @@ export function PeptidesGlpIntakeForm() {
 
   if (referenceId) {
     return (
-      <div className="rounded-3xl border border-[#1f7a7a4f] bg-[#eef8f8] p-8 text-center">
+      <div className="rounded-sm border border-[#1f7a7a4f] bg-[#eef8f8] p-8 text-center">
         <p className="text-xs tracking-[0.2em] text-[#1b6568]">INTAKE RECEIVED</p>
         <h2 className="mt-3 text-3xl text-[#1f1a15]">Thank you</h2>
         <p className="mx-auto mt-4 max-w-2xl text-[#28585a]">
@@ -133,10 +133,10 @@ export function PeptidesGlpIntakeForm() {
           guidelines.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <Link href="/services/glp1-peptides" className="rounded-full bg-[#1f7a7a] px-5 py-2 text-sm text-white">
+          <Link href="/services/glp1-peptides" className="rounded-sm bg-[#1f7a7a] px-5 py-2 text-sm text-white">
             Back to GLP-1s &amp; Peptides
           </Link>
-          <Link href="/book-online" className="rounded-full border border-[#1f7a7a55] bg-white px-5 py-2 text-sm text-[#28585a]">
+          <Link href="/book-online" className="rounded-sm border border-[#1f7a7a55] bg-white px-5 py-2 text-sm text-[#28585a]">
             Book Online
           </Link>
         </div>
@@ -145,7 +145,7 @@ export function PeptidesGlpIntakeForm() {
   }
 
   return (
-    <div className="rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)] sm:p-8">
+    <div className="rounded-sm border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)] sm:p-8">
       <div className="mb-6">
         <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">SECURE CLINICAL INTAKE</p>
         <h1 className="mt-2 text-3xl text-[#1f1a15] md:text-4xl">Comprehensive Therapeutics Intake</h1>
@@ -155,7 +155,7 @@ export function PeptidesGlpIntakeForm() {
           reviewing clinician only.
         </p>
         <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#f1e7d7]">
-          <div className="h-full rounded-full bg-[#b78d4b] transition-all" style={{ width: `${progress}%` }} />
+          <div className="h-full rounded-sm bg-[#b78d4b] transition-all" style={{ width: `${progress}%` }} />
         </div>
         <p className="mt-2 text-xs text-[#8f6f3e]">
           Step {step + 1} of {INTAKE_STEPS.length}: {currentStep.title}
@@ -188,7 +188,7 @@ export function PeptidesGlpIntakeForm() {
               <select
                 value={form.patient.sexAtBirth}
                 onChange={(e) => update("patient", { ...form.patient, sexAtBirth: e.target.value as "Male" | "Female" })}
-                className="mt-1 w-full rounded-xl border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm"
+                className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm"
               >
                 <option value="Female">Female</option>
                 <option value="Male">Male</option>
@@ -245,7 +245,7 @@ export function PeptidesGlpIntakeForm() {
             <Field label="Lowest Adult Weight"><TextInput value={form.weightHistory.lowestAdultWeight} onChange={(v) => update("weightHistory", { ...form.weightHistory, lowestAdultWeight: v })} /></Field>
           </div>
           <Field label="How long have you struggled with your weight?">
-            <select value={form.weightHistory.struggleDuration} onChange={(e) => update("weightHistory", { ...form.weightHistory, struggleDuration: e.target.value })} className="mt-1 w-full rounded-xl border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm">
+            <select value={form.weightHistory.struggleDuration} onChange={(e) => update("weightHistory", { ...form.weightHistory, struggleDuration: e.target.value })} className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm">
               <option value="">Select one</option>
               {WEIGHT_STRUGGLE_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}
             </select>
@@ -266,7 +266,7 @@ export function PeptidesGlpIntakeForm() {
             />
           </Field>
           {form.weightHistory.previousTherapies.map((entry, index) => (
-            <div key={entry.therapy} className="rounded-2xl border border-[#b78d4b2d] bg-[#fffaf2] p-4">
+            <div key={entry.therapy} className="rounded-sm border border-[#b78d4b2d] bg-[#fffaf2] p-4">
               <p className="text-sm font-medium text-[#3b3024]">{entry.therapy}</p>
               <div className="mt-3 grid gap-3 md:grid-cols-2">
                 <Field label="Dose"><TextInput value={entry.dose} onChange={(v) => { const next = [...form.weightHistory.previousTherapies]; next[index] = { ...entry, dose: v }; update("weightHistory", { ...form.weightHistory, previousTherapies: next }); }} /></Field>
@@ -318,7 +318,7 @@ export function PeptidesGlpIntakeForm() {
         <div className="space-y-6">
           <SectionIntro eyebrow="SECTION 09" title="Lifestyle & Wellness Profile" />
           <Field label="Physical activity frequency">
-            <select value={form.lifestyle.activityFrequency} onChange={(e) => update("lifestyle", { ...form.lifestyle, activityFrequency: e.target.value })} className="mt-1 w-full rounded-xl border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm">
+            <select value={form.lifestyle.activityFrequency} onChange={(e) => update("lifestyle", { ...form.lifestyle, activityFrequency: e.target.value })} className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm">
               <option value="">Select one</option>
               {ACTIVITY_FREQUENCY_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}
             </select>
@@ -328,7 +328,7 @@ export function PeptidesGlpIntakeForm() {
             <Field label="Average sleep (hours/night)"><TextInput value={form.lifestyle.averageSleepHours} onChange={(v) => update("lifestyle", { ...form.lifestyle, averageSleepHours: v })} /></Field>
           </div>
           <Field label="Typical diet">
-            <select value={form.lifestyle.dietType} onChange={(e) => update("lifestyle", { ...form.lifestyle, dietType: e.target.value })} className="mt-1 w-full rounded-xl border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm">
+            <select value={form.lifestyle.dietType} onChange={(e) => update("lifestyle", { ...form.lifestyle, dietType: e.target.value })} className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm">
               <option value="">Select one</option>
               {DIET_TYPE_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}
             </select>
@@ -340,7 +340,7 @@ export function PeptidesGlpIntakeForm() {
           {form.lifestyle.alcoholOrSubstances === "yes" ? <Field label="Frequency and type"><TextArea value={form.lifestyle.alcoholOrSubstancesDetail} onChange={(v) => update("lifestyle", { ...form.lifestyle, alcoholOrSubstancesDetail: v })} /></Field> : null}
           <Field label="Smoking status"><CheckboxGroup options={SMOKING_STATUS_OPTIONS} selected={form.lifestyle.smokingStatus} onChange={(smokingStatus) => update("lifestyle", { ...form.lifestyle, smokingStatus })} /></Field>
           <Field label="Current stress level">
-            <select value={form.lifestyle.stressLevel} onChange={(e) => update("lifestyle", { ...form.lifestyle, stressLevel: e.target.value })} className="mt-1 w-full rounded-xl border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm">
+            <select value={form.lifestyle.stressLevel} onChange={(e) => update("lifestyle", { ...form.lifestyle, stressLevel: e.target.value })} className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm">
               <option value="">Select one</option>
               {STRESS_LEVEL_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}
             </select>
@@ -375,7 +375,7 @@ export function PeptidesGlpIntakeForm() {
           <SectionIntro eyebrow="SECTION 14" title="Patient Expectations & Acknowledgments" description="Initial each statement to confirm your understanding." />
           <div className="space-y-3">
             {ACKNOWLEDGMENT_STATEMENTS.map((statement, index) => (
-              <div key={statement} className="rounded-2xl border border-[#b78d4b2d] bg-[#fffaf2] p-4">
+              <div key={statement} className="rounded-sm border border-[#b78d4b2d] bg-[#fffaf2] p-4">
                 <p className="text-sm text-[#4f4335]">{statement}</p>
                 <Field label="Initial *">
                   <TextInput
@@ -391,7 +391,7 @@ export function PeptidesGlpIntakeForm() {
             ))}
           </div>
           <SectionIntro eyebrow="SECTION 15" title="Informed Consent, Safety Disclosure & Attestation" />
-          <div className="rounded-2xl border border-[#1f7a7a42] bg-[#eef8f8] p-4 text-sm text-[#28585a]">
+          <div className="rounded-sm border border-[#1f7a7a42] bg-[#eef8f8] p-4 text-sm text-[#28585a]">
             <p>
               Your clinician has discussed potential side effects including nausea, vomiting, constipation, diarrhea,
               gallbladder disease, pancreatitis, dehydration, hypoglycemia, possible muscle loss, and rare allergic
@@ -424,7 +424,7 @@ export function PeptidesGlpIntakeForm() {
             </span>
           </label>
           <Field label="How did you hear about KIAN Privé? *">
-            <select value={form.consent.referralSource} onChange={(e) => update("consent", { ...form.consent, referralSource: e.target.value })} className="mt-1 w-full rounded-xl border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm">
+            <select value={form.consent.referralSource} onChange={(e) => update("consent", { ...form.consent, referralSource: e.target.value })} className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm">
               <option value="">Select one</option>
               {REFERRAL_SOURCE_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}
             </select>
@@ -438,21 +438,21 @@ export function PeptidesGlpIntakeForm() {
         </div>
       ) : null}
 
-      {error ? <p className="mt-4 rounded-xl border border-[#b4231840] bg-[#fff5f5] px-4 py-3 text-sm text-[#8f2d2d]">{error}</p> : null}
+      {error ? <p className="mt-4 rounded-sm border border-[#b4231840] bg-[#fff5f5] px-4 py-3 text-sm text-[#8f2d2d]">{error}</p> : null}
       {Object.keys(fieldErrors).length ? (
         <p className="mt-2 text-xs text-[#8f2d2d]">Some required fields need attention on this step.</p>
       ) : null}
 
       <div className="mt-8 flex flex-wrap justify-between gap-3">
-        <button type="button" onClick={goBack} disabled={step === 0 || submitting} className="rounded-full border border-[#b78d4b70] bg-white px-5 py-2 text-sm text-[#3b3024] disabled:opacity-40">
+        <button type="button" onClick={goBack} disabled={step === 0 || submitting} className="rounded-sm border border-[#b78d4b70] bg-white px-5 py-2 text-sm text-[#3b3024] disabled:opacity-40">
           Back
         </button>
         {step < INTAKE_STEPS.length - 1 ? (
-          <button type="button" onClick={goNext} className="rounded-full bg-[#b78d4b] px-5 py-2 text-sm text-white">
+          <button type="button" onClick={goNext} className="rounded-sm bg-[#b78d4b] px-5 py-2 text-sm text-white">
             Continue
           </button>
         ) : (
-          <button type="button" onClick={submit} disabled={submitting} className="rounded-full bg-[#1f7a7a] px-5 py-2 text-sm text-white disabled:opacity-60">
+          <button type="button" onClick={submit} disabled={submitting} className="rounded-sm bg-[#1f7a7a] px-5 py-2 text-sm text-white disabled:opacity-60">
             {submitting ? "Submitting securely…" : "Submit Intake Form"}
           </button>
         )}

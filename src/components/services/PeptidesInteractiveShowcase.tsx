@@ -60,7 +60,7 @@ export function PeptidesInteractiveShowcase() {
   };
 
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-[#1f7a7a4d] bg-[#0c1e23] p-6 shadow-[0_24px_70px_-40px_rgba(12,37,43,0.82)]">
+    <section className="relative overflow-hidden rounded-sm border border-[#1f7a7a4d] bg-[#0c1e23] p-6 shadow-[0_24px_70px_-40px_rgba(12,37,43,0.82)]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(31,122,122,0.28),transparent_40%),radial-gradient(circle_at_80%_60%,rgba(27,78,96,0.24),transparent_45%)]" />
       <div className="relative z-10">
         <div className="mb-5 flex items-center justify-between gap-3">
@@ -68,7 +68,7 @@ export function PeptidesInteractiveShowcase() {
           <button
             type="button"
             onClick={() => setPlaying((prev) => !prev)}
-            className="rounded-full border border-[#5cc2c277] px-3 py-1 text-xs tracking-[0.14em] text-[#c9f0ef]"
+            className="rounded-sm border border-[#5cc2c277] px-3 py-1 text-xs tracking-[0.14em] text-[#c9f0ef]"
           >
             {playing ? "PAUSE" : "PLAY"}
           </button>
@@ -99,7 +99,7 @@ export function PeptidesInteractiveShowcase() {
             </motion.div>
           </AnimatePresence>
 
-          <div className="rounded-2xl border border-[#ffffff1a] bg-[#ffffff0d] p-4 backdrop-blur">
+          <div className="rounded-sm border border-[#ffffff1a] bg-[#ffffff0d] p-4 backdrop-blur">
             <p className="text-xs tracking-[0.18em] text-[#8fe2df]">QUICK NAVIGATION</p>
             <div className="mt-4 grid gap-2">
               {slides.map((slide, index) => (
@@ -107,7 +107,7 @@ export function PeptidesInteractiveShowcase() {
                   key={slide.title}
                   type="button"
                   onClick={() => goTo(index)}
-                  className={`rounded-xl border px-3 py-2 text-left text-sm transition ${
+                  className={`rounded-sm border px-3 py-2 text-left text-sm transition ${
                     index === activeIndex
                       ? "border-[#5cc2c28a] bg-[#1f7a7a3d] text-[#fafaf7]"
                       : "border-[#ffffff1f] bg-[#ffffff08] text-[#d5d9e1]"

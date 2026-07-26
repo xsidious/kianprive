@@ -5,12 +5,12 @@ export type IcooneMediaItem = {
 };
 
 /** Primary hero image for Icoone® Lymphatic Drainage across the site. */
-export const icoonePrimaryImage = "/images/icoone-treatment-session.png";
+export const icoonePrimaryImage = "/images/icoone-treatment-session.webp";
 
 /** Reusable Icoone imagery — import anywhere treatments or training are shown. */
 export const icooneMediaGallery: IcooneMediaItem[] = [
   {
-    src: "/images/icoone-treatment-session.png",
+    src: "/images/icoone-treatment-session.webp",
     alt: "Icoone® lymphatic drainage session with Robotwins handpieces",
     caption: "Full-body lymphatic session",
   },

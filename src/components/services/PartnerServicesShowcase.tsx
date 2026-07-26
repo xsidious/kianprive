@@ -36,8 +36,8 @@ export function PartnerServicesShowcase({ services }: PartnerServicesShowcasePro
   const activeSlide = slides[index];
 
   return (
-    <div className="mb-6 rounded-3xl border border-[#1f7a7a30] bg-white p-4 shadow-[0_18px_45px_-35px_rgba(20,58,58,0.45)] sm:p-6">
-      <div className="relative h-56 overflow-hidden rounded-2xl sm:h-72">
+    <div className="mb-6 rounded-sm border border-[#1f7a7a30] bg-white p-4 shadow-[0_18px_45px_-35px_rgba(20,58,58,0.45)] sm:p-6">
+      <div className="relative h-56 overflow-hidden rounded-sm sm:h-72">
         <Image src={activeSlide.image} alt={activeSlide.title} fill className="object-cover" />
       </div>
       <div className="mt-4 flex items-center justify-between gap-3">
@@ -46,7 +46,7 @@ export function PartnerServicesShowcase({ services }: PartnerServicesShowcasePro
           <p className="mt-1 text-lg text-[#2b2218]">{activeSlide.title}</p>
         </div>
         {activeSlide.logo ? (
-          <div className="rounded-xl border border-[#1f7a7a2e] bg-[#f8fcfc] px-3 py-2">
+          <div className="rounded-sm border border-[#1f7a7a2e] bg-[#f8fcfc] px-3 py-2">
             <div className="relative h-8 w-24">
               <Image src={activeSlide.logo} alt={`${activeSlide.partnerName} logo`} fill className="object-contain" />
             </div>

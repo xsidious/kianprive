@@ -5,6 +5,11 @@ export type PageContentFallback = {
   title: string;
   description: string;
   eyebrow?: string;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  seoImage?: string | null;
+  canonicalUrl?: string | null;
+  noIndex?: boolean;
 };
 
 const fallbackMap: Record<string, PageContentFallback> = {
@@ -49,5 +54,10 @@ export async function getCmsPageContent(slug: string): Promise<PageContentFallba
     eyebrow: typeof body.eyebrow === "string" ? body.eyebrow : fallback.eyebrow,
     title: typeof body.title === "string" ? body.title : page.title ?? fallback.title,
     description: typeof body.description === "string" ? body.description : fallback.description,
+    seoTitle: page.seoTitle,
+    seoDescription: page.seoDescription,
+    seoImage: page.seoImage,
+    canonicalUrl: page.canonicalUrl,
+    noIndex: page.noIndex,
   };
 }

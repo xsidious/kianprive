@@ -1,13 +1,18 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
-import { CartDrawer } from "@/components/cart/cart-drawer";
 import { FloatingWhatsAppButton } from "@/components/layout/FloatingWhatsAppButton";
 import { FloatingMedicalDisclaimer } from "@/components/layout/FloatingMedicalDisclaimer";
+
+const CartDrawer = dynamic(
+  () => import("@/components/cart/cart-drawer").then((m) => m.CartDrawer),
+  { ssr: false },
+);
 
 function SignedInContextBar() {
   const { data, status } = useSession();
@@ -19,7 +24,10 @@ function SignedInContextBar() {
       <span className="mx-1.5 text-[#6f6251]">—</span>
       <span className="text-[#3b3024]">{label}</span>
       <span className="mx-2 hidden text-[#c4c4c4] sm:inline">|</span>
-      <Link href="/dashboard" className="text-[#1b5e20] underline decoration-[#2e7d3240] underline-offset-2 hover:decoration-[#1b5e20]">
+      <Link
+        href="/dashboard"
+        className="text-[#1b5e20] underline decoration-[#2e7d3240] underline-offset-2 hover:decoration-[#1b5e20]"
+      >
         Dashboard
       </Link>
       <span className="mx-2 text-[#c4c4c4]">|</span>
@@ -37,8 +45,9 @@ function SignedInContextBar() {
 export function AppChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith("/admin");
+  const isPartnerRoute = pathname?.startsWith("/partner");
 
-  if (isAdminRoute) {
+  if (isAdminRoute || isPartnerRoute) {
     return <main className="min-h-screen bg-[var(--bg)]">{children}</main>;
   }
 

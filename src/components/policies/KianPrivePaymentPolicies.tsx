@@ -17,7 +17,7 @@ type KianPrivePaymentPoliciesProps = {
 export function MembershipPolicySummaryBox({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`rounded-3xl border border-[#b78d4b45] bg-[#fff7eb] p-6 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)] ${className}`}
+      className={`rounded-sm border border-[#b78d4b45] bg-[#fff7eb] p-6 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)] ${className}`}
     >
       <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">MEMBERSHIP POLICY SUMMARY</p>
       <ul className="mt-4 space-y-2.5">
@@ -45,7 +45,7 @@ export function KianPrivePaymentPolicies({
         <MembershipPolicySummaryBox className="mb-8" />
       ) : null}
 
-      <div className="rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)] sm:p-8">
+      <div className="rounded-sm border border-[#b78d4b2d] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)] sm:p-8">
         <p className="text-xs tracking-[0.22em] text-[#8f6f3e]">KIAN PRIVÉ</p>
         <h2 className="mt-2 text-2xl text-[#1f1a15] sm:text-3xl">Payment & Policies</h2>
 

@@ -160,6 +160,7 @@ export async function createOrderFromCart(
     shippingAddress?: unknown;
     billingAddress?: unknown;
     shippingTotal?: number;
+    partnerCode?: string | null;
   },
 ) {
   const cart = await prisma.cart.findUnique({
@@ -168,6 +169,28 @@ export async function createOrderFromCart(
   });
   if (!cart) throw new Error("Cart not found");
   if (!cart.items.length) throw new Error("Cart is empty");
+
+  let partnerId: string | null = null;
+  if (input.partnerCode) {
+    const partner = await prisma.partnerProfile.findUnique({
+      where: { partnerCode: input.partnerCode.toUpperCase() },
+      include: { productAssignments: { where: { active: true } } },
+    });
+    if (partner && partner.status === "ACTIVE") {
+      partnerId = partner.id;
+    }
+  }
+
+  const assignedProductIds = partnerId
+    ? new Set(
+        (
+          await prisma.partnerProductAssignment.findMany({
+            where: { partnerId, active: true },
+            select: { productId: true },
+          })
+        ).map((a) => a.productId),
+      )
+    : new Set<string>();
 
   const subtotalNumber = Number(cart.subtotal);
   const shippingTotal = new Prisma.Decimal(input.shippingTotal ?? calculateShipping(subtotalNumber));
@@ -178,6 +201,7 @@ export async function createOrderFromCart(
     data: {
       orderNumber,
       userId: cart.userId,
+      partnerId,
       email: input.email ?? cart.email ?? undefined,
       phone: input.phone,
       currency: cart.currency,
@@ -191,6 +215,7 @@ export async function createOrderFromCart(
       items: {
         create: cart.items.map((item) => ({
           productId: item.productId,
+          partnerId: partnerId && assignedProductIds.has(item.productId) ? partnerId : null,
           title: item.product.title,
           sku: item.product.sku,
           quantity: item.quantity,
@@ -272,6 +297,9 @@ export async function markOrderPaidFromCheckoutSession(sessionId: string, paymen
       stripePaymentIntentId: paymentIntentId ?? order.stripePaymentIntentId,
     },
   });
+
+  const { createProductCommissionsForOrder } = await import("@/lib/commissions");
+  await createProductCommissionsForOrder(order.id);
 
   return order;
 }

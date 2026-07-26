@@ -20,7 +20,7 @@ export function IcooneMediaGallery({
         {items.map((item) => (
           <figure
             key={item.src}
-            className="overflow-hidden rounded-2xl border border-[#b78d4b2d] bg-white shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)]"
+            className="overflow-hidden rounded-sm border border-[#b78d4b2d] bg-white shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)]"
           >
             <div className="relative aspect-[4/3]">
               <Image src={item.src} alt={item.alt} fill sizes="(max-width: 1024px) 50vw, 25vw" className="object-cover" />

@@ -21,7 +21,7 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "comprehensive-bloodwork",
     title: "Blood Work",
-    image: "/images/blood-work.png",
+    image: "/images/blood-work.webp",
     description:
       "Comprehensive blood work with physician interpretation—objective lab markers to guide your wellness, performance, and treatment plan with clarity you can track over time.",
     details: [
@@ -158,7 +158,7 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "microneedling-with-exosomes",
     title: "Microneedling with Exosomes",
-    image: "/images/microneedlingg.jpeg",
+    image: "/images/microneedlingg.webp",
     description:
       "Advanced skin rejuvenation treatment that supports collagen production and visible texture improvement through regenerative signaling.",
     details: ["Microneedling combined with exosome-based regenerative support for skin renewal."],

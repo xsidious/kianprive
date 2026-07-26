@@ -6,6 +6,7 @@ import { canAccessAdmin } from "@/lib/rbac";
 const adminLinks = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/users", label: "Users" },
+  { href: "/admin/partners", label: "Partners" },
   { href: "/admin/bookings", label: "Bookings" },
   { href: "/admin/intake", label: "Clinical Intake" },
   { href: "/admin/products", label: "Products" },
@@ -36,7 +37,7 @@ export default async function AdminLayout({
         <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">ADMIN DASHBOARD</p>
         <nav className="mt-3 grid gap-1 text-sm text-[#4f4335]">
           {adminLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="rounded-lg px-3 py-2 hover:bg-[#fff6e8] hover:text-[#8f6f3e]">
+            <Link key={link.href} href={link.href} className="rounded-sm px-3 py-2 hover:bg-[#fff6e8] hover:text-[#8f6f3e]">
               {link.label}
             </Link>
           ))}

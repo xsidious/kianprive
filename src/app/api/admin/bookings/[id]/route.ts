@@ -3,6 +3,7 @@ import { BookingStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAdminAccess } from "@/lib/admin-guard";
 import { writeAuditLog } from "@/lib/ops/audit";
+import { createServiceCommissionForBooking, markServiceCommissionEligible } from "@/lib/commissions";
 
 type Params = {
   params: Promise<{ id: string }>;
@@ -20,15 +21,24 @@ export async function PATCH(req: Request, { params }: Params) {
       status: body.status as BookingStatus | undefined,
       notes: body.notes !== undefined ? String(body.notes) : undefined,
       preferredLocation: body.preferredLocation !== undefined ? String(body.preferredLocation) : undefined,
+      partnerId: body.partnerId !== undefined ? (body.partnerId as string | null) : undefined,
+      partnerNotes: body.partnerNotes !== undefined ? String(body.partnerNotes) : undefined,
     },
   });
+
+  if (booking.partnerId && (booking.status === "CONFIRMED" || booking.status === "COMPLETED")) {
+    await createServiceCommissionForBooking(booking.id);
+  }
+  if (booking.status === "COMPLETED") {
+    await markServiceCommissionEligible(booking.id);
+  }
 
   await writeAuditLog({
     userId: guard.userId,
     action: "booking.update",
     entityType: "BookingRequest",
     entityId: booking.id,
-    metadata: { status: booking.status, email: booking.email },
+    metadata: { status: booking.status, email: booking.email, partnerId: booking.partnerId },
   });
 
   return NextResponse.json({ booking });

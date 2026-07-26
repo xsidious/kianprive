@@ -7,6 +7,11 @@ export function canAccessAdmin(role?: Role | null) {
   return adminRoles.has(role);
 }
 
+export function canAccessPartnerPortal(role?: Role | null) {
+  if (!role) return false;
+  return role === Role.PARTNER || role === Role.ADMIN;
+}
+
 export function canPublishContent(role?: Role | null) {
   if (!role) return false;
   return role === Role.ADMIN || role === Role.EDITOR;

@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import Image from "next/image";
+import { CinematicHero } from "@/components/ui/CinematicHero";
+import { EditorialEyebrow, EditorialSection, editorialPanel } from "@/components/ui/editorial-primitives";
 
 const offerings = [
   {
@@ -25,7 +26,7 @@ const offerings = [
     title: "Icoone® Lymphatic Drainage",
     description: "Facility-based Icoone® lymphatic drainage and certified practitioner training pathways.",
     href: "/icoone-training",
-    image: "/images/icoone-treatment-session.png",
+    image: "/images/icoone-treatment-session.webp",
   },
   {
     title: "Practitioners",
@@ -43,34 +44,39 @@ const offerings = [
 
 export default function WhatWeDoPage() {
   return (
-    <div>
-      <SectionWrapper className="pt-18">
-        <div className="rounded-3xl border border-[#b78d4b2e] bg-white p-8 shadow-[0_20px_50px_-38px_rgba(66,45,14,0.45)]">
-          <h1 className="text-4xl text-[#1f1a15] md:text-5xl">What We Do</h1>
-          <p className="mt-4 max-w-3xl text-[#6f6251]">
-            Explore every part of the KIAN Privé ecosystem, from private wellness services to premium practitioner education.
-          </p>
-        </div>
-      </SectionWrapper>
+    <div className="-mt-[1px]">
+      <CinematicHero
+        eyebrow="WHAT WE DO"
+        lineOne="One ecosystem."
+        lineTwo="Many pathways."
+        lineThree="One standard."
+        description="Explore every part of the KIAN Privé ecosystem, from private wellness services to premium practitioner education."
+        primaryCta={{ label: "View Services", href: "/services" }}
+        secondaryCta={{ label: "Contact Us", href: "/contact" }}
+        imageSrc="/images/wellness.avif"
+        imageAlt="KIAN Privé wellness offerings"
+      />
 
-      <SectionWrapper>
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <EditorialSection>
+        <EditorialEyebrow>ECOSYSTEM</EditorialEyebrow>
+        <h2 className="mt-4 font-serif text-3xl text-[#1f1a15] md:text-4xl">Explore our offerings</h2>
+        <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {offerings.map((offering) => (
-            <article key={offering.title} className="overflow-hidden rounded-3xl border border-[#b78d4b2d] bg-white shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)]">
+            <article key={offering.title} className={`overflow-hidden ${editorialPanel}`}>
               <div className="relative h-52">
                 <Image src={offering.image} alt={offering.title} fill className="object-cover" />
               </div>
-              <div className="p-6">
-                <h2 className="text-2xl text-[#2b2218]">{offering.title}</h2>
-                <p className="mt-3 text-[#6f6251]">{offering.description}</p>
-                <Link href={offering.href} className="mt-5 inline-flex rounded-full bg-[#b78d4b] px-4 py-2 text-sm text-white">
-                  Explore
+              <div className="p-5">
+                <h3 className="font-serif text-xl text-[#2b2218]">{offering.title}</h3>
+                <p className="mt-2 text-sm text-[#6f6251]">{offering.description}</p>
+                <Link href={offering.href} className="mt-4 inline-flex text-xs tracking-[0.16em] text-[#8f6f3e]">
+                  LEARN MORE →
                 </Link>
               </div>
             </article>
           ))}
         </div>
-      </SectionWrapper>
+      </EditorialSection>
     </div>
   );
 }

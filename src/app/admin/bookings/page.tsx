@@ -128,7 +128,7 @@ export default function AdminBookingsPage() {
             key={key}
             type="button"
             onClick={() => setFilter(key)}
-            className={`rounded-full border px-4 py-2 transition ${
+            className={`rounded-sm border px-4 py-2 transition ${
               filter === key
                 ? "border-[#b78d4b] bg-[#fff6e8] text-[#8f6f3e]"
                 : "border-[#b78d4b40] bg-white text-[#4f4335] hover:bg-[#fffaf4]"
@@ -142,7 +142,7 @@ export default function AdminBookingsPage() {
       {loading ? (
         <p className="text-sm text-[#6f6251]">Loading bookings…</p>
       ) : filtered.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-[#d7b67666] bg-white/80 p-10 text-center">
+        <div className="rounded-sm border border-dashed border-[#d7b67666] bg-white/80 p-10 text-center">
           <p className="text-lg text-[#1f1a15]">No bookings in this view</p>
           <p className="mt-2 text-sm text-[#6f6251]">
             New appointments from <span className="text-[#8f6f3e]">/book-online</span> will show up here automatically.
@@ -161,7 +161,7 @@ export default function AdminBookingsPage() {
             return (
               <article
                 key={booking.id}
-                className="rounded-2xl border border-[#b78d4b2d] bg-white p-5 shadow-sm shadow-[#b78d4b12]"
+                className="rounded-sm border border-[#b78d4b2d] bg-white p-5 shadow-sm shadow-[#b78d4b12]"
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
@@ -171,21 +171,21 @@ export default function AdminBookingsPage() {
                     </p>
                   </div>
                   <span
-                    className={`rounded-full border px-3 py-1 text-xs font-medium tracking-wide ${bookingStatusTone(booking.status)}`}
+                    className={`rounded-sm border px-3 py-1 text-xs font-medium tracking-wide ${bookingStatusTone(booking.status)}`}
                   >
                     {BOOKING_STATUS_LABELS[booking.status] ?? booking.status}
                   </span>
                 </div>
 
                 <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  <div className="rounded-xl bg-[#fffaf4] p-4">
+                  <div className="rounded-sm bg-[#fffaf4] p-4">
                     <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">APPOINTMENT</p>
                     <p className="mt-2 text-base text-[#1f1a15]">{when}</p>
                     {endWhen ? <p className="mt-1 text-sm text-[#6f6251]">Ends {endWhen}</p> : null}
                     <p className="mt-1 text-xs text-[#6f6251]">{tz.replace(/_/g, " ")}</p>
                   </div>
 
-                  <div className="rounded-xl bg-[#fffaf4] p-4">
+                  <div className="rounded-sm bg-[#fffaf4] p-4">
                     <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">CONTACT</p>
                     <p className="mt-2">
                       <a href={`mailto:${booking.email}`} className="text-[#3b3024] hover:text-[#8f6f3e]">
@@ -199,7 +199,7 @@ export default function AdminBookingsPage() {
                     </p>
                   </div>
 
-                  <div className="rounded-xl bg-[#fffaf4] p-4">
+                  <div className="rounded-sm bg-[#fffaf4] p-4">
                     <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">PRICING</p>
                     <p className="mt-2 text-base text-[#1f1a15]">Guest {formatMoney(booking.guestTotal)}</p>
                     <p className="text-sm text-[#6f6251]">Member {formatMoney(booking.memberTotal)}</p>
@@ -212,7 +212,7 @@ export default function AdminBookingsPage() {
                     {booking.serviceTitles.map((title, index) => (
                       <li
                         key={`${booking.id}-${title}-${index}`}
-                        className="rounded-full border border-[#d7b67666] bg-[#fff6e8] px-3 py-1 text-sm text-[#3b3024]"
+                        className="rounded-sm border border-[#d7b67666] bg-[#fff6e8] px-3 py-1 text-sm text-[#3b3024]"
                       >
                         {title}
                       </li>
@@ -237,7 +237,7 @@ export default function AdminBookingsPage() {
                 ) : null}
 
                 {booking.notes ? (
-                  <div className="mt-4 rounded-xl border border-[#d7b67644] bg-[#fffaf4] p-3">
+                  <div className="mt-4 rounded-sm border border-[#d7b67644] bg-[#fffaf4] p-3">
                     <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">NOTES</p>
                     <p className="mt-2 whitespace-pre-wrap text-sm text-[#3b3024]">{booking.notes}</p>
                   </div>
@@ -255,7 +255,7 @@ export default function AdminBookingsPage() {
                           ),
                         )
                       }
-                      className="mt-1 w-full rounded-lg border border-[#b78d4b35] bg-[#fffaf4] p-2"
+                      className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2"
                     />
                   </label>
                   <label className="block text-sm text-[#4f4335]">
@@ -271,7 +271,7 @@ export default function AdminBookingsPage() {
                           ),
                         )
                       }
-                      className="mt-1 w-full rounded-lg border border-[#b78d4b35] bg-[#fffaf4] p-2"
+                      className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2"
                     >
                       {statuses.map((entry) => (
                         <option key={entry} value={entry}>
@@ -284,14 +284,14 @@ export default function AdminBookingsPage() {
                     <button
                       type="button"
                       onClick={() => void saveBooking(booking)}
-                      className="rounded-full border border-[#b78d4b80] bg-[#fff6e8] px-4 py-2 text-sm text-[#3b3024] hover:bg-[#fffaf4]"
+                      className="rounded-sm border border-[#b78d4b80] bg-[#fff6e8] px-4 py-2 text-sm text-[#3b3024] hover:bg-[#fffaf4]"
                     >
                       Save changes
                     </button>
                     <button
                       type="button"
                       onClick={() => void deleteBooking(booking.id)}
-                      className="rounded-full border border-[#d07b7b80] px-4 py-2 text-sm text-[#7c2c2c] hover:bg-[#fdeeee]"
+                      className="rounded-sm border border-[#d07b7b80] px-4 py-2 text-sm text-[#7c2c2c] hover:bg-[#fdeeee]"
                     >
                       Delete
                     </button>

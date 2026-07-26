@@ -27,7 +27,7 @@ export default function TermsAndConditionsPage() {
       </p>
 
       <div className="mt-10 space-y-8 text-[#4f4335]">
-        <section className="rounded-3xl border border-[#b78d4b2d] bg-white p-6 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)]">
+        <section className="rounded-sm border border-[#b78d4b2d] bg-white p-6 shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)]">
           <h2 className="text-2xl text-[#1f1a15]">1. General Use</h2>
           <ul className="mt-4 list-disc space-y-2 pl-6">
             <li>You must be 18 years of age or older to use this website.</li>
@@ -36,7 +36,7 @@ export default function TermsAndConditionsPage() {
           </ul>
         </section>
 
-        <section className="rounded-3xl border border-[#b78d4b2d] bg-white shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)] p-6">
+        <section className="rounded-sm border border-[#b78d4b2d] bg-white shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)] p-6">
           <h2 className="text-2xl text-[#1f1a15]">2. Booking and Payment</h2>
           <h3 className="mt-4 text-lg text-[#8f6f3e]">Retreat Package Payment Policy</h3>
           <ul className="mt-3 list-disc space-y-2 pl-6">
@@ -59,7 +59,7 @@ export default function TermsAndConditionsPage() {
           </ul>
         </section>
 
-        <section className="rounded-3xl border border-[#b78d4b2d] bg-white shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)] p-6">
+        <section className="rounded-sm border border-[#b78d4b2d] bg-white shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)] p-6">
           <h2 className="text-2xl text-[#1f1a15]">3. Cancellations and Refunds</h2>
           <h3 className="mt-4 text-lg text-[#8f6f3e]">Cancellation Policy</h3>
           <ul className="mt-3 list-disc space-y-2 pl-6">
@@ -104,7 +104,7 @@ export default function TermsAndConditionsPage() {
           </ul>
         </section>
 
-        <section className="rounded-3xl border border-[#b78d4b2d] bg-white shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)] p-6">
+        <section className="rounded-sm border border-[#b78d4b2d] bg-white shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)] p-6">
           <h2 className="text-2xl text-[#1f1a15]">4. Disclaimers and Limitations</h2>
           <ul className="mt-4 list-disc space-y-2 pl-6">
             <li>KIAN Retreats is not responsible for damages or losses arising from website use or retreat participation.</li>
@@ -127,7 +127,7 @@ export default function TermsAndConditionsPage() {
           </p>
         </section>
 
-        <section className="rounded-3xl border border-[#b78d4b2d] bg-white shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)] p-6">
+        <section className="rounded-sm border border-[#b78d4b2d] bg-white shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)] p-6">
           <h2 className="text-2xl text-[#1f1a15]">5. Governing Law and Jurisdiction</h2>
           <ul className="mt-4 list-disc space-y-2 pl-6">
             <li>These Terms are governed by the laws of the State of Florida.</li>
@@ -137,7 +137,7 @@ export default function TermsAndConditionsPage() {
           </ul>
         </section>
 
-        <section className="rounded-3xl border border-[#b78d4b2d] bg-white shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)] p-6">
+        <section className="rounded-sm border border-[#b78d4b2d] bg-white shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)] p-6">
           <h2 className="text-3xl text-[#1f1a15]">Privacy Policy</h2>
           <h3 className="mt-4 text-lg text-[#8f6f3e]">1. Information Collection</h3>
           <ul className="mt-2 list-disc space-y-2 pl-6">
@@ -169,7 +169,7 @@ export default function TermsAndConditionsPage() {
           </ul>
         </section>
 
-        <section className="rounded-3xl border border-[#b78d4b2d] bg-white shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)] p-6">
+        <section className="rounded-sm border border-[#b78d4b2d] bg-white shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)] p-6">
           <h2 className="text-3xl text-[#1f1a15]">Event Guarantees</h2>
           <h3 className="mt-4 text-lg text-[#8f6f3e]">1. Accommodation</h3>
           <p className="mt-2 leading-relaxed">

@@ -21,12 +21,12 @@ export default async function AdminAnalyticsPage() {
   return (
     <div className="space-y-8">
       <h1 className="text-3xl text-[#1f1a15]">Analytics Dashboard</h1>
-      <article className="rounded-2xl border border-[#b78d4b2d] bg-white p-4">
+      <article className="rounded-sm border border-[#b78d4b2d] bg-white p-4">
         <p className="text-xs tracking-[0.16em] text-[#8f6f3e]">TOTAL EVENTS</p>
         <p className="mt-1 text-3xl text-[#1f1a15]">{eventsTotal}</p>
       </article>
       <div className="grid gap-4 md:grid-cols-2">
-        <article className="rounded-2xl border border-[#b78d4b2d] bg-white p-4">
+        <article className="rounded-sm border border-[#b78d4b2d] bg-white p-4">
           <h2 className="text-xl text-[#1f1a15]">Top Events</h2>
           <ul className="mt-3 space-y-2 text-sm">
             {topEvents.map((event) => (
@@ -37,7 +37,7 @@ export default async function AdminAnalyticsPage() {
             ))}
           </ul>
         </article>
-        <article className="rounded-2xl border border-[#b78d4b2d] bg-white p-4">
+        <article className="rounded-sm border border-[#b78d4b2d] bg-white p-4">
           <h2 className="text-xl text-[#1f1a15]">Top Pages</h2>
           <ul className="mt-3 space-y-2 text-sm">
             {topPages.map((page) => (

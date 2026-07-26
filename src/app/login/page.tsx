@@ -4,6 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
+import {
+  EditorialEyebrow,
+  EditorialSection,
+  editorialCtaPrimary,
+  editorialCtaSecondary,
+  editorialInput,
+  editorialPanel,
+} from "@/components/ui/editorial-primitives";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -24,84 +32,73 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-      <div className="relative overflow-hidden rounded-[2rem] border border-[#b78d4b2d] bg-white p-6 shadow-[0_28px_70px_-46px_rgba(72,49,14,0.45)] sm:p-8 lg:p-10">
-        <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[#f2dfbf66]" />
-        <div className="pointer-events-none absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-[#ead0a366]" />
-        <div className="relative grid gap-8 lg:grid-cols-[1fr_0.95fr]">
-          <aside className="rounded-3xl border border-[#b78d4b2e] bg-[linear-gradient(160deg,#fffdfa_20%,#f8efe2_100%)] p-6 sm:p-8">
+    <div className="-mt-[1px]">
+      <EditorialSection>
+        <div className="grid gap-8 lg:grid-cols-[1fr_0.95fr]">
+          <aside className={`${editorialPanel} p-6 sm:p-8`}>
             <div className="relative h-14 w-14">
               <Image src="/images/kianprivelogo.png" alt="KIAN Privé logo" fill className="object-contain" />
             </div>
-            <p className="mt-5 inline-flex rounded-full border border-[#b78d4b5e] bg-white px-4 py-1 text-xs tracking-[0.18em] text-[#8f6f3e]">
-              MEMBERS PORTAL
-            </p>
-            <h1 className="mt-4 text-4xl text-[#1f1a15] sm:text-5xl">Welcome Back</h1>
+            <div className="mt-6">
+              <EditorialEyebrow>MEMBERS PORTAL</EditorialEyebrow>
+            </div>
+            <h1 className="mt-4 font-serif text-4xl text-[#1f1a15] sm:text-5xl">Welcome Back</h1>
             <p className="mt-3 max-w-xl text-[#6f6251]">
               Existing approved members can sign in and continue directly to their dashboard and subscription tools.
             </p>
             <div className="mt-7 grid gap-3 text-sm text-[#5f5344]">
-              <p className="rounded-xl border border-[#b78d4b30] bg-white/80 px-4 py-3">Fast access for approved private members.</p>
-              <p className="rounded-xl border border-[#b78d4b30] bg-white/80 px-4 py-3">Secure credential login with role-based access.</p>
-              <p className="rounded-xl border border-[#b78d4b30] bg-white/80 px-4 py-3">Onboarding for new members is consultation-led.</p>
+              <p className={`${editorialPanel} px-4 py-3`}>Fast access for approved private members.</p>
+              <p className={`${editorialPanel} px-4 py-3`}>Secure credential login with role-based access.</p>
+              <p className={`${editorialPanel} px-4 py-3`}>Onboarding for new members is consultation-led.</p>
             </div>
           </aside>
 
           <div className="space-y-4">
-            <div className="rounded-3xl border border-[#b78d4b2e] bg-white p-6 shadow-[0_18px_45px_-35px_rgba(72,49,14,0.45)] sm:p-8">
-              <h2 className="text-2xl text-[#1f1a15]">Member Sign In</h2>
+            <div className={`${editorialPanel} p-6 sm:p-8`}>
+              <h2 className="font-serif text-2xl text-[#1f1a15]">Member Sign In</h2>
               <p className="mt-2 text-sm text-[#6f6251]">Use your approved account credentials to continue.</p>
               <form onSubmit={onSubmit} className="mt-6 space-y-4">
                 <input
-                  className="w-full rounded-xl border border-[#b78d4b3a] bg-[#fffaf4] p-3 text-[#2b2218] outline-none focus:border-[#b78d4b] focus:ring-2 focus:ring-[#b78d4b33]"
+                  className={editorialInput}
                   placeholder="Email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
                 <input
-                  className="w-full rounded-xl border border-[#b78d4b3a] bg-[#fffaf4] p-3 text-[#2b2218] outline-none focus:border-[#b78d4b] focus:ring-2 focus:ring-[#b78d4b33]"
+                  className={editorialInput}
                   placeholder="Password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 {error ? <p className="text-sm text-red-500">{error}</p> : null}
-                <button className="w-full rounded-full bg-gradient-to-r from-[#b78d4b] to-[#a57b3e] py-3 text-white shadow-[0_12px_28px_-18px_rgba(66,45,14,0.6)]">
-                  Login
+                <button type="submit" className={`w-full ${editorialCtaPrimary}`}>
+                  LOGIN
                 </button>
               </form>
             </div>
 
-            <div className="rounded-3xl border border-[#b78d4b2e] bg-[#fffaf4] p-6 sm:p-8">
-              <h3 className="text-xl text-[#1f1a15]">No account yet?</h3>
+            <div className={`${editorialPanel} p-6 sm:p-8`}>
+              <h3 className="font-serif text-xl text-[#1f1a15]">No account yet?</h3>
               <p className="mt-2 text-sm text-[#6f6251]">
                 New membership accounts are set up after consultation, onboarding fee payment, and approval.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
-                <Link
-                  href="/book-online?service=telemedicine"
-                  className="rounded-full bg-[#b78d4b] px-4 py-2 text-sm text-white"
-                >
-                  Book consultation
+                <Link href="/book-online?service=telemedicine" className={editorialCtaPrimary}>
+                  BOOK CONSULTATION
                 </Link>
-                <Link
-                  href="/signup"
-                  className="rounded-full border border-[#b78d4b70] bg-white px-4 py-2 text-sm text-[#3b3024]"
-                >
-                  View onboarding steps
+                <Link href="/signup" className={editorialCtaSecondary}>
+                  VIEW ONBOARDING STEPS
                 </Link>
-                <Link
-                  href="/pricing"
-                  className="rounded-full border border-[#b78d4b70] bg-white px-4 py-2 text-sm text-[#3b3024]"
-                >
-                  Membership pricing
+                <Link href="/pricing" className={editorialCtaSecondary}>
+                  MEMBERSHIP PRICING
                 </Link>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </EditorialSection>
     </div>
   );
 }

@@ -12,13 +12,13 @@ export function FloatingMedicalDisclaimer() {
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="inline-flex w-full items-center justify-between gap-2 rounded-xl border border-[#b78d4b66] bg-white px-4 py-2 text-xs tracking-[0.12em] text-[#8f6f3e] shadow-[0_18px_40px_-28px_rgba(0,0,0,0.45)]"
+        className="inline-flex w-full items-center justify-between gap-2 rounded-sm border border-[#b78d4b66] bg-white px-4 py-2 text-xs tracking-[0.12em] text-[#8f6f3e] shadow-[0_18px_40px_-28px_rgba(0,0,0,0.45)]"
       >
         Medical Disclaimer
         <ChevronDown size={14} className={`transition ${open ? "rotate-180" : ""}`} />
       </button>
       {open ? (
-        <div className="mt-2 rounded-xl border border-[#b78d4b44] bg-[#fffaf2] p-3 text-xs leading-relaxed text-[#5f5344] shadow-[0_18px_40px_-28px_rgba(0,0,0,0.45)]">
+        <div className="mt-2 rounded-sm border border-[#b78d4b44] bg-[#fffaf2] p-3 text-xs leading-relaxed text-[#5f5344] shadow-[0_18px_40px_-28px_rgba(0,0,0,0.45)]">
           {medicalDisclaimerParagraphs.slice(0, 2).map((paragraph) => (
             <p key={paragraph} className="mb-2 last:mb-0">
               {paragraph}

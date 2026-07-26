@@ -71,7 +71,7 @@ export default function AdminIntakePage() {
       ) : submissions.length === 0 ? (
         <p className="mt-6 text-sm text-[#6f6251]">No intake submissions yet.</p>
       ) : (
-        <div className="mt-6 overflow-x-auto rounded-2xl border border-[#b78d4b2d] bg-white">
+        <div className="mt-6 overflow-x-auto rounded-sm border border-[#b78d4b2d] bg-white">
           <table className="min-w-[920px] w-full text-left text-sm">
             <thead className="border-b border-[#b78d4b2d] bg-[#fffaf2] text-xs tracking-[0.12em] text-[#8f6f3e]">
               <tr>
@@ -100,7 +100,7 @@ export default function AdminIntakePage() {
                     <select
                       value={submission.status}
                       onChange={(event) => void updateStatus(submission.id, event.target.value)}
-                      className="rounded-lg border border-[#b78d4b35] bg-[#fffaf4] px-2 py-1 text-xs"
+                      className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-2 py-1 text-xs"
                     >
                       {statuses.map((status) => (
                         <option key={status} value={status}>

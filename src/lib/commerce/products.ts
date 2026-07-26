@@ -16,7 +16,7 @@ export const catalogProducts: CatalogProduct[] = [
     name: "Exosomes",
     category: "Skincare",
     price: 0,
-    image: "/images/facial-treatments.jpg",
+    image: "/images/facial-treatments.webp",
   },
   {
     id: "kian-toner",
@@ -24,7 +24,7 @@ export const catalogProducts: CatalogProduct[] = [
     name: "KIAN Toner",
     category: "Skincare",
     price: 0,
-    image: "/images/facial-treatments.jpg",
+    image: "/images/facial-treatments.webp",
   },
   {
     id: "soap",
@@ -64,7 +64,7 @@ export const catalogProducts: CatalogProduct[] = [
     name: "KIAN Body Oil",
     category: "Skincare",
     price: 0,
-    image: "/images/facial-treatments.jpg",
+    image: "/images/facial-treatments.webp",
   },
   {
     id: "moringa-capsules",

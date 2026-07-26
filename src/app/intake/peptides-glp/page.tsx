@@ -1,4 +1,4 @@
-import { SectionWrapper } from "@/components/ui/SectionWrapper";
+import { EditorialEyebrow, EditorialSection } from "@/components/ui/editorial-primitives";
 import { PeptidesGlpIntakeForm } from "@/components/intake/PeptidesGlpIntakeForm";
 
 export const metadata = {
@@ -9,10 +9,17 @@ export const metadata = {
 
 export default function PeptidesGlpIntakePage() {
   return (
-    <div>
-      <SectionWrapper className="pt-14 sm:pt-16">
-        <PeptidesGlpIntakeForm />
-      </SectionWrapper>
+    <div className="-mt-[1px]">
+      <EditorialSection>
+        <EditorialEyebrow>SECURE INTAKE</EditorialEyebrow>
+        <h1 className="mt-4 font-serif text-3xl text-[#1f1a15] md:text-4xl">Peptide &amp; GLP Intake</h1>
+        <p className="mt-3 max-w-3xl text-[#6f6251]">
+          Complete this HIPAA-aware therapeutics intake so our physician team can review eligibility and next steps.
+        </p>
+        <div className="mt-8">
+          <PeptidesGlpIntakeForm />
+        </div>
+      </EditorialSection>
     </div>
   );
 }
