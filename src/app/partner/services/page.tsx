@@ -19,7 +19,7 @@ const SERVICE_TITLES: Record<string, string> = {
   "inbody-scan": "InBody Scan",
   "microneedling-with-exosomes": "Microneedling with Exosomes",
   "korean-organic-skincare": "Korean Organic Skincare",
-  "glp1-peptides": "GLP-1 / Peptides",
+  "glp1-peptides": "Compound Therapy",
   mindtap: "MindTap",
 };
 

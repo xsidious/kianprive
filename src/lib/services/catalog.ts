@@ -212,11 +212,11 @@ export const serviceCatalog: ServiceDetail[] = [
   },
   {
     slug: "glp1-peptides",
-    title: "GLP-1s & Peptides",
+    title: "Compound Therapy",
     image: "/images/Peptidesandexosomes.jpeg",
     showPeptidesExperience: true,
     description:
-      "Complete a secure intake form online, receive approval or physician review, then book or purchase a personalized GLP-1 and peptide protocol.",
+      "Physician-guided compound therapy with GLP-1 and peptide protocols—secure intake, clinical review, and personalized pathways.",
     details: [
       "Includes injectable and sublingual pathway options selected from your intake and clinical profile.",
       "If clinically indicated, you are routed to a physician consultation before approval.",

@@ -71,6 +71,20 @@ Luxury concierge wellness platform with public marketing pages, gated premium co
 - Optional admin: `/admin`
 - Booking API: `POST /api/bookings` (guest/member booking), `GET /api/bookings` (admin only)
 
+## Wellness Hub intake sync
+Provider Connect forms on Wellness Hub (`privetherapeutics.solutions`) POST into:
+
+- `POST /api/intake/wellness-hub` (auth: `x-wellness-hub-secret` = `WELLNESS_HUB_INTAKE_SECRET`)
+
+That stores a row in Clinical Intake (`/admin/intake`) and sends staff + patient email via Resend.
+
+On the Wellness Hub project set:
+
+- `KIAN_PRIVE_API_URL` — e.g. `https://www.kianprive.com` or `http://localhost:3005`
+- `KIAN_PRIVE_INTAKE_SECRET` — must match `WELLNESS_HUB_INTAKE_SECRET` here
+
+Hub still sends its own Resend notification, then forwards the same payload to this API.
+
 ## Notes
 - Stripe is hybrid-ready: if Stripe keys are missing, checkout endpoint fails gracefully with guidance.
 - Email/CMS hooks are scaffolded in `src/lib/email.ts` and `src/lib/content.ts`.

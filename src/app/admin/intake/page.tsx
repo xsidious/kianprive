@@ -11,6 +11,12 @@ type IntakeSubmission = {
   programs: string[];
   status: string;
   createdAt: string;
+  payload?: {
+    source?: string;
+    site?: string;
+    requestedDate?: string;
+    requestedTime?: string;
+  } | null;
 };
 
 const statuses = [
@@ -20,6 +26,11 @@ const statuses = [
   "NEEDS_FOLLOW_UP",
   "DECLINED",
 ] as const;
+
+function sourceLabel(submission: IntakeSubmission) {
+  if (submission.payload?.source === "wellness-hub") return "Wellness Hub";
+  return "Site intake";
+}
 
 export default function AdminIntakePage() {
   const [submissions, setSubmissions] = useState<IntakeSubmission[]>([]);
@@ -60,9 +71,9 @@ export default function AdminIntakePage() {
   return (
     <div>
       <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">HIPAA-PROTECTED CLINICAL INTAKE</p>
-      <h1 className="mt-2 text-3xl text-[#1f1a15]">Peptide &amp; GLP Intake Submissions</h1>
+      <h1 className="mt-2 text-3xl text-[#1f1a15]">Clinical Intake Submissions</h1>
       <p className="mt-3 max-w-3xl text-sm text-[#6f6251]">
-        Review secure therapeutics intake forms submitted from the public peptide / GLP intake workflow. Access is
+        Review therapeutics intake forms from the site workflow and Wellness Hub (Provider Connect). Access is
         restricted to authorized KIAN Privé staff.
       </p>
       {message ? <p className="mt-4 text-sm text-[#1b6568]">{message}</p> : null}
@@ -72,10 +83,11 @@ export default function AdminIntakePage() {
         <p className="mt-6 text-sm text-[#6f6251]">No intake submissions yet.</p>
       ) : (
         <div className="mt-6 overflow-x-auto rounded-sm border border-[#b78d4b2d] bg-white">
-          <table className="min-w-[920px] w-full text-left text-sm">
+          <table className="min-w-[980px] w-full text-left text-sm">
             <thead className="border-b border-[#b78d4b2d] bg-[#fffaf2] text-xs tracking-[0.12em] text-[#8f6f3e]">
               <tr>
                 <th className="px-4 py-3">Submitted</th>
+                <th className="px-4 py-3">Source</th>
                 <th className="px-4 py-3">Patient</th>
                 <th className="px-4 py-3">Contact</th>
                 <th className="px-4 py-3">Programs</th>
@@ -87,6 +99,15 @@ export default function AdminIntakePage() {
               {submissions.map((submission) => (
                 <tr key={submission.id} className="border-b border-[#b78d4b1f] align-top">
                   <td className="px-4 py-3 text-[#5f5344]">{new Date(submission.createdAt).toLocaleString()}</td>
+                  <td className="px-4 py-3">
+                    <p className="font-medium text-[#2b2218]">{sourceLabel(submission)}</p>
+                    {submission.payload?.requestedDate ? (
+                      <p className="text-xs text-[#8f6f3e]">
+                        {submission.payload.requestedDate}
+                        {submission.payload.requestedTime ? ` · ${submission.payload.requestedTime}` : ""}
+                      </p>
+                    ) : null}
+                  </td>
                   <td className="px-4 py-3">
                     <p className="font-medium text-[#2b2218]">{submission.fullName}</p>
                     <p className="text-xs text-[#8f6f3e]">DOB: {submission.dateOfBirth}</p>

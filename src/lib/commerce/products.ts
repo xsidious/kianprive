@@ -8,13 +8,15 @@ export type CatalogProduct = {
   redirectUrl?: string;
 };
 
+export const shopCategories = ["All", "Korean Skincare", "Skincare", "Nutrients", "Professional"] as const;
+
 /** Client catalog — `id` and `slug` match seeded Prisma product slugs for reliable cart sync. */
 export const catalogProducts: CatalogProduct[] = [
   {
     id: "exosomes",
-    slug: "exosomes",
-    name: "Exosomes",
-    category: "Skincare",
+    slug: "korean-skincare",
+    name: "Korean Skincare",
+    category: "Korean Skincare",
     price: 0,
     image: "/images/facial-treatments.webp",
   },
@@ -103,5 +105,8 @@ export const catalogProducts: CatalogProduct[] = [
 ];
 
 export function getCatalogProduct(slugOrId: string) {
+  if (slugOrId === "exosomes") {
+    return catalogProducts.find((product) => product.id === "exosomes") ?? null;
+  }
   return catalogProducts.find((product) => product.id === slugOrId || product.slug === slugOrId) ?? null;
 }

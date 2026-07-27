@@ -87,13 +87,13 @@ export default async function ServiceDetailPage({
   const bookingHref = service.externalBookingUrl
     ? service.externalBookingUrl
     : service.slug === "glp1-peptides"
-      ? "/intake/peptides-glp"
+      ? `/services/${service.slug}`
       : "/book-online";
   const bookingIsExternal = bookingHref.startsWith("http://") || bookingHref.startsWith("https://");
   const bookingLabel = service.externalBookingUrl
     ? "Book with Partner"
     : service.slug === "glp1-peptides"
-      ? "Start Intake Form"
+      ? "Learn More"
       : "Book Consultation";
   const heroTitle = splitHeroTitle(service.title);
 
@@ -154,15 +154,15 @@ export default async function ServiceDetailPage({
           lineTwo={heroTitle.lineTwo}
           lineThree={heroTitle.lineThree}
           description={service.description}
-          primaryCta={{ label: bookingLabel, href: bookingHref }}
-          secondaryCta={{ label: "Back to Services", href: "/services" }}
+          primaryCta={isPeptides ? null : { label: bookingLabel, href: bookingHref }}
+          secondaryCta={isPeptides ? null : { label: "Back to Services", href: "/services" }}
           imageSrc={service.image}
           imageAlt={service.title}
           priority={false}
         />
       )}
 
-      {!isNutrition ? (
+      {!isNutrition && !isPeptides ? (
         <EditorialSection>
           <div className="flex flex-wrap gap-3">
             <Link
@@ -176,41 +176,28 @@ export default async function ServiceDetailPage({
             <Link href="/services" className={editorialCtaSecondary}>
               BACK TO SERVICES
             </Link>
-            {isPeptides ? (
-              <a
-                href="/documents/KIAN-Prive-Combined-Intake-Form.pdf"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-sm border border-[#1f7a7a55] bg-[#eef8f8] px-5 text-[11px] font-medium tracking-[0.18em] text-[#28585a] transition hover:bg-[#e0f2f2] sm:px-6 sm:text-xs"
-              >
-                DOWNLOAD PDF INTAKE
-              </a>
-            ) : null}
           </div>
         </EditorialSection>
       ) : null}
 
       {isPeptides ? (
-        <EditorialSection>
+        <EditorialSection className="!py-8 sm:!py-10">
           <PeptidesInteractiveShowcase />
-          <div className={`mt-6 ${editorialPanel} border-[#1f7a7a42] bg-[#eef8f8] p-6`}>
-            <p className="text-xs tracking-[0.18em] text-[#1b6568]">STEP 1 — SECURE INTAKE</p>
+          <div className={`mt-4 ${editorialPanel} p-5`}>
+            <p className="text-xs tracking-[0.18em] text-[#8a682e]">START YOUR WELLNESS JOURNEY</p>
             <h2 className="mt-2 font-serif text-2xl text-[#1f1a15]">Complete your therapeutics intake first</h2>
-            <p className="mt-3 max-w-3xl text-sm text-[#28585a]">
+            <p className="mt-3 max-w-3xl text-sm text-[#5f5344]">
               Submit the HIPAA-protected intake form so our team and your reviewing physician can evaluate eligibility.
               After approval, you will be contacted with booking and purchasing next steps.
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
-              <Link href="/intake/peptides-glp" className="inline-flex min-h-[44px] items-center justify-center rounded-sm bg-[#1f7a7a] px-5 text-[11px] font-medium tracking-[0.18em] text-white transition hover:bg-[#186868] sm:px-6 sm:text-xs">
-                START SECURE INTAKE
-              </Link>
               <a
-                href="https://shop.kianprive.com/r/NRM2TY"
+                href="https://www.privetherapeutics.solutions/"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-sm border border-[#1f7a7a55] bg-white px-5 text-[11px] font-medium tracking-[0.18em] text-[#28585a] transition hover:bg-[#f5fbfb] sm:px-6 sm:text-xs"
+                className={editorialCtaPrimary}
               >
-                APPROVED? GO TO SHOP
+                START NOW
               </a>
             </div>
           </div>
@@ -224,10 +211,10 @@ export default async function ServiceDetailPage({
       ) : null}
 
       {service.details?.length ? (
-        <EditorialSection>
+        <EditorialSection className={isPeptides ? "!py-8 sm:!py-10" : undefined}>
           <EditorialEyebrow>PROCESS</EditorialEyebrow>
-          <h2 className="mt-4 font-serif text-2xl text-[#1f1a15] sm:text-3xl">How This Service Works</h2>
-          <div className="mt-4 grid gap-3">
+          <h2 className="mt-3 font-serif text-2xl text-[#1f1a15] sm:text-3xl">How This Service Works</h2>
+          <div className="mt-3 grid gap-3">
             {service.details.map((detail) => (
               <article key={detail} className={`${editorialPanel} p-4 text-[#5f5344]`}>
                 {detail}
@@ -238,12 +225,12 @@ export default async function ServiceDetailPage({
       ) : null}
 
       {service.contentSections?.length ? (
-        <EditorialSection>
+        <EditorialSection className={isPeptides ? "!py-8 sm:!py-10" : undefined}>
           <EditorialEyebrow>DETAILS</EditorialEyebrow>
-          <h2 className="mt-4 font-serif text-2xl text-[#1f1a15] sm:text-3xl">
+          <h2 className="mt-3 font-serif text-2xl text-[#1f1a15] sm:text-3xl">
             {isNutrition ? "Nutrition Services Overview" : "Program Details"}
           </h2>
-          <div className="mt-4 grid gap-4">
+          <div className="mt-3 grid gap-3">
             {service.contentSections.map((section) => (
               <article key={section.title} className={`${editorialPanel} p-5`}>
                 <h3 className="text-xl text-[#2b2218]">{section.title}</h3>
@@ -266,12 +253,12 @@ export default async function ServiceDetailPage({
       ) : null}
 
       {service.includes?.length ? (
-        <EditorialSection>
+        <EditorialSection className={isPeptides ? "!py-8 sm:!py-10" : undefined}>
           <EditorialEyebrow>INCLUDES</EditorialEyebrow>
-          <h2 className="mt-4 font-serif text-2xl text-[#1f1a15] sm:text-3xl">
+          <h2 className="mt-3 font-serif text-2xl text-[#1f1a15] sm:text-3xl">
             {isNutrition ? "What You Can Expect" : "What It Supports"}
           </h2>
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
             {service.includes.map((item) => (
               <article key={item} className={`${editorialPanel} p-4 text-[#5f5344]`}>
                 {item}

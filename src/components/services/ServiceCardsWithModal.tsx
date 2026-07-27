@@ -15,8 +15,14 @@ function isNutritionService(service: Pick<ServiceListingItem, "slug">) {
 
 function getServiceBookingHref(service: ServiceListingItem) {
   if (service.externalBookingUrl) return service.externalBookingUrl;
-  if (service.slug === "glp1-peptides") return "/intake/peptides-glp";
+  if (service.slug === "glp1-peptides") return `/services/${service.slug}`;
   return service.slug ? `/book-online?service=${service.slug}` : "/book-online";
+}
+
+function getServiceCtaLabel(service: ServiceListingItem) {
+  if (service.externalBookingUrl) return "Book with Partner";
+  if (service.slug === "glp1-peptides") return "Learn More";
+  return "Book Now";
 }
 
 function isExternalHref(href: string) {
@@ -161,7 +167,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                           rel={isExternalHref(href) ? "noreferrer" : undefined}
                           className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-sm bg-gradient-to-r from-[#b78d4b] to-[#a67d42] text-sm font-semibold text-white"
                         >
-                          {service.externalBookingUrl ? "Book with Partner" : "Book"}
+                          {getServiceCtaLabel(service)}
                         </Link>
                       );
                     })()}
@@ -246,7 +252,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                           isPriorityGroup ? "bg-gradient-to-r from-[#1f7a7a] to-[#174f63]" : "bg-[#b78d4b]"
                         }`}
                       >
-                        {service.externalBookingUrl ? "Book with Partner" : "Book Now"}
+                        {getServiceCtaLabel(service)}
                       </Link>
                     );
                   })()}
@@ -432,9 +438,13 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                     href={href}
                     target={isExternalHref(href) ? "_blank" : undefined}
                     rel={isExternalHref(href) ? "noreferrer" : undefined}
-                    className="inline-flex rounded-sm bg-gradient-to-r from-[#1f7a7a] to-[#174f63] px-5 py-2 text-sm text-white"
+                    className="inline-flex rounded-sm bg-[#8a682e] px-5 py-2 text-sm text-white"
                   >
-                    {selectedService.externalBookingUrl ? "Book on Partner Site" : "Book This Service"}
+                    {selectedService.externalBookingUrl
+                      ? "Book on Partner Site"
+                      : selectedService.slug === "glp1-peptides"
+                        ? "Learn More"
+                        : "Book This Service"}
                   </Link>
                 );
               })()}

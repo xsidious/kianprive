@@ -37,8 +37,8 @@ export const metadata: Metadata = {
     image: "/images/og-default.jpg",
   }),
   icons: {
-    icon: "/images/kianprivelogo.png",
-    apple: "/images/kianprivelogo.png",
+    icon: "/images/kian-prive-logo.png",
+    apple: "/images/kian-prive-logo.png",
   },
   applicationName: "KIAN Privé",
   category: "health",

@@ -3,6 +3,7 @@ type SendEmailInput = {
   subject: string;
   text?: string;
   html?: string;
+  replyTo?: string;
 };
 
 function normalizeRecipients(to: string | string[]) {
@@ -40,6 +41,7 @@ export async function sendTransactionalEmail(input: SendEmailInput) {
       subject: input.subject,
       text: input.text,
       html: input.html,
+      ...(input.replyTo ? { reply_to: input.replyTo } : {}),
     }),
   });
 

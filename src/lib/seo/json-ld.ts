@@ -9,7 +9,7 @@ export function organizationJsonLd() {
     "@type": "Organization",
     name: "KIAN Privé",
     url: getAppUrl(),
-    logo: absoluteUrl("/images/kianprivelogo.png"),
+    logo: absoluteUrl("/images/kian-prive-logo.png"),
     email,
     telephone: phone,
     sameAs: [
@@ -121,7 +121,7 @@ export function articleJsonLd(input: {
       name: "KIAN Privé",
       logo: {
         "@type": "ImageObject",
-        url: absoluteUrl("/images/kianprivelogo.png"),
+        url: absoluteUrl("/images/kian-prive-logo.png"),
       },
     },
   };

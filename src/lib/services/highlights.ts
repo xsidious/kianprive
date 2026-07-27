@@ -32,9 +32,9 @@ export const serviceHighlights: ServiceHighlight[] = [
       "Advanced Icoone® lymphatic drainage for detox support, contouring, recovery, inflammation reduction, and skin quality.",
   }),
   highlightFromService("glp1-peptides", {
-    title: "GLP-1s & Peptides",
+    title: "Compound Therapy",
     description:
-      "Start online intake, receive approval or physician review, then book or purchase your personalized GLP-1 and peptide pathway.",
+      "Physician-guided GLP-1 and peptide compound therapy with secure intake, clinical review, and personalized pathways.",
   }),
   highlightFromService("hair-restoration", {
     title: "Hair Restoration",

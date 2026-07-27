@@ -7,25 +7,29 @@ import { signOut, useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/providers/cart-provider";
 
-const links = [
-  { href: "/events-retreats", label: "Events & Retreats" },
-  { href: "/shop", label: "Shop" },
-  { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Contact Us" },
+const LOGO_SRC = "/images/kian-prive-logo.png";
+
+const primaryNav = [
+  { href: "/services#all-services", label: "Icoone®" },
+  { href: "/services#recovery", label: "Recovery" },
+  { href: "/services#face-body-wellness", label: "Skincare" },
+  { href: "/shop", label: "Products" },
+  { href: "/services#compounding-peptides", label: "Compound Therapy" },
+  { href: "/services#physician", label: "Wellness" },
+  { href: "/services#policies", label: "Policies" },
 ];
 
-const whatWeDoLinks = [
-  { href: "/services", label: "Privé Services" },
-  { href: "/client-testimonials", label: "Client Testimonials" },
+const moreLinks = [
   { href: "/about", label: "About" },
+  { href: "/events-retreats", label: "Events & Retreats" },
+  { href: "/blog", label: "Blog" },
+  { href: "/contact", label: "Contact" },
   { href: "/corporate-wellness", label: "Corporate Wellness" },
+  { href: "/client-testimonials", label: "Testimonials" },
 ];
 
-const icooneLinks = [
-  { href: "/icoone-training", label: "Overview" },
-  { href: "/practitioners", label: "Practitioners" },
-  { href: "/athletes", label: "Athletes (Members)" },
-];
+const navLinkClass =
+  "font-serif text-[11px] uppercase tracking-[0.22em] text-[#b6a185] transition hover:text-[#8a682e]";
 
 export function Navbar() {
   const { data } = useSession();
@@ -48,93 +52,76 @@ export function Navbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#b78d4b33] bg-[#fffdf9e6] backdrop-blur">
-      <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-2 px-4 py-3 sm:gap-3 sm:px-6 sm:py-4">
-        <div className="flex items-center">
-          <Link href="/" className="flex items-center">
-            <Image src="/images/kianprivelogo.png" alt="KIAN Privé logo" width={52} height={52} />
-          </Link>
-        </div>
+    <header className="sticky top-0 z-40 border-b border-[#e8dfd0] bg-white">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
+        <Link href="/" className="relative flex shrink-0 items-center">
+          <Image
+            src={LOGO_SRC}
+            alt="KIAN Privé"
+            width={148}
+            height={120}
+            className="h-12 w-auto object-contain sm:h-14"
+            priority
+          />
+        </Link>
 
-        <nav className="hidden items-center justify-center gap-6 text-sm text-[#4f4335] lg:flex">
-            <Link href="/" className="transition hover:text-[#b78d4b]">
-              Home
+        <nav className="hidden flex-1 items-center justify-center gap-x-5 gap-y-2 xl:gap-x-7 lg:flex">
+          {primaryNav.map((link) => (
+            <Link key={link.label} href={link.href} className={navLinkClass}>
+              {link.label}
             </Link>
-            <div className="group relative">
-              <button
-                type="button"
-                className="inline-flex items-center gap-1 transition hover:text-[#b78d4b]"
-                aria-label="What We Do menu"
-              >
-                What We Do
-                <ChevronDown size={14} aria-hidden />
-              </button>
-              <div className="invisible absolute left-0 top-full z-50 mt-2 w-72 rounded-sm border border-[#e4d9c8] bg-white p-2 opacity-0 shadow-sm transition-all group-hover:visible group-hover:opacity-100">
-                {whatWeDoLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="block rounded-sm px-3 py-2 text-[#4f4335] transition hover:bg-[#fffaf2] hover:text-[#8f6f3e]"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-                <div className="group/icoone relative">
-                  <button
-                    type="button"
-                    className="inline-flex w-full items-center justify-between rounded-sm px-3 py-2 text-left text-[#4f4335] transition hover:bg-[#fffaf2] hover:text-[#8f6f3e]"
-                    aria-label="Icoone submenu"
-                  >
-                    <span>Icoone</span>
-                    <ChevronDown size={14} aria-hidden />
-                  </button>
-                  <div className="invisible absolute left-full top-0 z-50 ml-2 w-56 rounded-sm border border-[#e4d9c8] bg-white p-2 opacity-0 shadow-sm transition-all group-hover/icoone:visible group-hover/icoone:opacity-100">
-                    {icooneLinks.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className="block rounded-sm px-3 py-2 text-[#4f4335] transition hover:bg-[#fffaf2] hover:text-[#8f6f3e]"
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
+          ))}
+          <div className="group relative">
+            <button type="button" className={`${navLinkClass} inline-flex items-center gap-1`} aria-label="More pages">
+              More
+              <ChevronDown size={12} aria-hidden />
+            </button>
+            <div className="invisible absolute left-1/2 top-full z-50 mt-3 w-56 -translate-x-1/2 rounded-sm border border-[#e4d9c8] bg-white p-2 opacity-0 shadow-sm transition-all group-hover:visible group-hover:opacity-100">
+              {moreLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block rounded-sm px-3 py-2 font-serif text-[11px] uppercase tracking-[0.18em] text-[#b6a185] transition hover:bg-[#fffaf2] hover:text-[#8a682e]"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
-            {links.map((link) => (
-              <Link key={link.href} href={link.href} className="transition hover:text-[#b78d4b]">
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          </div>
+        </nav>
 
-        <div className="hidden items-center justify-end gap-2 text-sm sm:flex">
+        <div className="hidden items-center gap-3 sm:flex">
           <button
             type="button"
             onClick={openCart}
-            className="relative inline-flex items-center rounded-sm border border-[#b78d4b80] bg-white p-2 text-[#3b3024]"
+            className="relative inline-flex items-center p-2 text-[#b6a185] transition hover:text-[#8a682e]"
             aria-label={`Open cart${displayCount > 0 ? `, ${displayCount} items` : ""}`}
           >
             <ShoppingBag size={17} aria-hidden />
-            <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[#b78d4b] px-1 text-[10px] text-white">
-              {displayCount}
-            </span>
+            {displayCount > 0 ? (
+              <span className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[#8a682e] px-1 text-[10px] text-white">
+                {displayCount}
+              </span>
+            ) : null}
           </button>
-          <Link href="/book-online" className="rounded-sm bg-[#8a682e] px-4 py-2 text-[11px] tracking-[0.16em] text-white">
-            BOOK ONLINE
+          <Link
+            href="/book-online"
+            className="inline-flex items-center border border-[#b6a185] px-4 py-2 font-serif text-[11px] uppercase tracking-[0.22em] text-[#b6a185] transition hover:bg-[#faf6f0] hover:text-[#8a682e]"
+          >
+            Reserve
           </Link>
           {data?.user ? (
             <div className="relative" ref={userMenuRef}>
               <button
+                type="button"
                 onClick={() => setUserMenuOpen((v) => !v)}
-                className="inline-flex items-center gap-2 rounded-sm border border-[#b78d4b80] bg-white px-2 py-1.5 text-sm text-[#3b3024]"
+                className="inline-flex items-center gap-2 border border-[#b6a18566] px-2 py-1.5 text-[#b6a185]"
                 aria-label="Open account menu"
               >
-                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#b78d4b] text-xs font-semibold text-white">
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#8a682e] text-xs font-semibold text-white">
                   {initials}
                 </span>
-                <ChevronDown size={14} />
+                <ChevronDown size={14} aria-hidden />
               </button>
               {userMenuOpen ? (
                 <div className="absolute right-0 top-[calc(100%+10px)] z-50 w-64 rounded-sm border border-[#e4d9c8] bg-white p-2 shadow-sm">
@@ -154,9 +141,6 @@ export function Navbar() {
                   <Link href="/dashboard/services" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                     My Services
                   </Link>
-                  <Link href="/book-online" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
-                    Book Consultations
-                  </Link>
                   {data.user.role === "PARTNER" ? (
                     <Link href="/partner" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                       Partner Portal
@@ -168,6 +152,7 @@ export function Navbar() {
                     </Link>
                   ) : null}
                   <button
+                    type="button"
                     onClick={() => signOut({ callbackUrl: "/" })}
                     className="mt-1 inline-flex w-full items-center gap-2 rounded-sm border border-[#e4d9c8] px-3 py-2 text-sm text-[#3b3024] hover:bg-[#fffaf2]"
                   >
@@ -180,118 +165,100 @@ export function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-[11px] tracking-[0.16em] text-[#3b3024]"
+              className="font-serif text-[11px] uppercase tracking-[0.22em] text-[#b6a185] transition hover:text-[#8a682e]"
             >
-              MEMBERS
+              Members
             </Link>
           )}
         </div>
-        <div className="flex items-center gap-2 sm:hidden">
+
+        <div className="flex items-center gap-2 lg:hidden">
           <button
+            type="button"
             onClick={openCart}
-            className="relative inline-flex h-10 w-10 items-center justify-center rounded-sm border border-[#b78d4b66] bg-white text-[#3b3024]"
+            className="relative inline-flex h-10 w-10 items-center justify-center text-[#b6a185]"
             aria-label="Open cart"
           >
-            <ShoppingBag size={17} />
+            <ShoppingBag size={17} aria-hidden />
             {displayCount > 0 ? (
-              <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full border border-white bg-[#b78d4b] px-1 text-[10px] text-white">
+              <span className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[#8a682e] px-1 text-[10px] text-white">
                 {displayCount}
               </span>
             ) : null}
           </button>
           <button
+            type="button"
             onClick={() => setMobileOpen((v) => !v)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-sm border border-[#b78d4b66] bg-white text-[#3b3024]"
+            className="inline-flex h-10 w-10 items-center justify-center text-[#b6a185]"
             aria-label="Toggle menu"
           >
-            {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+            {mobileOpen ? <X size={18} aria-hidden /> : <Menu size={18} aria-hidden />}
           </button>
         </div>
       </div>
 
       {mobileOpen ? (
-        <div className="border-t border-[#b78d4b2f] bg-[#fffdf9] px-4 py-4 sm:hidden">
-          <div className="grid gap-2 text-sm text-[#4f4335]">
-            <Link href="/" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 hover:bg-[#fff7eb]">
-              Home
+        <div className="border-t border-[#e8dfd0] bg-white px-4 py-4 lg:hidden">
+          <div className="grid gap-1">
+            {primaryNav.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className="rounded-sm px-3 py-2.5 font-serif text-[12px] uppercase tracking-[0.2em] text-[#b6a185] hover:bg-[#faf6f0]"
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="my-2 border-t border-[#e8dfd0]" />
+            {moreLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className="rounded-sm px-3 py-2.5 font-serif text-[12px] uppercase tracking-[0.2em] text-[#b6a185] hover:bg-[#faf6f0]"
+              >
+                {link.label}
+              </Link>
+            ))}
+            <Link
+              href="/book-online"
+              onClick={() => setMobileOpen(false)}
+              className="mt-3 inline-flex items-center justify-center border border-[#b6a185] px-4 py-3 font-serif text-[12px] uppercase tracking-[0.22em] text-[#b6a185]"
+            >
+              Reserve
             </Link>
-            <p className="px-3 pt-1 text-xs tracking-[0.18em] text-[#8f6f3e]">WHAT WE DO</p>
-            {whatWeDoLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="rounded-sm px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]"
-              >
-                {link.label}
-              </Link>
-            ))}
-            <div className="rounded-sm border border-[#b78d4b2f] bg-white p-2">
-              <p className="px-2 text-xs tracking-[0.16em] text-[#8f6f3e]">ICOONE</p>
-              <div className="mt-1 grid gap-1">
-                {icooneLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-sm px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="rounded-sm px-3 py-2 hover:bg-[#fff7eb]"
-              >
-                {link.label}
-              </Link>
-            ))}
-            <div className="mt-2 grid grid-cols-2 gap-2">
-              <Link href="/book-online" onClick={() => setMobileOpen(false)} className="rounded-sm bg-[#8a682e] px-4 py-2 text-center text-[11px] tracking-[0.14em] text-white">
-                BOOK ONLINE
-              </Link>
-              <Link
-                href={data?.user ? "/dashboard" : "/login"}
-                onClick={() => setMobileOpen(false)}
-                className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-center text-[11px] tracking-[0.14em] text-[#3b3024]"
-              >
-                MEMBERS
-              </Link>
-            </div>
+            <Link
+              href={data?.user ? "/dashboard" : "/login"}
+              onClick={() => setMobileOpen(false)}
+              className="mt-2 text-center font-serif text-[12px] uppercase tracking-[0.22em] text-[#b6a185]"
+            >
+              {data?.user ? "Dashboard" : "Members"}
+            </Link>
             {data?.user ? (
-              <div className="mt-3 rounded-sm border border-[#b78d4b2f] bg-white p-2">
-                <p className="px-2 text-xs tracking-[0.15em] text-[#8f6f3e]">MY ACCOUNT</p>
+              <div className="mt-3 rounded-sm border border-[#e8dfd0] p-2">
+                <p className="px-2 font-serif text-[10px] uppercase tracking-[0.2em] text-[#b6a185]">My Account</p>
                 <div className="mt-1 grid gap-1">
-                  <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
-                    Dashboard
-                  </Link>
-                  <Link href="/dashboard/profile" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
+                  <Link href="/dashboard/profile" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#faf6f0]">
                     Profile
                   </Link>
-                  <Link href="/dashboard/subscription" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
+                  <Link href="/dashboard/subscription" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#faf6f0]">
                     Subscription
                   </Link>
-                  <Link href="/dashboard/services" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
-                    My Services
-                  </Link>
                   {data.user.role === "PARTNER" ? (
-                    <Link href="/partner" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
+                    <Link href="/partner" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#faf6f0]">
                       Partner Portal
                     </Link>
                   ) : null}
                   {data.user.role === "ADMIN" || data.user.role === "OPERATIONS" || data.user.role === "EDITOR" ? (
-                    <Link href="/admin" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-[#4f4335] hover:bg-[#fff7eb]">
+                    <Link href="/admin" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#faf6f0]">
                       Admin Dashboard
                     </Link>
                   ) : null}
                   <button
+                    type="button"
                     onClick={() => signOut({ callbackUrl: "/" })}
-                    className="inline-flex items-center justify-center gap-2 rounded-sm border border-[#b78d4b40] px-3 py-2 text-[#3b3024] hover:bg-[#fff7eb]"
+                    className="inline-flex items-center justify-center gap-2 rounded-sm border border-[#e8dfd0] px-3 py-2 text-[#3b3024] hover:bg-[#faf6f0]"
                   >
                     <User size={14} />
                     Logout

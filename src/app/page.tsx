@@ -48,6 +48,7 @@ export default function Home() {
                 description={service.description}
                 image={service.image}
                 href={service.href}
+                ctaLabel={service.href?.includes("glp1-peptides") ? "Learn More" : "Book Now"}
               />
             ))}
           </div>

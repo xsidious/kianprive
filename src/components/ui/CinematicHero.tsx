@@ -7,8 +7,8 @@ type CinematicHeroProps = {
   lineTwo?: string;
   lineThree?: string;
   description?: string;
-  primaryCta?: { label: string; href: string };
-  secondaryCta?: { label: string; href: string };
+  primaryCta?: { label: string; href: string } | null;
+  secondaryCta?: { label: string; href: string } | null;
   imageSrc?: string;
   imageAlt?: string;
   /** Homepage should keep priority; inner pages pass false to avoid competing LCP. */
@@ -27,6 +27,7 @@ export function CinematicHero({
   imageAlt = "KIAN Privé luxury wellness suite",
   priority = false,
 }: CinematicHeroProps) {
+  const showCtas = Boolean(primaryCta || secondaryCta);
   return (
     <section className="relative min-h-[min(88vh,920px)] w-full overflow-hidden bg-[#1a1510]">
       <Image
@@ -65,20 +66,26 @@ export function CinematicHero({
             <span className="mt-1 block">{lineThree}</span>
           </h1>
           <p className="mt-6 max-w-xl text-sm leading-relaxed text-white/88 sm:text-base sm:leading-relaxed">{description}</p>
-          <div className="mt-8 flex flex-wrap gap-3 sm:gap-4">
-            <Link
-              href={primaryCta.href}
-              className="inline-flex min-h-[48px] items-center rounded-sm bg-[#8a682e] px-6 text-xs font-medium tracking-[0.18em] text-white transition hover:bg-[#755724] sm:px-7 sm:text-sm"
-            >
-              {primaryCta.label.toUpperCase()}
-            </Link>
-            <Link
-              href={secondaryCta.href}
-              className="inline-flex min-h-[48px] items-center rounded-sm border border-white/85 bg-transparent px-6 text-xs font-medium tracking-[0.18em] text-white transition hover:bg-white/10 sm:px-7 sm:text-sm"
-            >
-              {secondaryCta.label.toUpperCase()}
-            </Link>
-          </div>
+          {showCtas ? (
+            <div className="mt-8 flex flex-wrap gap-3 sm:gap-4">
+              {primaryCta ? (
+                <Link
+                  href={primaryCta.href}
+                  className="inline-flex min-h-[48px] items-center rounded-sm bg-[#8a682e] px-6 text-xs font-medium tracking-[0.18em] text-white transition hover:bg-[#755724] sm:px-7 sm:text-sm"
+                >
+                  {primaryCta.label.toUpperCase()}
+                </Link>
+              ) : null}
+              {secondaryCta ? (
+                <Link
+                  href={secondaryCta.href}
+                  className="inline-flex min-h-[48px] items-center rounded-sm border border-white/85 bg-transparent px-6 text-xs font-medium tracking-[0.18em] text-white transition hover:bg-white/10 sm:px-7 sm:text-sm"
+                >
+                  {secondaryCta.label.toUpperCase()}
+                </Link>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
     </section>

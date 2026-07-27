@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { catalogProducts } from "@/lib/commerce/products";
+import { notFound, redirect } from "next/navigation";
+import { catalogProducts, getCatalogProduct } from "@/lib/commerce/products";
 import { buildSeoMetadata } from "@/lib/seo/metadata";
 import {
   EditorialEyebrow,
@@ -20,11 +20,11 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = catalogProducts.find((p) => p.slug === slug);
+  const product = getCatalogProduct(slug);
   if (!product) return buildSeoMetadata({ title: "Product", canonicalPath: "/shop" });
   return buildSeoMetadata({
     title: product.name,
-    description: `${product.name} — ${product.category} essentials from KIAN Privé.`,
+    description: `${product.name} — ${product.category} essentials from KIAN Privé. View options and product details.`,
     canonicalPath: `/shop/${product.slug}`,
     image: product.image,
   });
@@ -32,7 +32,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ShopProductPage({ params }: Props) {
   const { slug } = await params;
-  const product = catalogProducts.find((p) => p.slug === slug);
+  if (slug === "exosomes") redirect("/shop/korean-skincare");
+  const product = getCatalogProduct(slug);
   if (!product) notFound();
 
   return (
@@ -52,10 +53,14 @@ export default async function ShopProductPage({ params }: Props) {
         <div className="p-6 sm:p-8">
           <EditorialEyebrow>{product.category.toUpperCase()}</EditorialEyebrow>
           <h1 className="mt-4 font-serif text-3xl text-[#1f1a15] md:text-4xl">{product.name}</h1>
+          <p className="mt-4 text-[#5f5344]">
+            Product details and variable options will live here—sizes, kits, and clinical variants for{" "}
+            {product.name.toLowerCase()}.
+          </p>
           {product.redirectUrl ? (
-            <p className="mt-4 text-[#5f5344]">Available via our partner product page.</p>
+            <p className="mt-3 text-sm text-[#6f6251]">This item continues on a partner product page.</p>
           ) : (
-            <p className="mt-4 text-2xl text-[#1f1a15]">${product.price}</p>
+            <p className="mt-4 text-2xl text-[#1f1a15]">From ${product.price}</p>
           )}
           <div className="mt-8 flex flex-wrap gap-3">
             {product.redirectUrl ? (
@@ -64,11 +69,11 @@ export default async function ShopProductPage({ params }: Props) {
               </a>
             ) : (
               <Link href="/shop#products" className={editorialCtaPrimary}>
-                VIEW IN SHOP
+                BACK TO CATALOG
               </Link>
             )}
             <Link href="/shop" className={editorialCtaSecondary}>
-              BACK TO SHOP
+              ALL PRODUCTS
             </Link>
           </div>
         </div>

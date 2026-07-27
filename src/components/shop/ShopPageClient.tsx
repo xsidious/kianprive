@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ShieldCheck, Truck } from "lucide-react";
 import { useCart } from "@/components/providers/cart-provider";
@@ -13,7 +14,7 @@ import {
   editorialInput,
   editorialPanel,
 } from "@/components/ui/editorial-primitives";
-import { catalogProducts } from "@/lib/commerce/products";
+import { catalogProducts, shopCategories } from "@/lib/commerce/products";
 
 export function ShopPageClient() {
   const [category, setCategory] = useState("All");
@@ -67,9 +68,10 @@ export function ShopPageClient() {
             <div className="mt-4">
               <p className="text-sm text-[#3b3024]">Category</p>
               <div className="mt-2 grid gap-2">
-                {["All", "Skincare", "Nutrients", "Professional"].map((value) => (
+                {shopCategories.map((value) => (
                   <button
                     key={value}
+                    type="button"
                     onClick={() => setCategory(value)}
                     className={`rounded-sm border px-3 py-2 text-left text-sm ${
                       category === value ? "border-[#b78d4b] bg-[#fff6e8] text-[#8f6f3e]" : "border-[#e4d9c8] bg-white text-[#4f4335]"
@@ -100,7 +102,7 @@ export function ShopPageClient() {
               <p className="text-sm text-[#5f5344]">Cart preview</p>
               <p className="mt-1 text-lg text-[#1f1a15]">{itemCount} items</p>
               <p className="text-sm text-[#6f6251]">Subtotal ${subtotal.toFixed(2)}</p>
-              <button onClick={openCart} className={`mt-3 w-full ${editorialCtaPrimary}`}>
+              <button type="button" onClick={openCart} className={`mt-3 w-full ${editorialCtaPrimary}`}>
                 OPEN SIDE CART
               </button>
             </div>
@@ -109,58 +111,60 @@ export function ShopPageClient() {
           <div>
             <div className={`mb-4 flex items-center justify-between ${editorialPanel} px-4 py-3 text-sm text-[#6f6251]`}>
               <span>{filteredProducts.length} products</span>
-              <button onClick={openCart} className={editorialCtaSecondary}>
+              <button type="button" onClick={openCart} className={editorialCtaSecondary}>
                 VIEW CART ({itemCount})
               </button>
             </div>
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {filteredProducts.map((product) => (
                 <article key={product.id} className={`overflow-hidden ${editorialPanel}`}>
-                  <div className="relative h-56">
+                  <Link href={`/shop/${product.slug}`} className="relative block h-56">
                     <Image
                       src={product.image}
                       alt={product.name}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                       quality={70}
-                      className="object-cover"
+                      className="object-cover transition hover:scale-[1.02]"
                     />
-                  </div>
+                  </Link>
                   <div className="p-5">
-                    <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">{product.category}</p>
-                    <h2 className="mt-2 font-serif text-xl text-[#2b2218]">{product.name}</h2>
+                    <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">{product.category.toUpperCase()}</p>
+                    <Link href={`/shop/${product.slug}`}>
+                      <h2 className="mt-2 font-serif text-xl text-[#2b2218] transition hover:text-[#8a682e]">{product.name}</h2>
+                    </Link>
                     {product.redirectUrl ? (
-                      <p className="mt-3 text-sm text-[#6f6251]">Redirects to external product page.</p>
+                      <p className="mt-3 text-sm text-[#6f6251]">Variable options on product page.</p>
                     ) : (
                       <p className="mt-3 text-2xl text-[#1f1a15]">${product.price}</p>
                     )}
-                    {product.redirectUrl ? (
-                      <a
-                        href={product.redirectUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={`mt-4 ${editorialCtaPrimary}`}
-                      >
-                        GO TO PRODUCT
-                      </a>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          addItem({
-                            id: product.id,
-                            name: product.name,
-                            price: product.price,
-                            image: product.image,
-                            category: product.category,
-                          });
-                          openCart();
-                        }}
-                        className={`mt-4 ${editorialCtaPrimary}`}
-                      >
-                        ADD TO CART
-                      </button>
-                    )}
+                    <div className="mt-4 flex flex-col gap-2">
+                      <Link href={`/shop/${product.slug}`} className={editorialCtaSecondary}>
+                        VIEW DETAILS
+                      </Link>
+                      {product.redirectUrl ? (
+                        <a href={product.redirectUrl} target="_blank" rel="noreferrer" className={editorialCtaPrimary}>
+                          GO TO PRODUCT
+                        </a>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            addItem({
+                              id: product.id,
+                              name: product.name,
+                              price: product.price,
+                              image: product.image,
+                              category: product.category,
+                            });
+                            openCart();
+                          }}
+                          className={editorialCtaPrimary}
+                        >
+                          ADD TO CART
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </article>
               ))}

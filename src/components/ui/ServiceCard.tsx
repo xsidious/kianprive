@@ -6,11 +6,13 @@ export function ServiceCard({
   description,
   image,
   href = "/book-online",
+  ctaLabel = "Book Now",
 }: {
   title: string;
   description: string;
   image?: string;
   href?: string;
+  ctaLabel?: string;
 }) {
   const imageClassName =
     title === "Nutrition Services" ? "object-cover object-top" : "object-cover";
@@ -35,7 +37,7 @@ export function ServiceCard({
         href={href}
         className="mt-5 inline-flex rounded-sm bg-[#8a682e] px-4 py-2 text-[11px] tracking-[0.16em] text-white transition hover:bg-[#755724]"
       >
-        BOOK NOW
+        {ctaLabel.toUpperCase()}
       </Link>
     </article>
   );

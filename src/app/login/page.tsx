@@ -36,8 +36,8 @@ export default function LoginPage() {
       <EditorialSection>
         <div className="grid gap-8 lg:grid-cols-[1fr_0.95fr]">
           <aside className={`${editorialPanel} p-6 sm:p-8`}>
-            <div className="relative h-14 w-14">
-              <Image src="/images/kianprivelogo.png" alt="KIAN Privé logo" fill className="object-contain" />
+            <div className="relative h-16 w-28">
+              <Image src="/images/kian-prive-logo.png" alt="KIAN Privé logo" fill className="object-contain object-left" />
             </div>
             <div className="mt-6">
               <EditorialEyebrow>MEMBERS PORTAL</EditorialEyebrow>

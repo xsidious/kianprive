@@ -26,7 +26,7 @@ export function Footer() {
 
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div>
-            <Image src="/images/kianprivelogo.png" alt="KIAN Privé logo" width={58} height={58} />
+            <Image src="/images/kian-prive-logo.png" alt="KIAN Privé logo" width={120} height={96} className="h-14 w-auto object-contain" />
             <p className="mt-4 text-xs tracking-[0.2em] text-[#7a5c32]">CONCIERGE WELLNESS</p>
             <p className="mt-2 text-sm">Private. Precise. Performance-centered care for elite outcomes.</p>
           </div>

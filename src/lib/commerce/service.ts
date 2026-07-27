@@ -5,13 +5,58 @@ import { calculateShipping } from "@/lib/commerce/shipping";
 import { stripe } from "@/lib/stripe";
 
 async function resolveProduct(productIdOrSlug: string) {
+  const catalog = getCatalogProduct(productIdOrSlug);
+
   const byId = await prisma.product.findUnique({ where: { id: productIdOrSlug } });
-  if (byId) return byId;
+  if (byId) {
+    if (!catalog) return byId;
+    return prisma.product.update({
+      where: { id: byId.id },
+      data: {
+        slug: catalog.slug,
+        title: catalog.name,
+        category: catalog.category,
+        price: catalog.price,
+        featuredImage: catalog.image,
+        status: "ACTIVE",
+      },
+    });
+  }
 
   const bySlug = await prisma.product.findUnique({ where: { slug: productIdOrSlug } });
-  if (bySlug) return bySlug;
+  if (bySlug) {
+    if (!catalog) return bySlug;
+    return prisma.product.update({
+      where: { id: bySlug.id },
+      data: {
+        slug: catalog.slug,
+        title: catalog.name,
+        category: catalog.category,
+        price: catalog.price,
+        featuredImage: catalog.image,
+        status: "ACTIVE",
+      },
+    });
+  }
 
-  const catalog = getCatalogProduct(productIdOrSlug);
+  // Legacy slug for renamed Korean Skincare product
+  if (catalog?.id === "exosomes") {
+    const legacy = await prisma.product.findUnique({ where: { slug: "exosomes" } });
+    if (legacy) {
+      return prisma.product.update({
+        where: { id: legacy.id },
+        data: {
+          slug: catalog.slug,
+          title: catalog.name,
+          category: catalog.category,
+          price: catalog.price,
+          featuredImage: catalog.image,
+          status: "ACTIVE",
+        },
+      });
+    }
+  }
+
   if (!catalog) return null;
 
   return prisma.product.upsert({

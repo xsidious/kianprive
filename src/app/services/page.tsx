@@ -3,7 +3,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { getCmsPageContent } from "@/lib/cms/pages";
 import { CinematicHero } from "@/components/ui/CinematicHero";
-import { ServicesPageNav } from "@/components/services/ServicesPageNav";
 import { ServiceCardsWithModal } from "@/components/services/ServiceCardsWithModal";
 import {
   EditorialEyebrow,
@@ -192,7 +191,6 @@ export default async function ServicesPage() {
 
   return (
     <div className="-mt-[1px]">
-      <ServicesPageNav />
       <CinematicHero
         description={cms.description ?? brandIntro.lead}
         primaryCta={{ label: "View the Menu", href: "#all-services" }}
@@ -326,12 +324,14 @@ export default async function ServicesPage() {
           ))}
         </div>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/intake/peptides-glp"
+          <a
+            href="https://www.privetherapeutics.solutions/"
+            target="_blank"
+            rel="noreferrer"
             className="inline-flex min-h-[44px] items-center rounded-sm bg-[#b78d4b] px-5 text-xs tracking-[0.18em] text-white"
           >
-            START SECURE INTAKE
-          </Link>
+            START NOW
+          </a>
           <Link
             href="/services/glp1-peptides"
             className="inline-flex min-h-[44px] items-center rounded-sm border border-[#b78d4b80] px-5 text-xs tracking-[0.18em] text-[#3b3024]"

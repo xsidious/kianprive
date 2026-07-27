@@ -133,8 +133,8 @@ export function PeptidesGlpIntakeForm() {
           guidelines.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <Link href="/services/glp1-peptides" className="rounded-sm bg-[#1f7a7a] px-5 py-2 text-sm text-white">
-            Back to GLP-1s &amp; Peptides
+            <Link href="/services/glp1-peptides" className="rounded-sm bg-[#8a682e] px-5 py-2 text-sm text-white">
+            Back to Compound Therapy
           </Link>
           <Link href="/book-online" className="rounded-sm border border-[#1f7a7a55] bg-white px-5 py-2 text-sm text-[#28585a]">
             Book Online
