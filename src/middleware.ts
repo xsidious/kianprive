@@ -1,17 +1,19 @@
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { canAccessAdmin, canAccessPartnerPortal } from "@/lib/rbac";
+import { canAccessAdmin, canAccessAmbassadorPortal, canAccessPartnerPortal } from "@/lib/rbac";
 
 const adminPaths = ["/admin"];
 const partnerPaths = ["/partner"];
+const ambassadorPaths = ["/ambassador"];
 const memberOnlyPaths = ["/practitioners", "/athletes"];
 
 export async function middleware(req: Request & { nextUrl: URL }) {
   const { pathname } = req.nextUrl;
   const isAdminRoute = adminPaths.some((path) => pathname.startsWith(path));
   const isPartnerRoute = partnerPaths.some((path) => pathname.startsWith(path));
+  const isAmbassadorRoute = ambassadorPaths.some((path) => pathname.startsWith(path));
   const isMemberOnlyRoute = memberOnlyPaths.some((path) => pathname.startsWith(path));
-  if (!isAdminRoute && !isPartnerRoute && !isMemberOnlyRoute) return NextResponse.next();
+  if (!isAdminRoute && !isPartnerRoute && !isAmbassadorRoute && !isMemberOnlyRoute) return NextResponse.next();
 
   const token = await getToken({
     req: req as never,
@@ -30,9 +32,19 @@ export async function middleware(req: Request & { nextUrl: URL }) {
     return NextResponse.next();
   }
 
+  if (isAmbassadorRoute) {
+    if (!canAccessAmbassadorPortal(token.role as never)) {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+    return NextResponse.next();
+  }
+
   if (isPartnerRoute) {
     if (!canAccessPartnerPortal(token.role as never)) {
       return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+    if ((token.role as string) === "AMBASSADOR") {
+      return NextResponse.redirect(new URL("/ambassador", req.url));
     }
     return NextResponse.next();
   }
@@ -41,6 +53,9 @@ export async function middleware(req: Request & { nextUrl: URL }) {
     if ((token.role as string) === "PARTNER") {
       return NextResponse.redirect(new URL("/partner", req.url));
     }
+    if ((token.role as string) === "AMBASSADOR") {
+      return NextResponse.redirect(new URL("/ambassador", req.url));
+    }
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
@@ -48,5 +63,11 @@ export async function middleware(req: Request & { nextUrl: URL }) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/partner/:path*", "/practitioners/:path*", "/athletes/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/partner/:path*",
+    "/ambassador/:path*",
+    "/practitioners/:path*",
+    "/athletes/:path*",
+  ],
 };

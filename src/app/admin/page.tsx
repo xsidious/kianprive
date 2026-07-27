@@ -4,16 +4,28 @@ import { auth } from "@/lib/auth";
 import { formatBookingDateTime } from "@/lib/admin/booking-display";
 import { prisma } from "@/lib/prisma";
 import { canAccessAdmin } from "@/lib/rbac";
+import { adminBtnGhost, adminEyebrow, adminMuted, adminPanel, adminStat, adminTitle, statusTone } from "@/components/admin/ui";
 
 export default async function AdminPage() {
   const session = await auth();
   if (!session?.user?.id || !canAccessAdmin(session.user.role)) redirect("/dashboard");
 
-  const [users, orderCount, pageCount, productCount, bookingCount, bookingRequests, postsCount] = await Promise.all([
+  const [
+    users,
+    orderCount,
+    pageCount,
+    productCount,
+    bookingCount,
+    bookingRequests,
+    postsCount,
+    intakeCount,
+    ambassadorCount,
+    pendingIntake,
+  ] = await Promise.all([
     prisma.user.findMany({
       orderBy: { createdAt: "desc" },
       include: { subscription: true },
-      take: 20,
+      take: 8,
     }),
     prisma.order.count(),
     prisma.cmsPage.count(),
@@ -21,113 +33,110 @@ export default async function AdminPage() {
     prisma.bookingRequest.count(),
     prisma.bookingRequest.findMany({
       orderBy: { createdAt: "desc" },
-      take: 20,
+      take: 8,
     }),
     prisma.blogPost.count(),
+    prisma.therapeuticsIntakeSubmission.count(),
+    prisma.partnerProfile.count({ where: { type: "AMBASSADOR" } }),
+    prisma.therapeuticsIntakeSubmission.count({
+      where: { status: { in: ["PENDING_REVIEW", "UNDER_PHYSICIAN_REVIEW", "NEEDS_FOLLOW_UP"] } },
+    }),
   ]);
 
-  return (
-    <div>
-      <h1 className="text-3xl text-[#1f1a15] md:text-4xl">Admin Panel</h1>
-      <div className="mt-6 grid gap-3 md:grid-cols-4">
-        <article className="rounded-sm border border-[#b78d4b2d] bg-white p-4">
-          <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">ORDERS</p>
-          <p className="mt-1 text-2xl text-[#1f1a15]">{orderCount}</p>
-        </article>
-        <article className="rounded-sm border border-[#b78d4b2d] bg-white p-4">
-          <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">PAGES</p>
-          <p className="mt-1 text-2xl text-[#1f1a15]">{pageCount}</p>
-        </article>
-        <article className="rounded-sm border border-[#b78d4b2d] bg-white p-4">
-          <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">PRODUCTS</p>
-          <p className="mt-1 text-2xl text-[#1f1a15]">{productCount}</p>
-        </article>
-        <article className="rounded-sm border border-[#b78d4b2d] bg-white p-4">
-          <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">BOOKINGS</p>
-          <p className="mt-1 text-2xl text-[#1f1a15]">{bookingCount}</p>
-        </article>
-        <article className="rounded-sm border border-[#b78d4b2d] bg-white p-4">
-          <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">BLOG POSTS</p>
-          <p className="mt-1 text-2xl text-[#1f1a15]">{postsCount}</p>
-        </article>
-      </div>
-      <div className="mt-5 flex flex-wrap gap-2">
-        <Link href="/admin/users" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage Users</Link>
-        <Link href="/admin/bookings" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage Bookings</Link>
-        <Link href="/admin/blog" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage Blog</Link>
-        <Link href="/admin/commerce" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage Commerce</Link>
-        <Link href="/admin/cms" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage CMS</Link>
-        <Link href="/admin/retreats" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage Retreats</Link>
-      </div>
-      <div className="mt-8 overflow-hidden rounded-sm border border-[#d7b67666]">
-        <table className="w-full text-left text-sm text-[#3b3024]">
-          <thead className="bg-[#fff6e8]">
-            <tr>
-              <th className="p-3">Email</th>
-              <th className="p-3">Role</th>
-              <th className="p-3">Plan</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id} className="border-t border-[#d7b67633]">
-                <td className="p-3">{user.email}</td>
-                <td className="p-3">{user.role}</td>
-                <td className="p-3">{user.subscription?.tier ?? "BASIC"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+  const stats = [
+    { label: "Orders", value: orderCount, href: "/admin/orders" },
+    { label: "Bookings", value: bookingCount, href: "/admin/bookings" },
+    { label: "Clinical intake", value: intakeCount, href: "/admin/intake", note: `${pendingIntake} need review` },
+    { label: "Ambassadors", value: ambassadorCount, href: "/admin/ambassadors" },
+    { label: "Products", value: productCount, href: "/admin/products" },
+    { label: "Pages", value: pageCount, href: "/admin/cms" },
+    { label: "Blog posts", value: postsCount, href: "/admin/blog" },
+  ];
 
-      <div className="mt-8">
-        <div className="mb-3 flex items-center justify-between gap-3">
-          <h2 className="text-lg text-[#1f1a15]">Recent bookings</h2>
-          <Link
-            href="/admin/bookings"
-            className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024] hover:bg-[#fff6e8]"
-          >
-            View all bookings
+  return (
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className={adminEyebrow}>Operations</p>
+          <h1 className={adminTitle}>Dashboard</h1>
+          <p className={adminMuted}>Clinical intake, commerce, partners, and ambassadors in one place.</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/admin/intake" className={adminBtnGhost}>
+            Review intake
+          </Link>
+          <Link href="/admin/ambassadors" className={adminBtnGhost}>
+            Ambassadors
           </Link>
         </div>
-        <div className="overflow-hidden rounded-sm border border-[#d7b67666] bg-white">
-          <table className="w-full text-left text-sm text-[#3b3024]">
-            <thead className="bg-[#fff6e8]">
-              <tr>
-                <th className="p-3">Client</th>
-                <th className="p-3">Services</th>
-                <th className="p-3">When</th>
-                <th className="p-3">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookingRequests.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="p-6 text-center text-[#6f6251]">
-                    No bookings yet. They appear here after someone completes book online.
-                  </td>
-                </tr>
-              ) : (
-                bookingRequests.map((booking) => (
-                  <tr key={booking.id} className="border-t border-[#d7b67633]">
-                    <td className="p-3">
-                      <p>{booking.fullName}</p>
-                      <p className="text-xs text-[#6f6251]">{booking.email}</p>
-                    </td>
-                    <td className="p-3">{booking.serviceTitles.join(", ")}</td>
-                    <td className="p-3">
-                      {formatBookingDateTime(
-                        booking.scheduledStart ?? booking.preferredDate,
-                        booking.timezone ?? "America/New_York",
-                      )}
-                    </td>
-                    <td className="p-3">{booking.status}</td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {stats.map((stat) => (
+          <Link key={stat.label} href={stat.href} className={`${adminStat} transition hover:border-[#b78d4b80]`}>
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">{stat.label}</p>
+            <p className="mt-2 font-serif text-3xl text-[#1f1a15]">{stat.value}</p>
+            {"note" in stat && stat.note ? <p className="mt-1 text-xs text-[#6f6251]">{stat.note}</p> : null}
+          </Link>
+        ))}
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-2">
+        <section className={`${adminPanel} overflow-hidden`}>
+          <div className="flex items-center justify-between border-b border-[#efe6d8] px-5 py-4">
+            <h2 className="font-serif text-xl text-[#1f1a15]">Recent users</h2>
+            <Link href="/admin/users" className="text-xs uppercase tracking-[0.14em] text-[#8f6f3e]">
+              View all
+            </Link>
+          </div>
+          <div className="divide-y divide-[#f0e8db]">
+            {users.map((user) => (
+              <div key={user.id} className="flex items-center justify-between gap-3 px-5 py-3 text-sm">
+                <div>
+                  <p className="text-[#1f1a15]">{user.name || user.email}</p>
+                  <p className="text-xs text-[#6f6251]">{user.email}</p>
+                </div>
+                <span className={`rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] ${statusTone(user.role)}`}>
+                  {user.role}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className={`${adminPanel} overflow-hidden`}>
+          <div className="flex items-center justify-between border-b border-[#efe6d8] px-5 py-4">
+            <h2 className="font-serif text-xl text-[#1f1a15]">Recent bookings</h2>
+            <Link href="/admin/bookings" className="text-xs uppercase tracking-[0.14em] text-[#8f6f3e]">
+              View all
+            </Link>
+          </div>
+          <div className="divide-y divide-[#f0e8db]">
+            {bookingRequests.length === 0 ? (
+              <p className="px-5 py-8 text-sm text-[#6f6251]">No bookings yet.</p>
+            ) : (
+              bookingRequests.map((booking) => (
+                <div key={booking.id} className="px-5 py-3 text-sm">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div>
+                      <p className="text-[#1f1a15]">{booking.fullName}</p>
+                      <p className="text-xs text-[#6f6251]">{booking.serviceTitles.join(", ")}</p>
+                    </div>
+                    <span className={`rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] ${statusTone(booking.status)}`}>
+                      {booking.status.replaceAll("_", " ")}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-[#8f6f3e]">
+                    {formatBookingDateTime(
+                      booking.scheduledStart ?? booking.preferredDate,
+                      booking.timezone ?? "America/New_York",
+                    )}
+                  </p>
+                </div>
+              ))
+            )}
+          </div>
+        </section>
       </div>
     </div>
   );

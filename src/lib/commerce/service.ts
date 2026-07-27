@@ -216,17 +216,18 @@ export async function createOrderFromCart(
   if (!cart.items.length) throw new Error("Cart is empty");
 
   let partnerId: string | null = null;
+  let attributeAllProducts = false;
   if (input.partnerCode) {
     const partner = await prisma.partnerProfile.findUnique({
       where: { partnerCode: input.partnerCode.toUpperCase() },
-      include: { productAssignments: { where: { active: true } } },
     });
     if (partner && partner.status === "ACTIVE") {
       partnerId = partner.id;
+      attributeAllProducts = partner.type === "AMBASSADOR";
     }
   }
 
-  const assignedProductIds = partnerId
+  const assignedProductIds = partnerId && !attributeAllProducts
     ? new Set(
         (
           await prisma.partnerProductAssignment.findMany({
@@ -260,7 +261,8 @@ export async function createOrderFromCart(
       items: {
         create: cart.items.map((item) => ({
           productId: item.productId,
-          partnerId: partnerId && assignedProductIds.has(item.productId) ? partnerId : null,
+          partnerId:
+            partnerId && (attributeAllProducts || assignedProductIds.has(item.productId)) ? partnerId : null,
           title: item.product.title,
           sku: item.product.sku,
           quantity: item.quantity,

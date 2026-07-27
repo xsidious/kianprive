@@ -9,7 +9,12 @@ export function canAccessAdmin(role?: Role | null) {
 
 export function canAccessPartnerPortal(role?: Role | null) {
   if (!role) return false;
-  return role === Role.PARTNER || role === Role.ADMIN;
+  return role === Role.PARTNER || role === Role.AMBASSADOR || role === Role.ADMIN;
+}
+
+export function canAccessAmbassadorPortal(role?: Role | null) {
+  if (!role) return false;
+  return role === Role.AMBASSADOR || role === Role.ADMIN;
 }
 
 export function canPublishContent(role?: Role | null) {

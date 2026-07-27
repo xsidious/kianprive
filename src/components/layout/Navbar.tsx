@@ -175,6 +175,11 @@ export function Navbar() {
                       Partner Portal
                     </Link>
                   ) : null}
+                  {data.user.role === "AMBASSADOR" ? (
+                    <Link href="/ambassador" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
+                      Ambassador Portal
+                    </Link>
+                  ) : null}
                   {data.user.role === "ADMIN" || data.user.role === "OPERATIONS" || data.user.role === "EDITOR" ? (
                     <Link href="/admin" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                       Admin Dashboard

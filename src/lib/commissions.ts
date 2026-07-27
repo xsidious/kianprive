@@ -79,10 +79,10 @@ export async function createProductCommissionsForOrder(orderId: string) {
     if (!partner) continue;
 
     const assignment = partner.productAssignments[0];
-    if (!assignment && !order.partnerId) continue;
-    if (!assignment) continue;
+    const isAmbassador = partner.type === "AMBASSADOR";
+    if (!assignment && !isAmbassador) continue;
 
-    const pct = assignment.commissionPct ?? partner.defaultProductCommissionPct;
+    const pct = assignment?.commissionPct ?? partner.defaultProductCommissionPct;
     const grossNum = toNumber(item.lineTotal);
     const pctNum = toNumber(pct);
     const commissionAmount = Math.round(((grossNum * pctNum) / 100) * 100) / 100;

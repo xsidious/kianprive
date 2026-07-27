@@ -11,7 +11,7 @@ const createSchema = z.object({
   password: z.string().min(8),
   displayName: z.string().min(2),
   legalName: z.string().optional(),
-  type: z.enum(["CLINICAL", "BRAND", "BOTH"]).default("CLINICAL"),
+  type: z.enum(["CLINICAL", "BRAND", "BOTH", "AMBASSADOR"]).default("CLINICAL"),
   specialty: z.string().optional(),
   specialtyTags: z.array(z.string()).optional(),
   phone: z.string().optional(),
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
         name: parsed.data.name,
         email: parsed.data.email.toLowerCase(),
         passwordHash,
-        role: "PARTNER",
+        role: parsed.data.type === "AMBASSADOR" ? "AMBASSADOR" : "PARTNER",
       },
     });
     return tx.partnerProfile.create({

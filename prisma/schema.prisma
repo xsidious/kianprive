@@ -652,12 +652,14 @@ enum Role {
   OPERATIONS
   ADMIN
   PARTNER
+  AMBASSADOR
 }
 
 enum PartnerType {
   CLINICAL
   BRAND
   BOTH
+  AMBASSADOR
 }
 
 enum PartnerStatus {

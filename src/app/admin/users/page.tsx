@@ -6,11 +6,11 @@ type UserRecord = {
   id: string;
   name: string | null;
   email: string;
-  role: "GUEST" | "MEMBER" | "EDITOR" | "OPERATIONS" | "ADMIN";
+  role: "GUEST" | "MEMBER" | "EDITOR" | "OPERATIONS" | "ADMIN" | "PARTNER" | "AMBASSADOR";
   subscription?: { tier: "BASIC" | "PREMIUM"; status: "INACTIVE" | "ACTIVE" | "PAST_DUE" | "CANCELED" } | null;
 };
 
-const roles = ["GUEST", "MEMBER", "EDITOR", "OPERATIONS", "ADMIN"] as const;
+const roles = ["GUEST", "MEMBER", "EDITOR", "OPERATIONS", "ADMIN", "PARTNER", "AMBASSADOR"] as const;
 const tiers = ["BASIC", "PREMIUM"] as const;
 const subStatuses = ["INACTIVE", "ACTIVE", "PAST_DUE", "CANCELED"] as const;
 

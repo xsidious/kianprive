@@ -27,12 +27,12 @@ export async function requirePartnerAccess(opts?: { allowAdmin?: boolean }) {
     };
   }
 
-  const partner =
-    session.user.role === Role.PARTNER
-      ? await prisma.partnerProfile.findUnique({ where: { userId: session.user.id } })
-      : null;
+  const isPortalUser = session.user.role === Role.PARTNER || session.user.role === Role.AMBASSADOR;
+  const partner = isPortalUser
+    ? await prisma.partnerProfile.findUnique({ where: { userId: session.user.id } })
+    : null;
 
-  if (session.user.role === Role.PARTNER && (!partner || partner.status === "SUSPENDED")) {
+  if (isPortalUser && (!partner || partner.status === "SUSPENDED")) {
     return {
       ok: false as const,
       response: NextResponse.json({ error: "Partner account unavailable." }, { status: 403 }),

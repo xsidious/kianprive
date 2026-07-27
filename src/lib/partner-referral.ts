@@ -10,7 +10,9 @@ export function normalizePartnerCode(raw: string | null | undefined) {
 /** Client-side: persist partner referral from URL/cookie. */
 export function capturePartnerReferralFromUrl(searchParams: URLSearchParams | { get: (k: string) => string | null }) {
   if (typeof document === "undefined") return null;
-  const fromUrl = normalizePartnerCode(searchParams.get("partner"));
+  const fromUrl = normalizePartnerCode(
+    searchParams.get("partner") || searchParams.get("ref") || searchParams.get("ambassador"),
+  );
   if (fromUrl) {
     document.cookie = `${COOKIE_NAME}=${fromUrl}; path=/; max-age=${MAX_AGE_DAYS * 24 * 60 * 60}; samesite=lax`;
     try {
