@@ -3,39 +3,46 @@ import { PrismaClient, PartnerStatus, PartnerType, Role } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+/**
+ * Strong passwords mix each person's name with symbols, digits, and casing.
+ * Share privately with each ambassador; do not commit to public channels long-term.
+ */
 const ambassadors = [
   {
-    name: "Elena Vargas",
-    email: "ambassador.elena@kianprive.com",
-    displayName: "Elena Vargas",
-    phone: "+1 (305) 555-0141",
-    code: "ELENAKIAN",
-    productPct: 12,
-  },
-  {
-    name: "Marcus Hill",
-    email: "ambassador.marcus@kianprive.com",
-    displayName: "Marcus Hill",
-    phone: "+1 (786) 555-0198",
-    code: "MARCUSHILL",
+    name: "Jennifer Frenner",
+    email: "jennifer.frenner@kianprive.com",
+    displayName: "Jennifer Frenner",
+    phone: "",
+    code: "JENNFRENNER",
     productPct: 10,
+    password: "JenniferFrenner#Kp9mX!",
   },
   {
-    name: "Sofia Nguyen",
-    email: "ambassador.sofia@kianprive.com",
-    displayName: "Sofia Nguyen",
-    phone: "+1 (954) 555-0177",
-    code: "SOFIANGYN",
-    productPct: 15,
+    name: "Carolina Millan",
+    email: "carolina.millan@kianprive.com",
+    displayName: "Carolina Millan",
+    phone: "",
+    code: "CAROMILLAN",
+    productPct: 10,
+    password: "CarolinaMillan$Kp7wQ!",
+  },
+  {
+    name: "Shane Shuckerow",
+    email: "shane.shuckerow@kianprive.com",
+    displayName: "Shane Shuckerow",
+    phone: "",
+    code: "SHANESHUCK",
+    productPct: 10,
+    password: "ShaneShuckerow@Kp4nR!",
   },
 ];
 
 async function main() {
-  const passwordHash = await bcrypt.hash("Ambassador!234", 10);
-
   for (const row of ambassadors) {
+    const passwordHash = await bcrypt.hash(row.password, 12);
+
     const user = await prisma.user.upsert({
-      where: { email: row.email },
+      where: { email: row.email.toLowerCase() },
       update: {
         name: row.name,
         passwordHash,
@@ -43,7 +50,7 @@ async function main() {
       },
       create: {
         name: row.name,
-        email: row.email,
+        email: row.email.toLowerCase(),
         passwordHash,
         role: Role.AMBASSADOR,
       },
@@ -55,7 +62,7 @@ async function main() {
         where: { id: existing.id },
         data: {
           displayName: row.displayName,
-          phone: row.phone,
+          phone: row.phone || null,
           type: PartnerType.AMBASSADOR,
           partnerCode: row.code,
           status: PartnerStatus.ACTIVE,
@@ -65,14 +72,18 @@ async function main() {
         },
       });
     } else {
-      const codeTaken = await prisma.partnerProfile.findUnique({ where: { partnerCode: row.code } });
+      let partnerCode = row.code;
+      const codeTaken = await prisma.partnerProfile.findUnique({ where: { partnerCode } });
+      if (codeTaken && codeTaken.userId !== user.id) {
+        partnerCode = `${row.code}${Math.floor(Math.random() * 90 + 10)}`;
+      }
       await prisma.partnerProfile.create({
         data: {
           userId: user.id,
           displayName: row.displayName,
-          phone: row.phone,
+          phone: row.phone || null,
           type: PartnerType.AMBASSADOR,
-          partnerCode: codeTaken ? `${row.code}${Math.floor(Math.random() * 90 + 10)}` : row.code,
+          partnerCode,
           status: PartnerStatus.ACTIVE,
           defaultProductCommissionPct: row.productPct,
           defaultServiceCommissionPct: 0,
@@ -82,10 +93,15 @@ async function main() {
     }
   }
 
-  console.log("Ambassadors ready.");
-  console.log("Password for all: Ambassador!234");
+  console.log("Ambassadors seeded (ACTIVE).\n");
   for (const row of ambassadors) {
-    console.log(`- ${row.displayName} <${row.email}> code ${row.code}`);
+    console.log(`${row.displayName}`);
+    console.log(`  Email:    ${row.email.toLowerCase()}`);
+    console.log(`  Password: ${row.password}`);
+    console.log(`  Code:     ${row.code}`);
+    console.log(`  Shop:     /shop?partner=${row.code}`);
+    console.log(`  Portal:   /ambassador`);
+    console.log("");
   }
 }
 
