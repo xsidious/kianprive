@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { formatBookingDateTime } from "@/lib/admin/booking-display";
+import { getPortalHomeForRole } from "@/lib/auth-redirect";
 import { prisma } from "@/lib/prisma";
 import { canAccessAdmin } from "@/lib/rbac";
 import {
@@ -18,7 +19,9 @@ import {
 
 export default async function AdminPage() {
   const session = await auth();
-  if (!session?.user?.id || !canAccessAdmin(session.user.role)) redirect("/dashboard");
+  if (!session?.user?.id || !canAccessAdmin(session.user.role)) {
+    redirect(session?.user?.role ? getPortalHomeForRole(session.user.role) : "/login");
+  }
 
   const [
     users,

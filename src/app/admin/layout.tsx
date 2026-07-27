@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
+import { getPortalHomeForRole } from "@/lib/auth-redirect";
 import { canAccessAdmin } from "@/lib/rbac";
 import { AdminSidebarNav } from "@/components/admin/AdminSidebarNav";
+import { PortalSignOut } from "@/components/auth/PortalSignOut";
 import { adminShell } from "@/components/admin/ui";
 
 export default async function AdminLayout({
@@ -12,7 +14,7 @@ export default async function AdminLayout({
 }) {
   const session = await auth();
   if (!session?.user?.id || !canAccessAdmin(session.user.role)) {
-    redirect("/dashboard");
+    redirect(session?.user?.role ? getPortalHomeForRole(session.user.role) : "/login");
   }
 
   return (
@@ -47,13 +49,14 @@ export default async function AdminLayout({
             <AdminSidebarNav />
           </div>
         </div>
-        <div className="hidden space-y-2 border-t border-[#e5d7c2]/80 p-4 lg:block">
+        <div className="space-y-2 border-t border-[#e5d7c2]/80 p-4">
           <Link
             href="/"
-            className="block rounded-full border border-[#e5d7c2] bg-[#fffaf3] px-3 py-2.5 text-center text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e] hover:bg-[#fff6e8]"
+            className="hidden rounded-full border border-[#e5d7c2] bg-[#fffaf3] px-3 py-2.5 text-center text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e] hover:bg-[#fff6e8] lg:block"
           >
             ← Public website
           </Link>
+          <PortalSignOut />
         </div>
       </aside>
       <section className="min-w-0 p-5 sm:p-7 lg:p-10">{children}</section>

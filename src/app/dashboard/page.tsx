@@ -6,6 +6,7 @@ import { getPortalHomeForRole } from "@/lib/auth-redirect";
 import { prisma } from "@/lib/prisma";
 import { getUserSubscription } from "@/lib/subscription";
 import { buildWhatsAppUrl } from "@/lib/contact";
+import { PortalSignOut } from "@/components/auth/PortalSignOut";
 import {
   EditorialEyebrow,
   EditorialSection,
@@ -53,9 +54,12 @@ export default async function DashboardPage() {
               Subscription: {sub?.tier ?? "BASIC"} / {sub?.status ?? "INACTIVE"}
             </p>
           </div>
-          <Link href="/" className={editorialCtaSecondary}>
-            Public website
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            <Link href="/" className={editorialCtaSecondary}>
+              Public website
+            </Link>
+            <PortalSignOut className={`${editorialCtaSecondary} cursor-pointer`} />
+          </div>
         </div>
         <div className="mt-8 grid gap-3 md:grid-cols-4">
           <article className={`${editorialPanel} p-4`}>

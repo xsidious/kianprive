@@ -4,6 +4,7 @@ import { Role } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { canAccessAmbassadorPortal } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
+import { PortalSignOut } from "@/components/auth/PortalSignOut";
 
 const links = [
   { href: "/ambassador", label: "Overview" },
@@ -46,13 +47,14 @@ export default async function AmbassadorLayout({ children }: { children: React.R
             </Link>
           ))}
         </nav>
-        <div className="hidden border-t border-[#d9c7a866] p-4 lg:block">
+        <div className="space-y-2 border-t border-[#d9c7a866] p-4">
           <Link
             href="/"
-            className="block rounded-full border border-[#d9c7a866] bg-[#fffaf3] px-3 py-2.5 text-center text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e] hover:bg-[#fff6e8]"
+            className="hidden rounded-full border border-[#d9c7a866] bg-[#fffaf3] px-3 py-2.5 text-center text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e] hover:bg-[#fff6e8] lg:block"
           >
             ← Public website
           </Link>
+          <PortalSignOut className="block w-full rounded-full border border-[#d9c7a866] bg-white px-3 py-2.5 text-center text-[10px] uppercase tracking-[0.14em] text-[#5f5344] hover:bg-[#fff6e8] hover:text-[#8f6f3e]" />
         </div>
       </aside>
       <section className="min-w-0 p-5 sm:p-6 lg:p-8">{children}</section>

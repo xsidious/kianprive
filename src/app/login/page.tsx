@@ -2,10 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { getSession, signIn } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
-import { resolvePostLoginPath } from "@/lib/auth-redirect";
 import {
   EditorialEyebrow,
   EditorialSection,
@@ -38,9 +37,9 @@ function LoginForm() {
       return;
     }
 
-    const session = await getSession();
-    const dest = resolvePostLoginPath(session?.user?.role, callbackUrl);
-    window.location.href = dest;
+    const continueUrl = new URL("/auth/continue", window.location.origin);
+    if (callbackUrl) continueUrl.searchParams.set("callbackUrl", callbackUrl);
+    window.location.href = continueUrl.toString();
   }
 
   return (
@@ -52,22 +51,22 @@ function LoginForm() {
               <Image src="/images/kian-prive-logo.png" alt="KIAN Privé logo" fill className="object-contain object-left" />
             </div>
             <div className="mt-6">
-              <EditorialEyebrow>SECURE ACCESS</EditorialEyebrow>
+              <EditorialEyebrow>MEMBERS PORTAL</EditorialEyebrow>
             </div>
             <h1 className="mt-4 font-serif text-4xl text-[#1f1a15] sm:text-5xl">Welcome Back</h1>
             <p className="mt-3 max-w-xl text-[#6f6251]">
-              Members, ambassadors, partners, and staff are routed to the right dashboard after sign-in.
+              Existing approved members can sign in and continue directly to their dashboard and subscription tools.
             </p>
             <div className="mt-7 grid gap-3 text-sm text-[#5f5344]">
-              <p className={`${editorialPanel} px-4 py-3`}>Members → member dashboard</p>
-              <p className={`${editorialPanel} px-4 py-3`}>Ambassadors → ambassador portal</p>
-              <p className={`${editorialPanel} px-4 py-3`}>Partners → partner portal · Staff → admin</p>
+              <p className={`${editorialPanel} px-4 py-3`}>Fast access for approved private members.</p>
+              <p className={`${editorialPanel} px-4 py-3`}>Secure credential login with role-based access.</p>
+              <p className={`${editorialPanel} px-4 py-3`}>Onboarding for new members is consultation-led.</p>
             </div>
           </aside>
 
           <div className="space-y-4">
             <div className={`${editorialPanel} p-6 sm:p-8`}>
-              <h2 className="font-serif text-2xl text-[#1f1a15]">Sign In</h2>
+              <h2 className="font-serif text-2xl text-[#1f1a15]">Member Sign In</h2>
               <p className="mt-2 text-sm text-[#6f6251]">Use your approved account credentials to continue.</p>
               <form onSubmit={onSubmit} className="mt-6 space-y-4">
                 <input

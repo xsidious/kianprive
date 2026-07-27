@@ -315,28 +315,25 @@ export function Navbar() {
               <div className="mt-3 rounded-sm border border-[#e8dfd0] p-2">
                 <p className="px-2 font-serif text-[10px] uppercase tracking-[0.2em] text-[#8a682e]">My Account</p>
                 <div className="mt-1 grid gap-1">
-                  <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#faf6f0]">
-                    Dashboard
+                  <Link href={portalHome} onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#faf6f0]">
+                    {portalLabel}
                   </Link>
-                  <Link href="/dashboard/profile" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#faf6f0]">
-                    Profile
+                  {(data.user.role === "MEMBER" || data.user.role === "GUEST") && (
+                    <>
+                      <Link href="/dashboard/profile" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#faf6f0]">
+                        Profile
+                      </Link>
+                      <Link href="/dashboard/subscription" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#faf6f0]">
+                        Subscription
+                      </Link>
+                      <Link href="/dashboard/services" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#faf6f0]">
+                        My Services
+                      </Link>
+                    </>
+                  )}
+                  <Link href="/" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#faf6f0]">
+                    Public website
                   </Link>
-                  <Link href="/dashboard/subscription" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#faf6f0]">
-                    Subscription
-                  </Link>
-                  <Link href="/dashboard/services" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#faf6f0]">
-                    My Services
-                  </Link>
-                  {data.user.role === "PARTNER" ? (
-                    <Link href="/partner" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#faf6f0]">
-                      Partner Portal
-                    </Link>
-                  ) : null}
-                  {data.user.role === "ADMIN" || data.user.role === "OPERATIONS" || data.user.role === "EDITOR" ? (
-                    <Link href="/admin" onClick={() => setMobileOpen(false)} className="rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#faf6f0]">
-                      Admin Dashboard
-                    </Link>
-                  ) : null}
                   <button
                     type="button"
                     onClick={() => signOut({ callbackUrl: "/" })}

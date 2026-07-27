@@ -6,6 +6,7 @@ import { canAccessPartnerPortal } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { buildWhatsAppUrl, conciergeEmail } from "@/lib/contact";
 import { PartnerSidebarNav } from "@/components/partner/PartnerSidebarNav";
+import { PortalSignOut } from "@/components/auth/PortalSignOut";
 
 export default async function PartnerLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -71,27 +72,28 @@ export default async function PartnerLayout({ children }: { children: React.Reac
           </div>
         </div>
 
-        <div className="hidden space-y-2 border-t border-[#e4d9c8] p-4 lg:block">
+        <div className="space-y-2 border-t border-[#e4d9c8] p-4">
           <a
             href={whatsapp}
             target="_blank"
             rel="noreferrer"
-            className="block rounded-sm border border-[#e4d9c8] px-3 py-2 text-center text-[10px] tracking-[0.14em] text-[#8f6f3e] hover:bg-[#fff6e8]"
+            className="hidden rounded-sm border border-[#e4d9c8] px-3 py-2 text-center text-[10px] tracking-[0.14em] text-[#8f6f3e] hover:bg-[#fff6e8] lg:block"
           >
             WHATSAPP
           </a>
           <a
             href={`mailto:${conciergeEmail}?subject=${encodeURIComponent(`Partner support — ${partnerName}`)}`}
-            className="block rounded-sm border border-[#e4d9c8] px-3 py-2 text-center text-[10px] tracking-[0.14em] text-[#8f6f3e] hover:bg-[#fff6e8]"
+            className="hidden rounded-sm border border-[#e4d9c8] px-3 py-2 text-center text-[10px] tracking-[0.14em] text-[#8f6f3e] hover:bg-[#fff6e8] lg:block"
           >
             EMAIL CONCIERGE
           </a>
           <Link
             href="/"
-            className="block rounded-sm border border-[#e4d9c8] bg-[#fffaf3] px-3 py-2.5 text-center text-[10px] tracking-[0.14em] text-[#8f6f3e] hover:bg-[#fff6e8]"
+            className="hidden rounded-sm border border-[#e4d9c8] bg-[#fffaf3] px-3 py-2.5 text-center text-[10px] tracking-[0.14em] text-[#8f6f3e] hover:bg-[#fff6e8] lg:block"
           >
             ← Public website
           </Link>
+          <PortalSignOut className="block w-full rounded-sm border border-[#e4d9c8] bg-white px-3 py-2.5 text-center text-[10px] tracking-[0.14em] text-[#5f5344] hover:bg-[#fff6e8] hover:text-[#8f6f3e]" />
         </div>
       </aside>
 
