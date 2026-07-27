@@ -19,7 +19,6 @@ export default async function AdminPage() {
     bookingRequests,
     postsCount,
     intakeCount,
-    ambassadorCount,
     pendingIntake,
   ] = await Promise.all([
     prisma.user.findMany({
@@ -37,11 +36,18 @@ export default async function AdminPage() {
     }),
     prisma.blogPost.count(),
     prisma.therapeuticsIntakeSubmission.count(),
-    prisma.partnerProfile.count({ where: { type: "AMBASSADOR" } }),
     prisma.therapeuticsIntakeSubmission.count({
       where: { status: { in: ["PENDING_REVIEW", "UNDER_PHYSICIAN_REVIEW", "NEEDS_FOLLOW_UP"] } },
     }),
   ]);
+
+  // Soft-fail until production DB has Role/PartnerType AMBASSADOR enum values.
+  let ambassadorCount = 0;
+  try {
+    ambassadorCount = await prisma.partnerProfile.count({ where: { type: "AMBASSADOR" } });
+  } catch (error) {
+    console.error("[admin] Ambassador count unavailable (run AMBASSADOR enum migration):", error);
+  }
 
   const stats = [
     { label: "Orders", value: orderCount, href: "/admin/orders" },

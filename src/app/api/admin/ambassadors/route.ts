@@ -20,14 +20,27 @@ export async function GET() {
   const access = await requireAdminAccess();
   if (!access.ok) return access.response;
 
-  const ambassadors = await prisma.partnerProfile.findMany({
-    where: { type: "AMBASSADOR" },
-    include: {
-      user: { select: { id: true, email: true, name: true, role: true } },
-      _count: { select: { orders: true, commissionEntries: true } },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+  let ambassadors;
+  try {
+    ambassadors = await prisma.partnerProfile.findMany({
+      where: { type: "AMBASSADOR" },
+      include: {
+        user: { select: { id: true, email: true, name: true, role: true } },
+        _count: { select: { orders: true, commissionEntries: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  } catch (error) {
+    console.error("[admin/ambassadors] Enum migration required:", error);
+    return NextResponse.json(
+      {
+        error:
+          "Database is missing the AMBASSADOR enum. Run this in Neon SQL Editor: ALTER TYPE \"Role\" ADD VALUE IF NOT EXISTS 'AMBASSADOR'; ALTER TYPE \"PartnerType\" ADD VALUE IF NOT EXISTS 'AMBASSADOR';",
+        ambassadors: [],
+      },
+      { status: 503 },
+    );
+  }
 
   const monthStart = new Date();
   monthStart.setDate(1);
