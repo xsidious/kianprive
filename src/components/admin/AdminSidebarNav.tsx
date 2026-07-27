@@ -17,6 +17,7 @@ const adminGroups = [
     links: [
       { href: "/admin/users", label: "Users" },
       { href: "/admin/partners", label: "Partners" },
+      { href: "/admin/providers", label: "Providers" },
       { href: "/admin/ambassadors", label: "Ambassadors" },
     ],
   },

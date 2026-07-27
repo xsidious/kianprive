@@ -16,6 +16,9 @@ export function getPortalHomeForRole(role?: Role | string | null) {
     case Role.AMBASSADOR:
     case "AMBASSADOR":
       return "/ambassador";
+    case Role.PROVIDER:
+    case "PROVIDER":
+      return "/provider";
     case Role.MEMBER:
     case "MEMBER":
       return "/dashboard";
@@ -39,6 +42,9 @@ export function getPortalLabelForRole(role?: Role | string | null) {
     case Role.AMBASSADOR:
     case "AMBASSADOR":
       return "Ambassador portal";
+    case Role.PROVIDER:
+    case "PROVIDER":
+      return "Provider portal";
     default:
       return "Dashboard";
   }
@@ -59,11 +65,15 @@ export function resolvePostLoginPath(role: Role | string | null | undefined, cal
   if (role === Role.AMBASSADOR || role === "AMBASSADOR") {
     return callbackUrl.startsWith("/ambassador") ? callbackUrl : home;
   }
+  if (role === Role.PROVIDER || role === "PROVIDER") {
+    return callbackUrl.startsWith("/provider") ? callbackUrl : home;
+  }
 
   if (
     callbackUrl.startsWith("/admin") ||
     callbackUrl.startsWith("/partner") ||
-    callbackUrl.startsWith("/ambassador")
+    callbackUrl.startsWith("/ambassador") ||
+    callbackUrl.startsWith("/provider")
   ) {
     return home;
   }

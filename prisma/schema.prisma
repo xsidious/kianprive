@@ -662,6 +662,7 @@ enum Role {
   ADMIN
   PARTNER
   AMBASSADOR
+  PROVIDER
 }
 
 enum PartnerType {
@@ -669,6 +670,7 @@ enum PartnerType {
   BRAND
   BOTH
   AMBASSADOR
+  PROVIDER
 }
 
 enum PartnerStatus {

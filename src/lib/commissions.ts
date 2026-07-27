@@ -13,6 +13,8 @@ export async function createServiceCommissionForBooking(bookingId: string) {
     },
   });
   if (!booking?.partnerId || !booking.partner) return null;
+  // Ambassadors are product-referral only — no visit payouts.
+  if (booking.partner.type === "AMBASSADOR") return null;
 
   const existing = await prisma.commissionLedgerEntry.findFirst({
     where: { bookingId, sourceType: "SERVICE", status: { not: "VOID" } },
@@ -79,6 +81,8 @@ export async function createProductCommissionsForOrder(orderId: string) {
     if (!partner) continue;
 
     const assignment = partner.productAssignments[0];
+    // Providers earn on services/visits only — skip product commissions.
+    if (partner.type === "PROVIDER") continue;
     const isAmbassador = partner.type === "AMBASSADOR";
     if (!assignment && !isAmbassador) continue;
 

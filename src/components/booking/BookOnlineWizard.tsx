@@ -65,7 +65,7 @@ const COUNT_OPTIONS = [
   },
 ];
 
-const MEDICAL_AESTHETICS_PROVIDER_OPTIONS = [
+const FALLBACK_AESTHETICS_PROVIDERS = [
   { id: "dr-karl-ryan", label: "Dr. Karl Ryan, DDS" },
   { id: "dr-john-maarouf", label: "Dr. John Maarouf, DO" },
 ];
@@ -144,6 +144,7 @@ export function BookOnlineWizard() {
   const [serviceInterest, setServiceInterest] = useState<ServiceInterest>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedProvider, setSelectedProvider] = useState("");
+  const [providerOptions, setProviderOptions] = useState(FALLBACK_AESTHETICS_PROVIDERS);
   const [selectedDateKey, setSelectedDateKey] = useState("");
   const [selectedSlotId, setSelectedSlotId] = useState("");
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
@@ -201,6 +202,26 @@ export function BookOnlineWizard() {
   useEffect(() => {
     capturePartnerReferralFromUrl(searchParams);
   }, [searchParams]);
+
+  useEffect(() => {
+    if (!needsProviderStep) return;
+    let cancelled = false;
+    void fetch("/api/providers?service=facial-aesthetics")
+      .then(async (res) => {
+        if (!res.ok) return;
+        const payload = (await res.json()) as { providers?: { id: string; label: string }[] };
+        if (cancelled) return;
+        if (payload.providers?.length) {
+          setProviderOptions(payload.providers.map((p) => ({ id: p.id, label: p.label })));
+        }
+      })
+      .catch(() => {
+        /* keep fallback providers */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [needsProviderStep]);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -708,7 +729,7 @@ export function BookOnlineWizard() {
               <h2 className="text-2xl font-medium text-[#1f1a15] sm:text-3xl">Choose your Medical Aesthetics provider</h2>
               <p className="mt-2 text-[#6f6251]">Select a provider before picking your date and time.</p>
               <div className="mt-6 grid gap-3">
-                {MEDICAL_AESTHETICS_PROVIDER_OPTIONS.map((provider) => {
+                {providerOptions.map((provider) => {
                   const active = selectedProvider === provider.label;
                   return (
                     <button

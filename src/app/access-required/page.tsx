@@ -32,6 +32,18 @@ const copyByTarget: Record<string, { title: string; description: string; loginRe
       "Your partner account is missing, invited, or suspended. Contact KIAN Privé concierge if you need activation.",
     loginRedirect: "/partner",
   },
+  provider: {
+    title: "Provider portal access required.",
+    description:
+      "Your provider account is missing, invited, or suspended. Contact KIAN Privé admin if you need activation.",
+    loginRedirect: "/provider",
+  },
+  ambassador: {
+    title: "Ambassador portal access required.",
+    description:
+      "Your ambassador account is missing, invited, or suspended. Contact KIAN Privé admin if you need activation.",
+    loginRedirect: "/ambassador",
+  },
 };
 
 function AccessRequiredContent() {

@@ -11,7 +11,7 @@ const createSchema = z.object({
   password: z.string().min(8),
   displayName: z.string().min(2),
   legalName: z.string().optional(),
-  type: z.enum(["CLINICAL", "BRAND", "BOTH", "AMBASSADOR"]).default("CLINICAL"),
+  type: z.enum(["CLINICAL", "BRAND", "BOTH", "AMBASSADOR", "PROVIDER"]).default("CLINICAL"),
   specialty: z.string().optional(),
   specialtyTags: z.array(z.string()).optional(),
   phone: z.string().optional(),
@@ -25,6 +25,7 @@ export async function GET() {
   if (!access.ok) return access.response;
 
   const partners = await prisma.partnerProfile.findMany({
+    where: { type: { notIn: ["AMBASSADOR", "PROVIDER"] } },
     include: {
       user: { select: { id: true, email: true, name: true, role: true } },
       serviceAssignments: true,
@@ -64,7 +65,7 @@ export async function POST(req: Request) {
         name: parsed.data.name,
         email: parsed.data.email.toLowerCase(),
         passwordHash,
-        role: parsed.data.type === "AMBASSADOR" ? "AMBASSADOR" : "PARTNER",
+        role: parsed.data.type === "AMBASSADOR" ? "AMBASSADOR" : parsed.data.type === "PROVIDER" ? "PROVIDER" : "PARTNER",
       },
     });
     return tx.partnerProfile.create({

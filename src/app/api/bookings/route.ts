@@ -145,7 +145,14 @@ export async function POST(req: Request) {
     const byCode = await prisma.partnerProfile.findUnique({
       where: { partnerCode: parsed.data.partnerCode.toUpperCase() },
     });
-    if (byCode && byCode.status === "ACTIVE") partnerId = byCode.id;
+    // Ambassadors attribute shop sales; service bookings attribute to providers/clinical partners only.
+    if (
+      byCode &&
+      byCode.status === "ACTIVE" &&
+      (byCode.type === "PROVIDER" || byCode.type === "CLINICAL" || byCode.type === "BOTH")
+    ) {
+      partnerId = byCode.id;
+    }
   }
 
   let booking: {

@@ -22,6 +22,10 @@ export default async function PartnerLayout({ children }: { children: React.Reac
     redirect("/ambassador");
   }
 
+  if (session.user.role === Role.PROVIDER) {
+    redirect("/provider");
+  }
+
   let partnerName = "Partner";
   let partnerCode = "";
   if (session.user.role === Role.PARTNER) {

@@ -54,8 +54,9 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   const isAdminRoute = pathname?.startsWith("/admin");
   const isPartnerRoute = pathname?.startsWith("/partner");
   const isAmbassadorRoute = pathname?.startsWith("/ambassador");
+  const isProviderRoute = pathname?.startsWith("/provider");
 
-  if (isAdminRoute || isPartnerRoute || isAmbassadorRoute) {
+  if (isAdminRoute || isPartnerRoute || isAmbassadorRoute || isProviderRoute) {
     return <main className="min-h-screen bg-[var(--bg)]">{children}</main>;
   }
 

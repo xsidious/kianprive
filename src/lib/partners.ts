@@ -10,7 +10,7 @@ export function generatePartnerCode(displayName: string) {
   return `${base || "PARTNER"}${suffix}`;
 }
 
-/** Resolve partner for a booking from service assignments; prefer unique match. */
+/** Resolve partner for a booking from service assignments; prefer unique match / providers. */
 export async function resolvePartnerIdForServices(serviceIds: string[], preferredName?: string | null) {
   if (!serviceIds.length) return null;
 
@@ -18,15 +18,16 @@ export async function resolvePartnerIdForServices(serviceIds: string[], preferre
     where: {
       active: true,
       serviceSlug: { in: serviceIds },
-      partner: { status: "ACTIVE" },
+      partner: {
+        status: "ACTIVE",
+        // Ambassadors are product-only; do not auto-assign them to visits.
+        type: { not: "AMBASSADOR" },
+      },
     },
     include: { partner: true },
   });
 
   if (!assignments.length) return null;
-
-  const uniquePartnerIds = [...new Set(assignments.map((a) => a.partnerId))];
-  if (uniquePartnerIds.length === 1) return uniquePartnerIds[0] ?? null;
 
   if (preferredName) {
     const normalized = preferredName.toLowerCase();
@@ -37,6 +38,14 @@ export async function resolvePartnerIdForServices(serviceIds: string[], preferre
     );
     if (match) return match.partnerId;
   }
+
+  // Prefer dedicated providers when multiple partners share a service.
+  const providers = assignments.filter((a) => a.partner.type === "PROVIDER");
+  const providerIds = [...new Set(providers.map((a) => a.partnerId))];
+  if (providerIds.length === 1) return providerIds[0] ?? null;
+
+  const uniquePartnerIds = [...new Set(assignments.map((a) => a.partnerId))];
+  if (uniquePartnerIds.length === 1) return uniquePartnerIds[0] ?? null;
 
   return null;
 }

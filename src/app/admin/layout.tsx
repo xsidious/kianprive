@@ -33,6 +33,7 @@ export default async function AdminLayout({
               { href: "/admin/products", label: "Products" },
               { href: "/admin/orders", label: "Orders" },
               { href: "/admin/ambassadors", label: "Ambassadors" },
+              { href: "/admin/providers", label: "Providers" },
               { href: "/admin/seo", label: "SEO" },
               { href: "/admin/analytics", label: "Analytics" },
             ].map((link) => (

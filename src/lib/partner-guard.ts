@@ -27,7 +27,10 @@ export async function requirePartnerAccess(opts?: { allowAdmin?: boolean }) {
     };
   }
 
-  const isPortalUser = session.user.role === Role.PARTNER || session.user.role === Role.AMBASSADOR;
+  const isPortalUser =
+    session.user.role === Role.PARTNER ||
+    session.user.role === Role.AMBASSADOR ||
+    session.user.role === Role.PROVIDER;
   const partner = isPortalUser
     ? await prisma.partnerProfile.findUnique({ where: { userId: session.user.id } })
     : null;
