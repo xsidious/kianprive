@@ -47,8 +47,11 @@ export default async function AmbassadorLayout({ children }: { children: React.R
           ))}
         </nav>
         <div className="hidden border-t border-[#d9c7a866] p-4 lg:block">
-          <Link href="/" className="block text-center text-xs text-[#6f6251] hover:text-[#8f6f3e]">
-            ← Public site
+          <Link
+            href="/"
+            className="block rounded-full border border-[#d9c7a866] bg-[#fffaf3] px-3 py-2.5 text-center text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e] hover:bg-[#fff6e8]"
+          >
+            ← Public website
           </Link>
         </div>
       </aside>

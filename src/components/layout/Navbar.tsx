@@ -6,6 +6,7 @@ import { ChevronDown, LogOut, Menu, ShoppingBag, User, X } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/providers/cart-provider";
+import { getPortalHomeForRole, getPortalLabelForRole } from "@/lib/auth-redirect";
 
 const LOGO_SRC = "/images/kian-prive-logo.png";
 
@@ -43,6 +44,8 @@ export function Navbar() {
   const { itemCount, openCart, hydrated } = useCart();
   const displayCount = hydrated ? itemCount : 0;
   const initials = (data?.user?.name ?? data?.user?.email ?? "M").slice(0, 1).toUpperCase();
+  const portalHome = getPortalHomeForRole(data?.user?.role);
+  const portalLabel = getPortalLabelForRole(data?.user?.role);
 
   useEffect(() => {
     function onPointerDown(event: MouseEvent) {
@@ -130,9 +133,17 @@ export function Navbar() {
               </span>
             ) : null}
           </button>
+          {data?.user ? (
+            <Link
+              href={portalHome}
+              className="rounded-sm bg-[#8a682e] px-4 py-2 font-serif text-[11px] uppercase tracking-[0.16em] text-white transition hover:bg-[#735624]"
+            >
+              {portalLabel}
+            </Link>
+          ) : null}
           <Link
             href="/book-online"
-            className="rounded-sm bg-[#8a682e] px-4 py-2 font-serif text-[11px] uppercase tracking-[0.16em] text-white transition hover:bg-[#735624]"
+            className="rounded-sm border border-[#b6a185] px-4 py-2 font-serif text-[11px] uppercase tracking-[0.16em] text-[#b6a185] transition hover:bg-[#faf6f0] hover:text-[#8a682e]"
           >
             Book Online
           </Link>
@@ -155,20 +166,27 @@ export function Navbar() {
                     <p className="text-sm text-[#1f1a15]">{data.user.name ?? "Member"}</p>
                     <p className="text-xs text-[#6f6251]">{data.user.email}</p>
                   </div>
-                  <Link href="/dashboard" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
-                    Dashboard
+                  <Link href={portalHome} className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
+                    {portalLabel}
                   </Link>
-                  <Link href="/dashboard/profile" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
-                    Profile
-                  </Link>
-                  <Link href="/dashboard/subscription" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
-                    Subscription
-                  </Link>
-                  <Link href="/dashboard/services" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
-                    My Services
-                  </Link>
+                  {data.user.role === "MEMBER" || data.user.role === "GUEST" ? (
+                    <>
+                      <Link href="/dashboard/profile" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
+                        Profile
+                      </Link>
+                      <Link href="/dashboard/subscription" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
+                        Subscription
+                      </Link>
+                      <Link href="/dashboard/services" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
+                        My Services
+                      </Link>
+                    </>
+                  ) : null}
                   <Link href="/book-online" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                     Book Consultations
+                  </Link>
+                  <Link href="/" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
+                    Public website
                   </Link>
                   {data.user.role === "PARTNER" ? (
                     <Link href="/partner" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
@@ -286,11 +304,11 @@ export function Navbar() {
                 Book Online
               </Link>
               <Link
-                href={data?.user ? "/dashboard" : "/login"}
+                href={data?.user ? portalHome : "/login"}
                 onClick={() => setMobileOpen(false)}
                 className="rounded-sm border border-[#b6a185] px-4 py-3 text-center font-serif text-[11px] uppercase tracking-[0.16em] text-[#b6a185]"
               >
-                Members
+                {data?.user ? portalLabel : "Members"}
               </Link>
             </div>
             {data?.user ? (

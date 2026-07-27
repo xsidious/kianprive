@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BadgeDollarSign, CalendarCheck2, CircleUserRound, Crown, MessageCircleMore, PackageCheck } from "lucide-react";
 import { auth } from "@/lib/auth";
+import { getPortalHomeForRole } from "@/lib/auth-redirect";
 import { prisma } from "@/lib/prisma";
 import { getUserSubscription } from "@/lib/subscription";
 import { buildWhatsAppUrl } from "@/lib/contact";
@@ -17,6 +18,10 @@ export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
+  const roleHome = getPortalHomeForRole(session.user.role);
+  if (roleHome !== "/dashboard") {
+    redirect(roleHome);
+  }
   const [sub, orders, bookings] = await Promise.all([
     getUserSubscription(session.user.id),
     prisma.order.findMany({
@@ -40,12 +45,18 @@ export default async function DashboardPage() {
     <div className="-mt-[1px]">
       <EditorialSection>
         <EditorialEyebrow>MEMBER DASHBOARD</EditorialEyebrow>
-        <h1 className="mt-4 font-serif text-4xl text-[#1f1a15]">Welcome back, {session.user.name ?? "Member"}</h1>
-        <p className="mt-3 text-[#6f6251]">Role: {session.user.role}</p>
-        <p className="text-[#6f6251]">
-          Subscription: {sub?.tier ?? "BASIC"} / {sub?.status ?? "INACTIVE"}
-        </p>
-
+        <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h1 className="font-serif text-4xl text-[#1f1a15]">Welcome back, {session.user.name ?? "Member"}</h1>
+            <p className="mt-3 text-[#6f6251]">Role: {session.user.role}</p>
+            <p className="text-[#6f6251]">
+              Subscription: {sub?.tier ?? "BASIC"} / {sub?.status ?? "INACTIVE"}
+            </p>
+          </div>
+          <Link href="/" className={editorialCtaSecondary}>
+            Public website
+          </Link>
+        </div>
         <div className="mt-8 grid gap-3 md:grid-cols-4">
           <article className={`${editorialPanel} p-4`}>
             <p className="inline-flex items-center gap-2 text-xs tracking-[0.14em] text-[#8f6f3e]">

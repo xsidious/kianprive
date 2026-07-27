@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { FloatingWhatsAppButton } from "@/components/layout/FloatingWhatsAppButton";
 import { FloatingMedicalDisclaimer } from "@/components/layout/FloatingMedicalDisclaimer";
+import { getPortalHomeForRole, getPortalLabelForRole } from "@/lib/auth-redirect";
 
 const CartDrawer = dynamic(
   () => import("@/components/cart/cart-drawer").then((m) => m.CartDrawer),
@@ -18,6 +19,8 @@ function SignedInContextBar() {
   const { data, status } = useSession();
   if (status !== "authenticated" || !data?.user) return null;
   const label = data.user.name ?? data.user.email ?? "Member";
+  const portalHome = getPortalHomeForRole(data.user.role);
+  const portalLabel = getPortalLabelForRole(data.user.role);
   return (
     <div className="border-b border-[#2e7d3228] bg-[#f0f9f0] px-4 py-2 text-center text-[11px] text-[#2e7d32] sm:text-xs">
       <span className="font-medium text-[#1b5e20]">Signed in</span>
@@ -25,10 +28,14 @@ function SignedInContextBar() {
       <span className="text-[#3b3024]">{label}</span>
       <span className="mx-2 hidden text-[#c4c4c4] sm:inline">|</span>
       <Link
-        href="/dashboard"
-        className="text-[#1b5e20] underline decoration-[#2e7d3240] underline-offset-2 hover:decoration-[#1b5e20]"
+        href={portalHome}
+        className="font-medium text-[#1b5e20] underline decoration-[#2e7d3240] underline-offset-2 hover:decoration-[#1b5e20]"
       >
-        Dashboard
+        {portalLabel}
+      </Link>
+      <span className="mx-2 text-[#c4c4c4]">|</span>
+      <Link href="/" className="text-[#5f5344] underline decoration-[#b78d4b55] underline-offset-2 hover:text-[#3b3024]">
+        Website
       </Link>
       <span className="mx-2 text-[#c4c4c4]">|</span>
       <button

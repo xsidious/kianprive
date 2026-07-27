@@ -88,9 +88,9 @@ export default async function PartnerLayout({ children }: { children: React.Reac
           </a>
           <Link
             href="/"
-            className="block px-3 py-1 text-center text-xs text-[#6f6251] hover:text-[#8f6f3e]"
+            className="block rounded-sm border border-[#e4d9c8] bg-[#fffaf3] px-3 py-2.5 text-center text-[10px] tracking-[0.14em] text-[#8f6f3e] hover:bg-[#fff6e8]"
           >
-            ← Public site
+            ← Public website
           </Link>
         </div>
       </aside>

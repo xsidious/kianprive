@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { getSession, signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
+import { resolvePostLoginPath } from "@/lib/auth-redirect";
 import {
   EditorialEyebrow,
   EditorialSection,
@@ -13,22 +15,32 @@ import {
   editorialPanel,
 } from "@/components/ui/editorial-primitives";
 
-export default function LoginPage() {
+function LoginForm() {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setLoading(true);
     const result = await signIn("credentials", {
       email,
       password,
-      callbackUrl: "/dashboard",
       redirect: false,
     });
-    if (result?.error) setError("Invalid credentials.");
-    if (result?.url) window.location.href = result.url;
+    if (result?.error) {
+      setError("Invalid credentials.");
+      setLoading(false);
+      return;
+    }
+
+    const session = await getSession();
+    const dest = resolvePostLoginPath(session?.user?.role, callbackUrl);
+    window.location.href = dest;
   }
 
   return (
@@ -40,22 +52,22 @@ export default function LoginPage() {
               <Image src="/images/kian-prive-logo.png" alt="KIAN Privé logo" fill className="object-contain object-left" />
             </div>
             <div className="mt-6">
-              <EditorialEyebrow>MEMBERS PORTAL</EditorialEyebrow>
+              <EditorialEyebrow>SECURE ACCESS</EditorialEyebrow>
             </div>
             <h1 className="mt-4 font-serif text-4xl text-[#1f1a15] sm:text-5xl">Welcome Back</h1>
             <p className="mt-3 max-w-xl text-[#6f6251]">
-              Existing approved members can sign in and continue directly to their dashboard and subscription tools.
+              Members, ambassadors, partners, and staff are routed to the right dashboard after sign-in.
             </p>
             <div className="mt-7 grid gap-3 text-sm text-[#5f5344]">
-              <p className={`${editorialPanel} px-4 py-3`}>Fast access for approved private members.</p>
-              <p className={`${editorialPanel} px-4 py-3`}>Secure credential login with role-based access.</p>
-              <p className={`${editorialPanel} px-4 py-3`}>Onboarding for new members is consultation-led.</p>
+              <p className={`${editorialPanel} px-4 py-3`}>Members → member dashboard</p>
+              <p className={`${editorialPanel} px-4 py-3`}>Ambassadors → ambassador portal</p>
+              <p className={`${editorialPanel} px-4 py-3`}>Partners → partner portal · Staff → admin</p>
             </div>
           </aside>
 
           <div className="space-y-4">
             <div className={`${editorialPanel} p-6 sm:p-8`}>
-              <h2 className="font-serif text-2xl text-[#1f1a15]">Member Sign In</h2>
+              <h2 className="font-serif text-2xl text-[#1f1a15]">Sign In</h2>
               <p className="mt-2 text-sm text-[#6f6251]">Use your approved account credentials to continue.</p>
               <form onSubmit={onSubmit} className="mt-6 space-y-4">
                 <input
@@ -64,6 +76,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
                 <input
                   className={editorialInput}
@@ -71,10 +84,11 @@ export default function LoginPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
                 {error ? <p className="text-sm text-red-500">{error}</p> : null}
-                <button type="submit" className={`w-full ${editorialCtaPrimary}`}>
-                  LOGIN
+                <button type="submit" disabled={loading} className={`w-full ${editorialCtaPrimary}`}>
+                  {loading ? "SIGNING IN…" : "LOGIN"}
                 </button>
               </form>
             </div>
@@ -100,5 +114,13 @@ export default function LoginPage() {
         </div>
       </EditorialSection>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="p-10 text-sm text-[#6f6251]">Loading sign-in…</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }

@@ -50,9 +50,9 @@ export default async function AdminLayout({
         <div className="hidden space-y-2 border-t border-[#e5d7c2]/80 p-4 lg:block">
           <Link
             href="/"
-            className="block rounded-full border border-[#e5d7c2] px-3 py-2 text-center text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e] hover:bg-[#fff6e8]"
+            className="block rounded-full border border-[#e5d7c2] bg-[#fffaf3] px-3 py-2.5 text-center text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e] hover:bg-[#fff6e8]"
           >
-            View site
+            ← Public website
           </Link>
         </div>
       </aside>
