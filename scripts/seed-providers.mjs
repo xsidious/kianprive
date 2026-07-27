@@ -28,6 +28,16 @@ const providers = [
     services: ["facial-aesthetics", "iv-therapy"],
     password: "JohnMaarouf$Kp6tQ!",
   },
+  {
+    name: "Dr. Carmen Ramirez",
+    email: "carmen.ramirez@kianprive.com",
+    displayName: "Dr. Carmen Ramirez",
+    specialty: "Clinical Care",
+    code: "CARMENRAM",
+    servicePct: 25,
+    services: ["telemedicine", "comprehensive-bloodwork", "nutrition", "glp1-peptides"],
+    password: "CarmenRamirez#Kp5wL!",
+  },
 ];
 
 async function main() {
