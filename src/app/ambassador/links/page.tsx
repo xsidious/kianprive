@@ -1,14 +1,15 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
-import { ambassadorReferralLinks, qrCodeImageUrl } from "@/lib/ambassador";
+import { BrandedQrCard } from "@/components/ambassador/BrandedQrCard";
+import { ambassadorReferralLinks } from "@/lib/ambassador";
 import { adminBtnGhost, adminEyebrow, adminMuted, adminPanel, adminTitle } from "@/components/admin/ui";
 
 export default function AmbassadorLinksPage() {
   const [code, setCode] = useState("");
   const [copied, setCopied] = useState("");
   const [error, setError] = useState("");
+  const [target, setTarget] = useState<"shop" | "home" | "book">("shop");
 
   useEffect(() => {
     void fetch("/api/partner/dashboard")
@@ -21,6 +22,7 @@ export default function AmbassadorLinksPage() {
   }, []);
 
   const links = code ? ambassadorReferralLinks(code) : null;
+  const qrValue = links ? links[target] : "";
 
   async function copy(label: string, value: string) {
     await navigator.clipboard.writeText(value);
@@ -33,13 +35,41 @@ export default function AmbassadorLinksPage() {
       <div>
         <p className={adminEyebrow}>Share</p>
         <h1 className={adminTitle}>Links & QR</h1>
-        <p className={adminMuted}>Send customers your shop link or QR. Purchases attribute to your ambassador code.</p>
+        <p className={adminMuted}>
+          Your code works for shop purchases and book-online referrals. Customers who open your link are tracked for 30
+          days.
+        </p>
       </div>
       {error ? <p className="text-sm text-[#7c2c2c]">{error}</p> : null}
       {links ? (
-        <div className={`${adminPanel} grid gap-6 p-5 md:grid-cols-[180px_1fr]`}>
-          <div className="rounded-sm border border-[#efe6d8] bg-white p-3">
-            <Image src={qrCodeImageUrl(links.shop, 240)} alt="Ambassador QR" width={240} height={240} unoptimized className="h-auto w-full" />
+        <div className={`${adminPanel} grid gap-6 p-5 lg:grid-cols-[300px_1fr]`}>
+          <div>
+            <div className="mb-3 flex flex-wrap gap-2">
+              {(
+                [
+                  ["shop", "Shop"],
+                  ["home", "Home"],
+                  ["book", "Book"],
+                ] as const
+              ).map(([key, label]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setTarget(key)}
+                  className={`rounded-full px-3 py-1.5 text-[11px] uppercase tracking-[0.14em] ${
+                    target === key ? "bg-[#8a682e] text-white" : "border border-[#cbb58f] text-[#6f5a3a]"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <BrandedQrCard
+              value={qrValue}
+              code={links.code}
+              label={target === "book" ? "Scan to book" : target === "home" ? "Scan to visit" : "Scan to shop"}
+              filename={`kian-prive-${links.code}-${target}.png`}
+            />
           </div>
           <div className="space-y-4 text-sm">
             <div>
@@ -62,6 +92,10 @@ export default function AmbassadorLinksPage() {
                 </button>
               </div>
             ))}
+            <p className="rounded-2xl bg-[#fff6e8] px-4 py-3 text-xs leading-relaxed text-[#6f6251]">
+              Yes — these codes work. When someone buys through your shop link/QR, the order appears in Sales and
+              Earnings. When they book with your book link, the booking is attributed to your code as well.
+            </p>
           </div>
         </div>
       ) : (

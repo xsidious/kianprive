@@ -23,6 +23,7 @@ export async function GET() {
     mtdOrderSales,
     mtdServiceGross,
     todaysBookings,
+    recentBookings,
     latestPayout,
     partner,
   ] = await Promise.all([
@@ -55,6 +56,18 @@ export async function GET() {
       },
       orderBy: { scheduledStart: "asc" },
       take: 20,
+    }),
+    prisma.bookingRequest.findMany({
+      where: { partnerId },
+      orderBy: { createdAt: "desc" },
+      take: 8,
+      select: {
+        id: true,
+        fullName: true,
+        scheduledStart: true,
+        status: true,
+        serviceTitles: true,
+      },
     }),
     prisma.partnerPayout.findFirst({
       where: { partnerId },
@@ -102,6 +115,7 @@ export async function GET() {
       mtdServiceGross: serviceGrossMtd,
     },
     todaysBookings,
+    recentBookings,
     latestPayout,
     onboarding,
   });

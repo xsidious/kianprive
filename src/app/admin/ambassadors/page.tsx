@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
-import { qrCodeImageUrl } from "@/lib/ambassador";
+import { BrandedQrCard } from "@/components/ambassador/BrandedQrCard";
 import {
   adminBtnGhost,
   adminBtnPrimary,
@@ -50,9 +49,10 @@ export default function AdminAmbassadorsPage() {
       setMessage("Could not load ambassadors.");
       return;
     }
-    const payload = (await res.json()) as { ambassadors: AmbassadorRow[] };
-    setAmbassadors(payload.ambassadors);
-    if (!selectedId && payload.ambassadors[0]) setSelectedId(payload.ambassadors[0].id);
+    const payload = (await res.json()) as { ambassadors: AmbassadorRow[]; error?: string };
+    if (payload.error) setMessage(payload.error);
+    setAmbassadors(payload.ambassadors ?? []);
+    if (!selectedId && payload.ambassadors?.[0]) setSelectedId(payload.ambassadors[0].id);
   }
 
   useEffect(() => {
@@ -120,8 +120,8 @@ export default function AdminAmbassadorsPage() {
         <p className={adminEyebrow}>Growth network</p>
         <h1 className={adminTitle}>Ambassadors</h1>
         <p className={adminMuted}>
-          Create ambassador accounts with unique codes, shareable shop links, and QR codes. Track attributed product
-          sales and commissions.
+          Create ambassador accounts with unique codes, branded QR downloads, and sales tracking. Codes work for shop and
+          booking attribution.
         </p>
       </div>
 
@@ -229,17 +229,13 @@ export default function AdminAmbassadorsPage() {
                 </div>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-[160px_1fr]">
-                <div className="rounded-sm border border-[#efe6d8] bg-white p-3">
-                  <Image
-                    src={qrCodeImageUrl(selected.links.shop, 220)}
-                    alt={`QR for ${selected.partnerCode}`}
-                    width={220}
-                    height={220}
-                    className="h-auto w-full"
-                    unoptimized
-                  />
-                </div>
+              <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
+                <BrandedQrCard
+                  value={selected.links.shop}
+                  code={selected.partnerCode}
+                  label="Scan to shop"
+                  filename={`kian-prive-${selected.partnerCode}-shop.png`}
+                />
                 <div className="space-y-3 text-sm">
                   <div>
                     <p className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Shop link</p>
@@ -256,14 +252,14 @@ export default function AdminAmbassadorsPage() {
                       <button type="button" className={adminBtnGhost} onClick={() => void copyText("code", selected.partnerCode)}>
                         {copied === "code" ? "Copied" : "Copy code"}
                       </button>
-                      <button type="button" className={adminBtnGhost} onClick={() => void copyText("home", selected.links.home)}>
-                        {copied === "home" ? "Copied" : "Copy home link"}
+                      <button type="button" className={adminBtnGhost} onClick={() => void copyText("book", selected.links.book)}>
+                        {copied === "book" ? "Copied" : "Copy book link"}
                       </button>
                     </div>
                   </div>
                   <p className="text-xs text-[#6f6251]">
-                    Product commission default: {String(selected.defaultProductCommissionPct)}%. Ambassadors earn on all
-                    shop purchases made through their code/link.
+                    Product commission default: {String(selected.defaultProductCommissionPct)}%. Shop purchases and
+                    bookings through this code are attributed automatically.
                   </p>
                 </div>
               </div>
