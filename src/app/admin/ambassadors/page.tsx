@@ -232,7 +232,6 @@ export default function AdminAmbassadorsPage() {
               <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
                 <BrandedQrCard
                   value={selected.links.shop}
-                  code={selected.partnerCode}
                   label="Scan to shop"
                   filename={`kian-prive-${selected.partnerCode}-shop.png`}
                 />

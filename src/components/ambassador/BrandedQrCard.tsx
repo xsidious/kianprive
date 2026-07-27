@@ -4,18 +4,28 @@ import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { adminBtnGhost, adminBtnPrimary } from "@/components/admin/ui";
 
+const LOGO_SRC = "/images/kian-prive-logo.png";
+
 type BrandedQrCardProps = {
   value: string;
   label?: string;
-  code?: string;
   filename?: string;
   size?: number;
 };
 
+function loadImage(src: string) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error(`Could not load ${src}`));
+    img.src = src;
+  });
+}
+
 export function BrandedQrCard({
   value,
   label = "Scan to shop",
-  code,
   filename = "kian-prive-qr.png",
   size = 280,
 }: BrandedQrCardProps) {
@@ -33,6 +43,7 @@ export function BrandedQrCard({
 
     void (async () => {
       try {
+        const footer = 40;
         const qrSize = Math.round(size * 0.72);
         const qrDataUrl = await QRCode.toDataURL(value, {
           errorCorrectionLevel: "H",
@@ -50,43 +61,37 @@ export function BrandedQrCard({
         if (!ctx) return;
 
         canvas.width = size;
-        canvas.height = size + 56;
+        canvas.height = size + footer;
 
-        // Background card
         ctx.fillStyle = "#fffdf8";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Soft gold frame
         const pad = 16;
         ctx.strokeStyle = "#c9a45a";
         ctx.lineWidth = 2;
         ctx.strokeRect(pad, pad, size - pad * 2, size - pad * 2);
 
-        // Inner wash
         const gradient = ctx.createLinearGradient(0, 0, size, size);
         gradient.addColorStop(0, "#fff8ee");
         gradient.addColorStop(1, "#f7efe2");
         ctx.fillStyle = gradient;
         ctx.fillRect(pad + 4, pad + 4, size - pad * 2 - 8, size - pad * 2 - 8);
 
-        const qrImg = new Image();
-        await new Promise<void>((resolve, reject) => {
-          qrImg.onload = () => resolve();
-          qrImg.onerror = () => reject(new Error("Could not render QR"));
-          qrImg.src = qrDataUrl;
-        });
+        const [qrImg, logoImg] = await Promise.all([loadImage(qrDataUrl), loadImage(LOGO_SRC)]);
+        if (cancelled) return;
 
         const qrX = (size - qrSize) / 2;
         const qrY = (size - qrSize) / 2;
         ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
 
-        // Center badge
-        const badge = 44;
+        // Soft pad + logo in the center (high ECC keeps scans reliable)
+        const badge = Math.round(size * 0.22);
         const bx = size / 2 - badge / 2;
         const by = size / 2 - badge / 2;
-        ctx.fillStyle = "#8a682e";
+        const r = 12;
+
+        ctx.fillStyle = "#fffdf8";
         ctx.beginPath();
-        const r = 10;
         ctx.moveTo(bx + r, by);
         ctx.arcTo(bx + badge, by, bx + badge, by + badge, r);
         ctx.arcTo(bx + badge, by + badge, bx, by + badge, r);
@@ -94,21 +99,30 @@ export function BrandedQrCard({
         ctx.arcTo(bx, by, bx + badge, by, r);
         ctx.closePath();
         ctx.fill();
-        ctx.fillStyle = "#fffdf8";
-        ctx.font = "600 11px Georgia, serif";
+
+        ctx.strokeStyle = "#e5d7c2";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        const logoPad = 8;
+        const logoBox = badge - logoPad * 2;
+        const aspect = logoImg.naturalWidth / Math.max(logoImg.naturalHeight, 1);
+        let drawW = logoBox;
+        let drawH = logoBox / aspect;
+        if (drawH > logoBox) {
+          drawH = logoBox;
+          drawW = logoBox * aspect;
+        }
+        const lx = size / 2 - drawW / 2;
+        const ly = size / 2 - drawH / 2;
+        ctx.drawImage(logoImg, lx, ly, drawW, drawH);
+
+        // Footer: action label only — no names or codes
+        ctx.fillStyle = "#8a682e";
+        ctx.font = "600 13px Georgia, serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("KP", size / 2, size / 2);
-
-        // Footer label
-        ctx.fillStyle = "#8a682e";
-        ctx.font = "600 12px Georgia, serif";
-        ctx.fillText(label.toUpperCase(), size / 2, size + 18);
-        if (code) {
-          ctx.fillStyle = "#5f5344";
-          ctx.font = "11px ui-monospace, monospace";
-          ctx.fillText(code, size / 2, size + 36);
-        }
+        ctx.fillText(label.toUpperCase(), size / 2, size + footer / 2);
 
         setReady(true);
       } catch (err) {
@@ -119,7 +133,7 @@ export function BrandedQrCard({
     return () => {
       cancelled = true;
     };
-  }, [value, label, code, size]);
+  }, [value, label, size]);
 
   function downloadPng() {
     const canvas = canvasRef.current;
@@ -131,6 +145,7 @@ export function BrandedQrCard({
   }
 
   async function downloadSvg() {
+    // SVG export is QR-only; PNG includes the logo mark.
     try {
       const svg = await QRCode.toString(value, {
         type: "svg",
@@ -166,6 +181,7 @@ export function BrandedQrCard({
           Download SVG
         </button>
       </div>
+      <p className="text-[11px] text-[#6f6251]">PNG includes the KIAN Privé logo. Label only — no personal names.</p>
     </div>
   );
 }

@@ -66,7 +66,6 @@ export default function AmbassadorLinksPage() {
             </div>
             <BrandedQrCard
               value={qrValue}
-              code={links.code}
               label={target === "book" ? "Scan to book" : target === "home" ? "Scan to visit" : "Scan to shop"}
               filename={`kian-prive-${links.code}-${target}.png`}
             />
