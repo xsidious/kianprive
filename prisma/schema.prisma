@@ -257,12 +257,16 @@ model Product {
   status         ProductStatus @default(DRAFT)
   category       String?
   featuredImage  String?
+  galleryImages  String[]      @default([])
+  hasVariants    Boolean       @default(false)
   price          Decimal       @db.Decimal(10, 2)
   compareAtPrice Decimal?      @db.Decimal(10, 2)
   currency       String        @default("USD")
   sku            String?       @unique
   inventoryQty   Int           @default(0)
   trackInventory Boolean       @default(true)
+  seoTitle       String?
+  seoDescription String?
   stripeProductId String?
   stripePriceId  String?
   collectionId   String?
@@ -283,6 +287,7 @@ model ProductVariant {
   price         Decimal   @db.Decimal(10, 2)
   compareAtPrice Decimal? @db.Decimal(10, 2)
   inventoryQty  Int       @default(0)
+  image         String?
   options       Json?
   product       Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt     DateTime  @default(now())
@@ -426,11 +431,15 @@ model AnalyticsEvent {
   userId        String?
   sessionId     String?
   orderId       String?
+  country       String?
+  city          String?
+  region        String?
   metadata      Json?
   occurredAt    DateTime  @default(now())
 
   @@index([eventName, occurredAt])
   @@index([pagePath, occurredAt])
+  @@index([country, occurredAt])
 }
 
 model IdempotencyKey {

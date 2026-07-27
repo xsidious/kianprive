@@ -32,6 +32,7 @@ const adminGroups = [
     label: "Content",
     links: [
       { href: "/admin/cms", label: "CMS" },
+      { href: "/admin/seo", label: "SEO" },
       { href: "/admin/blog", label: "Blog" },
       { href: "/admin/retreats", label: "Retreats" },
       { href: "/admin/communications", label: "Communications" },
@@ -40,8 +41,8 @@ const adminGroups = [
   {
     label: "System",
     links: [
-      { href: "/admin/operations", label: "Operations" },
       { href: "/admin/analytics", label: "Analytics" },
+      { href: "/admin/operations", label: "Operations" },
       { href: "/admin/settings", label: "Settings" },
     ],
   },

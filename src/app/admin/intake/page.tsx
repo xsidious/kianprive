@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { AdminModal } from "@/components/admin/AdminModal";
 import {
   adminBtnGhost,
+  adminBtnPrimary,
+  adminBtnSoft,
   adminEyebrow,
   adminMuted,
   adminPanel,
@@ -43,12 +46,75 @@ function payloadText(value: unknown) {
   return String(value);
 }
 
+const DETAIL_SECTIONS: { title: string; fields: [string, string][] }[] = [
+  {
+    title: "Patient",
+    fields: [
+      ["Full name", "fullName"],
+      ["Date of birth", "dateOfBirth"],
+      ["Age", "age"],
+      ["Sex at birth", "sexAtBirth"],
+      ["Phone", "phone"],
+      ["Email", "email"],
+      ["Address", "address"],
+      ["ID number", "idNumber"],
+      ["ID issue place", "idIssuePlace"],
+      ["Primary care physician", "primaryCarePhysician"],
+      ["First appointment", "firstAppointmentDate"],
+      ["Assigned provider", "assignedProvider"],
+    ],
+  },
+  {
+    title: "Medications & allergies",
+    fields: [
+      ["Prescription medications", "prescriptionMedications"],
+      ["Supplements & peptides", "supplementsPeptides"],
+      ["Medication allergies", "medicationAllergies"],
+      ["Food allergies", "foodAllergies"],
+      ["Other allergies", "otherAllergies"],
+    ],
+  },
+  {
+    title: "History",
+    fields: [
+      ["Conditions", "conditions"],
+      ["Other conditions", "otherConditions"],
+      ["Recent surgeries", "recentSurgeries"],
+      ["Pregnant / breastfeeding", "pregnantBreastfeeding"],
+    ],
+  },
+  {
+    title: "GLP / peptide context",
+    fields: [
+      ["GLP medications", "glpMedications"],
+      ["GLP dose", "glpDose"],
+      ["GLP duration", "glpDuration"],
+      ["Reason stopped", "glpReasonStopped"],
+      ["Side effects", "glpSideEffects"],
+      ["Contraindications", "contraindications"],
+      ["Family MTC / MEN2", "familyMtcMen2"],
+      ["Allergic reaction", "allergicReactionAny"],
+      ["Allergic reaction details", "allergicReactionDetails"],
+    ],
+  },
+  {
+    title: "Scheduling & attestation",
+    fields: [
+      ["Requested date", "requestedDate"],
+      ["Requested time", "requestedTime"],
+      ["Scheduling notes", "schedulingNotes"],
+      ["Attestation name", "attestationName"],
+      ["Attestation date", "attestationDate"],
+    ],
+  },
+];
+
 export default function AdminIntakePage() {
   const [submissions, setSubmissions] = useState<IntakeSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [filter, setFilter] = useState<"ALL" | (typeof statuses)[number]>("ALL");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [modalId, setModalId] = useState<string | null>(null);
 
   async function loadSubmissions() {
     setLoading(true);
@@ -86,7 +152,7 @@ export default function AdminIntakePage() {
     return submissions.filter((s) => s.status === filter);
   }, [filter, submissions]);
 
-  const selected = filtered.find((s) => s.id === selectedId) ?? submissions.find((s) => s.id === selectedId) ?? null;
+  const selected = submissions.find((s) => s.id === modalId) ?? null;
 
   const counts = useMemo(() => {
     const map: Record<string, number> = { ALL: submissions.length };
@@ -95,13 +161,18 @@ export default function AdminIntakePage() {
     return map;
   }, [submissions]);
 
+  function fieldValue(submission: IntakeSubmission, key: string) {
+    if (key in submission) return payloadText((submission as Record<string, unknown>)[key]);
+    return payloadText(submission.payload?.[key]);
+  }
+
   return (
     <div className="space-y-6">
       <div>
         <p className={adminEyebrow}>HIPAA-protected clinical intake</p>
         <h1 className={adminTitle}>Clinical Intake</h1>
         <p className={adminMuted}>
-          Review therapeutics intake from the site workflow and Wellness Hub Provider Connect submissions.
+          Review site and Wellness Hub submissions. Open any record for the full clinical packet.
         </p>
       </div>
 
@@ -118,7 +189,7 @@ export default function AdminIntakePage() {
             key={key}
             type="button"
             onClick={() => setFilter(key as typeof filter)}
-            className={`${adminStat} text-left transition ${filter === key ? "border-[#8a682e]" : "hover:border-[#b78d4b80]"}`}
+            className={`${adminStat} text-left transition ${filter === key ? "border-[#8a682e] ring-1 ring-[#8a682e33]" : "hover:border-[#b78d4b80]"}`}
           >
             <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">{label}</p>
             <p className="mt-2 font-serif text-3xl text-[#1f1a15]">{counts[key] ?? 0}</p>
@@ -131,123 +202,116 @@ export default function AdminIntakePage() {
       ) : filtered.length === 0 ? (
         <div className={`${adminPanel} p-8 text-sm text-[#6f6251]`}>No intake submissions in this view yet.</div>
       ) : (
-        <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-          <div className="space-y-3">
-            {filtered.map((submission) => {
-              const active = selected?.id === submission.id;
-              return (
-                <button
-                  key={submission.id}
-                  type="button"
-                  onClick={() => setSelectedId(submission.id)}
-                  className={`${adminPanel} w-full p-5 text-left transition ${
-                    active ? "border-[#8a682e] ring-1 ring-[#8a682e33]" : "hover:border-[#b78d4b80]"
-                  }`}
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <p className="font-serif text-xl text-[#1f1a15]">{submission.fullName}</p>
-                      <p className="mt-1 text-sm text-[#6f6251]">
-                        {submission.email} · {submission.phone}
-                      </p>
-                    </div>
-                    <span className={`rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] ${statusTone(submission.status)}`}>
-                      {submission.status.replaceAll("_", " ")}
-                    </span>
-                  </div>
-                  <div className="mt-4 flex flex-wrap gap-2 text-xs text-[#6f6251]">
-                    <span className="rounded-sm bg-[#fff6e8] px-2 py-1 text-[#8f6f3e]">{sourceLabel(submission)}</span>
-                    <span className="rounded-sm bg-[#f7f2ea] px-2 py-1">
-                      {new Date(submission.createdAt).toLocaleString()}
-                    </span>
-                    {submission.programs.slice(0, 2).map((program) => (
-                      <span key={program} className="rounded-sm bg-[#f7f2ea] px-2 py-1">
-                        {program}
-                      </span>
-                    ))}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          <aside className={`${adminPanel} sticky top-6 h-fit p-5`}>
-            {selected ? (
-              <div className="space-y-5">
+        <div className="grid gap-3">
+          {filtered.map((submission) => (
+            <article key={submission.id} className={`${adminPanel} p-5`}>
+              <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className={adminEyebrow}>Submission detail</p>
-                  <h2 className="mt-1 font-serif text-2xl text-[#1f1a15]">{selected.fullName}</h2>
-                  <p className="mt-1 text-sm text-[#6f6251]">Ref {selected.id}</p>
+                  <p className="font-serif text-xl text-[#1f1a15]">{submission.fullName}</p>
+                  <p className="mt-1 text-sm text-[#6f6251]">
+                    {submission.email} · {submission.phone}
+                  </p>
                 </div>
-
-                <div className="grid gap-3 text-sm">
-                  <div>
-                    <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Status</p>
-                    <select
-                      value={selected.status}
-                      onChange={(event) => void updateStatus(selected.id, event.target.value)}
-                      className={`${adminSelect} mt-1 w-full`}
-                    >
-                      {statuses.map((status) => (
-                        <option key={status} value={status}>
-                          {status.replaceAll("_", " ")}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Source</p>
-                      <p className="mt-1 text-[#2b2218]">{sourceLabel(selected)}</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">DOB</p>
-                      <p className="mt-1 text-[#2b2218]">{selected.dateOfBirth || "—"}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Programs</p>
-                    <p className="mt-1 text-[#2b2218]">{selected.programs.join(", ") || "—"}</p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Requested visit</p>
-                    <p className="mt-1 text-[#2b2218]">
-                      {payloadText(selected.payload?.requestedDate)}
-                      {selected.payload?.requestedTime ? ` · ${payloadText(selected.payload.requestedTime)}` : ""}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="border-t border-[#efe6d8] pt-4">
-                  <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Key clinical fields</p>
-                  <dl className="mt-3 space-y-2 text-sm">
-                    {[
-                      ["Assigned provider", selected.payload?.assignedProvider],
-                      ["Medications", selected.payload?.prescriptionMedications],
-                      ["Supplements / peptides", selected.payload?.supplementsPeptides],
-                      ["Medication allergies", selected.payload?.medicationAllergies],
-                      ["Conditions", selected.payload?.conditions],
-                      ["GLP medications", selected.payload?.glpMedications],
-                      ["Scheduling notes", selected.payload?.schedulingNotes],
-                    ].map(([label, value]) => (
-                      <div key={String(label)}>
-                        <dt className="text-xs text-[#8f6f3e]">{label}</dt>
-                        <dd className="text-[#2b2218]">{payloadText(value)}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
-
-                <a href={`mailto:${selected.email}`} className={adminBtnGhost}>
-                  Email patient
+                <span className={`rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] ${statusTone(submission.status)}`}>
+                  {submission.status.replaceAll("_", " ")}
+                </span>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2 text-xs text-[#6f6251]">
+                <span className="rounded-full bg-[#fff6e8] px-2.5 py-1 text-[#8f6f3e]">{sourceLabel(submission)}</span>
+                <span className="rounded-full bg-[#f7f2ea] px-2.5 py-1">{new Date(submission.createdAt).toLocaleString()}</span>
+                {submission.programs.slice(0, 2).map((program) => (
+                  <span key={program} className="rounded-full bg-[#f7f2ea] px-2.5 py-1">
+                    {program}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-5 flex flex-wrap items-center gap-2">
+                <button type="button" className={adminBtnPrimary} onClick={() => setModalId(submission.id)}>
+                  View more
+                </button>
+                <select
+                  value={submission.status}
+                  onChange={(event) => void updateStatus(submission.id, event.target.value)}
+                  className={adminSelect}
+                >
+                  {statuses.map((status) => (
+                    <option key={status} value={status}>
+                      {status.replaceAll("_", " ")}
+                    </option>
+                  ))}
+                </select>
+                <a href={`mailto:${submission.email}`} className={adminBtnGhost}>
+                  Email
                 </a>
               </div>
-            ) : (
-              <p className="text-sm text-[#6f6251]">Select a submission to review details.</p>
-            )}
-          </aside>
+            </article>
+          ))}
         </div>
       )}
+
+      <AdminModal
+        open={Boolean(selected)}
+        title={selected?.fullName ?? "Intake"}
+        eyebrow="Clinical submission"
+        wide
+        onClose={() => setModalId(null)}
+      >
+        {selected ? (
+          <div className="space-y-6">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className={`rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] ${statusTone(selected.status)}`}>
+                {selected.status.replaceAll("_", " ")}
+              </span>
+              <span className={adminBtnSoft}>{sourceLabel(selected)}</span>
+              <span className="text-xs text-[#6f6251]">Ref {selected.id}</span>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="text-sm">
+                <span className="mb-1 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Update status</span>
+                <select
+                  value={selected.status}
+                  onChange={(event) => void updateStatus(selected.id, event.target.value)}
+                  className={`${adminSelect} w-full`}
+                >
+                  {statuses.map((status) => (
+                    <option key={status} value={status}>
+                      {status.replaceAll("_", " ")}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <div className="text-sm">
+                <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Submitted</p>
+                <p className="mt-2 text-[#2b2218]">{new Date(selected.createdAt).toLocaleString()}</p>
+              </div>
+            </div>
+
+            {DETAIL_SECTIONS.map((section) => (
+              <section key={section.title} className="rounded-2xl border border-[#efe4d4] bg-[#fffaf3] p-4">
+                <h3 className="font-serif text-lg text-[#1f1a15]">{section.title}</h3>
+                <dl className="mt-3 grid gap-3 sm:grid-cols-2">
+                  {section.fields.map(([label, key]) => (
+                    <div key={key}>
+                      <dt className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">{label}</dt>
+                      <dd className="mt-1 text-sm text-[#2b2218]">{fieldValue(selected, key)}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            ))}
+
+            <div className="flex flex-wrap gap-2">
+              <a href={`mailto:${selected.email}`} className={adminBtnPrimary}>
+                Email patient
+              </a>
+              <button type="button" className={adminBtnGhost} onClick={() => setModalId(null)}>
+                Close
+              </button>
+            </div>
+          </div>
+        ) : null}
+      </AdminModal>
     </div>
   );
 }

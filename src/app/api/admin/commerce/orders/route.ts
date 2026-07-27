@@ -9,10 +9,15 @@ export async function GET() {
   const orders = await prisma.order.findMany({
     orderBy: { createdAt: "desc" },
     include: {
-      items: true,
+      items: {
+        include: {
+          product: { select: { featuredImage: true, slug: true, title: true } },
+        },
+      },
       fulfillments: true,
       payments: true,
       refunds: true,
+      partner: { select: { displayName: true, partnerCode: true } },
     },
   });
   return NextResponse.json({ orders });

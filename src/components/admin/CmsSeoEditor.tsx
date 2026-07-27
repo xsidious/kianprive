@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { adminBtnPrimary, adminInput, adminPanel, adminTextarea } from "@/components/admin/ui";
 
 type CmsPageSeo = {
   id: string;
@@ -38,12 +39,12 @@ export function CmsSeoEditor({ initialPages }: { initialPages: CmsPageSeo[] }) {
   }
 
   return (
-    <div className="mt-8">
-      <h2 className="text-xl text-[#1f1a15]">Page SEO</h2>
+    <section className={`${adminPanel} p-5`}>
+      <h2 className="font-serif text-2xl text-[#1f1a15]">Page SEO</h2>
       <p className="mt-1 text-sm text-[#6f6251]">Edit title, description, image, canonical, and noindex without a deploy.</p>
-      <div className="mt-4 grid gap-3">
+      <div className="mt-4 grid gap-4">
         {pages.map((page) => (
-          <article key={page.id} className="rounded-sm border border-[#b78d4b2d] bg-white p-4">
+          <article key={page.id} className="rounded-2xl border border-[#efe4d4] bg-[#fffaf3] p-4">
             <p className="text-sm font-medium text-[#1f1a15]">
               {page.title} <span className="text-[#6f6251]">/{page.slug}</span>
             </p>
@@ -54,7 +55,7 @@ export function CmsSeoEditor({ initialPages }: { initialPages: CmsPageSeo[] }) {
                   setPages((prev) => prev.map((row) => (row.id === page.id ? { ...row, seoTitle: e.target.value } : row)))
                 }
                 placeholder="SEO title"
-                className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2 text-sm"
+                className={adminInput}
               />
               <input
                 value={page.seoImage ?? ""}
@@ -62,7 +63,7 @@ export function CmsSeoEditor({ initialPages }: { initialPages: CmsPageSeo[] }) {
                   setPages((prev) => prev.map((row) => (row.id === page.id ? { ...row, seoImage: e.target.value } : row)))
                 }
                 placeholder="SEO image path"
-                className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2 text-sm"
+                className={adminInput}
               />
               <textarea
                 value={page.seoDescription ?? ""}
@@ -72,7 +73,7 @@ export function CmsSeoEditor({ initialPages }: { initialPages: CmsPageSeo[] }) {
                   )
                 }
                 placeholder="SEO description"
-                className="min-h-[72px] rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2 text-sm md:col-span-2"
+                className={`${adminTextarea} md:col-span-2`}
               />
               <input
                 value={page.canonicalUrl ?? ""}
@@ -82,7 +83,7 @@ export function CmsSeoEditor({ initialPages }: { initialPages: CmsPageSeo[] }) {
                   )
                 }
                 placeholder="Canonical URL (optional)"
-                className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2 text-sm"
+                className={adminInput}
               />
               <label className="inline-flex items-center gap-2 text-sm text-[#4f4335]">
                 <input
@@ -97,17 +98,13 @@ export function CmsSeoEditor({ initialPages }: { initialPages: CmsPageSeo[] }) {
                 noIndex
               </label>
             </div>
-            <button
-              type="button"
-              onClick={() => void savePage(page)}
-              className="mt-3 rounded-sm border border-[#b78d4b80] px-3 py-1.5 text-xs text-[#3b3024]"
-            >
+            <button type="button" onClick={() => void savePage(page)} className={`${adminBtnPrimary} mt-3`}>
               Save SEO
             </button>
           </article>
         ))}
       </div>
-      {status ? <p className="mt-3 text-sm text-[#7a5c32]">{status}</p> : null}
-    </div>
+      {status ? <p className="mt-3 text-sm text-[#1b6568]">{status}</p> : null}
+    </section>
   );
 }

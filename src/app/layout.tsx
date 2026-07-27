@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Cormorant_Garamond, Geist } from "next/font/google";
 import "./globals.css";
 import { AppSessionProvider } from "@/components/providers/session-provider";
@@ -58,6 +60,8 @@ export default function RootLayout({
           <PageAnalyticsTracker />
           <PartnerReferralCapture />
           <AppChrome>{children}</AppChrome>
+          <Analytics />
+          <SpeedInsights />
         </AppSessionProvider>
         <LiveChatScript liveChatPromise={liveChat} />
       </body>
