@@ -256,6 +256,7 @@ model Product {
   description    String?
   status         ProductStatus @default(DRAFT)
   category       String?
+  isPrescription Boolean       @default(false)
   featuredImage  String?
   galleryImages  String[]      @default([])
   hasVariants    Boolean       @default(false)

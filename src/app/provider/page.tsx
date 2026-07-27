@@ -51,15 +51,16 @@ export default function ProviderOverviewPage() {
     <div className="space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className={adminEyebrow}>Provider</p>
-          <h1 className={adminTitle}>Visit overview</h1>
+          <p className={adminEyebrow}>Practitioner</p>
+          <h1 className={adminTitle}>Consultations overview</h1>
           <p className={adminMuted}>
-            Manage booked services, mark visits complete, and track visit commission eligibility.
+            Track telemedicine and consultation visits assigned to you. You earn on completed consultations,
+            telemedicine, and shop product referrals — not on prescriptions.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Link href="/provider/bookings" className={adminBtnGhost}>
-            Manage bookings
+            Manage consultations
           </Link>
           <Link href="/provider/earnings" className={adminBtnGhost}>
             Earnings

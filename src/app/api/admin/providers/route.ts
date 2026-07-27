@@ -21,6 +21,7 @@ const createSchema = z.object({
   phone: z.string().optional(),
   specialty: z.string().optional(),
   defaultServiceCommissionPct: z.number().min(0).max(100).optional(),
+  defaultProductCommissionPct: z.number().min(0).max(100).optional(),
   status: z.enum(["INVITED", "ACTIVE", "SUSPENDED"]).optional(),
   serviceAssignments: z.array(assignmentSchema).optional(),
 });
@@ -131,7 +132,7 @@ export async function POST(req: Request) {
         partnerCode,
         status: parsed.data.status ?? "ACTIVE",
         defaultServiceCommissionPct: parsed.data.defaultServiceCommissionPct ?? 20,
-        defaultProductCommissionPct: 0,
+        defaultProductCommissionPct: parsed.data.defaultProductCommissionPct ?? 10,
         onboardingComplete: true,
       },
     });

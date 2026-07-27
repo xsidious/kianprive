@@ -77,9 +77,12 @@ function BookingsInner() {
   return (
     <div className="space-y-6">
       <div>
-        <p className={partnerEyebrow}>VISITS</p>
-        <h1 className={partnerTitle}>Bookings</h1>
-        <p className={partnerMuted}>Approve, reschedule, complete, or cancel visits assigned to you as a service provider.</p>
+        <p className={partnerEyebrow}>CONSULTATIONS</p>
+        <h1 className={partnerTitle}>Consultations & telemedicine</h1>
+        <p className={partnerMuted}>
+          Approve, reschedule, and complete visits. Completing a consultation or telemedicine appointment unlocks your
+          visit pay. Prescription pathways are not commissionable.
+        </p>
       </div>
       {status ? <p className="text-sm text-[#8f6f3e]">{status}</p> : null}
 

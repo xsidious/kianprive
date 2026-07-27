@@ -47,6 +47,7 @@ export async function PATCH(req: Request, { params }: Params) {
         title: body.title,
         description: body.description,
         category: body.category,
+        isPrescription: body.isPrescription != null ? Boolean(body.isPrescription) : undefined,
         featuredImage: body.featuredImage,
         galleryImages: parseGallery(body.galleryImages),
         hasVariants,

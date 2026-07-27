@@ -200,7 +200,7 @@ export function Navbar() {
                   ) : null}
                   {data.user.role === "PROVIDER" ? (
                     <Link href="/provider" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
-                      Provider Portal
+                      Practitioner Portal
                     </Link>
                   ) : null}
                   {data.user.role === "ADMIN" || data.user.role === "OPERATIONS" || data.user.role === "EDITOR" ? (

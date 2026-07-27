@@ -51,6 +51,7 @@ export async function POST(req: Request) {
       description: body.description,
       status: (body.status as ProductStatus) ?? ProductStatus.DRAFT,
       category: body.category,
+      isPrescription: Boolean(body.isPrescription),
       featuredImage: body.featuredImage,
       galleryImages: parseGallery(body.galleryImages),
       hasVariants,

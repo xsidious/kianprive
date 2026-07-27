@@ -24,7 +24,7 @@ type ProviderRow = {
   defaultServiceCommissionPct: number | string;
   user: { email: string; name: string | null };
   serviceAssignments: { serviceSlug: string; active: boolean; commissionPct: number | string | null }[];
-  links: { book: string; home: string; services: string; code: string };
+  links: { book: string; home: string; services: string; shop: string; telemedicine: string; code: string };
   stats: {
     visitsMtd: number;
     completedVisits: number;
@@ -147,10 +147,10 @@ export default function AdminProvidersPage() {
     <div className="space-y-6">
       <div>
         <p className={adminEyebrow}>Clinical network</p>
-        <h1 className={adminTitle}>Providers</h1>
+        <h1 className={adminTitle}>Practitioners</h1>
         <p className={adminMuted}>
-          Service providers who get booked for visits, earn service commission, and get paid when appointments are
-          completed. Ambassadors handle product referrals separately.
+          Practitioners (providers) handle consultations and telemedicine, earn visit pay on completed appointments, and
+          can earn on shop product referrals — never on prescriptions. Manage assignments and commission rates here.
         </p>
       </div>
 
@@ -158,7 +158,7 @@ export default function AdminProvidersPage() {
 
       <div className="grid gap-3 sm:grid-cols-3">
         <div className={adminStat}>
-          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Providers</p>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Practitioners</p>
           <p className="mt-2 font-serif text-3xl text-[#1f1a15]">{providers.length}</p>
         </div>
         <div className={adminStat}>
@@ -174,7 +174,7 @@ export default function AdminProvidersPage() {
 
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <section className={`${adminPanel} p-5`}>
-          <h2 className="font-serif text-xl text-[#1f1a15]">Invite provider</h2>
+          <h2 className="font-serif text-xl text-[#1f1a15]">Invite practitioner</h2>
           <form action={createProvider} className="mt-4 grid gap-3">
             <input name="name" placeholder="Full name" required className={adminInput} />
             <input name="displayName" placeholder="Display name (shown to clients)" required className={adminInput} />
@@ -211,7 +211,7 @@ export default function AdminProvidersPage() {
               </div>
             </div>
             <button type="submit" className={adminBtnPrimary}>
-              Create provider
+              Create practitioner
             </button>
           </form>
 
@@ -329,9 +329,16 @@ export default function AdminProvidersPage() {
               </div>
 
               <div className="rounded-sm border border-[#efe6d8] bg-[#fffaf3] p-4 text-sm text-[#6f6251]">
-                <p className="text-xs uppercase tracking-[0.14em] text-[#8f6f3e]">Booking link</p>
-                <p className="mt-2 break-all font-mono text-xs text-[#1f1a15]">{selected.links.book}</p>
-                <p className="mt-2 text-xs">Clients using this link attribute visits to this provider.</p>
+                <p className="text-xs uppercase tracking-[0.14em] text-[#8f6f3e]">Referral links</p>
+                <p className="mt-2 break-all font-mono text-xs text-[#1f1a15]">Book: {selected.links.book}</p>
+                <p className="mt-1 break-all font-mono text-xs text-[#1f1a15]">
+                  Telemedicine: {selected.links.telemedicine}
+                </p>
+                <p className="mt-1 break-all font-mono text-xs text-[#1f1a15]">Shop: {selected.links.shop}</p>
+                <p className="mt-2 text-xs">
+                  Bookings attribute consultations; shop attributes non-prescription products. Prescriptions never earn
+                  practitioner commission.
+                </p>
               </div>
             </div>
           ) : (

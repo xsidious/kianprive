@@ -15,6 +15,7 @@ const providers = [
     specialty: "Medical Aesthetics",
     code: "KARLRYAN",
     servicePct: 25,
+    productPct: 10,
     services: ["facial-aesthetics", "microneedling-with-exosomes"],
     password: "KarlRyan#Kp8vN!",
   },
@@ -25,7 +26,8 @@ const providers = [
     specialty: "Medical Aesthetics",
     code: "JOHNMAAROUF",
     servicePct: 25,
-    services: ["facial-aesthetics", "iv-therapy"],
+    productPct: 10,
+    services: ["facial-aesthetics", "iv-therapy", "telemedicine"],
     password: "JohnMaarouf$Kp6tQ!",
   },
   {
@@ -35,7 +37,8 @@ const providers = [
     specialty: "Clinical Care",
     code: "CARMENRAM",
     servicePct: 25,
-    services: ["telemedicine", "comprehensive-bloodwork", "nutrition", "glp1-peptides"],
+    productPct: 10,
+    services: ["telemedicine", "comprehensive-bloodwork", "nutrition"],
     password: "CarmenRamirez#Kp5wL!",
   },
 ];
@@ -71,7 +74,7 @@ async function main() {
           partnerCode: row.code,
           status: PartnerStatus.ACTIVE,
           defaultServiceCommissionPct: row.servicePct,
-          defaultProductCommissionPct: 0,
+          defaultProductCommissionPct: row.productPct,
           onboardingComplete: true,
         },
       });
@@ -90,7 +93,7 @@ async function main() {
           partnerCode,
           status: PartnerStatus.ACTIVE,
           defaultServiceCommissionPct: row.servicePct,
-          defaultProductCommissionPct: 0,
+          defaultProductCommissionPct: row.productPct,
           onboardingComplete: true,
         },
       });
@@ -114,8 +117,9 @@ async function main() {
     console.log(`  Email:    ${row.email.toLowerCase()}`);
     console.log(`  Password: ${row.password}`);
     console.log(`  Code:     ${row.code}`);
-    console.log(`  Portal:   /provider`);
+    console.log(`  Portal:   /provider (Practitioner)`);
     console.log(`  Book:     /book-online?partner=${row.code}`);
+    console.log(`  Shop:     /shop?partner=${row.code}`);
     console.log("");
   }
 }

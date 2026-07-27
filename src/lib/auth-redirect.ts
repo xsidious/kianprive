@@ -44,7 +44,7 @@ export function getPortalLabelForRole(role?: Role | string | null) {
       return "Ambassador portal";
     case Role.PROVIDER:
     case "PROVIDER":
-      return "Provider portal";
+      return "Practitioner portal";
     default:
       return "Dashboard";
   }

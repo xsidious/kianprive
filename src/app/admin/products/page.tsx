@@ -37,6 +37,7 @@ type Product = {
   status: "DRAFT" | "ACTIVE" | "ARCHIVED";
   price: number | string;
   category?: string | null;
+  isPrescription?: boolean;
   inventoryQty?: number | null;
   featuredImage?: string | null;
   galleryImages?: string[];
@@ -70,6 +71,7 @@ export default function AdminProductsPage() {
     price: "",
     status: "ACTIVE",
     category: "General",
+    isPrescription: false,
     featuredImage: "/images/beauty.avif",
     galleryImages: "",
     inventoryQty: "0",
@@ -100,6 +102,7 @@ export default function AdminProductsPage() {
       price: "",
       status: "ACTIVE",
       category: "General",
+      isPrescription: false,
       featuredImage: "/images/beauty.avif",
       galleryImages: "",
       inventoryQty: "0",
@@ -121,6 +124,7 @@ export default function AdminProductsPage() {
       price: String(product.price),
       status: product.status,
       category: product.category ?? "General",
+      isPrescription: Boolean(product.isPrescription),
       featuredImage: product.featuredImage ?? "",
       galleryImages: (product.galleryImages ?? []).join("\n"),
       inventoryQty: String(product.inventoryQty ?? 0),
@@ -152,6 +156,7 @@ export default function AdminProductsPage() {
       price: Number(draft.price || 0),
       status: draft.status,
       category: draft.category,
+      isPrescription: draft.isPrescription,
       featuredImage: draft.featuredImage,
       galleryImages: draft.galleryImages,
       inventoryQty: Number(draft.inventoryQty || 0),
@@ -290,6 +295,14 @@ export default function AdminProductsPage() {
               ))}
             </select>
             <input className={adminInput} placeholder="Category" value={draft.category} onChange={(e) => setDraft((d) => ({ ...d, category: e.target.value }))} />
+            <label className="flex items-center gap-2 rounded-sm border border-[#efe6d8] px-3 text-sm text-[#4f4335]">
+              <input
+                type="checkbox"
+                checked={Boolean(draft.isPrescription)}
+                onChange={(e) => setDraft((d) => ({ ...d, isPrescription: e.target.checked }))}
+              />
+              Prescription product (no practitioner commission)
+            </label>
             <input className={adminInput} placeholder="SKU" value={draft.sku} onChange={(e) => setDraft((d) => ({ ...d, sku: e.target.value }))} />
             <input className={adminInput} placeholder="Inventory" type="number" value={draft.inventoryQty} onChange={(e) => setDraft((d) => ({ ...d, inventoryQty: e.target.value }))} />
             <input className={adminInput} placeholder="Featured image URL or /images/..." value={draft.featuredImage} onChange={(e) => setDraft((d) => ({ ...d, featuredImage: e.target.value }))} />

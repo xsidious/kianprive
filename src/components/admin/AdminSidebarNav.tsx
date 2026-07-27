@@ -10,6 +10,7 @@ const adminGroups = [
       { href: "/admin", label: "Overview", exact: true },
       { href: "/admin/intake", label: "Clinical Intake" },
       { href: "/admin/bookings", label: "Bookings" },
+      { href: "/admin/consultations", label: "Consultations" },
     ],
   },
   {
@@ -17,7 +18,7 @@ const adminGroups = [
     links: [
       { href: "/admin/users", label: "Users" },
       { href: "/admin/partners", label: "Partners" },
-      { href: "/admin/providers", label: "Providers" },
+      { href: "/admin/providers", label: "Practitioners" },
       { href: "/admin/ambassadors", label: "Ambassadors" },
     ],
   },

@@ -217,13 +217,16 @@ export async function createOrderFromCart(
 
   let partnerId: string | null = null;
   let attributeAllProducts = false;
+  let partnerType: string | null = null;
   if (input.partnerCode) {
     const partner = await prisma.partnerProfile.findUnique({
       where: { partnerCode: input.partnerCode.toUpperCase() },
     });
     if (partner && partner.status === "ACTIVE") {
       partnerId = partner.id;
-      attributeAllProducts = partner.type === "AMBASSADOR";
+      partnerType = partner.type;
+      // Ambassadors attribute all products; practitioners attribute shop products (Rx filtered at commission).
+      attributeAllProducts = partner.type === "AMBASSADOR" || partner.type === "PROVIDER";
     }
   }
 
@@ -259,16 +262,21 @@ export async function createOrderFromCart(
       shippingAddress: (input.shippingAddress as object | undefined) ?? undefined,
       billingAddress: (input.billingAddress as object | undefined) ?? undefined,
       items: {
-        create: cart.items.map((item) => ({
-          productId: item.productId,
-          partnerId:
-            partnerId && (attributeAllProducts || assignedProductIds.has(item.productId)) ? partnerId : null,
-          title: item.product.title,
-          sku: item.product.sku,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-          lineTotal: item.lineTotal,
-        })),
+        create: cart.items.map((item) => {
+          const canAttribute =
+            partnerId &&
+            (attributeAllProducts || assignedProductIds.has(item.productId)) &&
+            !(partnerType === "PROVIDER" && item.product.isPrescription);
+          return {
+            productId: item.productId,
+            partnerId: canAttribute ? partnerId : null,
+            title: item.product.title,
+            sku: item.product.sku,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+            lineTotal: item.lineTotal,
+          };
+        }),
       },
     },
     include: { items: true },

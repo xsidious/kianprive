@@ -8,7 +8,7 @@ import { PortalSignOut } from "@/components/auth/PortalSignOut";
 
 const links = [
   { href: "/provider", label: "Overview" },
-  { href: "/provider/bookings", label: "Bookings" },
+  { href: "/provider/bookings", label: "Consultations" },
   { href: "/provider/earnings", label: "Earnings" },
   { href: "/provider/services", label: "Services" },
 ];
@@ -32,7 +32,7 @@ export default async function ProviderLayout({ children }: { children: React.Rea
     <div className="min-h-screen bg-[linear-gradient(180deg,#f6f3ee_0%,#f1ebe3_50%,#ebe4da_100%)] lg:grid lg:grid-cols-[240px_1fr]">
       <aside className="border-b border-[#d9c7a866] bg-white/90 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r">
         <div className="border-b border-[#d9c7a866] px-5 py-5">
-          <p className="text-[10px] tracking-[0.22em] text-[#8f6f3e]">PROVIDER PORTAL</p>
+          <p className="text-[10px] tracking-[0.22em] text-[#8f6f3e]">PRACTITIONER PORTAL</p>
           <p className="mt-2 truncate font-serif text-xl text-[#1f1a15]">{partner.displayName}</p>
           <p className="mt-1 text-[11px] tracking-[0.12em] text-[#8f6f3e]">CODE {partner.partnerCode}</p>
           {partner.specialty ? <p className="mt-1 text-xs text-[#6f6251]">{partner.specialty}</p> : null}
