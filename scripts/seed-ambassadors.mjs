@@ -35,6 +35,15 @@ const ambassadors = [
     productPct: 10,
     password: "ShaneShuckerow@Kp4nR!",
   },
+  {
+    name: "Alycia Lin",
+    email: "Mei8710@aol.com",
+    displayName: "Alycia Lin",
+    phone: "",
+    code: "ALYCIALIN",
+    productPct: 10,
+    password: "AlyciaLin#Kp6tY!",
+  },
 ];
 
 async function main() {
