@@ -8,6 +8,7 @@ import { PortalSignOut } from "@/components/auth/PortalSignOut";
 
 const links = [
   { href: "/provider", label: "Overview" },
+  { href: "/provider/intake", label: "Intake" },
   { href: "/provider/bookings", label: "Consultations" },
   { href: "/provider/earnings", label: "Earnings" },
   { href: "/provider/services", label: "Services" },

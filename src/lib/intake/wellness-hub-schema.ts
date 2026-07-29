@@ -14,6 +14,7 @@ export const wellnessHubIntakeSchema = z.object({
   primaryCarePhysician: z.string().max(120),
   firstAppointmentDate: z.string().max(40),
   assignedProvider: z.string().max(120),
+  referredBy: z.string().max(200).optional().default(""),
   prescriptionMedications: z.string().max(2000),
   supplementsPeptides: z.string().max(2000),
   medicationAllergies: z.string().max(1000),
@@ -34,12 +35,17 @@ export const wellnessHubIntakeSchema = z.object({
   allergicReactionDetails: z.string().max(1000),
   attestationName: z.string().min(1).max(120),
   attestationDate: z.string().min(1).max(40),
+  clientSignatureDataUrl: z.string().min(40).max(900_000),
   requestedDate: z.string().min(1).max(80),
   requestedTime: z.string().min(1).max(40),
   schedulingNotes: z.string().max(1000).optional(),
 });
 
 export type WellnessHubIntakeData = z.infer<typeof wellnessHubIntakeSchema>;
+
+/** Dr. Carmen Ramirez notification inbox for Wellness Hub intakes. */
+export const CARMEN_INTAKE_NOTIFY_EMAIL = "millenniumedgemed@gmail.com";
+export const CARMEN_PROVIDER_CODE = "CARMENRAM";
 
 export function formatWellnessHubIntakeEmail(data: WellnessHubIntakeData, referenceId: string) {
   const list = (items: string[]) => (items.length ? items.join(", ") : "—");
@@ -68,7 +74,8 @@ export function formatWellnessHubIntakeEmail(data: WellnessHubIntakeData, refere
     line("State / Country of Issue", data.idIssuePlace),
     line("Primary Care Physician", data.primaryCarePhysician),
     line("Date of First Appointment", data.firstAppointmentDate),
-    line("Assigned KIAN Privé Provider", data.assignedProvider),
+    line("Assigned KIAN Privé Provider", data.assignedProvider || "Dr. Carmen Ramirez"),
+    line("Referred by", data.referredBy ?? ""),
     "",
     "02 CURRENT MEDICATIONS, SUPPLEMENTS & ALLERGIES",
     line("Prescription Medications", data.prescriptionMedications),
@@ -99,6 +106,7 @@ export function formatWellnessHubIntakeEmail(data: WellnessHubIntakeData, refere
     "07 PATIENT ATTESTATION",
     line("Printed Name", data.attestationName),
     line("Date", data.attestationDate),
+    line("Client handwritten signature", data.clientSignatureDataUrl ? "Captured on form" : "Missing"),
     "",
     "This information is confidential and protected under HIPAA guidelines.",
   ].join("\n");
@@ -122,7 +130,7 @@ export function formatWellnessHubPatientConfirmation(data: WellnessHubIntakeData
     "",
     `Requested appointment: ${data.requestedDate} at ${data.requestedTime}.`,
     "",
-    "Our clinical team will review your information and follow up with next steps.",
+    "Dr. Carmen Ramirez and our clinical team will review your information and follow up with next steps.",
     "",
     "— KIAN Privé Concierge",
   ].join("\n");
@@ -130,7 +138,7 @@ export function formatWellnessHubPatientConfirmation(data: WellnessHubIntakeData
   return {
     subject: `KIAN Privé — Intake received (${referenceId})`,
     text,
-    html: `<p>Hi ${data.fullName},</p><p>Thank you for submitting your Provider Connect intake through KIAN Privé Wellness Hub.</p><p>Your reference ID is <strong>${referenceId}</strong>.</p><p>Requested appointment: ${data.requestedDate} at ${data.requestedTime}.</p><p>Our clinical team will review your information and follow up with next steps.</p><p>— KIAN Privé Concierge</p>`,
+    html: `<p>Hi ${data.fullName},</p><p>Thank you for submitting your Provider Connect intake through KIAN Privé Wellness Hub.</p><p>Your reference ID is <strong>${referenceId}</strong>.</p><p>Requested appointment: ${data.requestedDate} at ${data.requestedTime}.</p><p>Dr. Carmen Ramirez and our clinical team will review your information and follow up with next steps.</p><p>— KIAN Privé Concierge</p>`,
   };
 }
 
@@ -140,5 +148,6 @@ export function getWellnessHubReportRecipients() {
     process.env.PEPTIDE_INTAKE_REPORT_EMAIL ||
     process.env.BOOKING_REPORT_EMAIL ||
     "";
-  return [...new Set(raw.split(",").map((item) => item.trim()).filter(Boolean))];
+  const fromEnv = raw.split(",").map((item) => item.trim()).filter(Boolean);
+  return [...new Set([...fromEnv, CARMEN_INTAKE_NOTIFY_EMAIL])];
 }

@@ -4,6 +4,11 @@ type SendEmailInput = {
   text?: string;
   html?: string;
   replyTo?: string;
+  attachments?: {
+    filename: string;
+    content: Buffer | Uint8Array | string;
+    contentType?: string;
+  }[];
 };
 
 function normalizeRecipients(to: string | string[]) {
@@ -25,9 +30,22 @@ export async function sendTransactionalEmail(input: SendEmailInput) {
       from,
       toCount: recipients.length,
       subject: input.subject,
+      attachmentCount: input.attachments?.length ?? 0,
     });
     return { ok: true, provider: "log" as const };
   }
+
+  const attachments = input.attachments?.map((file) => {
+    const bytes =
+      typeof file.content === "string"
+        ? Buffer.from(file.content, file.content.startsWith("data:") ? "utf8" : "base64")
+        : Buffer.from(file.content);
+    return {
+      filename: file.filename,
+      content: bytes.toString("base64"),
+      content_type: file.contentType ?? "application/pdf",
+    };
+  });
 
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -42,6 +60,7 @@ export async function sendTransactionalEmail(input: SendEmailInput) {
       text: input.text,
       html: input.html,
       ...(input.replyTo ? { reply_to: input.replyTo } : {}),
+      ...(attachments?.length ? { attachments } : {}),
     }),
   });
 

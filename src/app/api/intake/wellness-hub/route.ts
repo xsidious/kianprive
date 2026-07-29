@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendTransactionalEmail } from "@/lib/email";
 import {
+  CARMEN_PROVIDER_CODE,
   formatWellnessHubIntakeEmail,
   formatWellnessHubPatientConfirmation,
   getWellnessHubReportRecipients,
@@ -21,7 +22,7 @@ function authorizeWellnessHub(req: Request) {
 
 /**
  * Receives Provider Connect intake submissions from Wellness Hub
- * (privetherapeutics.solutions) — stores in Clinical Intake and emails staff.
+ * (privetherapeutics.solutions) — stores in Clinical Intake and emails staff + Carmen.
  *
  * Auth: `x-wellness-hub-secret` or `Authorization: Bearer <WELLNESS_HUB_INTAKE_SECRET>`
  */
@@ -49,6 +50,19 @@ export async function POST(req: Request) {
   }
 
   const data = parsed.data;
+  const assignedProvider = data.assignedProvider?.trim() || "Dr. Carmen Ramirez";
+
+  const carmen = await prisma.partnerProfile.findFirst({
+    where: {
+      OR: [
+        { partnerCode: CARMEN_PROVIDER_CODE },
+        { displayName: { contains: "Carmen Ramirez", mode: "insensitive" } },
+        { user: { email: "carmen.ramirez@kianprive.com" } },
+      ],
+      type: "PROVIDER",
+    },
+    select: { id: true },
+  });
 
   let submission: { id: string; createdAt: Date };
   try {
@@ -59,10 +73,14 @@ export async function POST(req: Request) {
         phone: data.phone,
         dateOfBirth: data.dateOfBirth,
         programs: ["Provider Connect / Wellness Hub", "Compound Therapy"],
+        referredBy: data.referredBy || null,
+        clientSignatureDataUrl: data.clientSignatureDataUrl,
+        assignedPartnerId: carmen?.id ?? null,
         payload: {
           source: "wellness-hub",
           site: "privetherapeutics.solutions",
           ...data,
+          assignedProvider,
         },
       },
       select: { id: true, createdAt: true },
@@ -75,7 +93,7 @@ export async function POST(req: Request) {
   const referenceId = submission.id;
 
   try {
-    const report = formatWellnessHubIntakeEmail(data, referenceId);
+    const report = formatWellnessHubIntakeEmail({ ...data, assignedProvider }, referenceId);
     const recipients = getWellnessHubReportRecipients();
     const staffTo =
       recipients.length > 0
@@ -90,7 +108,7 @@ export async function POST(req: Request) {
       replyTo: data.email,
     });
 
-    const patientCopy = formatWellnessHubPatientConfirmation(data, referenceId);
+    const patientCopy = formatWellnessHubPatientConfirmation({ ...data, assignedProvider }, referenceId);
     await sendTransactionalEmail({
       to: data.email,
       subject: patientCopy.subject,

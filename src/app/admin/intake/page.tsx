@@ -24,6 +24,11 @@ type IntakeSubmission = {
   programs: string[];
   status: string;
   createdAt: string;
+  referredBy?: string | null;
+  clientSignatureDataUrl?: string | null;
+  providerSignatureDataUrl?: string | null;
+  providerSignedAt?: string | null;
+  providerSignedName?: string | null;
   payload?: Record<string, unknown> | null;
 };
 
@@ -62,6 +67,7 @@ const DETAIL_SECTIONS: { title: string; fields: [string, string][] }[] = [
       ["Primary care physician", "primaryCarePhysician"],
       ["First appointment", "firstAppointmentDate"],
       ["Assigned provider", "assignedProvider"],
+      ["Referred by", "referredBy"],
     ],
   },
   {
@@ -98,7 +104,7 @@ const DETAIL_SECTIONS: { title: string; fields: [string, string][] }[] = [
     ],
   },
   {
-    title: "Scheduling & attestation",
+    title: "Scheduling & signatures",
     fields: [
       ["Requested date", "requestedDate"],
       ["Requested time", "requestedTime"],
@@ -300,6 +306,46 @@ export default function AdminIntakePage() {
                 </dl>
               </section>
             ))}
+
+            <section className="rounded-2xl border border-[#efe4d4] bg-[#fffaf3] p-4">
+              <h3 className="font-serif text-lg text-[#1f1a15]">Signatures</h3>
+              <p className="mt-1 text-sm text-[#6f6251]">
+                Referred by: {selected.referredBy || fieldValue(selected, "referredBy")}
+              </p>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Client signature</p>
+                  {selected.clientSignatureDataUrl || selected.payload?.clientSignatureDataUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={String(selected.clientSignatureDataUrl || selected.payload?.clientSignatureDataUrl)}
+                      alt="Client signature"
+                      className="mt-2 max-h-36 rounded-sm border border-[#efe6d8] bg-white p-2"
+                    />
+                  ) : (
+                    <p className="mt-2 text-sm text-[#7c2c2c]">Not captured</p>
+                  )}
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Provider signature</p>
+                  {selected.providerSignatureDataUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={selected.providerSignatureDataUrl}
+                      alt="Provider signature"
+                      className="mt-2 max-h-36 rounded-sm border border-[#efe6d8] bg-white p-2"
+                    />
+                  ) : (
+                    <p className="mt-2 text-sm text-[#7c2c2c]">Awaiting provider</p>
+                  )}
+                  {selected.providerSignedAt ? (
+                    <p className="mt-2 text-xs text-[#6f6251]">
+                      {selected.providerSignedName} · {new Date(selected.providerSignedAt).toLocaleString()}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+            </section>
 
             <div className="flex flex-wrap gap-2">
               <a href={`mailto:${selected.email}`} className={adminBtnPrimary}>
