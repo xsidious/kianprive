@@ -36,8 +36,35 @@ function TrackIntakeForm() {
   useEffect(() => {
     const ref = search.get("ref") || search.get("referenceId") || "";
     const em = search.get("email") || "";
-    if (ref) setReferenceId(ref);
+    if (ref) setReferenceId(ref.toUpperCase());
     if (em) setEmail(em);
+  }, [search]);
+
+  useEffect(() => {
+    const ref = search.get("ref") || search.get("referenceId") || "";
+    const em = search.get("email") || "";
+    if (!ref || !em) return;
+    let cancelled = false;
+    void (async () => {
+      setBusy(true);
+      setMessage("");
+      const res = await fetch("/api/intake/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: em, referenceId: ref }),
+      });
+      const data = await res.json();
+      if (cancelled) return;
+      setBusy(false);
+      if (!res.ok) {
+        setMessage(data.error || "Could not find that request.");
+        return;
+      }
+      setResult(data.intake as TrackResult);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [search]);
 
   async function onTrack(e: FormEvent) {
@@ -87,8 +114,8 @@ function TrackIntakeForm() {
       <p className="text-[10px] uppercase tracking-[0.22em] text-[#8f6f3e]">Patient portal</p>
       <h1 className="mt-2 font-serif text-3xl text-[#1f1a15]">Track your intake request</h1>
       <p className="mt-3 text-sm leading-relaxed text-[#6f6251]">
-        Use the email and reference ID from your confirmation message. You can also create a member
-        account to follow progress in your dashboard.
+        Use the email and request code from your confirmation (example: KP-7F3A-9C2E). Tracking links
+        from your thank-you page already carry these for you.
       </p>
 
       <div className="mt-6 flex gap-2">
@@ -129,13 +156,13 @@ function TrackIntakeForm() {
             />
           </label>
           <label className="block text-xs uppercase tracking-[0.16em] text-[#8f6f3e]">
-            Reference ID
+            Request code
             <input
               required
               value={referenceId}
-              onChange={(e) => setReferenceId(e.target.value)}
-              className="mt-1.5 w-full rounded-lg border border-[#e0d4c0] bg-white px-3 py-2.5 text-sm text-[#1f1a15]"
-              placeholder="From your confirmation email"
+              onChange={(e) => setReferenceId(e.target.value.toUpperCase())}
+              className="mt-1.5 w-full rounded-lg border border-[#e0d4c0] bg-white px-3 py-2.5 font-mono text-sm tracking-[0.12em] text-[#1f1a15]"
+              placeholder="KP-XXXX-XXXX"
             />
           </label>
           <button
@@ -165,12 +192,13 @@ function TrackIntakeForm() {
             />
           </label>
           <label className="block text-xs uppercase tracking-[0.16em] text-[#8f6f3e]">
-            Reference ID
+            Request code
             <input
               required
               value={referenceId}
-              onChange={(e) => setReferenceId(e.target.value)}
-              className="mt-1.5 w-full rounded-lg border border-[#e0d4c0] bg-white px-3 py-2.5 text-sm text-[#1f1a15]"
+              onChange={(e) => setReferenceId(e.target.value.toUpperCase())}
+              className="mt-1.5 w-full rounded-lg border border-[#e0d4c0] bg-white px-3 py-2.5 font-mono text-sm tracking-[0.12em] text-[#1f1a15]"
+              placeholder="KP-XXXX-XXXX"
             />
           </label>
           <label className="block text-xs uppercase tracking-[0.16em] text-[#8f6f3e]">
@@ -201,7 +229,7 @@ function TrackIntakeForm() {
           <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Current status</p>
           <h2 className="font-serif text-2xl text-[#1f1a15]">{result.statusLabel}</h2>
           <p className="text-sm text-[#6f6251]">
-            {result.fullName} · Ref {result.referenceId}
+            {result.fullName} · <span className="font-mono tracking-[0.12em]">{result.referenceId}</span>
           </p>
           {result.statusNote ? (
             <p className="rounded-lg border border-[#e7dcc8] bg-[#fcfaf6] px-3 py-2 text-sm text-[#1f1a15]">

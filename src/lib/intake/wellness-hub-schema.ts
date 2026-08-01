@@ -57,7 +57,7 @@ export function formatWellnessHubIntakeEmail(data: WellnessHubIntakeData, refere
   const text = [
     "KIAN PRIVÉ — Wellness Hub / Provider Connect Intake",
     "====================================================",
-    `Reference ID: ${referenceId}`,
+    `Request code: ${referenceId}`,
     `Source: Wellness Hub (privetherapeutics.solutions)`,
     "",
     "SCHEDULING REQUEST",
@@ -134,17 +134,17 @@ export function formatWellnessHubPatientConfirmation(
 ) {
   const trackLine = trackUrl
     ? `Track your request anytime: ${trackUrl}`
-    : `Track your request at kianprive.com/track-intake with this reference ID.`;
+    : `Track your request at kianprive.com/track-intake with your request code.`;
 
   const text = [
     `Hi ${data.fullName},`,
     "",
     "Thank you for submitting your Provider Connect intake through KIAN Privé Wellness Hub.",
-    `Your reference ID is ${referenceId}.`,
+    `Your request code is ${referenceId}.`,
     "",
     trackLine,
     "",
-    "You can create a free member account with this email + reference ID to follow progress online,",
+    "You can create a free member account with this email + request code to follow progress online,",
     "or check status anytime without an account.",
     "",
     "Dr. Carmen Ramirez and our clinical team will review your information and follow up with next steps.",
@@ -155,9 +155,9 @@ export function formatWellnessHubPatientConfirmation(
   return {
     subject: `KIAN Privé — Intake received (${referenceId})`,
     text,
-    html: `<p>Hi ${data.fullName},</p><p>Thank you for submitting your Provider Connect intake through KIAN Privé Wellness Hub.</p><p>Your reference ID is <strong>${referenceId}</strong>.</p><p>${
+    html: `<p>Hi ${data.fullName},</p><p>Thank you for submitting your Provider Connect intake through KIAN Privé Wellness Hub.</p><p>Your request code is <strong style="letter-spacing:0.06em">${referenceId}</strong>.</p><p>${
       trackUrl ? `<a href="${trackUrl}">Track your request</a>` : "Track your request at kianprive.com/track-intake"
-    }</p><p>You can create a free member account with this email + reference ID to follow progress online.</p><p>Dr. Carmen Ramirez and our clinical team will review your information and follow up with next steps.</p><p>— KIAN Privé Concierge</p>`,
+    }</p><p>You can create a free member account with this email + request code to follow progress online.</p><p>Dr. Carmen Ramirez and our clinical team will review your information and follow up with next steps.</p><p>— KIAN Privé Concierge</p>`,
   };
 }
 

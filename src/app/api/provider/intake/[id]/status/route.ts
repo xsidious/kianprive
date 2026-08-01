@@ -118,7 +118,11 @@ export async function POST(req: Request, { params }: Params) {
   });
 
   if (parsed.data.notifyPatient) {
-    const track = intakeTrackUrl(updated.id, updated.publicTrackingToken);
+    const referenceCode = updated.publicTrackingToken || updated.id;
+    const track = intakeTrackUrl({
+      referenceCode,
+      email: updated.email,
+    });
     const label = patientFacingIntakeStatus(status);
     try {
       await sendTransactionalEmail({
@@ -129,7 +133,7 @@ export async function POST(req: Request, { params }: Params) {
           "",
           `Your clinical intake status is now: ${label}.`,
           parsed.data.statusNote?.trim() ? `\nNote from your provider:\n${parsed.data.statusNote.trim()}\n` : "",
-          `Reference ID: ${updated.id}`,
+          `Request code: ${referenceCode}`,
           `Track your request: ${track}`,
           order ? `\nA fulfillment order draft was created: ${order.orderNumber}` : "",
           "",
@@ -149,7 +153,7 @@ export async function POST(req: Request, { params }: Params) {
                 .trim()
                 .replace(/</g, "&lt;")}</p>`
             : ""
-        }<p>Reference ID: <strong>${updated.id}</strong></p><p><a href="${track}">Track your request</a></p>${
+        }<p>Request code: <strong>${referenceCode}</strong></p><p><a href="${track}">Track your request</a></p>${
           order ? `<p>Order draft: <strong>${order.orderNumber}</strong></p>` : ""
         }<p>— KIAN Privé Clinical Team</p>`,
       });

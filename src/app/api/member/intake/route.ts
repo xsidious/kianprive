@@ -55,7 +55,7 @@ export async function GET() {
 
   return NextResponse.json({
     intakes: submissions.map((row) => ({
-      referenceId: row.id,
+      referenceId: row.publicTrackingToken || row.id,
       fullName: row.fullName,
       email: row.email,
       status: row.status,

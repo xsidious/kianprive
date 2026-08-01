@@ -104,11 +104,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Could not save intake submission." }, { status: 500 });
   }
 
-  const referenceId = submission.id;
-  const trackUrl = intakeTrackUrl(referenceId, submission.publicTrackingToken);
+  const referenceCode = submission.publicTrackingToken || submission.id;
+  const trackUrl = intakeTrackUrl({
+    referenceCode,
+    email: data.email,
+  });
 
   try {
-    const report = formatWellnessHubIntakeEmail({ ...data, assignedProvider }, referenceId);
+    const report = formatWellnessHubIntakeEmail({ ...data, assignedProvider }, referenceCode);
     const recipients = getWellnessHubReportRecipients();
     const staffTo =
       recipients.length > 0
@@ -118,14 +121,14 @@ export async function POST(req: Request) {
     await sendTransactionalEmail({
       to: staffTo,
       subject: report.subject,
-      text: report.text,
+      text: `${report.text}\n\nInternal submission id: ${submission.id}`,
       html: report.html,
       replyTo: data.email,
     });
 
     const patientCopy = formatWellnessHubPatientConfirmation(
       { ...data, assignedProvider },
-      referenceId,
+      referenceCode,
       trackUrl,
     );
     await sendTransactionalEmail({
@@ -140,8 +143,9 @@ export async function POST(req: Request) {
 
   return NextResponse.json({
     ok: true,
-    referenceId,
-    trackingToken: submission.publicTrackingToken,
+    referenceId: referenceCode,
+    submissionId: submission.id,
+    trackingToken: referenceCode,
     trackUrl,
     hasAccount: Boolean(existingMember),
     submittedAt: submission.createdAt.toISOString(),

@@ -3,11 +3,11 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { Role } from "@prisma/client";
-import { patientFacingIntakeStatus } from "@/lib/intake/tracking";
+import { patientFacingIntakeStatus, intakeReferenceWhere } from "@/lib/intake/tracking";
 
 const claimSchema = z.object({
   email: z.string().email(),
-  referenceId: z.string().min(8).max(64),
+  referenceId: z.string().min(6).max(64),
   password: z.string().min(8).max(100),
   name: z.string().min(2).max(120).optional(),
 });
@@ -44,16 +44,13 @@ export async function POST(req: Request) {
 
   const email = parsed.data.email.trim().toLowerCase();
   const submission = await prisma.therapeuticsIntakeSubmission.findFirst({
-    where: {
-      id: parsed.data.referenceId.trim(),
-      email: { equals: email, mode: "insensitive" },
-    },
+    where: intakeReferenceWhere(email, parsed.data.referenceId),
   });
 
   if (!submission) {
     return withCors(
       NextResponse.json(
-        { error: "No intake found for that email and reference ID." },
+        { error: "No intake found for that email and request code." },
         { status: 404 },
       ),
     );
@@ -103,7 +100,7 @@ export async function POST(req: Request) {
         ok: true,
         linkedExisting: true,
         email,
-        referenceId: submission.id,
+        referenceId: submission.publicTrackingToken || submission.id,
         status: submission.status,
         statusLabel: patientFacingIntakeStatus(submission.status),
         loginUrl: "/login?callbackUrl=/dashboard/intake",
@@ -141,7 +138,7 @@ export async function POST(req: Request) {
       ok: true,
       linkedExisting: false,
       email: user.email,
-      referenceId: submission.id,
+      referenceId: submission.publicTrackingToken || submission.id,
       status: submission.status,
       statusLabel: patientFacingIntakeStatus(submission.status),
       loginUrl: "/login?callbackUrl=/dashboard/intake",

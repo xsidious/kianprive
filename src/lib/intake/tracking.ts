@@ -19,8 +19,14 @@ export const INTAKE_STATUS_OPTIONS: IntakeSubmissionStatus[] = [
   "DECLINED",
 ];
 
+/** Patient-facing request code, e.g. KP-7F3A-9C2E */
 export function generateIntakeTrackingToken() {
-  return `KP-${randomBytes(5).toString("hex").toUpperCase()}`;
+  const hex = randomBytes(4).toString("hex").toUpperCase();
+  return `KP-${hex.slice(0, 4)}-${hex.slice(4)}`;
+}
+
+export function normalizeIntakeReference(value: string) {
+  return value.trim().toUpperCase().replace(/\s+/g, "");
 }
 
 export function publicAppBaseUrl() {
@@ -30,12 +36,35 @@ export function publicAppBaseUrl() {
   );
 }
 
-export function intakeTrackUrl(referenceId: string, token?: string | null) {
+export function intakeTrackUrl(opts: {
+  referenceCode: string;
+  email?: string | null;
+}) {
   const base = publicAppBaseUrl();
-  if (token) return `${base}/track-intake?ref=${encodeURIComponent(referenceId)}&token=${encodeURIComponent(token)}`;
-  return `${base}/track-intake?ref=${encodeURIComponent(referenceId)}`;
+  const params = new URLSearchParams();
+  params.set("ref", opts.referenceCode);
+  if (opts.email?.trim()) params.set("email", opts.email.trim());
+  return `${base}/track-intake?${params.toString()}`;
 }
 
 export function patientFacingIntakeStatus(status: IntakeSubmissionStatus) {
   return INTAKE_STATUS_LABELS[status] ?? status;
+}
+
+/** Resolve patient reference: prefers KP-XXXX-XXXX token, falls back to internal cuid. */
+export function intakeReferenceWhere(email: string, referenceRaw: string) {
+  const reference = normalizeIntakeReference(referenceRaw);
+  const emailFilter = { equals: email.trim().toLowerCase(), mode: "insensitive" as const };
+
+  if (reference.startsWith("KP-")) {
+    return {
+      email: emailFilter,
+      publicTrackingToken: reference,
+    };
+  }
+
+  return {
+    email: emailFilter,
+    OR: [{ publicTrackingToken: reference }, { id: referenceRaw.trim() }],
+  };
 }

@@ -3,13 +3,13 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import {
   INTAKE_STATUS_LABELS,
+  intakeReferenceWhere,
   patientFacingIntakeStatus,
 } from "@/lib/intake/tracking";
 
 const querySchema = z.object({
   email: z.string().email(),
-  referenceId: z.string().min(8).max(64),
-  token: z.string().min(4).max(64).optional(),
+  referenceId: z.string().min(6).max(64),
 });
 
 function withCors(res: NextResponse) {
@@ -23,7 +23,7 @@ export async function OPTIONS() {
   return withCors(new NextResponse(null, { status: 204 }));
 }
 
-/** Public intake status lookup — email + reference ID. */
+/** Public intake status lookup — email + request code (KP-XXXX-XXXX). */
 export async function POST(req: Request) {
   let body: unknown;
   try {
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return withCors(
       NextResponse.json(
-        { error: "Provide a valid email and reference ID from your confirmation email." },
+        { error: "Provide a valid email and request code from your confirmation email." },
         { status: 400 },
       ),
     );
@@ -44,13 +44,7 @@ export async function POST(req: Request) {
 
   const email = parsed.data.email.trim().toLowerCase();
   const submission = await prisma.therapeuticsIntakeSubmission.findFirst({
-    where: {
-      id: parsed.data.referenceId.trim(),
-      email: { equals: email, mode: "insensitive" },
-      ...(parsed.data.token
-        ? { publicTrackingToken: parsed.data.token.trim().toUpperCase() }
-        : {}),
-    },
+    where: intakeReferenceWhere(email, parsed.data.referenceId),
     select: {
       id: true,
       fullName: true,
@@ -79,18 +73,20 @@ export async function POST(req: Request) {
   if (!submission) {
     return withCors(
       NextResponse.json(
-        { error: "No intake found for that email and reference ID." },
+        { error: "No intake found for that email and request code." },
         { status: 404 },
       ),
     );
   }
 
+  const referenceCode = submission.publicTrackingToken || submission.id;
+
   return withCors(
     NextResponse.json({
       ok: true,
       intake: {
-        referenceId: submission.id,
-        trackingToken: submission.publicTrackingToken,
+        referenceId: referenceCode,
+        trackingToken: referenceCode,
         fullName: submission.fullName,
         email: submission.email,
         status: submission.status,
