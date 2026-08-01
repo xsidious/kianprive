@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { AdminModal } from "@/components/admin/AdminModal";
+import { IntakeMessageThread } from "@/components/intake/IntakeMessageThread";
 import {
   adminBtnGhost,
   adminBtnPrimary,
@@ -23,6 +24,8 @@ type IntakeSubmission = {
   dateOfBirth: string;
   programs: string[];
   status: string;
+  statusNote?: string | null;
+  publicTrackingToken?: string | null;
   createdAt: string;
   referredBy?: string | null;
   clientSignatureDataUrl?: string | null;
@@ -30,6 +33,14 @@ type IntakeSubmission = {
   providerSignedAt?: string | null;
   providerSignedName?: string | null;
   payload?: Record<string, unknown> | null;
+  messageCount?: number;
+  latestMessage?: {
+    id: string;
+    authorRole: string;
+    authorLabel: string;
+    body: string;
+    createdAt: string;
+  } | null;
 };
 
 const statuses = [
@@ -230,15 +241,27 @@ export default function AdminIntakePage() {
               <div className="mt-4 flex flex-wrap gap-2 text-xs text-[#6f6251]">
                 <span className="rounded-full bg-[#fff6e8] px-2.5 py-1 text-[#8f6f3e]">{sourceLabel(submission)}</span>
                 <span className="rounded-full bg-[#f7f2ea] px-2.5 py-1">{new Date(submission.createdAt).toLocaleString()}</span>
+                {(submission.messageCount ?? 0) > 0 ? (
+                  <span className="rounded-full bg-[#eef6f6] px-2.5 py-1 text-[#1b6568]">
+                    {submission.messageCount} message{(submission.messageCount ?? 0) === 1 ? "" : "s"}
+                    {submission.latestMessage?.authorRole === "PATIENT" ? " · patient replied" : ""}
+                  </span>
+                ) : null}
                 {submission.programs.slice(0, 2).map((program) => (
                   <span key={program} className="rounded-full bg-[#f7f2ea] px-2.5 py-1">
                     {program}
                   </span>
                 ))}
               </div>
+              {submission.latestMessage ? (
+                <p className="mt-3 line-clamp-2 rounded-lg bg-[#fcfaf6] px-3 py-2 text-sm text-[#2b2218]">
+                  <span className="text-[#8f6f3e]">{submission.latestMessage.authorLabel}:</span>{" "}
+                  {submission.latestMessage.body}
+                </p>
+              ) : null}
               <div className="mt-5 flex flex-wrap items-center gap-2">
                 <button type="button" className={adminBtnPrimary} onClick={() => setModalId(submission.id)}>
-                  View more
+                  View / reply
                 </button>
                 <select
                   value={submission.status}
@@ -274,8 +297,36 @@ export default function AdminIntakePage() {
                 {selected.status.replaceAll("_", " ")}
               </span>
               <span className={adminBtnSoft}>{sourceLabel(selected)}</span>
-              <span className="text-xs text-[#6f6251]">Ref {selected.id}</span>
+              <span className="font-mono text-xs tracking-[0.12em] text-[#6f6251]">
+                {selected.publicTrackingToken || selected.id}
+              </span>
             </div>
+
+            <IntakeMessageThread
+              title="Request messages"
+              hint="Ask for labs, documents, or clarifications. Patient replies appear here and on their track page."
+              placeholder="e.g. Please send fasting labs from the last 90 days…"
+              submitLabel="Send to patient"
+              reloadKey={`${selected.id}-${selected.messageCount ?? 0}-${selected.latestMessage?.id ?? ""}`}
+              loadMessages={async () => {
+                const res = await fetch(`/api/admin/intake/${selected.id}/messages`);
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || "Could not load messages.");
+                return data.messages ?? [];
+              }}
+              sendMessage={async (body) => {
+                const res = await fetch(`/api/admin/intake/${selected.id}/messages`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ body, notifyPatient: true }),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || "Could not send message.");
+                setMessage("Message sent. Patient can see it on their track page.");
+                await loadSubmissions();
+                return data.message;
+              }}
+            />
 
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="text-sm">

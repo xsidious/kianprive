@@ -5,6 +5,14 @@ import { useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useEffect, useState } from "react";
 import { IntakeMessageThread } from "@/components/intake/IntakeMessageThread";
 
+type TrackMessage = {
+  id: string;
+  authorRole: "PROVIDER" | "PATIENT" | "SYSTEM";
+  authorLabel: string;
+  body: string;
+  createdAt: string;
+};
+
 type TrackResult = {
   referenceId: string;
   fullName: string;
@@ -15,6 +23,7 @@ type TrackResult = {
   submittedAt: string;
   updatedAt: string;
   hasAccount: boolean;
+  messages?: TrackMessage[];
   orders: Array<{
     orderNumber: string;
     status: string;
@@ -284,7 +293,8 @@ function TrackIntakeForm() {
             hint="Your clinical team can ask for labs or documents here. Reply on this same request."
             placeholder="Type your reply for the clinical team…"
             submitLabel="Send reply"
-            reloadKey={result.referenceId}
+            initialMessages={result.messages ?? []}
+            reloadKey={`${result.referenceId}-${result.updatedAt}-${result.messages?.length ?? 0}`}
             loadMessages={async () => {
               const res = await fetch(
                 `/api/intake/messages?email=${encodeURIComponent(email)}&referenceId=${encodeURIComponent(referenceId)}`,
@@ -301,6 +311,15 @@ function TrackIntakeForm() {
               });
               const data = await res.json();
               if (!res.ok) throw new Error(data.error || "Could not send reply.");
+              setResult((prev) =>
+                prev
+                  ? {
+                      ...prev,
+                      messages: [...(prev.messages ?? []), data.message],
+                      updatedAt: new Date().toISOString(),
+                    }
+                  : prev,
+              );
               return data.message;
             }}
           />

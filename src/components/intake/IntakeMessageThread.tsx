@@ -17,6 +17,8 @@ type Props = {
   submitLabel?: string;
   loadMessages: () => Promise<ThreadMessage[]>;
   sendMessage: (body: string) => Promise<ThreadMessage>;
+  /** Seed from parent (e.g. track API) before/alongside fetch */
+  initialMessages?: ThreadMessage[];
   /** Reload trigger from parent (e.g. after status change) */
   reloadKey?: string | number;
 };
@@ -28,13 +30,14 @@ export function IntakeMessageThread({
   submitLabel = "Send message",
   loadMessages,
   sendMessage,
+  initialMessages,
   reloadKey,
 }: Props) {
-  const [messages, setMessages] = useState<ThreadMessage[]>([]);
+  const [messages, setMessages] = useState<ThreadMessage[]>(initialMessages ?? []);
   const [body, setBody] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!(initialMessages && initialMessages.length > 0));
 
   async function refresh() {
     setLoading(true);
@@ -43,13 +46,16 @@ export function IntakeMessageThread({
       const rows = await loadMessages();
       setMessages(rows);
     } catch {
-      setError("Could not load messages.");
+      if (!(initialMessages && initialMessages.length > 0)) {
+        setError("Could not load messages.");
+      }
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
+    if (initialMessages) setMessages(initialMessages);
     void refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reloadKey]);

@@ -6,6 +6,7 @@ import {
   intakeReferenceWhere,
   patientFacingIntakeStatus,
 } from "@/lib/intake/tracking";
+import { listIntakeMessages } from "@/lib/intake/messages";
 
 const querySchema = z.object({
   email: z.string().email(),
@@ -80,6 +81,7 @@ export async function POST(req: Request) {
   }
 
   const referenceCode = submission.publicTrackingToken || submission.id;
+  const messages = await listIntakeMessages(submission.id);
 
   return withCors(
     NextResponse.json({
@@ -95,6 +97,7 @@ export async function POST(req: Request) {
         submittedAt: submission.createdAt.toISOString(),
         updatedAt: submission.updatedAt.toISOString(),
         hasAccount: Boolean(submission.userId),
+        messages,
         orders: submission.orders.map((order) => ({
           orderNumber: order.orderNumber,
           status: order.status,

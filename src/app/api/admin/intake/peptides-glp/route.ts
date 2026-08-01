@@ -20,6 +20,8 @@ export async function GET() {
       dateOfBirth: true,
       programs: true,
       status: true,
+      statusNote: true,
+      publicTrackingToken: true,
       payload: true,
       referredBy: true,
       clientSignatureDataUrl: true,
@@ -28,10 +30,39 @@ export async function GET() {
       providerSignedName: true,
       createdAt: true,
       updatedAt: true,
+      _count: { select: { messages: true } },
+      messages: {
+        orderBy: { createdAt: "desc" },
+        take: 1,
+        select: {
+          id: true,
+          authorRole: true,
+          authorName: true,
+          body: true,
+          createdAt: true,
+        },
+      },
     },
   });
 
-  return NextResponse.json({ submissions });
+  return NextResponse.json({
+    submissions: submissions.map(({ messages, _count, ...row }) => ({
+      ...row,
+      messageCount: _count.messages,
+      latestMessage: messages[0]
+        ? {
+            id: messages[0].id,
+            authorRole: messages[0].authorRole,
+            authorLabel:
+              messages[0].authorRole === "PATIENT"
+                ? messages[0].authorName || "Patient"
+                : messages[0].authorName || "Clinical team",
+            body: messages[0].body,
+            createdAt: messages[0].createdAt.toISOString(),
+          }
+        : null,
+    })),
+  });
 }
 
 export async function PATCH(req: Request) {
