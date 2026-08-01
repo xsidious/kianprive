@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SignaturePad } from "@/components/intake/SignaturePad";
+import { IntakeMessageThread } from "@/components/intake/IntakeMessageThread";
 import {
   adminBtnGhost,
   adminBtnPrimary,
@@ -153,22 +154,48 @@ export default function ProviderIntakeDetailPage() {
 
       {message ? <p className="text-sm text-[#1b6568]">{message}</p> : null}
 
+      <IntakeMessageThread
+        title="Request messages"
+        hint="Tell the patient what else they need to deliver (labs, documents, clarifications). They can reply on this same request."
+        placeholder="e.g. Please send fasting labs from the last 90 days, and confirm current medications…"
+        submitLabel="Send to patient"
+        reloadKey={`${id}-${submission.status}-${submission.statusNote || ""}`}
+        loadMessages={async () => {
+          const res = await fetch(`/api/provider/intake/${id}/messages`);
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Could not load messages.");
+          return data.messages ?? [];
+        }}
+        sendMessage={async (body) => {
+          const res = await fetch(`/api/provider/intake/${id}/messages`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ body, notifyPatient: true }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Could not send message.");
+          setMessage("Message sent and patient emailed.");
+          await load();
+          return data.message;
+        }}
+      />
+
       <section className={`${adminPanel} space-y-4 p-5`}>
         <div>
           <h2 className="font-serif text-xl text-[#1f1a15]">Clinical decision</h2>
           <p className="mt-1 text-sm text-[#6f6251]">
             Current status: <strong>{submission.status}</strong>. Approve creates an order draft and emails the
-            patient. Needs labs / decline also notify the patient with your note.
+            patient. Needs labs / decline also notify the patient with your note (saved into the message thread).
           </p>
         </div>
         <label className="block text-xs uppercase tracking-[0.16em] text-[#8f6f3e]">
-          Note to patient (optional)
+          Note with status change (optional)
           <textarea
             value={statusNote}
             onChange={(e) => setStatusNote(e.target.value)}
             rows={3}
             className="mt-1.5 w-full rounded-lg border border-[#e0d4c0] bg-white px-3 py-2 text-sm text-[#1f1a15]"
-            placeholder="e.g. Please upload labs from the last 3 months…"
+            placeholder="Optional note included when you change status…"
           />
         </label>
         <label className="flex items-center gap-2 text-sm text-[#6f6251]">

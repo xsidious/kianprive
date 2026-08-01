@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useEffect, useState } from "react";
+import { IntakeMessageThread } from "@/components/intake/IntakeMessageThread";
 
 type TrackResult = {
   referenceId: string;
@@ -233,7 +234,7 @@ function TrackIntakeForm() {
           </p>
           {result.statusNote ? (
             <p className="rounded-lg border border-[#e7dcc8] bg-[#fcfaf6] px-3 py-2 text-sm text-[#1f1a15]">
-              Provider note: {result.statusNote}
+              Latest clinical note: {result.statusNote}
             </p>
           ) : null}
           <p className="text-xs text-[#8a7d6c]">
@@ -274,6 +275,36 @@ function TrackIntakeForm() {
             </Link>
           </div>
         </section>
+      ) : null}
+
+      {result ? (
+        <div className="mt-6">
+          <IntakeMessageThread
+            title="Messages on this request"
+            hint="Your clinical team can ask for labs or documents here. Reply on this same request."
+            placeholder="Type your reply for the clinical team…"
+            submitLabel="Send reply"
+            reloadKey={result.referenceId}
+            loadMessages={async () => {
+              const res = await fetch(
+                `/api/intake/messages?email=${encodeURIComponent(email)}&referenceId=${encodeURIComponent(referenceId)}`,
+              );
+              const data = await res.json();
+              if (!res.ok) throw new Error(data.error || "Could not load messages.");
+              return data.messages ?? [];
+            }}
+            sendMessage={async (body) => {
+              const res = await fetch("/api/intake/messages", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, referenceId, body }),
+              });
+              const data = await res.json();
+              if (!res.ok) throw new Error(data.error || "Could not send reply.");
+              return data.message;
+            }}
+          />
+        </div>
       ) : null}
     </main>
   );

@@ -10,6 +10,7 @@ import {
   intakeTrackUrl,
   patientFacingIntakeStatus,
 } from "@/lib/intake/tracking";
+import { createIntakeMessage } from "@/lib/intake/messages";
 import type { IntakeSubmissionStatus } from "@prisma/client";
 
 type Params = { params: Promise<{ id: string }> };
@@ -117,6 +118,23 @@ export async function POST(req: Request, { params }: Params) {
     return row;
   });
 
+  const note = parsed.data.statusNote?.trim();
+  if (note) {
+    try {
+      await createIntakeMessage({
+        intakeSubmissionId: id,
+        authorRole: "PROVIDER",
+        body: note,
+        authorUserId: session?.user?.id ?? null,
+        authorName: "Clinical team",
+        syncStatusNote: false,
+        notifyPatient: false,
+      });
+    } catch (err) {
+      console.error("[intake/status] message create failed", err);
+    }
+  }
+
   if (parsed.data.notifyPatient) {
     const referenceCode = updated.publicTrackingToken || updated.id;
     const track = intakeTrackUrl({
@@ -132,28 +150,26 @@ export async function POST(req: Request, { params }: Params) {
           `Hi ${updated.fullName},`,
           "",
           `Your clinical intake status is now: ${label}.`,
-          parsed.data.statusNote?.trim() ? `\nNote from your provider:\n${parsed.data.statusNote.trim()}\n` : "",
+          note ? `\nNote from your provider:\n${note}\n` : "",
           `Request code: ${referenceCode}`,
-          `Track your request: ${track}`,
+          `Track and reply: ${track}`,
           order ? `\nA fulfillment order draft was created: ${order.orderNumber}` : "",
           "",
           status === "APPROVED"
             ? "Next step: our team will coordinate treatment / product fulfillment. Sign in at kianprive.com to view progress."
             : status === "NEEDS_LABS"
-              ? "Please arrange updated labs or evaluation as noted. Reply to this email if you need guidance."
-              : "Our team will follow up if anything else is needed.",
+              ? "Please arrange updated labs or evaluation as noted. You can reply on your tracking page."
+              : "Our team will follow up if anything else is needed. You can reply on your tracking page.",
           "",
           "— KIAN Privé Clinical Team",
         ]
           .filter(Boolean)
           .join("\n"),
         html: `<p>Hi ${updated.fullName},</p><p>Your clinical intake status is now: <strong>${label}</strong>.</p>${
-          parsed.data.statusNote?.trim()
-            ? `<p><em>Note from your provider:</em><br/>${parsed.data.statusNote
-                .trim()
-                .replace(/</g, "&lt;")}</p>`
+          note
+            ? `<p><em>Note from your provider:</em><br/>${note.replace(/</g, "&lt;")}</p>`
             : ""
-        }<p>Request code: <strong>${referenceCode}</strong></p><p><a href="${track}">Track your request</a></p>${
+        }<p>Request code: <strong>${referenceCode}</strong></p><p><a href="${track}">Track and reply</a></p>${
           order ? `<p>Order draft: <strong>${order.orderNumber}</strong></p>` : ""
         }<p>— KIAN Privé Clinical Team</p>`,
       });

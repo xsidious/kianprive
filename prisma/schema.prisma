@@ -89,6 +89,7 @@ model TherapeuticsIntakeSubmission {
   user                     User?                    @relation(fields: [userId], references: [id], onDelete: SetNull)
   assignedPartner          PartnerProfile?          @relation(fields: [assignedPartnerId], references: [id], onDelete: SetNull)
   orders                   Order[]
+  messages                 IntakeMessage[]
   createdAt                DateTime                 @default(now())
   updatedAt                DateTime                 @updatedAt
 
@@ -96,6 +97,25 @@ model TherapeuticsIntakeSubmission {
   @@index([email, createdAt])
   @@index([assignedPartnerId, createdAt])
   @@index([userId, createdAt])
+}
+
+enum IntakeMessageAuthor {
+  PROVIDER
+  PATIENT
+  SYSTEM
+}
+
+model IntakeMessage {
+  id                 String              @id @default(cuid())
+  intakeSubmissionId String
+  authorRole         IntakeMessageAuthor
+  authorUserId       String?
+  authorName         String?
+  body               String              @db.Text
+  createdAt          DateTime            @default(now())
+  intakeSubmission   TherapeuticsIntakeSubmission @relation(fields: [intakeSubmissionId], references: [id], onDelete: Cascade)
+
+  @@index([intakeSubmissionId, createdAt])
 }
 
 model Profile {
