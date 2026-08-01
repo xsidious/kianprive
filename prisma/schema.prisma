@@ -77,6 +77,8 @@ model TherapeuticsIntakeSubmission {
   dateOfBirth              String
   programs                 String[]
   status                   IntakeSubmissionStatus   @default(PENDING_REVIEW)
+  statusNote               String?
+  publicTrackingToken      String?                  @unique
   payload                  Json
   referredBy               String?
   clientSignatureDataUrl   String?                  @db.Text
@@ -86,12 +88,14 @@ model TherapeuticsIntakeSubmission {
   assignedPartnerId        String?
   user                     User?                    @relation(fields: [userId], references: [id], onDelete: SetNull)
   assignedPartner          PartnerProfile?          @relation(fields: [assignedPartnerId], references: [id], onDelete: SetNull)
+  orders                   Order[]
   createdAt                DateTime                 @default(now())
   updatedAt                DateTime                 @updatedAt
 
   @@index([status, createdAt])
   @@index([email, createdAt])
   @@index([assignedPartnerId, createdAt])
+  @@index([userId, createdAt])
 }
 
 model Profile {
@@ -339,6 +343,7 @@ model Order {
   orderNumber          String       @unique
   userId               String?
   partnerId            String?
+  intakeSubmissionId   String?
   email                String?
   phone                String?
   status               OrderStatus  @default(PENDING)
@@ -361,10 +366,12 @@ model Order {
   refunds              RefundRecord[]
   user                 User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
   partner              PartnerProfile? @relation(fields: [partnerId], references: [id], onDelete: SetNull)
+  intakeSubmission     TherapeuticsIntakeSubmission? @relation(fields: [intakeSubmissionId], references: [id], onDelete: SetNull)
   createdAt            DateTime     @default(now())
   updatedAt            DateTime     @updatedAt
 
   @@index([partnerId, createdAt])
+  @@index([intakeSubmissionId])
 }
 
 model OrderItem {
@@ -787,6 +794,7 @@ enum BookingStatus {
 enum IntakeSubmissionStatus {
   PENDING_REVIEW
   UNDER_PHYSICIAN_REVIEW
+  NEEDS_LABS
   APPROVED
   NEEDS_FOLLOW_UP
   DECLINED

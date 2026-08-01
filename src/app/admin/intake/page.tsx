@@ -35,6 +35,7 @@ type IntakeSubmission = {
 const statuses = [
   "PENDING_REVIEW",
   "UNDER_PHYSICIAN_REVIEW",
+  "NEEDS_LABS",
   "APPROVED",
   "NEEDS_FOLLOW_UP",
   "DECLINED",
@@ -192,6 +193,7 @@ export default function AdminIntakePage() {
           ["All", "ALL"],
           ["Pending review", "PENDING_REVIEW"],
           ["Physician review", "UNDER_PHYSICIAN_REVIEW"],
+          ["Needs labs", "NEEDS_LABS"],
           ["Needs follow-up", "NEEDS_FOLLOW_UP"],
         ].map(([label, key]) => (
           <button

@@ -40,7 +40,7 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = (await req.json()) as { id?: string; status?: string };
+  const body = (await req.json()) as { id?: string; status?: string; statusNote?: string };
   if (!body.id || !body.status) {
     return NextResponse.json({ error: "Submission id and status are required." }, { status: 400 });
   }
@@ -48,6 +48,7 @@ export async function PATCH(req: Request) {
   const allowed = new Set([
     "PENDING_REVIEW",
     "UNDER_PHYSICIAN_REVIEW",
+    "NEEDS_LABS",
     "APPROVED",
     "NEEDS_FOLLOW_UP",
     "DECLINED",
@@ -58,10 +59,14 @@ export async function PATCH(req: Request) {
 
   const updated = await prisma.therapeuticsIntakeSubmission.update({
     where: { id: body.id },
-    data: { status: body.status as never },
+    data: {
+      status: body.status as never,
+      statusNote: typeof body.statusNote === "string" ? body.statusNote : undefined,
+    },
     select: {
       id: true,
       status: true,
+      statusNote: true,
       updatedAt: true,
     },
   });

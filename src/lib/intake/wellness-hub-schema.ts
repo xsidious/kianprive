@@ -127,12 +127,25 @@ export function formatWellnessHubIntakeEmail(data: WellnessHubIntakeData, refere
   };
 }
 
-export function formatWellnessHubPatientConfirmation(data: WellnessHubIntakeData, referenceId: string) {
+export function formatWellnessHubPatientConfirmation(
+  data: WellnessHubIntakeData,
+  referenceId: string,
+  trackUrl?: string,
+) {
+  const trackLine = trackUrl
+    ? `Track your request anytime: ${trackUrl}`
+    : `Track your request at kianprive.com/track-intake with this reference ID.`;
+
   const text = [
     `Hi ${data.fullName},`,
     "",
     "Thank you for submitting your Provider Connect intake through KIAN Privé Wellness Hub.",
     `Your reference ID is ${referenceId}.`,
+    "",
+    trackLine,
+    "",
+    "You can create a free member account with this email + reference ID to follow progress online,",
+    "or check status anytime without an account.",
     "",
     "Dr. Carmen Ramirez and our clinical team will review your information and follow up with next steps.",
     "",
@@ -142,7 +155,9 @@ export function formatWellnessHubPatientConfirmation(data: WellnessHubIntakeData
   return {
     subject: `KIAN Privé — Intake received (${referenceId})`,
     text,
-    html: `<p>Hi ${data.fullName},</p><p>Thank you for submitting your Provider Connect intake through KIAN Privé Wellness Hub.</p><p>Your reference ID is <strong>${referenceId}</strong>.</p><p>Dr. Carmen Ramirez and our clinical team will review your information and follow up with next steps.</p><p>— KIAN Privé Concierge</p>`,
+    html: `<p>Hi ${data.fullName},</p><p>Thank you for submitting your Provider Connect intake through KIAN Privé Wellness Hub.</p><p>Your reference ID is <strong>${referenceId}</strong>.</p><p>${
+      trackUrl ? `<a href="${trackUrl}">Track your request</a>` : "Track your request at kianprive.com/track-intake"
+    }</p><p>You can create a free member account with this email + reference ID to follow progress online.</p><p>Dr. Carmen Ramirez and our clinical team will review your information and follow up with next steps.</p><p>— KIAN Privé Concierge</p>`,
   };
 }
 

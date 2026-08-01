@@ -51,7 +51,14 @@ const patchSchema = z.object({
   providerSignatureDataUrl: z.string().min(40).max(900_000).optional(),
   providerSignedName: z.string().min(2).max(120).optional(),
   status: z
-    .enum(["PENDING_REVIEW", "UNDER_PHYSICIAN_REVIEW", "APPROVED", "NEEDS_FOLLOW_UP", "DECLINED"])
+    .enum([
+      "PENDING_REVIEW",
+      "UNDER_PHYSICIAN_REVIEW",
+      "NEEDS_LABS",
+      "APPROVED",
+      "NEEDS_FOLLOW_UP",
+      "DECLINED",
+    ])
     .optional(),
 });
 

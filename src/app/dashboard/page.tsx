@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { BadgeDollarSign, CalendarCheck2, CircleUserRound, Crown, MessageCircleMore, PackageCheck } from "lucide-react";
+import { BadgeDollarSign, CalendarCheck2, CircleUserRound, Crown, FileText, MessageCircleMore, PackageCheck } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { getPortalHomeForRole } from "@/lib/auth-redirect";
 import { prisma } from "@/lib/prisma";
@@ -99,6 +99,9 @@ export default async function DashboardPage() {
         </div>
 
         <div className="mt-8 flex flex-wrap gap-3">
+          <Link className={`inline-flex items-center gap-2 ${editorialCtaSecondary}`} href="/dashboard/intake">
+            <FileText size={16} /> MY CLINICAL INTAKE
+          </Link>
           <Link className={`inline-flex items-center gap-2 ${editorialCtaSecondary}`} href="/dashboard/subscription">
             <BadgeDollarSign size={16} /> VIEW SUBSCRIPTION
           </Link>

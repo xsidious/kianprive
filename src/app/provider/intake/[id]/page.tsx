@@ -20,6 +20,7 @@ type Submission = {
   phone: string;
   dateOfBirth: string;
   status: string;
+  statusNote?: string | null;
   referredBy: string | null;
   clientSignatureDataUrl: string | null;
   providerSignatureDataUrl: string | null;
@@ -35,6 +36,14 @@ function field(payload: Record<string, unknown> | null, key: string) {
   return String(value);
 }
 
+const STATUS_ACTIONS = [
+  { value: "UNDER_PHYSICIAN_REVIEW", label: "Under review" },
+  { value: "NEEDS_LABS", label: "Needs labs" },
+  { value: "NEEDS_FOLLOW_UP", label: "Needs follow-up" },
+  { value: "APPROVED", label: "Approve" },
+  { value: "DECLINED", label: "Decline" },
+] as const;
+
 export default function ProviderIntakeDetailPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
@@ -42,6 +51,8 @@ export default function ProviderIntakeDetailPage() {
   const [signature, setSignature] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [statusNote, setStatusNote] = useState("");
+  const [createOrderDraft, setCreateOrderDraft] = useState(true);
 
   async function load() {
     const res = await fetch(`/api/provider/intake/${id}`);
@@ -52,6 +63,7 @@ export default function ProviderIntakeDetailPage() {
     const payload = (await res.json()) as { submission: Submission };
     setSubmission(payload.submission);
     setSignature(payload.submission.providerSignatureDataUrl);
+    setStatusNote(payload.submission.statusNote || "");
   }
 
   useEffect(() => {
@@ -91,6 +103,31 @@ export default function ProviderIntakeDetailPage() {
     setMessage(res.ok ? "Signed PDF emailed to the client." : "Could not email PDF. Sign first if needed.");
   }
 
+  async function setClinicalStatus(status: string) {
+    setBusy(true);
+    setMessage("");
+    const res = await fetch(`/api/provider/intake/${id}/status`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        status,
+        statusNote,
+        notifyPatient: true,
+        createOrderDraft: status === "APPROVED" ? createOrderDraft : false,
+      }),
+    });
+    const data = await res.json();
+    setBusy(false);
+    if (!res.ok) {
+      setMessage(data.error || "Could not update status.");
+      return;
+    }
+    setMessage(
+      `${data.statusLabel || "Status updated"}.${data.order ? ` Order draft ${data.order.orderNumber} created.` : ""} Patient notified.`,
+    );
+    await load();
+  }
+
   if (!submission) {
     return <p className="text-sm text-[#6f6251]">{message || "Loading submission…"}</p>;
   }
@@ -107,6 +144,7 @@ export default function ProviderIntakeDetailPage() {
             {submission.email} · {submission.phone}
             {submission.referredBy ? ` · Referred by ${submission.referredBy}` : ""}
           </p>
+          <p className="mt-1 text-xs text-[#8a7d6c]">Ref {submission.id}</p>
         </div>
         <Link href="/provider/intake" className={adminBtnGhost}>
           ← All submissions
@@ -115,10 +153,54 @@ export default function ProviderIntakeDetailPage() {
 
       {message ? <p className="text-sm text-[#1b6568]">{message}</p> : null}
 
+      <section className={`${adminPanel} space-y-4 p-5`}>
+        <div>
+          <h2 className="font-serif text-xl text-[#1f1a15]">Clinical decision</h2>
+          <p className="mt-1 text-sm text-[#6f6251]">
+            Current status: <strong>{submission.status}</strong>. Approve creates an order draft and emails the
+            patient. Needs labs / decline also notify the patient with your note.
+          </p>
+        </div>
+        <label className="block text-xs uppercase tracking-[0.16em] text-[#8f6f3e]">
+          Note to patient (optional)
+          <textarea
+            value={statusNote}
+            onChange={(e) => setStatusNote(e.target.value)}
+            rows={3}
+            className="mt-1.5 w-full rounded-lg border border-[#e0d4c0] bg-white px-3 py-2 text-sm text-[#1f1a15]"
+            placeholder="e.g. Please upload labs from the last 3 months…"
+          />
+        </label>
+        <label className="flex items-center gap-2 text-sm text-[#6f6251]">
+          <input
+            type="checkbox"
+            checked={createOrderDraft}
+            onChange={(e) => setCreateOrderDraft(e.target.checked)}
+            className="accent-[#8f6f3e]"
+          />
+          Create unpaid order draft when approving (links intake → database order)
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {STATUS_ACTIONS.map((action) => (
+            <button
+              key={action.value}
+              type="button"
+              disabled={busy}
+              onClick={() => void setClinicalStatus(action.value)}
+              className={action.value === "APPROVED" ? adminBtnPrimary : adminBtnGhost}
+            >
+              {action.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
       <section className={`${adminPanel} grid gap-3 p-5 sm:grid-cols-2`}>
         <p className="text-sm"><span className="text-[#8f6f3e]">DOB:</span> {submission.dateOfBirth}</p>
         <p className="text-sm"><span className="text-[#8f6f3e]">Status:</span> {submission.status}</p>
-        <p className="text-sm"><span className="text-[#8f6f3e]">Requested:</span> {field(payload, "requestedDate")} at {field(payload, "requestedTime")}</p>
+        <p className="text-sm"><span className="text-[#8f6f3e]">Last physical:</span> {field(payload, "lastPhysicalDate")}</p>
+        <p className="text-sm"><span className="text-[#8f6f3e]">Last bloodwork:</span> {field(payload, "lastBloodworkDate")}</p>
+        <p className="text-sm sm:col-span-2"><span className="text-[#8f6f3e]">Bloodwork normal limits:</span> {field(payload, "bloodworkWithinNormalLimits")}</p>
         <p className="text-sm"><span className="text-[#8f6f3e]">Provider:</span> {field(payload, "assignedProvider")}</p>
         <p className="text-sm sm:col-span-2"><span className="text-[#8f6f3e]">Conditions:</span> {field(payload, "conditions")}</p>
         <p className="text-sm sm:col-span-2"><span className="text-[#8f6f3e]">Meds:</span> {field(payload, "prescriptionMedications")}</p>

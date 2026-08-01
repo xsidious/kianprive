@@ -8,6 +8,8 @@ import {
   getWellnessHubReportRecipients,
   wellnessHubIntakeSchema,
 } from "@/lib/intake/wellness-hub-schema";
+import { generateIntakeTrackingToken, intakeTrackUrl } from "@/lib/intake/tracking";
+import { Role } from "@prisma/client";
 
 function authorizeWellnessHub(req: Request) {
   const expected = process.env.WELLNESS_HUB_INTAKE_SECRET?.trim();
@@ -51,6 +53,7 @@ export async function POST(req: Request) {
 
   const data = parsed.data;
   const assignedProvider = data.assignedProvider?.trim() || "Dr. Carmen Ramirez";
+  const trackingToken = generateIntakeTrackingToken();
 
   const carmen = await prisma.partnerProfile.findFirst({
     where: {
@@ -64,18 +67,29 @@ export async function POST(req: Request) {
     select: { id: true },
   });
 
-  let submission: { id: string; createdAt: Date };
+  const existingMember = await prisma.user.findFirst({
+    where: {
+      email: { equals: data.email.trim().toLowerCase(), mode: "insensitive" },
+      role: { in: [Role.MEMBER, Role.GUEST] },
+    },
+    select: { id: true },
+  });
+
+  let submission: { id: string; createdAt: Date; publicTrackingToken: string | null };
   try {
     submission = await prisma.therapeuticsIntakeSubmission.create({
       data: {
         fullName: data.fullName,
-        email: data.email,
+        email: data.email.trim().toLowerCase(),
         phone: data.phone,
         dateOfBirth: data.dateOfBirth,
         programs: ["Provider Connect / Wellness Hub", "Compound Therapy"],
         referredBy: data.referredBy || null,
         clientSignatureDataUrl: data.clientSignatureDataUrl,
         assignedPartnerId: carmen?.id ?? null,
+        userId: existingMember?.id ?? null,
+        publicTrackingToken: trackingToken,
+        status: "PENDING_REVIEW",
         payload: {
           source: "wellness-hub",
           site: "privetherapeutics.solutions",
@@ -83,7 +97,7 @@ export async function POST(req: Request) {
           assignedProvider,
         },
       },
-      select: { id: true, createdAt: true },
+      select: { id: true, createdAt: true, publicTrackingToken: true },
     });
   } catch (dbError) {
     console.error("[intake/wellness-hub] Database save failed:", dbError);
@@ -91,6 +105,7 @@ export async function POST(req: Request) {
   }
 
   const referenceId = submission.id;
+  const trackUrl = intakeTrackUrl(referenceId, submission.publicTrackingToken);
 
   try {
     const report = formatWellnessHubIntakeEmail({ ...data, assignedProvider }, referenceId);
@@ -108,7 +123,11 @@ export async function POST(req: Request) {
       replyTo: data.email,
     });
 
-    const patientCopy = formatWellnessHubPatientConfirmation({ ...data, assignedProvider }, referenceId);
+    const patientCopy = formatWellnessHubPatientConfirmation(
+      { ...data, assignedProvider },
+      referenceId,
+      trackUrl,
+    );
     await sendTransactionalEmail({
       to: data.email,
       subject: patientCopy.subject,
@@ -122,6 +141,9 @@ export async function POST(req: Request) {
   return NextResponse.json({
     ok: true,
     referenceId,
+    trackingToken: submission.publicTrackingToken,
+    trackUrl,
+    hasAccount: Boolean(existingMember),
     submittedAt: submission.createdAt.toISOString(),
   });
 }
