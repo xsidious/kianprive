@@ -44,6 +44,15 @@ const ambassadors = [
     productPct: 10,
     password: "AlyciaLin#Kp6tY!",
   },
+  {
+    name: "Violetta",
+    email: "violetta@kianprive.com",
+    displayName: "Violetta",
+    phone: "",
+    code: "VIOLETTA",
+    productPct: 10,
+    password: "Violetta#Kp8nR!",
+  },
 ];
 
 async function main() {

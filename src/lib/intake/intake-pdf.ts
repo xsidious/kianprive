@@ -500,10 +500,10 @@ export async function buildIntakePdf(input: IntakePdfInput) {
   ]);
 
   // ── Scheduling ──────────────────────────────────────────────────────────
-  drawSectionTitle("Scheduling Request", "02");
+  drawSectionTitle("Provider Connect Notes", "02");
   drawFieldRow([
-    { label: "Requested date", value: input.payload.requestedDate },
-    { label: "Requested time", value: input.payload.requestedTime },
+    { label: "Scheduling status", value: input.payload.requestedDate || "To be scheduled" },
+    { label: "Preferred time", value: input.payload.requestedTime || "TBD" },
   ]);
   if (str(input.payload.schedulingNotes) !== "-") {
     drawLongField("Discussion notes", input.payload.schedulingNotes);
@@ -526,6 +526,9 @@ export async function buildIntakePdf(input: IntakePdfInput) {
   drawFieldRow([
     { label: "Surgical procedures (past 12 months)", value: input.payload.recentSurgeries },
     { label: "Pregnant / breastfeeding / planning", value: input.payload.pregnantBreastfeeding },
+    { label: "Last physical (year/month)", value: input.payload.lastPhysicalDate },
+    { label: "Last bloodwork (year/month)", value: input.payload.lastBloodworkDate },
+    { label: "Bloodwork within normal limits", value: input.payload.bloodworkWithinNormalLimits },
   ]);
 
   // ── GLP ─────────────────────────────────────────────────────────────────

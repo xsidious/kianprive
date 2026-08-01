@@ -87,6 +87,9 @@ const DETAIL_SECTIONS: { title: string; fields: [string, string][] }[] = [
       ["Other conditions", "otherConditions"],
       ["Recent surgeries", "recentSurgeries"],
       ["Pregnant / breastfeeding", "pregnantBreastfeeding"],
+      ["Last physical (year/month)", "lastPhysicalDate"],
+      ["Last bloodwork (year/month)", "lastBloodworkDate"],
+      ["Bloodwork within normal limits", "bloodworkWithinNormalLimits"],
     ],
   },
   {
@@ -104,11 +107,11 @@ const DETAIL_SECTIONS: { title: string; fields: [string, string][] }[] = [
     ],
   },
   {
-    title: "Scheduling & signatures",
+    title: "Notes & signatures",
     fields: [
-      ["Requested date", "requestedDate"],
-      ["Requested time", "requestedTime"],
-      ["Scheduling notes", "schedulingNotes"],
+      ["Scheduling status", "requestedDate"],
+      ["Preferred time", "requestedTime"],
+      ["Discussion notes", "schedulingNotes"],
       ["Attestation name", "attestationName"],
       ["Attestation date", "attestationDate"],
     ],

@@ -24,6 +24,9 @@ export const wellnessHubIntakeSchema = z.object({
   otherConditions: z.string().max(1000),
   recentSurgeries: z.string().max(1000),
   pregnantBreastfeeding: z.string().max(40),
+  lastPhysicalDate: z.string().max(20).optional().default(""),
+  lastBloodworkDate: z.string().max(20).optional().default(""),
+  bloodworkWithinNormalLimits: z.string().max(10).optional().default(""),
   glpMedications: z.array(z.string().max(120)).max(20),
   glpDose: z.string().max(200),
   glpDuration: z.string().max(200),
@@ -36,8 +39,8 @@ export const wellnessHubIntakeSchema = z.object({
   attestationName: z.string().min(1).max(120),
   attestationDate: z.string().min(1).max(40),
   clientSignatureDataUrl: z.string().min(40).max(900_000),
-  requestedDate: z.string().min(1).max(80),
-  requestedTime: z.string().min(1).max(40),
+  requestedDate: z.string().max(80).optional().default("To be scheduled"),
+  requestedTime: z.string().max(40).optional().default("TBD"),
   schedulingNotes: z.string().max(1000).optional(),
 });
 
@@ -89,6 +92,9 @@ export function formatWellnessHubIntakeEmail(data: WellnessHubIntakeData, refere
     line("Other conditions", data.otherConditions),
     line("Surgical procedures (past 12 months)", data.recentSurgeries),
     line("Pregnant / breastfeeding / planning", data.pregnantBreastfeeding),
+    line("Last physical (year/month)", data.lastPhysicalDate ?? ""),
+    line("Last bloodwork (year/month)", data.lastBloodworkDate ?? ""),
+    line("Bloodwork within normal limits", data.bloodworkWithinNormalLimits ?? ""),
     "",
     "04 GLP / WEIGHT-LOSS HISTORY",
     line("Previous medications", list(data.glpMedications)),
@@ -112,7 +118,7 @@ export function formatWellnessHubIntakeEmail(data: WellnessHubIntakeData, refere
   ].join("\n");
 
   return {
-    subject: `[Wellness Hub] Provider Connect — ${data.fullName} — ${data.requestedDate} at ${data.requestedTime}`,
+    subject: `[Wellness Hub] Provider Connect — ${data.fullName}`,
     text,
     html: `<pre style="font-family:ui-monospace,monospace;white-space:pre-wrap;font-size:13px;line-height:1.45">${text
       .replace(/&/g, "&amp;")
@@ -128,8 +134,6 @@ export function formatWellnessHubPatientConfirmation(data: WellnessHubIntakeData
     "Thank you for submitting your Provider Connect intake through KIAN Privé Wellness Hub.",
     `Your reference ID is ${referenceId}.`,
     "",
-    `Requested appointment: ${data.requestedDate} at ${data.requestedTime}.`,
-    "",
     "Dr. Carmen Ramirez and our clinical team will review your information and follow up with next steps.",
     "",
     "— KIAN Privé Concierge",
@@ -138,7 +142,7 @@ export function formatWellnessHubPatientConfirmation(data: WellnessHubIntakeData
   return {
     subject: `KIAN Privé — Intake received (${referenceId})`,
     text,
-    html: `<p>Hi ${data.fullName},</p><p>Thank you for submitting your Provider Connect intake through KIAN Privé Wellness Hub.</p><p>Your reference ID is <strong>${referenceId}</strong>.</p><p>Requested appointment: ${data.requestedDate} at ${data.requestedTime}.</p><p>Dr. Carmen Ramirez and our clinical team will review your information and follow up with next steps.</p><p>— KIAN Privé Concierge</p>`,
+    html: `<p>Hi ${data.fullName},</p><p>Thank you for submitting your Provider Connect intake through KIAN Privé Wellness Hub.</p><p>Your reference ID is <strong>${referenceId}</strong>.</p><p>Dr. Carmen Ramirez and our clinical team will review your information and follow up with next steps.</p><p>— KIAN Privé Concierge</p>`,
   };
 }
 

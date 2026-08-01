@@ -8,7 +8,15 @@ export type CatalogProduct = {
   redirectUrl?: string;
 };
 
-export const shopCategories = ["All", "Korean Skincare", "Skincare", "Nutrients", "Professional"] as const;
+export const shopCategories = [
+  "All",
+  "Korean Skincare",
+  "Skincare",
+  "Hair Care",
+  "Body Care",
+  "Nutrients",
+  "Professional",
+] as const;
 
 /** Client catalog — `id` and `slug` match seeded Prisma product slugs for reliable cart sync. */
 export const catalogProducts: CatalogProduct[] = [
@@ -40,7 +48,7 @@ export const catalogProducts: CatalogProduct[] = [
     id: "hair-mask",
     slug: "hair-mask",
     name: "Hair Mask",
-    category: "Skincare",
+    category: "Hair Care",
     price: 0,
     image: "/images/hairrestoration.jpeg",
   },
@@ -48,9 +56,41 @@ export const catalogProducts: CatalogProduct[] = [
     id: "hair-serum",
     slug: "hair-serum",
     name: "Hair Serum",
-    category: "Skincare",
-    price: 0,
+    category: "Hair Care",
+    price: 22,
     image: "/images/HairReatorationpicture.jpeg",
+  },
+  {
+    id: "shampoo",
+    slug: "shampoo",
+    name: "Shampoo",
+    category: "Hair Care",
+    price: 15.5,
+    image: "/images/hairrestoration.jpeg",
+  },
+  {
+    id: "conditioner",
+    slug: "conditioner",
+    name: "Conditioner",
+    category: "Hair Care",
+    price: 15.5,
+    image: "/images/hairrestoration.jpeg",
+  },
+  {
+    id: "co-wash-and-go",
+    slug: "co-wash-and-go",
+    name: "Co-Wash and Go",
+    category: "Hair Care",
+    price: 15.5,
+    image: "/images/hairrestoration.jpeg",
+  },
+  {
+    id: "body-wash",
+    slug: "body-wash",
+    name: "Body Wash",
+    category: "Body Care",
+    price: 2,
+    image: "/images/esthetics.avif",
   },
   {
     id: "kian-anti-aging-facial-oil",
