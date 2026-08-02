@@ -144,7 +144,7 @@ export function formatWellnessHubPatientConfirmation(
     "",
     trackLine,
     "",
-    "You can create a free member account with this email + request code to follow progress online,",
+    "Create your member account with this email + request code to follow progress online,",
     "or check status anytime without an account.",
     "",
     "Dr. Carmen Ramirez and our clinical team will review your information and follow up with next steps.",
@@ -157,7 +157,7 @@ export function formatWellnessHubPatientConfirmation(
     text,
     html: `<p>Hi ${data.fullName},</p><p>Thank you for submitting your Provider Connect intake through KIAN Privé Wellness Hub.</p><p>Your request code is <strong style="letter-spacing:0.06em">${referenceId}</strong>.</p><p>${
       trackUrl ? `<a href="${trackUrl}">Track your request</a>` : "Track your request at kianprive.com/track-intake"
-    }</p><p>You can create a free member account with this email + request code to follow progress online.</p><p>Dr. Carmen Ramirez and our clinical team will review your information and follow up with next steps.</p><p>— KIAN Privé Concierge</p>`,
+    }</p><p>Create your member account with this email + request code to follow progress online.</p><p>Dr. Carmen Ramirez and our clinical team will review your information and follow up with next steps.</p><p>— KIAN Privé Concierge</p>`,
   };
 }
 
