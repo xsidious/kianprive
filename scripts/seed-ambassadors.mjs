@@ -9,13 +9,13 @@ const prisma = new PrismaClient();
  */
 const ambassadors = [
   {
-    name: "Jennifer Frenner",
-    email: "jennifer.frenner@kianprive.com",
-    displayName: "Jennifer Frenner",
+    name: "Jennifer Fenner",
+    email: "jennifer.fenner@kianprive.com",
+    displayName: "Jennifer Fenner",
     phone: "",
-    code: "JENNFRENNER",
+    code: "JENNFENNER",
     productPct: 10,
-    password: "JenniferFrenner#Kp9mX!",
+    password: "JenniferFenner#Kp9mX!",
   },
   {
     name: "Carolina Millan",
