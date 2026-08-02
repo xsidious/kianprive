@@ -65,6 +65,9 @@ export default function ProviderOverviewPage() {
           <Link href="/provider/earnings" className={adminBtnGhost}>
             Earnings
           </Link>
+          <Link href="/provider/links" className={adminBtnGhost}>
+            Links & QR
+          </Link>
         </div>
       </div>
 

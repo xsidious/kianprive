@@ -12,6 +12,7 @@ const links = [
   { href: "/provider/bookings", label: "Consultations" },
   { href: "/provider/earnings", label: "Earnings" },
   { href: "/provider/services", label: "Services" },
+  { href: "/provider/links", label: "Links & QR" },
 ];
 
 export default async function ProviderLayout({ children }: { children: React.ReactNode }) {

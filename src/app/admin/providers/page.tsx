@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { BrandedQrCard } from "@/components/ambassador/BrandedQrCard";
 import {
   adminBtnGhost,
   adminBtnPrimary,
@@ -329,16 +330,27 @@ export default function AdminProvidersPage() {
               </div>
 
               <div className="rounded-sm border border-[#efe6d8] bg-[#fffaf3] p-4 text-sm text-[#6f6251]">
-                <p className="text-xs uppercase tracking-[0.14em] text-[#8f6f3e]">Referral links</p>
-                <p className="mt-2 break-all font-mono text-xs text-[#1f1a15]">Book: {selected.links.book}</p>
-                <p className="mt-1 break-all font-mono text-xs text-[#1f1a15]">
-                  Telemedicine: {selected.links.telemedicine}
-                </p>
-                <p className="mt-1 break-all font-mono text-xs text-[#1f1a15]">Shop: {selected.links.shop}</p>
-                <p className="mt-2 text-xs">
-                  Bookings attribute consultations; shop attributes non-prescription products. Prescriptions never earn
-                  practitioner commission.
-                </p>
+                <p className="text-xs uppercase tracking-[0.14em] text-[#8f6f3e]">Referral links & QR</p>
+                <div className="mt-4 grid gap-4 lg:grid-cols-[240px_1fr]">
+                  <BrandedQrCard
+                    value={selected.links.book}
+                    label="Scan to book"
+                    filename={`kian-prive-${selected.partnerCode}-book.png`}
+                    size={220}
+                  />
+                  <div>
+                    <p className="mt-0 break-all font-mono text-xs text-[#1f1a15]">Book: {selected.links.book}</p>
+                    <p className="mt-1 break-all font-mono text-xs text-[#1f1a15]">
+                      Telemedicine: {selected.links.telemedicine}
+                    </p>
+                    <p className="mt-1 break-all font-mono text-xs text-[#1f1a15]">Shop: {selected.links.shop}</p>
+                    <p className="mt-1 break-all font-mono text-xs text-[#1f1a15]">Home: {selected.links.home}</p>
+                    <p className="mt-2 text-xs">
+                      Practitioners can download QR codes from their portal under Links & QR. Bookings attribute
+                      consultations; shop attributes non-prescription products.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           ) : (
