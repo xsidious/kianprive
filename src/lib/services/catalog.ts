@@ -254,27 +254,23 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "beauty-hair-nails",
     title: "Beauty (Hair and Nails)",
-    image: "/images/salonpics/WhatsApp Image 2026-05-21 at 2.45.02 PM.jpeg",
+    image: "/images/salonpics/salon-reception.png",
     gallery: [
       {
-        src: "/images/salonpics/WhatsApp Image 2026-05-21 at 2.45.02 PM.jpeg",
-        alt: "Beauty partner salon interior and styling stations",
+        src: "/images/salonpics/salon-reception.png",
+        alt: "Beauty salon reception lounge with marble island and pendant lights",
       },
       {
-        src: "/images/salonpics/WhatsApp Image 2026-05-21 at 2.45.02 P1M.jpeg",
-        alt: "Beauty partner service area and salon setup",
+        src: "/images/salonpics/salon-styling.png",
+        alt: "Salon styling floor with marble vanity and service stations",
       },
       {
-        src: "/images/salonpics/WhatsApp Image 2026-05-21 at 2.45.02 1PM.jpeg",
-        alt: "Beauty partner treatment and styling environment",
+        src: "/images/salonpics/salon-manicure.png",
+        alt: "Manicure suite overlooking the salon floor",
       },
       {
-        src: "/images/salonpics/WhatsApp Image 2026-05-21 at 2.45.0212 PM.jpeg",
-        alt: "Beauty partner in-salon experience details",
-      },
-      {
-        src: "/images/salonpics/WhatsApp Image 202a6-05-21 at 2.45.02 PM.jpeg",
-        alt: "Beauty partner salon space and equipment",
+        src: "/images/salonpics/salon-pedicure.png",
+        alt: "Pedicure station with luxury chair and towel cart",
       },
     ],
     description:

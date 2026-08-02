@@ -70,7 +70,6 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
   };
 
   useEffect(() => {
-    if (!isPriorityGroup) return;
     if (!services.some((service) => getSlides(service).length > 1)) return;
     const timer = window.setInterval(() => {
       setSliderIndexByService((previous) => {
@@ -85,7 +84,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
       });
     }, 3500);
     return () => window.clearInterval(timer);
-  }, [isPriorityGroup, services]);
+  }, [services]);
 
   return (
     <>
@@ -114,7 +113,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                 <h3 className="absolute bottom-4 left-4 right-4 text-xl font-medium leading-snug text-white">
                   {service.title}
                 </h3>
-                {isPriorityGroup && slides.length > 1 ? (
+                {slides.length > 1 ? (
                   <div className="absolute bottom-2 right-3 flex gap-1.5 rounded-sm bg-white/80 px-2 py-1">
                     {slides.map((slide, slideIndex) => (
                       <button
@@ -123,7 +122,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                         onClick={() => setSliderIndexByService((prev) => ({ ...prev, [key]: slideIndex }))}
                         aria-label={`Show slide ${slideIndex + 1}`}
                         className={`h-2 rounded-full transition-all ${
-                          slideIndex === (sliderIndexByService[key] ?? 0) ? "w-5 bg-[#1f7a7a]" : "w-2 bg-[#9cbec0]"
+                          slideIndex === (sliderIndexByService[key] ?? 0) ? "w-5 bg-[#8a682e]" : "w-2 bg-[#c4b49a]"
                         }`}
                       />
                     ))}
@@ -186,7 +185,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
             >
               <div className="relative h-64 overflow-hidden rounded-sm">
                 <Image src={activeSlide} alt="" fill sizes="(max-width: 768px) 100vw, 42vw" className="object-cover" />
-                {isPriorityGroup && slides.length > 1 ? (
+                {slides.length > 1 ? (
                   <div className="absolute bottom-2 right-3 flex gap-1.5 rounded-sm bg-white/80 px-2 py-1">
                     {slides.map((slide, slideIndex) => (
                       <button
@@ -195,7 +194,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                         onClick={() => setSliderIndexByService((prev) => ({ ...prev, [key]: slideIndex }))}
                         aria-label={`Show slide ${slideIndex + 1}`}
                         className={`h-2 rounded-full transition-all ${
-                          slideIndex === (sliderIndexByService[key] ?? 0) ? "w-5 bg-[#1f7a7a]" : "w-2 bg-[#9cbec0]"
+                          slideIndex === (sliderIndexByService[key] ?? 0) ? "w-5 bg-[#8a682e]" : "w-2 bg-[#c4b49a]"
                         }`}
                       />
                     ))}

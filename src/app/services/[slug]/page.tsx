@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/editorial-primitives";
 import { auth } from "@/lib/auth";
 import { IcooneMediaGallery } from "@/components/services/IcooneMediaGallery";
+import { RotatingServiceGallery } from "@/components/services/RotatingServiceGallery";
 import { PeptidesInteractiveShowcase } from "@/components/services/PeptidesInteractiveShowcase";
 import { nutritionPromoImage, NUTRITION_SERVICE_SLUG } from "@/lib/media/nutrition";
 import { getServiceBySlug, serviceCatalog } from "@/lib/services/catalog";
@@ -206,7 +207,11 @@ export default async function ServiceDetailPage({
 
       {service.gallery?.length ? (
         <EditorialSection>
-          <IcooneMediaGallery title="Treatment Experience" items={service.gallery} />
+          {service.slug === "beauty-hair-nails" ? (
+            <RotatingServiceGallery title="Inside the Beauty Salon" items={service.gallery} />
+          ) : (
+            <IcooneMediaGallery title="Treatment Experience" items={service.gallery} />
+          )}
         </EditorialSection>
       ) : null}
 
