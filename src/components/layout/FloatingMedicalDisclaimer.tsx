@@ -12,7 +12,7 @@ export function FloatingMedicalDisclaimer() {
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="inline-flex w-full items-center justify-between gap-2 rounded-sm border border-[#b78d4b66] bg-white px-4 py-2 text-xs tracking-[0.12em] text-[#8f6f3e] shadow-[0_18px_40px_-28px_rgba(0,0,0,0.45)]"
+        className="inline-flex w-full items-center justify-between gap-2 rounded-sm border border-[#8a682e66] bg-white px-4 py-2 text-xs tracking-[0.12em] text-[#3b3024] shadow-[0_18px_40px_-28px_rgba(0,0,0,0.45)]"
       >
         Medical Disclaimer
         <ChevronDown size={14} className={`transition ${open ? "rotate-180" : ""}`} />

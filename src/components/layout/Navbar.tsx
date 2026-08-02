@@ -31,10 +31,13 @@ const icooneLinks = [
 ];
 
 const navLinkClass =
-  "font-serif text-[11px] uppercase tracking-[0.22em] text-[#b6a185] transition hover:text-[#8a682e]";
+  "font-serif text-[11px] uppercase tracking-[0.22em] text-[#3b3024] transition hover:text-[#8a682e]";
 
 const dropdownLinkClass =
-  "block rounded-sm px-3 py-2 font-serif text-[11px] uppercase tracking-[0.18em] text-[#b6a185] transition hover:bg-[#fffaf2] hover:text-[#8a682e]";
+  "block rounded-sm px-3 py-2 font-serif text-[11px] uppercase tracking-[0.18em] text-[#3b3024] transition hover:bg-[#fffaf2] hover:text-[#8a682e]";
+
+const mobileNavLinkClass =
+  "rounded-sm px-3 py-2.5 font-serif text-[12px] uppercase tracking-[0.2em] text-[#3b3024] hover:bg-[#faf6f0] hover:text-[#8a682e]";
 
 export function Navbar() {
   const { data } = useSession();
@@ -123,7 +126,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={openCart}
-            className="relative inline-flex items-center p-2 text-[#b6a185] transition hover:text-[#8a682e]"
+            className="relative inline-flex items-center p-2 text-[#5c4a32] transition hover:text-[#8a682e]"
             aria-label={`Open cart${displayCount > 0 ? `, ${displayCount} items` : ""}`}
           >
             <ShoppingBag size={17} aria-hidden />
@@ -143,7 +146,7 @@ export function Navbar() {
           ) : null}
           <Link
             href="/book-online"
-            className="rounded-sm border border-[#b6a185] px-4 py-2 font-serif text-[11px] uppercase tracking-[0.16em] text-[#b6a185] transition hover:bg-[#faf6f0] hover:text-[#8a682e]"
+            className="rounded-sm border border-[#8a682e] px-4 py-2 font-serif text-[11px] uppercase tracking-[0.16em] text-[#3b3024] transition hover:bg-[#faf6f0] hover:text-[#8a682e]"
           >
             Book Online
           </Link>
@@ -152,7 +155,7 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={() => setUserMenuOpen((v) => !v)}
-                className="inline-flex items-center gap-2 border border-[#b6a18566] px-2 py-1.5 text-[#b6a185]"
+                className="inline-flex items-center gap-2 border border-[#8a682e66] px-2 py-1.5 text-[#3b3024]"
                 aria-label="Open account menu"
               >
                 <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#8a682e] text-xs font-semibold text-white">
@@ -222,7 +225,7 @@ export function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="rounded-sm border border-[#b6a185] px-4 py-2 font-serif text-[11px] uppercase tracking-[0.16em] text-[#b6a185] transition hover:bg-[#faf6f0] hover:text-[#8a682e]"
+              className="rounded-sm border border-[#8a682e] px-4 py-2 font-serif text-[11px] uppercase tracking-[0.16em] text-[#3b3024] transition hover:bg-[#faf6f0] hover:text-[#8a682e]"
             >
               Members
             </Link>
@@ -233,7 +236,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={openCart}
-            className="relative inline-flex h-10 w-10 items-center justify-center text-[#b6a185]"
+            className="relative inline-flex h-10 w-10 items-center justify-center text-[#3b3024]"
             aria-label="Open cart"
           >
             <ShoppingBag size={17} aria-hidden />
@@ -246,7 +249,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
-            className="inline-flex h-10 w-10 items-center justify-center text-[#b6a185]"
+            className="inline-flex h-10 w-10 items-center justify-center text-[#3b3024]"
             aria-label="Toggle menu"
           >
             {mobileOpen ? <X size={18} aria-hidden /> : <Menu size={18} aria-hidden />}
@@ -260,7 +263,7 @@ export function Navbar() {
             <Link
               href="/"
               onClick={() => setMobileOpen(false)}
-              className="rounded-sm px-3 py-2.5 font-serif text-[12px] uppercase tracking-[0.2em] text-[#b6a185] hover:bg-[#faf6f0]"
+              className={mobileNavLinkClass}
             >
               Home
             </Link>
@@ -270,12 +273,12 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="rounded-sm px-3 py-2.5 font-serif text-[12px] uppercase tracking-[0.2em] text-[#b6a185] hover:bg-[#faf6f0]"
+                className={mobileNavLinkClass}
               >
                 {link.label}
               </Link>
             ))}
-            <div className="my-2 rounded-sm border border-[#e8dfd0] p-2">
+            <div className="my-2 rounded-sm border border-[#d8cbb5] p-2">
               <p className="px-2 font-serif text-[10px] uppercase tracking-[0.22em] text-[#8a682e]">Icoone</p>
               <div className="mt-1 grid gap-1">
                 {icooneLinks.map((link) => (
@@ -283,7 +286,7 @@ export function Navbar() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className="rounded-sm px-3 py-2 font-serif text-[12px] uppercase tracking-[0.2em] text-[#b6a185] hover:bg-[#faf6f0]"
+                    className="rounded-sm px-3 py-2 font-serif text-[12px] uppercase tracking-[0.2em] text-[#3b3024] hover:bg-[#faf6f0] hover:text-[#8a682e]"
                   >
                     {link.label}
                   </Link>
@@ -295,7 +298,7 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="rounded-sm px-3 py-2.5 font-serif text-[12px] uppercase tracking-[0.2em] text-[#b6a185] hover:bg-[#faf6f0]"
+                className={mobileNavLinkClass}
               >
                 {link.label}
               </Link>
@@ -311,7 +314,7 @@ export function Navbar() {
               <Link
                 href={data?.user ? portalHome : "/login"}
                 onClick={() => setMobileOpen(false)}
-                className="rounded-sm border border-[#b6a185] px-4 py-3 text-center font-serif text-[11px] uppercase tracking-[0.16em] text-[#b6a185]"
+                className="rounded-sm border border-[#8a682e] px-4 py-3 text-center font-serif text-[11px] uppercase tracking-[0.16em] text-[#3b3024]"
               >
                 {data?.user ? portalLabel : "Members"}
               </Link>
