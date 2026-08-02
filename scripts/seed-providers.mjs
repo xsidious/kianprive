@@ -41,6 +41,17 @@ const providers = [
     services: ["telemedicine", "comprehensive-bloodwork", "nutrition"],
     password: "CarmenRamirez#Kp5wL!",
   },
+  {
+    name: "Dr. Chyle Beaird",
+    email: "chyle.beaird@kianprive.com",
+    displayName: "Dr. Chyle Beaird, M.D.",
+    specialty: "Medical Director",
+    code: "CHYLEBEAIRD",
+    servicePct: 25,
+    productPct: 10,
+    services: ["telemedicine", "comprehensive-bloodwork", "nutrition", "facial-aesthetics"],
+    password: "ChyleBeaird#Kp7nM!",
+  },
 ];
 
 async function main() {
