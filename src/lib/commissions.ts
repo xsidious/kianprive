@@ -6,6 +6,31 @@ import {
   toCommissionNumber,
 } from "@/lib/commission-rates";
 
+type ServiceAssignment = {
+  serviceSlug: string;
+  commissionPct: unknown;
+};
+
+function pickPrimaryServiceSlug(
+  serviceIds: string[],
+  assignments: ServiceAssignment[],
+  payableOnly: boolean,
+) {
+  const candidates = payableOnly
+    ? providerPayableServiceIds(serviceIds)
+    : serviceIds.filter((id) => isProviderPayableService(id));
+
+  const withExplicitRate = candidates.find((id) =>
+    assignments.some((a) => a.serviceSlug === id && a.commissionPct != null),
+  );
+  if (withExplicitRate) return withExplicitRate;
+
+  const assigned = candidates.find((id) => assignments.some((a) => a.serviceSlug === id));
+  if (assigned) return assigned;
+
+  return candidates[0] ?? serviceIds[0];
+}
+
 export async function createServiceCommissionForBooking(bookingId: string) {
   const booking = await prisma.bookingRequest.findUnique({
     where: { id: bookingId },
@@ -14,39 +39,48 @@ export async function createServiceCommissionForBooking(bookingId: string) {
     },
   });
   if (!booking?.partnerId || !booking.partner) return null;
-  // Ambassadors are product-referral only — no visit payouts.
-  if (booking.partner.type === "AMBASSADOR") return null;
+
+  const partnerType = booking.partner.type;
+  const isAmbassador = partnerType === "AMBASSADOR";
+  const isProvider = partnerType === "PROVIDER";
 
   const payableIds = providerPayableServiceIds(booking.serviceIds);
   // Providers never earn on prescription-only bookings (e.g. GLP/peptide pathway).
-  if (booking.partner.type === "PROVIDER" && !payableIds.length) return null;
+  if (isProvider && !payableIds.length) return null;
 
   const existing = await prisma.commissionLedgerEntry.findFirst({
     where: { bookingId, sourceType: "SERVICE", status: { not: "VOID" } },
   });
   if (existing) return existing;
 
-  const primarySlug =
-    (booking.partner.type === "PROVIDER"
-      ? payableIds[0]
-      : booking.serviceIds.find((id) => isProviderPayableService(id))) ?? booking.serviceIds[0];
-  if (booking.partner.type === "PROVIDER" && primarySlug && !isProviderPayableService(primarySlug)) {
+  const primarySlug = pickPrimaryServiceSlug(
+    booking.serviceIds,
+    booking.partner.serviceAssignments,
+    isProvider,
+  );
+  if (!primarySlug) return null;
+  if (isProvider && !isProviderPayableService(primarySlug)) return null;
+
+  const assignment = booking.partner.serviceAssignments.find((a) => a.serviceSlug === primarySlug);
+
+  // Ambassadors earn referral commissions only when a rate is assigned for that service.
+  if (isAmbassador && (assignment == null || assignment.commissionPct == null)) {
     return null;
   }
 
-  const assignment = booking.partner.serviceAssignments.find((a) => a.serviceSlug === primarySlug);
   const pctNum = resolveCommissionPct(
     assignment?.commissionPct,
     booking.partner.defaultServiceCommissionPct,
   );
+  if (pctNum <= 0) return null;
+
   const gross = booking.memberTotal && Number(booking.memberTotal) > 0 ? booking.memberTotal : booking.guestTotal;
   const grossNum = toCommissionNumber(gross ?? 0);
   const commissionAmount = roundCommissionAmount(grossNum, pctNum);
 
-  const titles =
-    booking.partner.type === "PROVIDER"
-      ? booking.serviceTitles.filter((_, i) => isProviderPayableService(booking.serviceIds[i] ?? ""))
-      : booking.serviceTitles;
+  const titles = isProvider
+    ? booking.serviceTitles.filter((_, i) => isProviderPayableService(booking.serviceIds[i] ?? ""))
+    : booking.serviceTitles;
 
   return prisma.commissionLedgerEntry.create({
     data: {
