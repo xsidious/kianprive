@@ -14,7 +14,7 @@ import {
   editorialInput,
   editorialPanel,
 } from "@/components/ui/editorial-primitives";
-import { catalogProducts, shopCategories } from "@/lib/commerce/products";
+import { catalogProducts, getCatalogDisplayPrice, shopCategories } from "@/lib/commerce/products";
 
 export function ShopPageClient() {
   const [category, setCategory] = useState("All");
@@ -133,8 +133,15 @@ export function ShopPageClient() {
                     <Link href={`/shop/${product.slug}`}>
                       <h2 className="mt-2 font-serif text-xl text-[#2b2218] transition hover:text-[#8a682e]">{product.name}</h2>
                     </Link>
-                    {product.redirectUrl ? (
-                      <p className="mt-3 text-sm text-[#6f6251]">Variable options on product page.</p>
+                    {product.summary ? (
+                      <p className="mt-2 line-clamp-2 text-sm text-[#6f6251]">{product.summary}</p>
+                    ) : null}
+                    {product.redirectUrl || product.options?.length ? (
+                      <p className="mt-3 text-sm text-[#6f6251]">
+                        {product.options?.length
+                          ? `From $${getCatalogDisplayPrice(product)} · choose size`
+                          : "Variable options on product page."}
+                      </p>
                     ) : (
                       <p className="mt-3 text-2xl text-[#1f1a15]">${product.price}</p>
                     )}
@@ -146,6 +153,10 @@ export function ShopPageClient() {
                         <a href={product.redirectUrl} target="_blank" rel="noreferrer" className={editorialCtaPrimary}>
                           GO TO PRODUCT
                         </a>
+                      ) : product.options?.length ? (
+                        <Link href={`/shop/${product.slug}`} className={editorialCtaPrimary}>
+                          SELECT SIZE
+                        </Link>
                       ) : (
                         <button
                           type="button"

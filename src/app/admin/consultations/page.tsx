@@ -107,6 +107,13 @@ export default function AdminConsultationsPage() {
     if (res.ok) await load();
   }
 
+  async function deleteBooking(id: string, name: string) {
+    if (!window.confirm(`Delete consultation for ${name}? This cannot be undone.`)) return;
+    const res = await fetch(`/api/admin/bookings/${id}`, { method: "DELETE" });
+    setMessage(res.ok ? "Consultation deleted." : "Failed to delete consultation.");
+    if (res.ok) await load();
+  }
+
   const title = useMemo(() => {
     if (kind === "telemedicine") return "Telemedicine";
     if (kind === "consultation") return "Consultations";
@@ -224,6 +231,13 @@ export default function AdminConsultationsPage() {
                     onClick={() => void setBookingStatus(booking.id, "CONFIRMED")}
                   >
                     Confirm
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded-sm border border-[#d07b7b80] px-4 py-2 text-sm text-[#7c2c2c] hover:bg-[#fdeeee]"
+                    onClick={() => void deleteBooking(booking.id, booking.fullName)}
+                  >
+                    Delete
                   </button>
                 </div>
               </div>

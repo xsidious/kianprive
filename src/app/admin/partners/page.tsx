@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { CommissionOverrideInput } from "@/components/admin/CommissionOverrideInput";
+import { parseCommissionOverride } from "@/lib/commission-parse";
 
 const SERVICE_OPTIONS = [
   "telemedicine",
@@ -44,6 +46,8 @@ export default function AdminPartnersPage() {
   const [productIds, setProductIds] = useState<string[]>([]);
   const [serviceRates, setServiceRates] = useState<Record<string, string>>({});
   const [productRates, setProductRates] = useState<Record<string, string>>({});
+  const [defaultServicePct, setDefaultServicePct] = useState("20");
+  const [defaultProductPct, setDefaultProductPct] = useState("10");
 
   async function load() {
     const [partnersRes, productsRes] = await Promise.all([
@@ -89,23 +93,27 @@ export default function AdminPartnersPage() {
   }
 
   async function saveAssignments(partnerId: string) {
+    const serviceDefault = Number(defaultServicePct);
+    const productDefault = Number(defaultProductPct);
     const res = await fetch(`/api/admin/partners/${partnerId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        defaultServiceCommissionPct: Number.isFinite(serviceDefault) ? serviceDefault : 20,
+        defaultProductCommissionPct: Number.isFinite(productDefault) ? productDefault : 10,
         serviceAssignments: serviceSlugs.map((serviceSlug) => ({
           serviceSlug,
           active: true,
-          commissionPct: serviceRates[serviceSlug] ? Number(serviceRates[serviceSlug]) : null,
+          commissionPct: parseCommissionOverride(serviceRates[serviceSlug]),
         })),
         productAssignments: productIds.map((productId) => ({
           productId,
           active: true,
-          commissionPct: productRates[productId] ? Number(productRates[productId]) : null,
+          commissionPct: parseCommissionOverride(productRates[productId]),
         })),
       }),
     });
-    setStatus(res.ok ? "Assignments saved." : "Failed to save assignments.");
+    setStatus(res.ok ? "Commissions & assignments saved." : "Failed to save.");
     if (res.ok) await load();
   }
 
@@ -119,10 +127,28 @@ export default function AdminPartnersPage() {
     if (res.ok) await load();
   }
 
+  async function deletePartner(partner: PartnerRow) {
+    if (
+      !window.confirm(
+        `Delete partner ${partner.displayName} (${partner.user.email})? Their login account will also be removed.`,
+      )
+    ) {
+      return;
+    }
+    const res = await fetch(`/api/admin/partners/${partner.id}`, { method: "DELETE" });
+    setStatus(res.ok ? "Partner deleted." : "Failed to delete partner.");
+    if (res.ok) {
+      if (selectedId === partner.id) setSelectedId(null);
+      await load();
+    }
+  }
+
   function selectPartner(partner: PartnerRow) {
     setSelectedId(partner.id);
     setServiceSlugs(partner.serviceAssignments.filter((a) => a.active).map((a) => a.serviceSlug));
     setProductIds(partner.productAssignments.filter((a) => a.active).map((a) => a.productId));
+    setDefaultServicePct(String(partner.defaultServiceCommissionPct));
+    setDefaultProductPct(String(partner.defaultProductCommissionPct));
     const nextServiceRates: Record<string, string> = {};
     for (const a of partner.serviceAssignments) {
       if (a.commissionPct != null) nextServiceRates[a.serviceSlug] = String(a.commissionPct);
@@ -140,7 +166,10 @@ export default function AdminPartnersPage() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-3xl text-[#1f1a15]">Partners</h1>
-          <p className="mt-2 text-[#6f6251]">Create partner accounts, assign services/products, and manage status.</p>
+          <p className="mt-2 text-[#6f6251]">
+            Create partner accounts, set per-person defaults, and optional per-service / per-product overrides.
+            Blank override fields use the person default.
+          </p>
         </div>
         <div className="flex gap-2">
           <Link href="/admin/partners/payouts" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm">
@@ -200,7 +229,7 @@ export default function AdminPartnersPage() {
                   {partner.user.email} · {partner.specialty || "No specialty"} · {partner._count.bookings} bookings
                 </p>
                 <p className="mt-1 text-xs text-[#8f6f3e]">
-                  Default commissions: {String(partner.defaultServiceCommissionPct)}% services /{" "}
+                  Defaults: {String(partner.defaultServiceCommissionPct)}% services /{" "}
                   {String(partner.defaultProductCommissionPct)}% products
                 </p>
                 <p className="mt-2 text-xs text-[#5f5344]">
@@ -209,7 +238,7 @@ export default function AdminPartnersPage() {
               </div>
               <div className="flex flex-wrap gap-2">
                 <button type="button" onClick={() => selectPartner(partner)} className="rounded-sm border border-[#b78d4b70] px-3 py-2 text-sm">
-                  Assign
+                  Assign & rates
                 </button>
                 <button type="button" onClick={() => void setPartnerStatus(partner.id, "ACTIVE")} className="rounded-sm bg-[#b78d4b] px-3 py-2 text-sm text-white">
                   Activate
@@ -217,75 +246,107 @@ export default function AdminPartnersPage() {
                 <button type="button" onClick={() => void setPartnerStatus(partner.id, "SUSPENDED")} className="rounded-sm border border-[#d07b7b80] px-3 py-2 text-sm text-[#7c2c2c]">
                   Suspend
                 </button>
+                <button
+                  type="button"
+                  onClick={() => void deletePartner(partner)}
+                  className="rounded-sm border border-[#d07b7b80] bg-[#fdeeee] px-3 py-2 text-sm text-[#7c2c2c]"
+                >
+                  Delete
+                </button>
               </div>
             </div>
 
             {selectedId === partner.id ? (
-              <div className="mt-4 grid gap-4 border-t border-[#e4d9c8] pt-4 md:grid-cols-2">
-                <div>
-                  <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">SERVICES (+ optional % override)</p>
-                  <div className="mt-2 max-h-56 space-y-2 overflow-auto">
-                    {SERVICE_OPTIONS.map((slug) => (
-                      <div key={slug} className="flex items-center gap-2 text-sm text-[#4f4335]">
-                        <input
-                          type="checkbox"
-                          checked={serviceSlugs.includes(slug)}
-                          onChange={(e) =>
-                            setServiceSlugs((prev) => (e.target.checked ? [...prev, slug] : prev.filter((s) => s !== slug)))
-                          }
-                        />
-                        <span className="min-w-0 flex-1 truncate">{slug}</span>
-                        {serviceSlugs.includes(slug) ? (
-                          <input
-                            type="number"
-                            min={0}
-                            max={100}
-                            placeholder="%"
-                            value={serviceRates[slug] ?? ""}
-                            onChange={(e) => setServiceRates((prev) => ({ ...prev, [slug]: e.target.value }))}
-                            className="w-16 rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-2 py-1 text-xs"
-                          />
-                        ) : null}
-                      </div>
-                    ))}
-                  </div>
+              <div className="mt-4 space-y-4 border-t border-[#e4d9c8] pt-4">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label className="block text-sm text-[#4f4335]">
+                    <span className="text-xs tracking-[0.14em] text-[#8f6f3e]">DEFAULT SERVICE %</span>
+                    <input
+                      type="number"
+                      min={0}
+                      max={100}
+                      step="0.01"
+                      value={defaultServicePct}
+                      onChange={(e) => setDefaultServicePct(e.target.value)}
+                      className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2"
+                    />
+                  </label>
+                  <label className="block text-sm text-[#4f4335]">
+                    <span className="text-xs tracking-[0.14em] text-[#8f6f3e]">DEFAULT PRODUCT %</span>
+                    <input
+                      type="number"
+                      min={0}
+                      max={100}
+                      step="0.01"
+                      value={defaultProductPct}
+                      onChange={(e) => setDefaultProductPct(e.target.value)}
+                      className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2"
+                    />
+                  </label>
                 </div>
-                <div>
-                  <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">PRODUCTS (+ optional % override)</p>
-                  <div className="mt-2 max-h-56 space-y-2 overflow-auto">
-                    {products.map((product) => (
-                      <div key={product.id} className="flex items-center gap-2 text-sm text-[#4f4335]">
-                        <input
-                          type="checkbox"
-                          checked={productIds.includes(product.id)}
-                          onChange={(e) =>
-                            setProductIds((prev) =>
-                              e.target.checked ? [...prev, product.id] : prev.filter((id) => id !== product.id),
-                            )
-                          }
-                        />
-                        <span className="min-w-0 flex-1 truncate">{product.title}</span>
-                        {productIds.includes(product.id) ? (
+                <p className="text-xs text-[#6f6251]">
+                  Leave item % blank to use the defaults above. Enter a value (including 0) to override that item only.
+                </p>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">SERVICES (+ optional % override)</p>
+                    <div className="mt-2 max-h-56 space-y-2 overflow-auto">
+                      {SERVICE_OPTIONS.map((slug) => (
+                        <div key={slug} className="flex items-center gap-2 text-sm text-[#4f4335]">
                           <input
-                            type="number"
-                            min={0}
-                            max={100}
-                            placeholder="%"
-                            value={productRates[product.id] ?? ""}
-                            onChange={(e) => setProductRates((prev) => ({ ...prev, [product.id]: e.target.value }))}
-                            className="w-16 rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-2 py-1 text-xs"
+                            type="checkbox"
+                            checked={serviceSlugs.includes(slug)}
+                            onChange={(e) =>
+                              setServiceSlugs((prev) => (e.target.checked ? [...prev, slug] : prev.filter((s) => s !== slug)))
+                            }
                           />
-                        ) : null}
-                      </div>
-                    ))}
+                          <span className="min-w-0 flex-1 truncate">{slug}</span>
+                          {serviceSlugs.includes(slug) ? (
+                            <CommissionOverrideInput
+                              value={serviceRates[slug] ?? ""}
+                              onChange={(next) => setServiceRates((prev) => ({ ...prev, [slug]: next }))}
+                              defaultPct={defaultServicePct}
+                              label={`${slug} commission override`}
+                            />
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">PRODUCTS (+ optional % override)</p>
+                    <div className="mt-2 max-h-56 space-y-2 overflow-auto">
+                      {products.map((product) => (
+                        <div key={product.id} className="flex items-center gap-2 text-sm text-[#4f4335]">
+                          <input
+                            type="checkbox"
+                            checked={productIds.includes(product.id)}
+                            onChange={(e) =>
+                              setProductIds((prev) =>
+                                e.target.checked ? [...prev, product.id] : prev.filter((id) => id !== product.id),
+                              )
+                            }
+                          />
+                          <span className="min-w-0 flex-1 truncate">{product.title}</span>
+                          {productIds.includes(product.id) ? (
+                            <CommissionOverrideInput
+                              value={productRates[product.id] ?? ""}
+                              onChange={(next) => setProductRates((prev) => ({ ...prev, [product.id]: next }))}
+                              defaultPct={defaultProductPct}
+                              label={`${product.title} commission override`}
+                            />
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => void saveAssignments(partner.id)}
-                  className="rounded-sm bg-[#b78d4b] px-4 py-2 text-sm text-white md:col-span-2"
+                  className="rounded-sm bg-[#b78d4b] px-4 py-2 text-sm text-white"
                 >
-                  Save assignments
+                  Save commissions & assignments
                 </button>
               </div>
             ) : null}

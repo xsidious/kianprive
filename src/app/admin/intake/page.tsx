@@ -168,6 +168,18 @@ export default function AdminIntakePage() {
     await loadSubmissions();
   }
 
+  async function deleteSubmission(id: string, name: string) {
+    if (!window.confirm(`Delete clinical intake for ${name}? This cannot be undone.`)) return;
+    const response = await fetch(`/api/admin/intake/${id}`, { method: "DELETE" });
+    if (!response.ok) {
+      setMessage("Could not delete intake submission.");
+      return;
+    }
+    setMessage("Intake submission deleted.");
+    if (modalId === id) setModalId(null);
+    await loadSubmissions();
+  }
+
   const filtered = useMemo(() => {
     if (filter === "ALL") return submissions;
     return submissions.filter((s) => s.status === filter);
@@ -277,6 +289,13 @@ export default function AdminIntakePage() {
                 <a href={`mailto:${submission.email}`} className={adminBtnGhost}>
                   Email
                 </a>
+                <button
+                  type="button"
+                  className="rounded-sm border border-[#d07b7b80] px-4 py-2 text-sm text-[#7c2c2c] hover:bg-[#fdeeee]"
+                  onClick={() => void deleteSubmission(submission.id, submission.fullName)}
+                >
+                  Delete
+                </button>
               </div>
             </article>
           ))}
@@ -409,6 +428,13 @@ export default function AdminIntakePage() {
               </a>
               <button type="button" className={adminBtnGhost} onClick={() => setModalId(null)}>
                 Close
+              </button>
+              <button
+                type="button"
+                className="rounded-sm border border-[#d07b7b80] px-4 py-2 text-sm text-[#7c2c2c] hover:bg-[#fdeeee]"
+                onClick={() => void deleteSubmission(selected.id, selected.fullName)}
+              >
+                Delete submission
               </button>
             </div>
           </div>

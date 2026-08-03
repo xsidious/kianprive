@@ -224,8 +224,8 @@ export default async function ServicesPage() {
         <div className="mt-8">
           <Link href="/services/icoone-laser" className="text-sm text-[#b78d4b] underline underline-offset-4">
             View full Icoone® service details
-          </Link>
-        </div>
+              </Link>
+            </div>
       </EditorialSection>
 
       <section className="bg-[#1a1612] px-4 py-14 sm:px-6 sm:py-16">
@@ -435,17 +435,17 @@ export default async function ServicesPage() {
             <div>
               <h3 className="font-serif text-xl text-[#c9a86a]">Gratuity</h3>
               <p className="mt-2 text-sm leading-relaxed text-[#e8dccb]">{gratuityPolicy}</p>
-            </div>
+        </div>
             <div>
               <h3 className="font-serif text-xl text-[#c9a86a]">Financing &amp; Insurance</h3>
               <ul className="mt-2 space-y-2">
                 {financingAndInsurancePolicies.map((item) => (
                   <li key={item} className="text-sm leading-relaxed text-[#e8dccb]">
                     {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+              </li>
+            ))}
+          </ul>
+        </div>
             <div>
               <h3 className="font-serif text-xl text-[#c9a86a]">Accepted Payments</h3>
               <ul className="mt-2 space-y-2">
@@ -455,9 +455,9 @@ export default async function ServicesPage() {
                   </li>
                 ))}
               </ul>
-            </div>
-          </div>
-        </div>
+                    </div>
+                </div>
+              </div>
         <div className="mt-10 max-w-4xl space-y-2 text-xs leading-relaxed text-[#a89884]">
           {medicalDisclaimerParagraphs.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>

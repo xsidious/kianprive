@@ -27,6 +27,7 @@ export async function GET() {
       include: {
         user: { select: { id: true, email: true, name: true, role: true } },
         _count: { select: { orders: true, commissionEntries: true } },
+        productAssignments: true,
       },
       orderBy: { createdAt: "desc" },
     });

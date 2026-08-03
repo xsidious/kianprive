@@ -85,7 +85,7 @@ export async function PATCH(req: Request, { params }: Params) {
             partnerId: id,
             serviceSlug: a.serviceSlug,
             active: a.active,
-            commissionPct: a.commissionPct ?? undefined,
+            commissionPct: a.commissionPct ?? null,
           })),
         });
       }
@@ -98,7 +98,7 @@ export async function PATCH(req: Request, { params }: Params) {
             partnerId: id,
             productId: a.productId,
             active: a.active,
-            commissionPct: a.commissionPct ?? undefined,
+            commissionPct: a.commissionPct ?? null,
             partnerSku: a.partnerSku ?? undefined,
           })),
         });

@@ -1,10 +1,10 @@
-import { Decimal } from "@prisma/client/runtime/library";
 import { prisma } from "@/lib/prisma";
 import { isProviderPayableService, providerPayableServiceIds } from "@/lib/consultations";
-
-function toNumber(value: Decimal | number | string) {
-  return typeof value === "number" ? value : Number(value);
-}
+import {
+  resolveCommissionPct,
+  roundCommissionAmount,
+  toCommissionNumber,
+} from "@/lib/commission-rates";
 
 export async function createServiceCommissionForBooking(bookingId: string) {
   const booking = await prisma.bookingRequest.findUnique({
@@ -35,11 +35,13 @@ export async function createServiceCommissionForBooking(bookingId: string) {
   }
 
   const assignment = booking.partner.serviceAssignments.find((a) => a.serviceSlug === primarySlug);
-  const pct = assignment?.commissionPct ?? booking.partner.defaultServiceCommissionPct;
+  const pctNum = resolveCommissionPct(
+    assignment?.commissionPct,
+    booking.partner.defaultServiceCommissionPct,
+  );
   const gross = booking.memberTotal && Number(booking.memberTotal) > 0 ? booking.memberTotal : booking.guestTotal;
-  const grossNum = toNumber(gross ?? 0);
-  const pctNum = toNumber(pct);
-  const commissionAmount = Math.round(((grossNum * pctNum) / 100) * 100) / 100;
+  const grossNum = toCommissionNumber(gross ?? 0);
+  const commissionAmount = roundCommissionAmount(grossNum, pctNum);
 
   const titles =
     booking.partner.type === "PROVIDER"
@@ -112,11 +114,10 @@ export async function createProductCommissionsForOrder(orderId: string) {
       if (!assignment) continue;
     }
 
-    const pct = assignment?.commissionPct ?? partner.defaultProductCommissionPct;
-    const grossNum = toNumber(item.lineTotal);
-    const pctNum = toNumber(pct);
+    const pctNum = resolveCommissionPct(assignment?.commissionPct, partner.defaultProductCommissionPct);
+    const grossNum = toCommissionNumber(item.lineTotal);
     if (pctNum <= 0) continue;
-    const commissionAmount = Math.round(((grossNum * pctNum) / 100) * 100) / 100;
+    const commissionAmount = roundCommissionAmount(grossNum, pctNum);
 
     const entry = await prisma.commissionLedgerEntry.create({
       data: {

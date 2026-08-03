@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { BrandedQrCard } from "@/components/ambassador/BrandedQrCard";
+import { CommissionOverrideInput } from "@/components/admin/CommissionOverrideInput";
 import {
   adminBtnGhost,
   adminBtnPrimary,
@@ -14,6 +15,7 @@ import {
   adminTitle,
   statusTone,
 } from "@/components/admin/ui";
+import { parseCommissionOverride } from "@/lib/commission-parse";
 
 type ProviderRow = {
   id: string;
@@ -23,8 +25,10 @@ type ProviderRow = {
   phone: string | null;
   specialty: string | null;
   defaultServiceCommissionPct: number | string;
+  defaultProductCommissionPct: number | string;
   user: { email: string; name: string | null };
   serviceAssignments: { serviceSlug: string; active: boolean; commissionPct: number | string | null }[];
+  productAssignments: { productId: string; active: boolean; commissionPct: number | string | null }[];
   links: { book: string; home: string; services: string; shop: string; telemedicine: string; code: string };
   stats: {
     visitsMtd: number;
@@ -34,6 +38,8 @@ type ProviderRow = {
   };
 };
 
+type ProductOption = { id: string; title: string; slug: string; isPrescription?: boolean };
+
 function money(value: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value);
 }
@@ -41,17 +47,25 @@ function money(value: number) {
 export default function AdminProvidersPage() {
   const [providers, setProviders] = useState<ProviderRow[]>([]);
   const [serviceOptions, setServiceOptions] = useState<string[]>([]);
+  const [products, setProducts] = useState<ProductOption[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [serviceSlugs, setServiceSlugs] = useState<string[]>([]);
+  const [serviceRates, setServiceRates] = useState<Record<string, string>>({});
+  const [productRates, setProductRates] = useState<Record<string, string>>({});
+  const [defaultServicePct, setDefaultServicePct] = useState("20");
+  const [defaultProductPct, setDefaultProductPct] = useState("10");
   const [message, setMessage] = useState("");
 
   async function load() {
-    const res = await fetch("/api/admin/providers");
-    if (!res.ok) {
+    const [providersRes, productsRes] = await Promise.all([
+      fetch("/api/admin/providers"),
+      fetch("/api/admin/commerce/products"),
+    ]);
+    if (!providersRes.ok) {
       setMessage("Could not load providers. If this is a new deploy, apply the PROVIDER enum migration.");
       return;
     }
-    const payload = (await res.json()) as {
+    const payload = (await providersRes.json()) as {
       providers: ProviderRow[];
       serviceOptions: string[];
       error?: string;
@@ -59,10 +73,34 @@ export default function AdminProvidersPage() {
     if (payload.error) setMessage(payload.error);
     setProviders(payload.providers ?? []);
     setServiceOptions(payload.serviceOptions ?? []);
-    if (!selectedId && payload.providers?.[0]) {
-      setSelectedId(payload.providers[0].id);
-      setServiceSlugs(payload.providers[0].serviceAssignments.filter((a) => a.active).map((a) => a.serviceSlug));
+    if (productsRes.ok) {
+      const productPayload = (await productsRes.json()) as { products?: ProductOption[] };
+      setProducts(productPayload.products ?? (productPayload as unknown as ProductOption[]));
     }
+    const first = payload.providers?.[0];
+    if (!selectedId && first) {
+      applySelection(first);
+    } else if (selectedId) {
+      const refreshed = payload.providers?.find((p) => p.id === selectedId);
+      if (refreshed) applySelection(refreshed, false);
+    }
+  }
+
+  function applySelection(provider: ProviderRow, switchId = true) {
+    if (switchId) setSelectedId(provider.id);
+    setServiceSlugs(provider.serviceAssignments.filter((a) => a.active).map((a) => a.serviceSlug));
+    setDefaultServicePct(String(provider.defaultServiceCommissionPct));
+    setDefaultProductPct(String(provider.defaultProductCommissionPct ?? 10));
+    const nextServiceRates: Record<string, string> = {};
+    for (const a of provider.serviceAssignments) {
+      if (a.commissionPct != null) nextServiceRates[a.serviceSlug] = String(a.commissionPct);
+    }
+    setServiceRates(nextServiceRates);
+    const nextProductRates: Record<string, string> = {};
+    for (const a of provider.productAssignments ?? []) {
+      if (a.commissionPct != null) nextProductRates[a.productId] = String(a.commissionPct);
+    }
+    setProductRates(nextProductRates);
   }
 
   useEffect(() => {
@@ -70,8 +108,7 @@ export default function AdminProvidersPage() {
   }, []);
 
   function selectProvider(provider: ProviderRow) {
-    setSelectedId(provider.id);
-    setServiceSlugs(provider.serviceAssignments.filter((a) => a.active).map((a) => a.serviceSlug));
+    applySelection(provider);
   }
 
   async function createProvider(formData: FormData) {
@@ -84,8 +121,13 @@ export default function AdminProvidersPage() {
       phone: String(formData.get("phone") || "") || undefined,
       specialty: String(formData.get("specialty") || "") || undefined,
       defaultServiceCommissionPct: Number(formData.get("servicePct") || 20),
+      defaultProductCommissionPct: Number(formData.get("productPct") || 10),
       status: String(formData.get("status") || "ACTIVE"),
-      serviceAssignments: serviceSlugs.map((serviceSlug) => ({ serviceSlug, active: true })),
+      serviceAssignments: serviceSlugs.map((serviceSlug) => ({
+        serviceSlug,
+        active: true,
+        commissionPct: parseCommissionOverride(serviceRates[serviceSlug]),
+      })),
     };
     const res = await fetch("/api/admin/providers", {
       method: "POST",
@@ -100,16 +142,33 @@ export default function AdminProvidersPage() {
     }
   }
 
-  async function saveAssignments() {
+  async function saveCommissions() {
     if (!selectedId) return;
+    const serviceDefault = Number(defaultServicePct);
+    const productDefault = Number(defaultProductPct);
+    const productAssignments = Object.entries(productRates)
+      .map(([productId, raw]) => {
+        const commissionPct = parseCommissionOverride(raw);
+        if (commissionPct == null) return null;
+        return { productId, active: true, commissionPct };
+      })
+      .filter((row): row is { productId: string; active: boolean; commissionPct: number } => row != null);
+
     const res = await fetch(`/api/admin/providers/${selectedId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        serviceAssignments: serviceSlugs.map((serviceSlug) => ({ serviceSlug, active: true })),
+        defaultServiceCommissionPct: Number.isFinite(serviceDefault) ? serviceDefault : 20,
+        defaultProductCommissionPct: Number.isFinite(productDefault) ? productDefault : 10,
+        serviceAssignments: serviceSlugs.map((serviceSlug) => ({
+          serviceSlug,
+          active: true,
+          commissionPct: parseCommissionOverride(serviceRates[serviceSlug]),
+        })),
+        productAssignments,
       }),
     });
-    setMessage(res.ok ? "Service assignments saved." : "Failed to save assignments.");
+    setMessage(res.ok ? "Commissions & assignments saved." : "Failed to save.");
     if (res.ok) await load();
   }
 
@@ -123,17 +182,24 @@ export default function AdminProvidersPage() {
     if (res.ok) await load();
   }
 
-  async function updateServicePct(id: string, pct: number) {
-    const res = await fetch(`/api/admin/providers/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ defaultServiceCommissionPct: pct }),
-    });
-    setMessage(res.ok ? "Commission rate updated." : "Failed to update commission.");
-    if (res.ok) await load();
+  async function deleteProvider(provider: ProviderRow) {
+    if (
+      !window.confirm(
+        `Delete practitioner ${provider.displayName} (${provider.user.email})? Their login account will also be removed.`,
+      )
+    ) {
+      return;
+    }
+    const res = await fetch(`/api/admin/providers/${provider.id}`, { method: "DELETE" });
+    setMessage(res.ok ? "Practitioner deleted." : "Failed to delete practitioner.");
+    if (res.ok) {
+      if (selectedId === provider.id) setSelectedId(null);
+      await load();
+    }
   }
 
   const selected = providers.find((p) => p.id === selectedId) ?? null;
+  const shopProducts = products.filter((p) => !p.isPrescription);
   const totals = providers.reduce(
     (acc, p) => {
       acc.visits += p.stats.totalBookings;
@@ -150,8 +216,9 @@ export default function AdminProvidersPage() {
         <p className={adminEyebrow}>Clinical network</p>
         <h1 className={adminTitle}>Practitioners</h1>
         <p className={adminMuted}>
-          Practitioners (providers) handle consultations and telemedicine, earn visit pay on completed appointments, and
-          can earn on shop product referrals — never on prescriptions. Manage assignments and commission rates here.
+          Set each practitioner&apos;s default visit and product rates. Optional per-service or per-product % overrides
+          apply only when filled; blank fields fall back to that person&apos;s default. Practitioners never earn on
+          prescriptions.
         </p>
       </div>
 
@@ -184,14 +251,15 @@ export default function AdminProvidersPage() {
             <input name="specialty" placeholder="Specialty (optional)" className={adminInput} />
             <input name="phone" placeholder="Phone (optional)" className={adminInput} />
             <div className="grid grid-cols-2 gap-3">
-              <input name="servicePct" type="number" defaultValue={20} min={0} max={100} className={adminInput} />
-              <select name="status" defaultValue="ACTIVE" className={adminSelect}>
-                <option value="ACTIVE">ACTIVE</option>
-                <option value="INVITED">INVITED</option>
-                <option value="SUSPENDED">SUSPENDED</option>
-              </select>
+              <input name="servicePct" type="number" defaultValue={20} min={0} max={100} className={adminInput} title="Default visit %" />
+              <input name="productPct" type="number" defaultValue={10} min={0} max={100} className={adminInput} title="Default product %" />
             </div>
-            <p className="text-xs text-[#6f6251]">Default visit commission % · status</p>
+            <select name="status" defaultValue="ACTIVE" className={adminSelect}>
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="INVITED">INVITED</option>
+              <option value="SUSPENDED">SUSPENDED</option>
+            </select>
+            <p className="text-xs text-[#6f6251]">Default visit % · default product % · status</p>
             <div className="rounded-sm border border-[#efe6d8] p-3">
               <p className="text-xs uppercase tracking-[0.14em] text-[#8f6f3e]">Assignable services</p>
               <div className="mt-2 grid max-h-40 gap-1 overflow-y-auto sm:grid-cols-2">
@@ -265,6 +333,13 @@ export default function AdminProvidersPage() {
                   <option value="INVITED">INVITED</option>
                   <option value="SUSPENDED">SUSPENDED</option>
                 </select>
+                <button
+                  type="button"
+                  className="rounded-sm border border-[#d07b7b80] px-4 py-2 text-sm text-[#7c2c2c] hover:bg-[#fdeeee]"
+                  onClick={() => void deleteProvider(selected)}
+                >
+                  Delete
+                </button>
               </div>
 
               <div className="grid gap-3 sm:grid-cols-3">
@@ -282,35 +357,40 @@ export default function AdminProvidersPage() {
                 </div>
               </div>
 
-              <div>
-                <label className="text-xs uppercase tracking-[0.14em] text-[#8f6f3e]">Default visit commission %</label>
-                <div className="mt-2 flex gap-2">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <label className="block text-sm text-[#4f4335]">
+                  <span className="text-xs uppercase tracking-[0.14em] text-[#8f6f3e]">Default visit %</span>
                   <input
                     type="number"
                     min={0}
                     max={100}
-                    defaultValue={Number(selected.defaultServiceCommissionPct)}
-                    className={adminInput}
-                    id="provider-service-pct"
+                    step="0.01"
+                    value={defaultServicePct}
+                    onChange={(e) => setDefaultServicePct(e.target.value)}
+                    className={`${adminInput} mt-2`}
                   />
-                  <button
-                    type="button"
-                    className={adminBtnGhost}
-                    onClick={() => {
-                      const el = document.getElementById("provider-service-pct") as HTMLInputElement | null;
-                      void updateServicePct(selected.id, Number(el?.value || 20));
-                    }}
-                  >
-                    Save rate
-                  </button>
-                </div>
+                </label>
+                <label className="block text-sm text-[#4f4335]">
+                  <span className="text-xs uppercase tracking-[0.14em] text-[#8f6f3e]">Default product %</span>
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    step="0.01"
+                    value={defaultProductPct}
+                    onChange={(e) => setDefaultProductPct(e.target.value)}
+                    className={`${adminInput} mt-2`}
+                  />
+                </label>
               </div>
 
               <div>
-                <p className="text-xs uppercase tracking-[0.14em] text-[#8f6f3e]">Services this provider can be booked for</p>
-                <div className="mt-2 grid gap-1 sm:grid-cols-2">
+                <p className="text-xs uppercase tracking-[0.14em] text-[#8f6f3e]">
+                  Services (+ optional % override — blank uses default {defaultServicePct}%)
+                </p>
+                <div className="mt-2 grid gap-2 sm:grid-cols-1">
                   {serviceOptions.map((slug) => (
-                    <label key={slug} className="flex items-center gap-2 text-sm text-[#4f4335]">
+                    <div key={slug} className="flex items-center gap-2 text-sm text-[#4f4335]">
                       <input
                         type="checkbox"
                         checked={serviceSlugs.includes(slug)}
@@ -320,14 +400,45 @@ export default function AdminProvidersPage() {
                           );
                         }}
                       />
-                      {slug}
-                    </label>
+                      <span className="min-w-0 flex-1 truncate">{slug}</span>
+                      {serviceSlugs.includes(slug) ? (
+                        <CommissionOverrideInput
+                          value={serviceRates[slug] ?? ""}
+                          onChange={(next) => setServiceRates((prev) => ({ ...prev, [slug]: next }))}
+                          defaultPct={defaultServicePct}
+                          label={`${slug} override`}
+                        />
+                      ) : null}
+                    </div>
                   ))}
                 </div>
-                <button type="button" onClick={() => void saveAssignments()} className={`${adminBtnPrimary} mt-3`}>
-                  Save service assignments
-                </button>
               </div>
+
+              <div>
+                <p className="text-xs uppercase tracking-[0.14em] text-[#8f6f3e]">
+                  Product overrides (optional — blank = default {defaultProductPct}% on non-Rx shop sales)
+                </p>
+                <div className="mt-2 max-h-48 space-y-2 overflow-auto">
+                  {shopProducts.map((product) => (
+                    <div key={product.id} className="flex items-center gap-2 text-sm text-[#4f4335]">
+                      <span className="min-w-0 flex-1 truncate">{product.title}</span>
+                      <CommissionOverrideInput
+                        value={productRates[product.id] ?? ""}
+                        onChange={(next) => setProductRates((prev) => ({ ...prev, [product.id]: next }))}
+                        defaultPct={defaultProductPct}
+                        label={`${product.title} override`}
+                      />
+                    </div>
+                  ))}
+                  {!shopProducts.length ? (
+                    <p className="text-xs text-[#6f6251]">No non-prescription products in catalog.</p>
+                  ) : null}
+                </div>
+              </div>
+
+              <button type="button" onClick={() => void saveCommissions()} className={adminBtnPrimary}>
+                Save commissions & assignments
+              </button>
 
               <div className="rounded-sm border border-[#efe6d8] bg-[#fffaf3] p-4 text-sm text-[#6f6251]">
                 <p className="text-xs uppercase tracking-[0.14em] text-[#8f6f3e]">Referral links & QR</p>

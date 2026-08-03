@@ -82,6 +82,16 @@ export default function AdminOrdersPage() {
     if (response.ok) await loadOrders();
   }
 
+  async function deleteOrder(order: Order) {
+    if (!window.confirm(`Delete order ${order.orderNumber}? This cannot be undone.`)) return;
+    const response = await fetch(`/api/admin/commerce/orders/${order.id}`, { method: "DELETE" });
+    setStatus(response.ok ? "Order deleted." : "Failed to delete order.");
+    if (response.ok) {
+      if (selectedId === order.id) setSelectedId(null);
+      await loadOrders();
+    }
+  }
+
   async function addFulfillment(orderId: string, formData: FormData) {
     const body = {
       status: String(formData.get("status") || "PROCESSING"),
@@ -176,9 +186,18 @@ export default function AdminOrdersPage() {
 
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
               <p className="font-serif text-2xl text-[#1f1a15]">{money(order.total)}</p>
-              <button type="button" className={adminBtnPrimary} onClick={() => setSelectedId(order.id)}>
-                View order
-              </button>
+              <div className="flex flex-wrap gap-2">
+                <button type="button" className={adminBtnPrimary} onClick={() => setSelectedId(order.id)}>
+                  View order
+                </button>
+                <button
+                  type="button"
+                  className="rounded-sm border border-[#d07b7b80] px-4 py-2 text-sm text-[#7c2c2c] hover:bg-[#fdeeee]"
+                  onClick={() => void deleteOrder(order)}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </article>
         ))}
@@ -311,6 +330,13 @@ export default function AdminOrdersPage() {
               </button>
               <button type="button" className={adminBtnGhost} onClick={() => setSelectedId(null)}>
                 Close
+              </button>
+              <button
+                type="button"
+                className="rounded-sm border border-[#d07b7b80] px-4 py-2 text-sm text-[#7c2c2c] hover:bg-[#fdeeee]"
+                onClick={() => void deleteOrder(selected)}
+              >
+                Delete order
               </button>
             </div>
           </div>
