@@ -133,13 +133,13 @@ export async function createProductCommissionsForOrder(orderId: string) {
     });
     if (!partner) continue;
 
-    // Practitioners / providers never earn on prescription products.
+    // Practitioners never earn on Rx unless an explicit peptide/product assignment rate exists.
     const isRx = item.product?.isPrescription === true;
-    if (partner.type === "PROVIDER" && isRx) continue;
-
     const assignment = partner.productAssignments[0];
     const isAmbassador = partner.type === "AMBASSADOR";
     const isProvider = partner.type === "PROVIDER";
+    if (isProvider && isRx && (assignment == null || assignment.commissionPct == null)) continue;
+
     // Ambassadors: all products. Providers: non-Rx products (assignment optional — uses default %).
     // Clinical partners: assignment required.
     if (!assignment && !isAmbassador && !isProvider) continue;
