@@ -33,22 +33,14 @@ ALTER TABLE "Product"
   ADD COLUMN IF NOT EXISTS "deliveryMethod" TEXT,
   ADD COLUMN IF NOT EXISTS "source" TEXT;
 
-DO $$ BEGIN
-  ALTER TABLE "Product" ADD CONSTRAINT "Product_externalId_key" UNIQUE ("externalId");
-EXCEPTION WHEN duplicate_object THEN null;
-END $$;
-
+CREATE UNIQUE INDEX IF NOT EXISTS "Product_externalId_key" ON "Product"("externalId");
 CREATE INDEX IF NOT EXISTS "Product_catalogKind_status_category_idx"
   ON "Product"("catalogKind", "status", "category");
 
 ALTER TABLE "Order"
   ADD COLUMN IF NOT EXISTS "authorizeNetTransId" TEXT;
 
-DO $$ BEGIN
-  ALTER TABLE "Order" ADD CONSTRAINT "Order_authorizeNetTransId_key" UNIQUE ("authorizeNetTransId");
-EXCEPTION WHEN duplicate_object THEN null;
-END $$;
-
+CREATE UNIQUE INDEX IF NOT EXISTS "Order_authorizeNetTransId_key" ON "Order"("authorizeNetTransId");
 CREATE INDEX IF NOT EXISTS "Order_userId_createdAt_idx" ON "Order"("userId", "createdAt");
 
 CREATE TABLE IF NOT EXISTS "IntakeTherapyProposal" (
@@ -108,7 +100,7 @@ DO $$ BEGIN
     ADD CONSTRAINT "IntakeTherapyProposal_intakeSubmissionId_fkey"
     FOREIGN KEY ("intakeSubmissionId") REFERENCES "TherapeuticsIntakeSubmission"("id")
     ON DELETE CASCADE ON UPDATE CASCADE;
-EXCEPTION WHEN duplicate_object THEN null;
+EXCEPTION WHEN duplicate_object THEN null; WHEN duplicate_table THEN null;
 END $$;
 
 DO $$ BEGIN
@@ -116,7 +108,7 @@ DO $$ BEGIN
     ADD CONSTRAINT "IntakeTherapyProposal_providerPartnerId_fkey"
     FOREIGN KEY ("providerPartnerId") REFERENCES "PartnerProfile"("id")
     ON DELETE CASCADE ON UPDATE CASCADE;
-EXCEPTION WHEN duplicate_object THEN null;
+EXCEPTION WHEN duplicate_object THEN null; WHEN duplicate_table THEN null;
 END $$;
 
 DO $$ BEGIN
@@ -124,7 +116,7 @@ DO $$ BEGIN
     ADD CONSTRAINT "IntakeTherapyProposal_orderId_fkey"
     FOREIGN KEY ("orderId") REFERENCES "Order"("id")
     ON DELETE SET NULL ON UPDATE CASCADE;
-EXCEPTION WHEN duplicate_object THEN null;
+EXCEPTION WHEN duplicate_object THEN null; WHEN duplicate_table THEN null;
 END $$;
 
 DO $$ BEGIN
@@ -132,7 +124,7 @@ DO $$ BEGIN
     ADD CONSTRAINT "IntakeTherapyItem_proposalId_fkey"
     FOREIGN KEY ("proposalId") REFERENCES "IntakeTherapyProposal"("id")
     ON DELETE CASCADE ON UPDATE CASCADE;
-EXCEPTION WHEN duplicate_object THEN null;
+EXCEPTION WHEN duplicate_object THEN null; WHEN duplicate_table THEN null;
 END $$;
 
 DO $$ BEGIN
@@ -140,7 +132,7 @@ DO $$ BEGIN
     ADD CONSTRAINT "IntakeTherapyItem_productId_fkey"
     FOREIGN KEY ("productId") REFERENCES "Product"("id")
     ON DELETE RESTRICT ON UPDATE CASCADE;
-EXCEPTION WHEN duplicate_object THEN null;
+EXCEPTION WHEN duplicate_object THEN null; WHEN duplicate_table THEN null;
 END $$;
 
 DO $$ BEGIN
@@ -148,5 +140,5 @@ DO $$ BEGIN
     ADD CONSTRAINT "OrderMessage_orderId_fkey"
     FOREIGN KEY ("orderId") REFERENCES "Order"("id")
     ON DELETE CASCADE ON UPDATE CASCADE;
-EXCEPTION WHEN duplicate_object THEN null;
+EXCEPTION WHEN duplicate_object THEN null; WHEN duplicate_table THEN null;
 END $$;
