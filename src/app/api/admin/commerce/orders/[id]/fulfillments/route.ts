@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { FulfillmentStatus, OrderStatus } from "@prisma/client";
+import { FulfillmentStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAdminAccess } from "@/lib/admin-guard";
 import { writeAuditLog } from "@/lib/ops/audit";
+import { orderStatusFromFulfillment } from "@/lib/orders/sync-status";
 
 type Params = {
   params: Promise<{ id: string }>;
@@ -13,6 +14,14 @@ export async function POST(req: Request, { params }: Params) {
   if (!guard.ok) return guard.response;
   const { id: orderId } = await params;
   const body = await req.json();
+
+  const existing = await prisma.order.findUnique({
+    where: { id: orderId },
+    select: { status: true },
+  });
+  if (!existing) {
+    return NextResponse.json({ error: "Order not found." }, { status: 404 });
+  }
 
   const fulfillment = await prisma.fulfillment.create({
     data: {
@@ -30,7 +39,7 @@ export async function POST(req: Request, { params }: Params) {
   await prisma.order.update({
     where: { id: orderId },
     data: {
-      status: OrderStatus.PROCESSING,
+      status: orderStatusFromFulfillment(fulfillment.status, existing.status),
       fulfillmentStatus: fulfillment.status,
     },
   });

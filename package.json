@@ -12,6 +12,7 @@
     "demo:user": "node scripts/create-demo-user.mjs",
     "demo:admin": "node scripts/create-demo-admin.mjs",
     "demo:seed": "node scripts/seed-demo-data.mjs",
+    "seed:intakes": "node scripts/seed-clinical-intakes.mjs",
     "seed:partners": "node scripts/seed-partners.mjs",
     "seed:peptides": "node scripts/seed-peptide-guidelines.mjs",
     "seed:cms": "node scripts/seed-cms-pages.mjs",

@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SignaturePad } from "@/components/intake/SignaturePad";
 import { IntakeMessageThread } from "@/components/intake/IntakeMessageThread";
+import { IntakeTherapyPicker } from "@/components/intake/IntakeTherapyPicker";
 import {
   adminBtnGhost,
   adminBtnPrimary,
@@ -154,12 +155,14 @@ export default function ProviderIntakeDetailPage() {
 
       {message ? <p className="text-sm text-[#1b6568]">{message}</p> : null}
 
+      <IntakeTherapyPicker intakeSubmissionId={id} onSaved={() => void load()} />
+
       <IntakeMessageThread
         title="Request messages"
         hint="Tell the patient what else they need to deliver (labs, documents, clarifications). They can reply on this same request."
         placeholder="e.g. Please send fasting labs from the last 90 days, and confirm current medications…"
         submitLabel="Send to patient"
-        reloadKey={`${id}-${submission.status}-${submission.statusNote || ""}`}
+        reloadKey={id}
         loadMessages={async () => {
           const res = await fetch(`/api/provider/intake/${id}/messages`);
           const data = await res.json();
@@ -174,8 +177,10 @@ export default function ProviderIntakeDetailPage() {
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.error || "Could not send message.");
+          if (!data.message) throw new Error("Message was not returned from the server.");
           setMessage("Message sent and patient emailed.");
-          await load();
+          // Soft-refresh intake metadata without remounting the thread
+          void load();
           return data.message;
         }}
       />

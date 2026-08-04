@@ -2,6 +2,7 @@
 set -e
 
 echo "Waiting for database..."
+# Additive schema sync only — NEVER use --accept-data-loss (that can wipe live data).
 until npx prisma db push --skip-generate >/dev/null 2>&1; do
   sleep 2
 done

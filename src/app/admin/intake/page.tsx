@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AdminModal } from "@/components/admin/AdminModal";
 import { IntakeMessageThread } from "@/components/intake/IntakeMessageThread";
+import { IntakeTherapyPicker } from "@/components/intake/IntakeTherapyPicker";
 import {
   adminBtnGhost,
   adminBtnPrimary,
@@ -326,7 +327,7 @@ export default function AdminIntakePage() {
               hint="Ask for labs, documents, or clarifications. Patient replies appear here and on their track page."
               placeholder="e.g. Please send fasting labs from the last 90 days…"
               submitLabel="Send to patient"
-              reloadKey={`${selected.id}-${selected.messageCount ?? 0}-${selected.latestMessage?.id ?? ""}`}
+              reloadKey={selected.id}
               loadMessages={async () => {
                 const res = await fetch(`/api/admin/intake/${selected.id}/messages`);
                 const data = await res.json();
@@ -341,11 +342,14 @@ export default function AdminIntakePage() {
                 });
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || "Could not send message.");
+                if (!data.message) throw new Error("Message was not returned from the server.");
                 setMessage("Message sent. Patient can see it on their track page.");
-                await loadSubmissions();
+                void loadSubmissions();
                 return data.message;
               }}
             />
+
+            <IntakeTherapyPicker intakeSubmissionId={selected.id} onSaved={() => void loadSubmissions()} />
 
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="text-sm">

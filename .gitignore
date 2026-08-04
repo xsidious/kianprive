@@ -34,6 +34,12 @@ yarn-error.log*
 .env*
 !.env.example
 
+# local deploy artifacts / media not part of the app
+*.zip
+pexels-*.jpg
+pexels-*.jpeg
+pexels-*.png
+
 # vercel
 .vercel
 vercel-env.copy-paste.txt

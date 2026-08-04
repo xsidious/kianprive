@@ -35,9 +35,18 @@ npm ci
 echo "Generating Prisma client"
 npx prisma generate
 
+# Live DB safety: never run destructive Prisma flags.
+# Default is OFF. Prefer the additive SQL script:
+#   psql "$DATABASE_URL" -f scripts/live-safe-schema-additions.sql
+# Or: RUN_PRISMA_MIGRATE_DEPLOY=1 ./deploywithwwwai.sh ...
 if [[ "${RUN_PRISMA_DB_PUSH:-0}" == "1" ]]; then
-  echo "Applying Prisma schema with db push"
+  echo "Applying Prisma schema with db push (additive; no --accept-data-loss)"
   npx prisma db push
+fi
+
+if [[ "${RUN_PRISMA_MIGRATE_DEPLOY:-0}" == "1" ]]; then
+  echo "Applying Prisma migrations with migrate deploy"
+  npx prisma migrate deploy
 fi
 
 echo "Building Next.js app"

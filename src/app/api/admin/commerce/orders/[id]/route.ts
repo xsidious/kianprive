@@ -3,6 +3,7 @@ import { FulfillmentStatus, OrderStatus, PaymentStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAdminAccess } from "@/lib/admin-guard";
 import { writeAuditLog } from "@/lib/ops/audit";
+import { orderStatusFromFulfillment } from "@/lib/orders/sync-status";
 
 type Params = {
   params: Promise<{ id: string }>;
@@ -14,12 +15,24 @@ export async function PATCH(req: Request, { params }: Params) {
   const { id } = await params;
   const body = await req.json();
 
+  let nextStatus = body.status as OrderStatus | undefined;
+  const nextFulfillment = body.fulfillmentStatus as FulfillmentStatus | undefined;
+
+  // When fulfillment advances, keep order.status in sync unless admin set a terminal cancel/refund.
+  if (
+    nextFulfillment &&
+    nextStatus !== OrderStatus.CANCELED &&
+    nextStatus !== OrderStatus.REFUNDED
+  ) {
+    nextStatus = orderStatusFromFulfillment(nextFulfillment, nextStatus);
+  }
+
   const order = await prisma.order.update({
     where: { id },
     data: {
-      status: body.status as OrderStatus | undefined,
+      status: nextStatus,
       paymentStatus: body.paymentStatus as PaymentStatus | undefined,
-      fulfillmentStatus: body.fulfillmentStatus as FulfillmentStatus | undefined,
+      fulfillmentStatus: nextFulfillment,
       email: body.email !== undefined ? String(body.email) : undefined,
     },
   });

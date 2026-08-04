@@ -90,6 +90,7 @@ model TherapeuticsIntakeSubmission {
   assignedPartner          PartnerProfile?          @relation(fields: [assignedPartnerId], references: [id], onDelete: SetNull)
   orders                   Order[]
   messages                 IntakeMessage[]
+  therapyProposals         IntakeTherapyProposal[]
   createdAt                DateTime                 @default(now())
   updatedAt                DateTime                 @updatedAt
 
@@ -97,6 +98,49 @@ model TherapeuticsIntakeSubmission {
   @@index([email, createdAt])
   @@index([assignedPartnerId, createdAt])
   @@index([userId, createdAt])
+}
+
+enum IntakeTherapyProposalStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  DECLINED
+  PAID
+}
+
+model IntakeTherapyProposal {
+  id                 String                      @id @default(cuid())
+  intakeSubmissionId String
+  providerPartnerId  String
+  orderId            String?                     @unique
+  status             IntakeTherapyProposalStatus @default(DRAFT)
+  notes              String?                     @db.Text
+  sentAt             DateTime?
+  paidAt             DateTime?
+  intakeSubmission   TherapeuticsIntakeSubmission @relation(fields: [intakeSubmissionId], references: [id], onDelete: Cascade)
+  providerPartner    PartnerProfile              @relation(fields: [providerPartnerId], references: [id], onDelete: Cascade)
+  order              Order?                      @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  items              IntakeTherapyItem[]
+  createdAt          DateTime                    @default(now())
+  updatedAt          DateTime                    @updatedAt
+
+  @@index([intakeSubmissionId, status])
+  @@index([providerPartnerId, createdAt])
+}
+
+model IntakeTherapyItem {
+  id            String                @id @default(cuid())
+  proposalId    String
+  productId     String
+  quantity      Int                   @default(1)
+  titleSnapshot String
+  proposal      IntakeTherapyProposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  product       Product               @relation(fields: [productId], references: [id], onDelete: Restrict)
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  @@index([proposalId])
+  @@unique([proposalId, productId])
 }
 
 enum IntakeMessageAuthor {
@@ -281,6 +325,11 @@ model ProductCollection {
   updatedAt   DateTime     @updatedAt
 }
 
+enum ProductCatalogKind {
+  RETAIL
+  CLINICAL
+}
+
 model Product {
   id             String        @id @default(cuid())
   slug           String        @unique
@@ -288,7 +337,15 @@ model Product {
   description    String?
   status         ProductStatus @default(DRAFT)
   category       String?
+  subcategory    String?
   isPrescription Boolean       @default(false)
+  catalogKind    ProductCatalogKind @default(RETAIL)
+  externalId     String?       @unique
+  wholesalePrice Decimal?      @db.Decimal(10, 2)
+  form           String?
+  strength       String?
+  deliveryMethod String?
+  source         String?
   featuredImage  String?
   galleryImages  String[]      @default([])
   hasVariants    Boolean       @default(false)
@@ -307,9 +364,12 @@ model Product {
   orderItems     OrderItem[]
   cartItems      CartItem[]
   partnerAssignments PartnerProductAssignment[]
+  therapyItems   IntakeTherapyItem[]
   collection     ProductCollection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
+
+  @@index([catalogKind, status, category])
 }
 
 model ProductVariant {
@@ -380,10 +440,13 @@ model Order {
   notes                String?
   stripeCheckoutSessionId String?   @unique
   stripePaymentIntentId String?     @unique
+  authorizeNetTransId  String?      @unique
   items                OrderItem[]
   fulfillments         Fulfillment[]
   payments             PaymentRecord[]
   refunds              RefundRecord[]
+  messages             OrderMessage[]
+  therapyProposal      IntakeTherapyProposal?
   user                 User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
   partner              PartnerProfile? @relation(fields: [partnerId], references: [id], onDelete: SetNull)
   intakeSubmission     TherapeuticsIntakeSubmission? @relation(fields: [intakeSubmissionId], references: [id], onDelete: SetNull)
@@ -392,6 +455,27 @@ model Order {
 
   @@index([partnerId, createdAt])
   @@index([intakeSubmissionId])
+  @@index([userId, createdAt])
+}
+
+enum OrderMessageAuthor {
+  CUSTOMER
+  ADMIN
+  SYSTEM
+}
+
+model OrderMessage {
+  id           String             @id @default(cuid())
+  orderId      String
+  authorRole   OrderMessageAuthor
+  authorUserId String?
+  authorName   String?
+  body         String             @db.Text
+  order        Order              @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  @@index([orderId, createdAt])
 }
 
 model OrderItem {
@@ -570,6 +654,7 @@ model PartnerProfile {
   guidelineGrants              PartnerGuidelineGrant[]
   guidelineAcks                PartnerGuidelineAck[]
   intakeSubmissions            TherapeuticsIntakeSubmission[]
+  therapyProposals             IntakeTherapyProposal[]
   createdAt                    DateTime         @default(now())
   updatedAt                    DateTime         @updatedAt
 

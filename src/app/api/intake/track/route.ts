@@ -68,6 +68,28 @@ export async function POST(req: Request) {
         orderBy: { createdAt: "desc" },
         take: 5,
       },
+      therapyProposals: {
+        where: { status: { in: ["SENT", "ACCEPTED", "PAID"] } },
+        orderBy: { updatedAt: "desc" },
+        take: 1,
+        include: {
+          items: {
+            select: {
+              quantity: true,
+              titleSnapshot: true,
+              product: { select: { title: true } },
+            },
+          },
+          order: {
+            select: {
+              orderNumber: true,
+              total: true,
+              paymentStatus: true,
+            },
+          },
+          providerPartner: { select: { displayName: true } },
+        },
+      },
     },
   });
 
@@ -82,6 +104,7 @@ export async function POST(req: Request) {
 
   const referenceCode = submission.publicTrackingToken || submission.id;
   const messages = await listIntakeMessages(submission.id);
+  const proposal = submission.therapyProposals[0];
 
   return withCors(
     NextResponse.json({
@@ -102,9 +125,25 @@ export async function POST(req: Request) {
           orderNumber: order.orderNumber,
           status: order.status,
           paymentStatus: order.paymentStatus,
-          total: Number(order.total),
           createdAt: order.createdAt.toISOString(),
         })),
+        therapy: proposal
+          ? {
+              status: proposal.status,
+              providerName: proposal.providerPartner.displayName,
+              notes: proposal.notes,
+              items: proposal.items.map((item) => ({
+                title: item.titleSnapshot || item.product.title,
+                quantity: item.quantity,
+              })),
+              order: proposal.order
+                ? {
+                    orderNumber: proposal.order.orderNumber,
+                    paymentStatus: proposal.order.paymentStatus,
+                  }
+                : null,
+            }
+          : null,
         allStatusLabels: INTAKE_STATUS_LABELS,
       },
     }),

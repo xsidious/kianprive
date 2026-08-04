@@ -36,7 +36,12 @@ type Product = {
   description?: string | null;
   status: "DRAFT" | "ACTIVE" | "ARCHIVED";
   price: number | string;
+  wholesalePrice?: number | string | null;
+  catalogKind?: "RETAIL" | "CLINICAL";
   category?: string | null;
+  subcategory?: string | null;
+  form?: string | null;
+  strength?: string | null;
   isPrescription?: boolean;
   inventoryQty?: number | null;
   featuredImage?: string | null;
@@ -62,6 +67,9 @@ const emptyVariant = (): Variant => ({
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [status, setStatus] = useState("");
+  const [catalogFilter, setCatalogFilter] = useState<"ALL" | "RETAIL" | "CLINICAL">("ALL");
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [search, setSearch] = useState("");
   const [editorOpen, setEditorOpen] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
   const [draft, setDraft] = useState({
@@ -199,6 +207,33 @@ export default function AdminProductsPage() {
   }
 
   const activeCount = useMemo(() => products.filter((p) => p.status === "ACTIVE").length, [products]);
+  const clinicalCount = useMemo(
+    () => products.filter((p) => p.catalogKind === "CLINICAL").length,
+    [products],
+  );
+  const unpricedClinical = useMemo(
+    () => products.filter((p) => p.catalogKind === "CLINICAL" && Number(p.price) <= 0).length,
+    [products],
+  );
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    for (const p of products) {
+      if (catalogFilter !== "ALL" && (p.catalogKind || "RETAIL") !== catalogFilter) continue;
+      if (p.category) set.add(p.category);
+    }
+    return Array.from(set).sort();
+  }, [products, catalogFilter]);
+
+  const visible = useMemo(() => {
+    return products.filter((p) => {
+      const kind = p.catalogKind || "RETAIL";
+      if (catalogFilter !== "ALL" && kind !== catalogFilter) return false;
+      if (categoryFilter !== "All" && p.category !== categoryFilter) return false;
+      if (!search.trim()) return true;
+      const hay = `${p.title} ${p.slug} ${p.sku ?? ""} ${p.category ?? ""}`.toLowerCase();
+      return hay.includes(search.trim().toLowerCase());
+    });
+  }, [products, catalogFilter, categoryFilter, search]);
 
   return (
     <div className="space-y-6">
@@ -207,7 +242,8 @@ export default function AdminProductsPage() {
           <p className={adminEyebrow}>Catalog</p>
           <h1 className={adminTitle}>Products</h1>
           <p className={adminMuted}>
-            Manage images, simple or variable products, inventory, and product SEO in one place.
+            Retail shop products and clinical therapeutics. Set retail prices on clinical items before providers can
+            send therapy proposals.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -222,7 +258,7 @@ export default function AdminProductsPage() {
 
       {status ? <p className="text-sm text-[#1b6568]">{status}</p> : null}
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-4">
         <div className={`${adminPanel} p-5`}>
           <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Products</p>
           <p className="mt-2 font-serif text-3xl">{products.length}</p>
@@ -232,13 +268,55 @@ export default function AdminProductsPage() {
           <p className="mt-2 font-serif text-3xl">{activeCount}</p>
         </div>
         <div className={`${adminPanel} p-5`}>
-          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Variable</p>
-          <p className="mt-2 font-serif text-3xl">{products.filter((p) => p.hasVariants).length}</p>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Clinical</p>
+          <p className="mt-2 font-serif text-3xl">{clinicalCount}</p>
+        </div>
+        <div className={`${adminPanel} p-5`}>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Unpriced clinical</p>
+          <p className="mt-2 font-serif text-3xl">{unpricedClinical}</p>
         </div>
       </div>
 
+      <div className="flex flex-wrap gap-2">
+        {(["ALL", "RETAIL", "CLINICAL"] as const).map((kind) => (
+          <button
+            key={kind}
+            type="button"
+            onClick={() => {
+              setCatalogFilter(kind);
+              setCategoryFilter("All");
+            }}
+            className={`rounded-full border px-3 py-1.5 text-xs uppercase tracking-[0.12em] ${
+              catalogFilter === kind
+                ? "border-[#8f6f3e] bg-[#8f6f3e] text-white"
+                : "border-[#d8cbb5] text-[#6f6251]"
+            }`}
+          >
+            {kind === "ALL" ? "All" : kind === "RETAIL" ? "Retail shop" : "Clinical"}
+          </button>
+        ))}
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search…"
+          className={`${adminInput} min-w-[180px] flex-1`}
+        />
+        <select
+          value={categoryFilter}
+          onChange={(e) => setCategoryFilter(e.target.value)}
+          className={adminSelect}
+        >
+          <option value="All">All categories</option>
+          {categories.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {products.map((product) => (
+        {visible.map((product) => (
           <article key={product.id} className={`${adminPanel} overflow-hidden`}>
             <div className="relative aspect-[4/3] bg-[#f5eee4]">
               {product.featuredImage ? (
@@ -257,14 +335,24 @@ export default function AdminProductsPage() {
                   {product.status}
                 </span>
               </div>
-              <p className="text-sm text-[#2b2218]">{money(product.price)}</p>
+              <p className="text-sm text-[#2b2218]">
+                Retail {money(product.price)}
+                {product.catalogKind === "CLINICAL" && product.wholesalePrice != null ? (
+                  <span className="text-[#6f6251]"> · Cost {money(product.wholesalePrice)}</span>
+                ) : null}
+                {product.catalogKind === "CLINICAL" && Number(product.price) <= 0 ? (
+                  <span className="ml-2 text-[#7c2c2c]">Needs price</span>
+                ) : null}
+              </p>
               <div className="flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.12em] text-[#8f6f3e]">
+                <span className={adminBtnSoft}>{product.catalogKind === "CLINICAL" ? "Clinical" : "Retail"}</span>
                 <span className={adminBtnSoft}>{product.category || "General"}</span>
+                {product.isPrescription ? <span className={adminBtnSoft}>Rx</span> : null}
                 {product.hasVariants ? <span className={adminBtnSoft}>Variable · {product.variants?.length ?? 0}</span> : null}
               </div>
               <div className="flex flex-wrap gap-2">
                 <button type="button" className={adminBtnPrimary} onClick={() => openEdit(product)}>
-                  Edit
+                  {product.catalogKind === "CLINICAL" ? "Set price" : "Edit"}
                 </button>
                 <button type="button" className={adminBtnGhost} onClick={() => void deleteProduct(product.id)}>
                   Delete
@@ -274,6 +362,7 @@ export default function AdminProductsPage() {
           </article>
         ))}
       </div>
+      {!visible.length ? <div className={`${adminPanel} p-8 text-sm text-[#6f6251]`}>No products in this filter.</div> : null}
 
       <AdminModal
         open={editorOpen}
@@ -286,7 +375,19 @@ export default function AdminProductsPage() {
           <div className="grid gap-3 md:grid-cols-2">
             <input className={adminInput} placeholder="Title" value={draft.title} onChange={(e) => setDraft((d) => ({ ...d, title: e.target.value }))} />
             <input className={adminInput} placeholder="Slug" value={draft.slug} onChange={(e) => setDraft((d) => ({ ...d, slug: e.target.value }))} />
-            <input className={adminInput} placeholder="Price" type="number" step="0.01" value={draft.price} onChange={(e) => setDraft((d) => ({ ...d, price: e.target.value }))} />
+            <input
+              className={adminInput}
+              placeholder={editing?.catalogKind === "CLINICAL" ? "Retail price (required for therapy pay)" : "Price"}
+              type="number"
+              step="0.01"
+              value={draft.price}
+              onChange={(e) => setDraft((d) => ({ ...d, price: e.target.value }))}
+            />
+            {editing?.catalogKind === "CLINICAL" && editing.wholesalePrice != null ? (
+              <p className="flex items-center text-sm text-[#6f6251]">
+                Wholesale / cost reference: {money(editing.wholesalePrice)}
+              </p>
+            ) : null}
             <select className={adminSelect} value={draft.status} onChange={(e) => setDraft((d) => ({ ...d, status: e.target.value }))}>
               {productStatuses.map((entry) => (
                 <option key={entry} value={entry}>

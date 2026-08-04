@@ -28,9 +28,16 @@ type TrackResult = {
     orderNumber: string;
     status: string;
     paymentStatus: string;
-    total: number;
+    total?: number;
     createdAt: string;
   }>;
+  therapy?: {
+    status: string;
+    providerName: string;
+    notes: string | null;
+    items: Array<{ title: string; quantity: number }>;
+    order: { orderNumber: string; total?: number; paymentStatus: string } | null;
+  } | null;
 };
 
 function TrackIntakeForm() {
@@ -262,13 +269,41 @@ function TrackIntakeForm() {
               </ul>
             </div>
           ) : null}
+          {result.therapy ? (
+            <div className="rounded-xl border border-[#efe4d4] bg-[#fffaf3] p-4">
+              <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">
+                Recommended therapy · {result.therapy.status}
+              </p>
+              <p className="mt-1 text-sm text-[#6f6251]">From {result.therapy.providerName}</p>
+              {result.therapy.notes ? (
+                <p className="mt-2 text-sm text-[#1f1a15]">{result.therapy.notes}</p>
+              ) : null}
+              <ul className="mt-3 space-y-1 text-sm text-[#1f1a15]">
+                {result.therapy.items.map((item, idx) => (
+                  <li key={`${item.title}-${idx}`}>
+                    {item.title} × {item.quantity}
+                  </li>
+                ))}
+              </ul>
+              {result.therapy.order && result.therapy.order.paymentStatus !== "PAID" ? (
+                <p className="mt-3 text-sm text-[#6f6251]">Sign in to Accept &amp; Pay for this therapy plan.</p>
+              ) : null}
+              {result.therapy.order?.paymentStatus === "PAID" ? (
+                <p className="mt-3 text-sm text-[#1b6568]">
+                  Paid — order {result.therapy.order.orderNumber}. Fulfillment is in progress.
+                </p>
+              ) : null}
+            </div>
+          ) : null}
           <div className="flex flex-wrap gap-3 pt-2">
-            {result.hasAccount ? (
+            {result.hasAccount || result.therapy?.order?.paymentStatus === "UNPAID" ? (
               <Link
                 href="/login?callbackUrl=/dashboard/intake"
                 className="rounded-full border border-[#8f6f3e] bg-[#8f6f3e] px-4 py-2 text-sm text-white"
               >
-                Sign in to dashboard
+                {result.therapy?.order?.paymentStatus === "UNPAID"
+                  ? "Sign in to Accept & Pay"
+                  : "Sign in to dashboard"}
               </Link>
             ) : (
               <button
@@ -294,7 +329,7 @@ function TrackIntakeForm() {
             placeholder="Type your reply for the clinical team…"
             submitLabel="Send reply"
             initialMessages={result.messages ?? []}
-            reloadKey={`${result.referenceId}-${result.updatedAt}-${result.messages?.length ?? 0}`}
+            reloadKey={result.referenceId}
             loadMessages={async () => {
               const res = await fetch(
                 `/api/intake/messages?email=${encodeURIComponent(email)}&referenceId=${encodeURIComponent(referenceId)}`,
@@ -311,6 +346,7 @@ function TrackIntakeForm() {
               });
               const data = await res.json();
               if (!res.ok) throw new Error(data.error || "Could not send reply.");
+              if (!data.message) throw new Error("Message was not returned from the server.");
               setResult((prev) =>
                 prev
                   ? {

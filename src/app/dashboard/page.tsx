@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { BadgeDollarSign, CalendarCheck2, CircleUserRound, Crown, FileText, MessageCircleMore, PackageCheck } from "lucide-react";
+import { BadgeDollarSign, CalendarCheck2, CircleUserRound, Crown, FileText, MessageCircleMore, PackageCheck, Pill } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { getPortalHomeForRole } from "@/lib/auth-redirect";
 import { prisma } from "@/lib/prisma";
+import { patientOrderProgress } from "@/lib/orders/progress";
 import { getUserSubscription } from "@/lib/subscription";
 import { buildWhatsAppUrl } from "@/lib/contact";
 import { PortalSignOut } from "@/components/auth/PortalSignOut";
@@ -23,10 +24,16 @@ export default async function DashboardPage() {
   if (roleHome !== "/dashboard") {
     redirect(roleHome);
   }
+  const email = session.user.email?.trim();
   const [sub, orders, bookings] = await Promise.all([
     getUserSubscription(session.user.id),
     prisma.order.findMany({
-      where: { userId: session.user.id },
+      where: {
+        OR: [
+          { userId: session.user.id },
+          ...(email ? [{ email: { equals: email, mode: "insensitive" as const } }] : []),
+        ],
+      },
       orderBy: { createdAt: "desc" },
       take: 10,
     }),
@@ -37,7 +44,10 @@ export default async function DashboardPage() {
     }),
   ]);
   const pendingBookings = bookings.filter((booking) => booking.status === "PENDING").length;
-  const activeOrders = orders.filter((order) => order.status !== "DELIVERED" && order.status !== "CANCELED").length;
+  const activeOrders = orders.filter((order) => {
+    const progress = patientOrderProgress(order);
+    return progress.tone !== "done" && order.status !== "CANCELED" && order.status !== "REFUNDED";
+  }).length;
   const whatsappHref = buildWhatsAppUrl(
     `Hi KIAN Privé team, I need support with my member dashboard account (${session.user.email ?? "member"}).`,
   );
@@ -99,8 +109,14 @@ export default async function DashboardPage() {
         </div>
 
         <div className="mt-8 flex flex-wrap gap-3">
+          <Link className={`inline-flex items-center gap-2 ${editorialCtaSecondary}`} href="/dashboard/orders">
+            <PackageCheck size={16} /> MY ORDERS
+          </Link>
           <Link className={`inline-flex items-center gap-2 ${editorialCtaSecondary}`} href="/dashboard/intake">
             <FileText size={16} /> MY CLINICAL INTAKE
+          </Link>
+          <Link className={`inline-flex items-center gap-2 ${editorialCtaSecondary}`} href="/dashboard/therapeutics">
+            <Pill size={16} /> THERAPEUTICS CATALOG
           </Link>
           <Link className={`inline-flex items-center gap-2 ${editorialCtaSecondary}`} href="/dashboard/subscription">
             <BadgeDollarSign size={16} /> VIEW SUBSCRIPTION
@@ -123,16 +139,25 @@ export default async function DashboardPage() {
               <p className="mt-3 text-sm text-[#6f6251]">No orders yet.</p>
             ) : (
               <div className="mt-4 space-y-3">
-                {orders.map((order) => (
-                  <article key={order.id} className={`${editorialPanel} p-3`}>
-                    <p className="text-[#2b2218]">{order.orderNumber}</p>
-                    <p className="text-sm text-[#6f6251]">
-                      {order.status} · {order.paymentStatus}
-                    </p>
-                  </article>
-                ))}
+                {orders.map((order) => {
+                  const progress = patientOrderProgress(order);
+                  return (
+                    <Link
+                      key={order.id}
+                      href={`/dashboard/orders/${order.id}`}
+                      className={`${editorialPanel} block p-3 transition hover:border-[#d4c4a8]`}
+                    >
+                      <p className="text-[#2b2218]">{order.orderNumber}</p>
+                      <p className="text-sm text-[#6f6251]">{progress.label}</p>
+                      <p className="mt-0.5 text-xs text-[#8a7d6c]">{progress.detail}</p>
+                    </Link>
+                  );
+                })}
               </div>
             )}
+            <Link href="/dashboard/orders" className={`mt-4 ${editorialCtaSecondary}`}>
+              VIEW ALL ORDERS
+            </Link>
           </section>
 
           <section className={`${editorialPanel} p-5`}>

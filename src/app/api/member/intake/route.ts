@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { patientFacingIntakeStatus } from "@/lib/intake/tracking";
+import { serializeIntakeMessage } from "@/lib/intake/messages";
+import { patientOrderProgress } from "@/lib/orders/progress";
 
 export async function GET() {
   const session = await auth();
@@ -17,7 +19,7 @@ export async function GET() {
         ...(email ? [{ email: { equals: email, mode: "insensitive" as const } }] : []),
       ],
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: { updatedAt: "desc" },
     take: 50,
     select: {
       id: true,
@@ -28,21 +30,52 @@ export async function GET() {
       publicTrackingToken: true,
       createdAt: true,
       updatedAt: true,
+      messages: {
+        orderBy: { createdAt: "desc" },
+        take: 1,
+      },
+      _count: { select: { messages: true } },
       orders: {
         select: {
+          id: true,
           orderNumber: true,
           status: true,
           paymentStatus: true,
+          fulfillmentStatus: true,
           total: true,
           createdAt: true,
         },
         orderBy: { createdAt: "desc" },
-        take: 3,
+        take: 5,
+      },
+      therapyProposals: {
+        where: { status: { in: ["SENT", "ACCEPTED", "PAID"] } },
+        orderBy: { updatedAt: "desc" },
+        take: 1,
+        include: {
+          items: {
+            select: {
+              quantity: true,
+              titleSnapshot: true,
+              product: { select: { title: true } },
+            },
+          },
+          order: {
+            select: {
+              id: true,
+              orderNumber: true,
+              total: true,
+              status: true,
+              paymentStatus: true,
+              fulfillmentStatus: true,
+            },
+          },
+          providerPartner: { select: { displayName: true } },
+        },
       },
     },
   });
 
-  // Soft-link unmatched email intakes to this member for next time
   if (email) {
     await prisma.therapeuticsIntakeSubmission.updateMany({
       where: {
@@ -54,23 +87,57 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    intakes: submissions.map((row) => ({
-      referenceId: row.publicTrackingToken || row.id,
-      fullName: row.fullName,
-      email: row.email,
-      status: row.status,
-      statusLabel: patientFacingIntakeStatus(row.status),
-      statusNote: row.statusNote,
-      trackingToken: row.publicTrackingToken,
-      submittedAt: row.createdAt.toISOString(),
-      updatedAt: row.updatedAt.toISOString(),
-      orders: row.orders.map((order) => ({
-        orderNumber: order.orderNumber,
-        status: order.status,
-        paymentStatus: order.paymentStatus,
-        total: Number(order.total),
-        createdAt: order.createdAt.toISOString(),
-      })),
-    })),
+    intakes: submissions.map((row) => {
+      const proposal = row.therapyProposals[0];
+      const latest = row.messages[0] ? serializeIntakeMessage(row.messages[0]) : null;
+      return {
+        id: row.id,
+        referenceId: row.publicTrackingToken || row.id,
+        fullName: row.fullName,
+        email: row.email,
+        status: row.status,
+        statusLabel: patientFacingIntakeStatus(row.status),
+        statusNote: row.statusNote,
+        trackingToken: row.publicTrackingToken,
+        submittedAt: row.createdAt.toISOString(),
+        updatedAt: row.updatedAt.toISOString(),
+        messageCount: row._count.messages,
+        latestMessage: latest,
+        orders: row.orders.map((order) => ({
+          id: order.id,
+          orderNumber: order.orderNumber,
+          status: order.status,
+          paymentStatus: order.paymentStatus,
+          fulfillmentStatus: order.fulfillmentStatus,
+          progress: patientOrderProgress(order),
+          createdAt: order.createdAt.toISOString(),
+        })),
+        therapy: proposal
+          ? {
+              status: proposal.status,
+              providerName: proposal.providerPartner.displayName,
+              notes: proposal.notes,
+              items: proposal.items.map((item) => ({
+                title: item.titleSnapshot || item.product.title,
+                quantity: item.quantity,
+              })),
+              order: proposal.order
+                ? {
+                    id: proposal.order.id,
+                    orderNumber: proposal.order.orderNumber,
+                    paymentStatus: proposal.order.paymentStatus,
+                    fulfillmentStatus: proposal.order.fulfillmentStatus,
+                    progress: patientOrderProgress(proposal.order),
+                    // Total only while unpaid so Accept & Pay can charge; hidden after paid
+                    total:
+                      proposal.order.paymentStatus === "UNPAID"
+                        ? Number(proposal.order.total)
+                        : undefined,
+                  }
+                : null,
+            }
+          : null,
+      };
+    }),
   });
 }

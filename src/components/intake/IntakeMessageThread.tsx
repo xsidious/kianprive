@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 export type ThreadMessage = {
   id: string;
@@ -17,11 +17,28 @@ type Props = {
   submitLabel?: string;
   loadMessages: () => Promise<ThreadMessage[]>;
   sendMessage: (body: string) => Promise<ThreadMessage>;
-  /** Seed from parent (e.g. track API) before/alongside fetch */
   initialMessages?: ThreadMessage[];
-  /** Reload trigger from parent (e.g. after status change) */
+  /** Change only when switching intakes — avoid tying to statusNote */
   reloadKey?: string | number;
+  pollIntervalMs?: number;
 };
+
+function normalizeList(rows: unknown): ThreadMessage[] {
+  if (!Array.isArray(rows)) return [];
+  return rows.filter((row): row is ThreadMessage => {
+    return Boolean(row && typeof row === "object" && "id" in row && "body" in row);
+  });
+}
+
+function mergeById(prev: ThreadMessage[], next: ThreadMessage[]) {
+  if (!next.length && prev.length) return prev;
+  const map = new Map<string, ThreadMessage>();
+  for (const row of prev) map.set(row.id, row);
+  for (const row of next) map.set(row.id, row);
+  return Array.from(map.values()).sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+  );
+}
 
 export function IntakeMessageThread({
   title = "Messages",
@@ -32,33 +49,94 @@ export function IntakeMessageThread({
   sendMessage,
   initialMessages,
   reloadKey,
+  pollIntervalMs = 3000,
 }: Props) {
-  const [messages, setMessages] = useState<ThreadMessage[]>(initialMessages ?? []);
+  const [messages, setMessages] = useState<ThreadMessage[]>(() => normalizeList(initialMessages));
   const [body, setBody] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(!(initialMessages && initialMessages.length > 0));
+  const [loading, setLoading] = useState(true);
+  const [live, setLive] = useState(false);
+  const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
 
-  async function refresh() {
-    setLoading(true);
-    setError("");
+  const listRef = useRef<HTMLDivElement>(null);
+  const loadRef = useRef(loadMessages);
+  const stickBottom = useRef(true);
+  const mounted = useRef(true);
+
+  loadRef.current = loadMessages;
+
+  function scrollToBottom(smooth = false) {
+    const el = listRef.current;
+    if (!el) return;
+    el.scrollTo({ top: el.scrollHeight, behavior: smooth ? "smooth" : "auto" });
+  }
+
+  async function refresh(opts?: { silent?: boolean }) {
+    const silent = Boolean(opts?.silent);
+    if (!silent) {
+      setLoading(true);
+      setError("");
+    }
     try {
-      const rows = await loadMessages();
-      setMessages(rows);
-    } catch {
-      if (!(initialMessages && initialMessages.length > 0)) {
-        setError("Could not load messages.");
+      const rows = normalizeList(await loadRef.current());
+      if (!mounted.current) return;
+      setMessages((prev) => mergeById(prev, rows));
+      setLive(true);
+      setLastSyncedAt(new Date());
+      setError("");
+      if (stickBottom.current) {
+        requestAnimationFrame(() => scrollToBottom(silent));
+      }
+    } catch (err) {
+      if (!mounted.current) return;
+      setLive(false);
+      if (!silent) {
+        setError(err instanceof Error ? err.message : "Could not load messages.");
       }
     } finally {
-      setLoading(false);
+      if (mounted.current && !silent) setLoading(false);
     }
   }
 
+  // Initial + when intake changes
   useEffect(() => {
-    if (initialMessages) setMessages(initialMessages);
-    void refresh();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    mounted.current = true;
+    setMessages(normalizeList(initialMessages));
+    void refresh({ silent: false });
+    return () => {
+      mounted.current = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only remount/reload when intake key changes
   }, [reloadKey]);
+
+  // Near-live polling
+  useEffect(() => {
+    if (!pollIntervalMs || pollIntervalMs < 1500) return;
+
+    const tick = () => {
+      if (document.visibilityState === "hidden") return;
+      void refresh({ silent: true });
+    };
+
+    const timer = setInterval(tick, pollIntervalMs);
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") tick();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reloadKey, pollIntervalMs]);
+
+  function onListScroll() {
+    const el = listRef.current;
+    if (!el) return;
+    stickBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 64;
+  }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -67,10 +145,19 @@ export function IntakeMessageThread({
     setError("");
     try {
       const created = await sendMessage(body.trim());
-      setMessages((prev) => [...prev, created]);
+      const normalized = normalizeList([created]);
+      if (!normalized.length) {
+        throw new Error("Message sent but response was empty. Refreshing…");
+      }
+      setMessages((prev) => mergeById(prev, normalized));
       setBody("");
+      stickBottom.current = true;
+      requestAnimationFrame(() => scrollToBottom(true));
+      // Confirm from server without wiping local state
+      window.setTimeout(() => void refresh({ silent: true }), 500);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not send message.");
+      void refresh({ silent: true });
     } finally {
       setBusy(false);
     }
@@ -78,13 +165,33 @@ export function IntakeMessageThread({
 
   return (
     <section className="space-y-4 rounded-2xl border border-[#e7dcc8] bg-[#fcfaf6] p-5">
-      <div>
-        <h2 className="font-serif text-xl text-[#1f1a15]">{title}</h2>
-        <p className="mt-1 text-sm text-[#6f6251]">{hint}</p>
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <h2 className="font-serif text-xl text-[#1f1a15]">{title}</h2>
+          <p className="mt-1 text-sm text-[#6f6251]">{hint}</p>
+        </div>
+        <div className="text-right">
+          <p className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${live ? "bg-[#1b6568]" : "bg-[#c4b7a4]"}`}
+              aria-hidden
+            />
+            {live ? "Live updates" : loading ? "Loading…" : "Reconnecting…"}
+          </p>
+          {lastSyncedAt ? (
+            <p className="mt-0.5 text-[10px] text-[#8a7d6c]">Synced {lastSyncedAt.toLocaleTimeString()}</p>
+          ) : null}
+        </div>
       </div>
 
-      <div className="max-h-80 space-y-3 overflow-y-auto rounded-xl border border-[#efe6d8] bg-white p-3">
-        {loading ? <p className="text-sm text-[#6f6251]">Loading messages…</p> : null}
+      <div
+        ref={listRef}
+        onScroll={onListScroll}
+        className="max-h-80 space-y-3 overflow-y-auto rounded-xl border border-[#efe6d8] bg-white p-3"
+      >
+        {loading && messages.length === 0 ? (
+          <p className="text-sm text-[#6f6251]">Loading messages…</p>
+        ) : null}
         {!loading && messages.length === 0 ? (
           <p className="text-sm text-[#8a7d6c]">No messages yet on this request.</p>
         ) : null}

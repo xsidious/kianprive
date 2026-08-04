@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AdminModal } from "@/components/admin/AdminModal";
+import { OrderMessageThread, type OrderThreadMessage } from "@/components/orders/OrderMessageThread";
 import {
   adminBtnGhost,
   adminBtnPrimary,
@@ -39,10 +40,27 @@ type Order = {
   taxTotal?: number | string;
   total?: number | string;
   createdAt?: string;
+  authorizeNetTransId?: string | null;
   shippingAddress?: Record<string, string> | null;
   notes?: string | null;
   items?: OrderItem[];
-  fulfillments?: { id: string; carrier?: string | null; trackingNumber?: string | null; status: string }[];
+  payments?: Array<{
+    id: string;
+    provider: string;
+    status: string;
+    amount: number | string;
+    metadata?: { transId?: string; authCode?: string; testMode?: boolean } | null;
+  }>;
+  fulfillments?: { id: string; carrier?: string | null; trackingNumber?: string | null; trackingUrl?: string | null; status: string }[];
+  partner?: { displayName: string; partnerCode: string; type?: string } | null;
+  intakeSubmission?: {
+    id: string;
+    fullName: string;
+    email: string;
+    publicTrackingToken?: string | null;
+    status: string;
+  } | null;
+  therapyProposal?: { id: string; status: string; notes?: string | null } | null;
 };
 
 const orderStatuses = ["PENDING", "PAID", "PROCESSING", "FULFILLED", "DELIVERED", "CANCELED", "REFUNDED"] as const;
@@ -67,6 +85,29 @@ export default function AdminOrdersPage() {
 
   const selected = orders.find((o) => o.id === selectedId) ?? null;
 
+  const loadOrderMessages = useCallback(async () => {
+    if (!selectedId) return [];
+    const res = await fetch(`/api/admin/commerce/orders/${selectedId}/messages`);
+    const data = (await res.json()) as { messages?: OrderThreadMessage[]; error?: string };
+    if (!res.ok) throw new Error(data.error || "Could not load messages.");
+    return data.messages ?? [];
+  }, [selectedId]);
+
+  const sendOrderMessage = useCallback(
+    async (body: string) => {
+      if (!selectedId) throw new Error("No order selected.");
+      const res = await fetch(`/api/admin/commerce/orders/${selectedId}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ body }),
+      });
+      const data = (await res.json()) as { message?: OrderThreadMessage; error?: string };
+      if (!res.ok || !data.message) throw new Error(data.error || "Could not send message.");
+      return data.message;
+    },
+    [selectedId],
+  );
+
   async function saveOrder(order: Order) {
     const response = await fetch(`/api/admin/commerce/orders/${order.id}`, {
       method: "PATCH",
@@ -78,14 +119,30 @@ export default function AdminOrdersPage() {
         email: order.email,
       }),
     });
-    setStatus(response.ok ? "Order updated." : "Failed to update order.");
-    if (response.ok) await loadOrders();
+    if (!response.ok) {
+      setStatus("Failed to update order.");
+      return;
+    }
+    setStatus(
+      order.fulfillmentStatus === "FULFILLED" || order.status === "FULFILLED"
+        ? `Order ${order.orderNumber} marked fulfilled.`
+        : "Order updated.",
+    );
+    await loadOrders();
+    // Close detail modal after a successful status save (e.g. marked fulfilled)
+    setSelectedId(null);
   }
 
   async function deleteOrder(order: Order) {
-    if (!window.confirm(`Delete order ${order.orderNumber}? This cannot be undone.`)) return;
+    if (
+      !window.confirm(
+        `Are you sure you want to delete the order ${order.orderNumber}?\n\nThis cannot be undone.`,
+      )
+    ) {
+      return;
+    }
     const response = await fetch(`/api/admin/commerce/orders/${order.id}`, { method: "DELETE" });
-    setStatus(response.ok ? "Order deleted." : "Failed to delete order.");
+    setStatus(response.ok ? `Order ${order.orderNumber} deleted.` : "Failed to delete order.");
     if (response.ok) {
       if (selectedId === order.id) setSelectedId(null);
       await loadOrders();
@@ -151,6 +208,23 @@ export default function AdminOrdersPage() {
                   {order.email ?? "No email"}
                   {order.createdAt ? ` · ${new Date(order.createdAt).toLocaleString()}` : ""}
                 </p>
+                {order.partner || order.intakeSubmission || order.therapyProposal ? (
+                  <p className="mt-1 text-xs text-[#8f6f3e]">
+                    {order.therapyProposal ? "Therapy · " : ""}
+                    {order.partner ? `Provider ${order.partner.displayName} (${order.partner.partnerCode})` : ""}
+                    {order.partner && order.intakeSubmission ? " · " : ""}
+                    {order.intakeSubmission
+                      ? `Intake ${order.intakeSubmission.publicTrackingToken || order.intakeSubmission.id}`
+                      : ""}
+                  </p>
+                ) : null}
+                {order.paymentStatus === "PAID" ? (
+                  <p className="mt-1 font-mono text-[11px] text-[#1b6568]">
+                    Paid {money(order.total)}
+                    {order.authorizeNetTransId ? ` · ID ${order.authorizeNetTransId}` : ""}
+                    {order.payments?.[0]?.provider ? ` · ${order.payments[0].provider}` : ""}
+                  </p>
+                ) : null}
               </div>
               <div className="flex flex-wrap gap-2">
                 <span className={`rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] ${statusTone(order.paymentStatus)}`}>
@@ -275,6 +349,76 @@ export default function AdminOrdersPage() {
               ) : null}
             </section>
 
+            {selected.partner || selected.intakeSubmission || selected.therapyProposal ? (
+              <section className="rounded-2xl border border-[#efe4d4] bg-[#fffaf3] p-4 text-sm">
+                <h3 className="font-serif text-lg text-[#1f1a15]">Therapy / clinical</h3>
+                {selected.partner ? (
+                  <p className="mt-2 text-[#2b2218]">
+                    Provider: {selected.partner.displayName} ({selected.partner.partnerCode})
+                  </p>
+                ) : null}
+                {selected.intakeSubmission ? (
+                  <p className="mt-1 text-[#6f6251]">
+                    Intake: {selected.intakeSubmission.fullName} ·{" "}
+                    <span className="font-mono tracking-[0.12em]">
+                      {selected.intakeSubmission.publicTrackingToken || selected.intakeSubmission.id}
+                    </span>{" "}
+                    · {selected.intakeSubmission.status.replaceAll("_", " ")}
+                  </p>
+                ) : null}
+                {selected.therapyProposal ? (
+                  <p className="mt-1 text-[#6f6251]">
+                    Proposal: {selected.therapyProposal.status}
+                    {selected.therapyProposal.notes ? ` — ${selected.therapyProposal.notes}` : ""}
+                  </p>
+                ) : null}
+                <p className="mt-2 text-xs text-[#8f6f3e]">
+                  Ship the therapy products below, then add tracking and mark fulfilled.
+                </p>
+              </section>
+            ) : null}
+
+            <section className="rounded-2xl border border-[#efe4d4] bg-[#fffaf3] p-4 text-sm">
+              <h3 className="font-serif text-lg text-[#1f1a15]">Payment (admin only)</h3>
+              <p className="mt-2 text-[#2b2218]">
+                Status: <strong>{selected.paymentStatus}</strong> · Amount: <strong>{money(selected.total)}</strong>
+              </p>
+              {selected.authorizeNetTransId ? (
+                <p className="mt-1 font-mono text-xs text-[#1b6568]">Payment ID: {selected.authorizeNetTransId}</p>
+              ) : null}
+              {(selected.payments ?? []).map((pay) => (
+                <p key={pay.id} className="mt-1 text-xs text-[#6f6251]">
+                  {pay.provider} · {pay.status} · {money(pay.amount)}
+                  {pay.metadata && typeof pay.metadata === "object" && "transId" in pay.metadata && pay.metadata.transId
+                    ? ` · ${String(pay.metadata.transId)}`
+                    : ""}
+                </p>
+              ))}
+            </section>
+
+            {(selected.fulfillments?.length ?? 0) > 0 ? (
+              <section className="rounded-2xl border border-[#efe4d4] p-4 text-sm">
+                <h3 className="font-serif text-lg text-[#1f1a15]">Tracking</h3>
+                <ul className="mt-2 space-y-2">
+                  {(selected.fulfillments ?? []).map((f) => (
+                    <li key={f.id} className="text-[#2b2218]">
+                      {f.status}
+                      {f.carrier ? ` · ${f.carrier}` : ""}
+                      {f.trackingNumber ? ` · ${f.trackingNumber}` : ""}
+                      {f.trackingUrl ? (
+                        <>
+                          {" · "}
+                          <a href={f.trackingUrl} className="text-[#8f6f3e] underline" target="_blank" rel="noreferrer">
+                            Track
+                          </a>
+                        </>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
             <section className="space-y-2">
               <h3 className="font-serif text-lg text-[#1f1a15]">Products</h3>
               {(selected.items ?? []).map((item) => (
@@ -323,6 +467,17 @@ export default function AdminOrdersPage() {
               <input name="notes" placeholder="Notes" className={`${adminInput} md:col-span-2`} />
               <button className={`${adminBtnPrimary} md:col-span-2`}>Save fulfillment</button>
             </form>
+
+            <OrderMessageThread
+              reloadKey={selected.id}
+              selfRole="ADMIN"
+              title="Customer messages"
+              hint="Reply to the member about this order. They see updates live in My Orders."
+              placeholder="Reply to the customer…"
+              submitLabel="Send reply"
+              loadMessages={loadOrderMessages}
+              sendMessage={sendOrderMessage}
+            />
 
             <div className="flex flex-wrap gap-2">
               <button type="button" className={adminBtnPrimary} onClick={() => void saveOrder(selected)}>
