@@ -159,6 +159,17 @@ export const catalogProducts: CatalogProduct[] = [
       "Experience Moringa oleifera as a mindful tea ritual. Our Moringa Loose Leaf Tea uses the same remarkable leaf celebrated as the “miracle tree” — naturally rich in vitamins A, C, and B vitamins, along with minerals such as magnesium and iron.\n\nSteeping the leaves draws out antioxidants including quercetin and chlorogenic acid, traditionally enjoyed to support vitality, help the body navigate oxidative stress, and complement habits aimed at balanced blood pressure and blood sugar. Moringa’s anti-inflammatory character and researched ties to insulin sensitivity and overall wellness make this an elegant way to welcome the plant into your day — warm, simple, and restorative.\n\nBrew a cup morning or evening and explore the transformative power of moringa in its most calming form: a nourishing leaf infusion for better health and wellness.",
   },
   {
+    id: "payment-test-1",
+    slug: "payment-test-1",
+    name: "Payment Test ($1)",
+    category: "Nutrients",
+    price: 1,
+    image: "/images/wellness.avif",
+    summary: "One-dollar test item for verifying live checkout. Remove after payment testing is complete.",
+    description:
+      "This is a temporary $1.00 product used only to verify payment processing on KIAN Privé. It is not a wellness product — please do not leave it in the live catalog after testing.",
+  },
+  {
     id: "agara-coffee",
     slug: "agara-coffee",
     name: "Agara Coffee",
