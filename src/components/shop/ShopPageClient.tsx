@@ -15,20 +15,63 @@ import {
   editorialPanel,
 } from "@/components/ui/editorial-primitives";
 import { catalogProducts, getCatalogDisplayPrice, shopCategories } from "@/lib/commerce/products";
+import type { ClinicalShopProduct } from "@/lib/commerce/clinical-shop";
+import type { CatalogProduct } from "@/lib/commerce/products";
 
-export function ShopPageClient() {
+type ShopItem = CatalogProduct | ClinicalShopProduct;
+
+function isClinical(product: ShopItem): product is ClinicalShopProduct {
+  return "isClinical" in product && product.isClinical === true;
+}
+
+type Props = {
+  isLoggedIn?: boolean;
+  clinicalProducts?: ClinicalShopProduct[];
+};
+
+export function ShopPageClient({ isLoggedIn = false, clinicalProducts = [] }: Props) {
   const [category, setCategory] = useState("All");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("featured");
   const { itemCount, addItem, openCart, subtotal } = useCart();
 
+  const categories = useMemo(() => {
+    const clinicalCats = Array.from(new Set(clinicalProducts.map((p) => p.category))).sort((a, b) =>
+      a.localeCompare(b),
+    );
+    const base: string[] = [...shopCategories];
+    for (const cat of clinicalCats) {
+      if (!base.includes(cat)) base.push(cat);
+    }
+    return base;
+  }, [clinicalProducts]);
+
+  const allProducts = useMemo(() => {
+    if (!isLoggedIn || !clinicalProducts.length) return catalogProducts as ShopItem[];
+    return [...catalogProducts, ...clinicalProducts] as ShopItem[];
+  }, [isLoggedIn, clinicalProducts]);
+
   const filteredProducts = useMemo(() => {
-    let list = catalogProducts.filter((p) => (category === "All" ? true : p.category === category));
+    let list = allProducts.filter((p) => (category === "All" ? true : p.category === category));
     list = list.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
-    if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
-    if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);
+    if (sort === "price-asc") {
+      list = [...list].sort((a, b) => {
+        if (isClinical(a) && isClinical(b)) return a.name.localeCompare(b.name);
+        if (isClinical(a)) return 1;
+        if (isClinical(b)) return -1;
+        return a.price - b.price;
+      });
+    }
+    if (sort === "price-desc") {
+      list = [...list].sort((a, b) => {
+        if (isClinical(a) && isClinical(b)) return a.name.localeCompare(b.name);
+        if (isClinical(a)) return 1;
+        if (isClinical(b)) return -1;
+        return b.price - a.price;
+      });
+    }
     return list;
-  }, [category, search, sort]);
+  }, [allProducts, category, search, sort]);
 
   return (
     <div className="-mt-[1px]">
@@ -50,6 +93,19 @@ export function ShopPageClient() {
           <div>
             <EditorialEyebrow>CATALOG</EditorialEyebrow>
             <h2 className="mt-3 font-serif text-3xl text-[#1f1a15]">Wellness &amp; beauty</h2>
+            {isLoggedIn && clinicalProducts.length > 0 ? (
+              <p className="mt-2 max-w-2xl text-sm text-[#6f6251]">
+                Member access unlocked: {clinicalProducts.length} clinical therapies &amp; peptides are included
+                below. Pricing is shared only when your clinician recommends a plan.
+              </p>
+            ) : !isLoggedIn ? (
+              <p className="mt-2 max-w-2xl text-sm text-[#6f6251]">
+                <Link href="/login?callbackUrl=/shop" className="text-[#8f6f3e] underline underline-offset-2">
+                  Sign in
+                </Link>{" "}
+                to browse our full peptides &amp; clinical therapeutics catalog.
+              </p>
+            ) : null}
           </div>
           <p className={`${editorialPanel} px-4 py-2 text-sm text-[#3b3024]`}>
             Cart Items: <span className="text-[#8f6f3e]">{itemCount}</span>
@@ -67,14 +123,16 @@ export function ShopPageClient() {
             />
             <div className="mt-4">
               <p className="text-sm text-[#3b3024]">Category</p>
-              <div className="mt-2 grid gap-2">
-                {shopCategories.map((value) => (
+              <div className="mt-2 grid max-h-80 gap-2 overflow-y-auto pr-1">
+                {categories.map((value) => (
                   <button
                     key={value}
                     type="button"
                     onClick={() => setCategory(value)}
                     className={`rounded-sm border px-3 py-2 text-left text-sm ${
-                      category === value ? "border-[#b78d4b] bg-[#fff6e8] text-[#8f6f3e]" : "border-[#e4d9c8] bg-white text-[#4f4335]"
+                      category === value
+                        ? "border-[#b78d4b] bg-[#fff6e8] text-[#8f6f3e]"
+                        : "border-[#e4d9c8] bg-white text-[#4f4335]"
                     }`}
                   >
                     {value}
@@ -116,69 +174,86 @@ export function ShopPageClient() {
               </button>
             </div>
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {filteredProducts.map((product) => (
-                <article key={product.id} className={`overflow-hidden ${editorialPanel}`}>
-                  <Link href={`/shop/${product.slug}`} className="relative block h-56">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                      quality={70}
-                      className="object-cover transition hover:scale-[1.02]"
-                    />
-                  </Link>
-                  <div className="p-5">
-                    <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">{product.category.toUpperCase()}</p>
-                    <Link href={`/shop/${product.slug}`}>
-                      <h2 className="mt-2 font-serif text-xl text-[#2b2218] transition hover:text-[#8a682e]">{product.name}</h2>
+              {filteredProducts.map((product) => {
+                const clinical = isClinical(product);
+                const remoteImage = product.image.startsWith("http");
+                return (
+                  <article key={`${clinical ? "clinical" : "retail"}-${product.id}`} className={`overflow-hidden ${editorialPanel}`}>
+                    <Link href={`/shop/${product.slug}`} className="relative block h-56 bg-[#f3ebe0]">
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                        quality={70}
+                        className="object-cover transition hover:scale-[1.02]"
+                        unoptimized={remoteImage}
+                      />
                     </Link>
-                    {product.summary ? (
-                      <p className="mt-2 line-clamp-2 text-sm text-[#6f6251]">{product.summary}</p>
-                    ) : null}
-                    {product.redirectUrl || product.options?.length ? (
-                      <p className="mt-3 text-sm text-[#6f6251]">
-                        {product.options?.length
-                          ? `From $${getCatalogDisplayPrice(product)} · choose size`
-                          : "Variable options on product page."}
+                    <div className="p-5">
+                      <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">
+                        {product.category.toUpperCase()}
+                        {clinical && product.isPrescription ? " · RX" : ""}
+                        {clinical ? " · CLINICAL" : ""}
                       </p>
-                    ) : (
-                      <p className="mt-3 text-2xl text-[#1f1a15]">${product.price}</p>
-                    )}
-                    <div className="mt-4 flex flex-col gap-2">
-                      <Link href={`/shop/${product.slug}`} className={editorialCtaSecondary}>
-                        VIEW DETAILS
+                      <Link href={`/shop/${product.slug}`}>
+                        <h2 className="mt-2 font-serif text-xl text-[#2b2218] transition hover:text-[#8a682e]">
+                          {product.name}
+                        </h2>
                       </Link>
-                      {product.redirectUrl ? (
-                        <a href={product.redirectUrl} target="_blank" rel="noreferrer" className={editorialCtaPrimary}>
-                          GO TO PRODUCT
-                        </a>
-                      ) : product.options?.length ? (
-                        <Link href={`/shop/${product.slug}`} className={editorialCtaPrimary}>
-                          SELECT SIZE
-                        </Link>
+                      {product.summary ? (
+                        <p className="mt-2 line-clamp-2 text-sm text-[#6f6251]">{product.summary}</p>
+                      ) : null}
+                      {clinical ? (
+                        <p className="mt-3 text-sm text-[#8f6f3e]">Member clinical · pricing via clinician plan</p>
+                      ) : product.redirectUrl || product.options?.length ? (
+                        <p className="mt-3 text-sm text-[#6f6251]">
+                          {product.options?.length
+                            ? `From $${getCatalogDisplayPrice(product)} · choose size`
+                            : "Variable options on product page."}
+                        </p>
                       ) : (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            addItem({
-                              id: product.id,
-                              name: product.name,
-                              price: product.price,
-                              image: product.image,
-                              category: product.category,
-                            });
-                            openCart();
-                          }}
-                          className={editorialCtaPrimary}
-                        >
-                          ADD TO CART
-                        </button>
+                        <p className="mt-3 text-2xl text-[#1f1a15]">${product.price}</p>
                       )}
+                      <div className="mt-4 flex flex-col gap-2">
+                        <Link href={`/shop/${product.slug}`} className={editorialCtaSecondary}>
+                          VIEW DETAILS
+                        </Link>
+                        {clinical ? (
+                          <Link href="/dashboard/intake" className={editorialCtaPrimary}>
+                            REQUEST VIA INTAKE
+                          </Link>
+                        ) : product.redirectUrl ? (
+                          <a href={product.redirectUrl} target="_blank" rel="noreferrer" className={editorialCtaPrimary}>
+                            GO TO PRODUCT
+                          </a>
+                        ) : product.options?.length ? (
+                          <Link href={`/shop/${product.slug}`} className={editorialCtaPrimary}>
+                            SELECT SIZE
+                          </Link>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              addItem({
+                                id: product.id,
+                                name: product.name,
+                                price: product.price,
+                                image: product.image,
+                                category: product.category,
+                              });
+                              openCart();
+                            }}
+                            className={editorialCtaPrimary}
+                          >
+                            ADD TO CART
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
             </div>
           </div>
         </div>
