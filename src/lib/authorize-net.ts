@@ -137,7 +137,7 @@ export async function chargeAuthorizeNetCard(input: ChargeInput) {
         },
         order: {
           invoiceNumber: input.orderNumber.slice(0, 20),
-          description: "KIAN Prive therapy order",
+          description: "KIAN Prive order",
         },
         customer: input.email ? { email: input.email } : undefined,
         billTo: input.billTo

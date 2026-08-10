@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { createOrderFromCart, createStripeCheckoutForOrder } from "@/lib/commerce/service";
+import { createOrderFromCart } from "@/lib/commerce/service";
 import { readPartnerReferralFromRequest } from "@/lib/partner-referral";
 
 const checkoutSchema = z.object({
@@ -12,6 +12,7 @@ const checkoutSchema = z.object({
   partnerCode: z.string().optional(),
 });
 
+/** Create unpaid retail order from cart — payment via Authorize.net on checkout page. */
 export async function POST(req: Request) {
   const body = await req.json();
   const parsed = checkoutSchema.safeParse(body);
@@ -41,18 +42,13 @@ export async function POST(req: Request) {
       partnerCode,
     });
 
-    const session = await createStripeCheckoutForOrder(order.id);
-
-    await prisma.cart.update({
-      where: { id: parsed.data.cartId },
-      data: { status: "CONVERTED" },
+    // Keep cart ACTIVE until Authorize.net payment succeeds (shop-pay converts it).
+    return NextResponse.json({
+      orderId: order.id,
+      orderNumber: order.orderNumber,
+      total: Number(order.total),
+      cartId: parsed.data.cartId,
     });
-
-    if (!session.url) {
-      return NextResponse.json({ error: "Could not create checkout session." }, { status: 500 });
-    }
-
-    return NextResponse.json({ url: session.url, orderNumber: order.orderNumber });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Checkout failed.";
     return NextResponse.json({ error: message }, { status: 500 });
