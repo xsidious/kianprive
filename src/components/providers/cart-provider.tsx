@@ -1,7 +1,11 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { calculateShipping } from "@/lib/commerce/shipping";
+import {
+  calculateShipping,
+  DEFAULT_SHIPPING_CONFIG,
+  type ShippingConfig,
+} from "@/lib/commerce/shipping";
 
 export type CartItem = {
   id: string;
@@ -22,6 +26,7 @@ type CartContextValue = {
   subtotal: number;
   shipping: number;
   total: number;
+  shippingConfig: ShippingConfig;
   addItem: (item: AddCartItem) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
@@ -47,10 +52,28 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   });
   const [isOpen, setIsOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [shippingConfig, setShippingConfig] = useState<ShippingConfig>(DEFAULT_SHIPPING_CONFIG);
   const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        const res = await fetch("/api/commerce/shipping");
+        if (!res.ok) return;
+        const data = (await res.json()) as Partial<ShippingConfig>;
+        setShippingConfig({
+          freeThreshold: Number(data.freeThreshold ?? DEFAULT_SHIPPING_CONFIG.freeThreshold),
+          flatRate: Number(data.flatRate ?? DEFAULT_SHIPPING_CONFIG.flatRate),
+          alwaysFree: Boolean(data.alwaysFree),
+        });
+      } catch {
+        // Keep defaults if shipping config cannot load.
+      }
+    })();
   }, []);
 
   useEffect(() => {
@@ -93,7 +116,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<CartContextValue>(() => {
     const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
     const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const shipping = calculateShipping(subtotal);
+    const shipping = calculateShipping(subtotal, shippingConfig);
     const total = subtotal + shipping;
 
     return {
@@ -104,6 +127,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       subtotal,
       shipping,
       total,
+      shippingConfig,
       addItem: (item) => {
         setItems((prev) => {
           const existing = prev.find((p) => p.id === item.id);
@@ -140,7 +164,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       closeCart: () => setIsOpen(false),
       toggleCart: () => setIsOpen((prev) => !prev),
     };
-  }, [hydrated, isOpen, items, scheduleSync]);
+  }, [hydrated, isOpen, items, scheduleSync, shippingConfig]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

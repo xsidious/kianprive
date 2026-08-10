@@ -8,12 +8,15 @@ import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { useCart } from "@/components/providers/cart-provider";
 import { catalogProducts } from "@/lib/commerce/products";
 
-const FREE_SHIPPING_THRESHOLD = 150;
-
 export default function CartPage() {
-  const { items, subtotal, shipping, total, updateQuantity, removeItem, addItem } = useCart();
-  const amountToFreeShipping = Math.max(FREE_SHIPPING_THRESHOLD - subtotal, 0);
-  const shippingProgress = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
+  const { items, subtotal, shipping, total, updateQuantity, removeItem, addItem, shippingConfig } = useCart();
+  const threshold = Math.max(shippingConfig.freeThreshold, 0.01);
+  const amountToFreeShipping = shippingConfig.alwaysFree
+    ? 0
+    : Math.max(shippingConfig.freeThreshold - subtotal, 0);
+  const shippingProgress = shippingConfig.alwaysFree
+    ? 100
+    : Math.min((subtotal / threshold) * 100, 100);
 
   const recommendedProducts = useMemo(() => {
     const cartIds = new Set(items.map((item) => item.id));
@@ -76,16 +79,20 @@ export default function CartPage() {
             <h2 className="text-xl text-[#1f1a15]">Order Summary</h2>
             <div className="mt-4 rounded-sm border border-[#b78d4b2d] bg-[#fff8ef] p-3">
               <p className="text-sm text-[#4f4335]">
-                {amountToFreeShipping > 0
-                  ? `Add $${amountToFreeShipping.toFixed(2)} to unlock free shipping.`
-                  : "You unlocked free shipping!"}
+                {shippingConfig.alwaysFree
+                  ? "Free shipping on all orders."
+                  : amountToFreeShipping > 0
+                    ? `Add $${amountToFreeShipping.toFixed(2)} to unlock free shipping.`
+                    : "You unlocked free shipping!"}
               </p>
-              <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#ead8bc]">
-                <div
-                  className="h-full rounded-sm bg-[#b78d4b] transition-all duration-300"
-                  style={{ width: `${shippingProgress}%` }}
-                />
-              </div>
+              {!shippingConfig.alwaysFree ? (
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#ead8bc]">
+                  <div
+                    className="h-full rounded-sm bg-[#b78d4b] transition-all duration-300"
+                    style={{ width: `${shippingProgress}%` }}
+                  />
+                </div>
+              ) : null}
             </div>
             <div className="mt-4 space-y-2 text-sm text-[#5f5344]">
               <div className="flex justify-between">

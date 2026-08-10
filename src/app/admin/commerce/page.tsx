@@ -84,6 +84,9 @@ export default function AdminCommercePage() {
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-3xl text-[#1f1a15]">Commerce</h1>
           <div className="flex gap-2">
+            <Link href="/admin/settings" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">
+              Shipping settings
+            </Link>
             <Link href="/shop" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Preview Shop</Link>
             <Link href="/admin/products" className="rounded-sm bg-[#b78d4b] px-4 py-2 text-sm text-white">Manage Products</Link>
             <Link href="/admin/orders" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm text-[#3b3024]">Manage Orders</Link>

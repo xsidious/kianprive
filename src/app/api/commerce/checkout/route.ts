@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { calculateShipping } from "@/lib/commerce/shipping";
 import { createOrderFromCart, createStripeCheckoutForOrder } from "@/lib/commerce/service";
 import { readPartnerReferralFromRequest } from "@/lib/partner-referral";
 
@@ -30,7 +29,9 @@ export async function POST(req: Request) {
     }
 
     const partnerCode = parsed.data.partnerCode ?? readPartnerReferralFromRequest(req) ?? undefined;
-    const shippingTotal = calculateShipping(Number(cart.subtotal));
+    const { getShippingConfig, calculateShipping } = await import("@/lib/commerce/shipping");
+    const shippingConfig = await getShippingConfig();
+    const shippingTotal = calculateShipping(Number(cart.subtotal), shippingConfig);
     const order = await createOrderFromCart(parsed.data.cartId, {
       email: parsed.data.email,
       phone: parsed.data.phone,

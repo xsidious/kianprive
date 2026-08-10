@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getCatalogProduct } from "@/lib/commerce/products";
-import { calculateShipping } from "@/lib/commerce/shipping";
+import { calculateShipping, getShippingConfig } from "@/lib/commerce/shipping";
 import { stripe } from "@/lib/stripe";
 
 async function resolveProduct(productIdOrSlug: string) {
@@ -242,7 +242,10 @@ export async function createOrderFromCart(
     : new Set<string>();
 
   const subtotalNumber = Number(cart.subtotal);
-  const shippingTotal = new Prisma.Decimal(input.shippingTotal ?? calculateShipping(subtotalNumber));
+  const shippingTotal = new Prisma.Decimal(
+    input.shippingTotal ??
+      calculateShipping(subtotalNumber, await getShippingConfig()),
+  );
   const orderTotal = cart.subtotal.add(shippingTotal);
   const orderNumber = `KP-${Date.now()}`;
 
