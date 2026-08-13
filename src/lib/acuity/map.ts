@@ -20,6 +20,11 @@ const DEFAULT_ACUITY_APPOINTMENT_TYPES: Record<string, number> = {
   nutrition: 19112766, // Nutritional Consultation
   "iv-therapy": 31078433, // Vitamin Injection
   "comprehensive-bloodwork": 74887377, // General Consultation
+  "lab-panel-essential": 74887377,
+  "lab-panel-metabolic": 74887377,
+  "lab-panel-hormone": 74887377,
+  "lab-panel-longevity": 74887377,
+  "lab-panel-executive": 74887377,
   "beauty-hair-nails": 78612009, // Aesthetics
   "inbody-scan": 74887377,
   "power-plate": 74887377,
@@ -40,6 +45,11 @@ const DEFAULT_ACUITY_CALENDARS: Record<string, number> = {
   nutrition: ACUITY_CALENDAR.TOTAL_BODY,
   "iv-therapy": ACUITY_CALENDAR.ADAPT,
   "comprehensive-bloodwork": ACUITY_CALENDAR.TOTAL_BODY,
+  "lab-panel-essential": ACUITY_CALENDAR.TOTAL_BODY,
+  "lab-panel-metabolic": ACUITY_CALENDAR.TOTAL_BODY,
+  "lab-panel-hormone": ACUITY_CALENDAR.TOTAL_BODY,
+  "lab-panel-longevity": ACUITY_CALENDAR.TOTAL_BODY,
+  "lab-panel-executive": ACUITY_CALENDAR.TOTAL_BODY,
   "beauty-hair-nails": ACUITY_CALENDAR.SPA,
   "inbody-scan": ACUITY_CALENDAR.TOTAL_BODY,
   "power-plate": ACUITY_CALENDAR.TOTAL_BODY,

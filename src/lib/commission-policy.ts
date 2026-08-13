@@ -7,6 +7,11 @@ export const SERVICE_COMMISSION_POLICY = {
   everyone: {
     "icoone-laser": 10,
     "comprehensive-bloodwork": 10,
+    "lab-panel-essential": 10,
+    "lab-panel-metabolic": 10,
+    "lab-panel-hormone": 10,
+    "lab-panel-longevity": 10,
+    "lab-panel-executive": 10,
     /** Peptide / GLP pathway referral sales */
     "glp1-peptides": 10,
   } as Record<string, number>,

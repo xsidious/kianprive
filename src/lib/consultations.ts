@@ -3,6 +3,11 @@ export const CONSULTATION_SERVICE_SLUGS = [
   "telemedicine",
   "nutrition",
   "comprehensive-bloodwork",
+  "lab-panel-essential",
+  "lab-panel-metabolic",
+  "lab-panel-hormone",
+  "lab-panel-longevity",
+  "lab-panel-executive",
 ] as const;
 
 /** Prescription / compound pathways — providers do not earn commission on these. */

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AdminModal } from "@/components/admin/AdminModal";
 import { IntakeMessageThread } from "@/components/intake/IntakeMessageThread";
 import { IntakeTherapyPicker } from "@/components/intake/IntakeTherapyPicker";
+import { IntakeFullFormView } from "@/components/intake/IntakeFullFormView";
 import {
   adminBtnGhost,
   adminBtnPrimary,
@@ -63,73 +64,6 @@ function payloadText(value: unknown) {
   if (Array.isArray(value)) return value.length ? value.join(", ") : "—";
   return String(value);
 }
-
-const DETAIL_SECTIONS: { title: string; fields: [string, string][] }[] = [
-  {
-    title: "Patient",
-    fields: [
-      ["Full name", "fullName"],
-      ["Date of birth", "dateOfBirth"],
-      ["Age", "age"],
-      ["Sex at birth", "sexAtBirth"],
-      ["Phone", "phone"],
-      ["Email", "email"],
-      ["Address", "address"],
-      ["ID number", "idNumber"],
-      ["ID issue place", "idIssuePlace"],
-      ["Primary care physician", "primaryCarePhysician"],
-      ["First appointment", "firstAppointmentDate"],
-      ["Assigned provider", "assignedProvider"],
-      ["Referred by", "referredBy"],
-    ],
-  },
-  {
-    title: "Medications & allergies",
-    fields: [
-      ["Prescription medications", "prescriptionMedications"],
-      ["Supplements & peptides", "supplementsPeptides"],
-      ["Medication allergies", "medicationAllergies"],
-      ["Food allergies", "foodAllergies"],
-      ["Other allergies", "otherAllergies"],
-    ],
-  },
-  {
-    title: "History",
-    fields: [
-      ["Conditions", "conditions"],
-      ["Other conditions", "otherConditions"],
-      ["Recent surgeries", "recentSurgeries"],
-      ["Pregnant / breastfeeding", "pregnantBreastfeeding"],
-      ["Last physical (year/month)", "lastPhysicalDate"],
-      ["Last bloodwork (year/month)", "lastBloodworkDate"],
-      ["Bloodwork within normal limits", "bloodworkWithinNormalLimits"],
-    ],
-  },
-  {
-    title: "GLP / peptide context",
-    fields: [
-      ["GLP medications", "glpMedications"],
-      ["GLP dose", "glpDose"],
-      ["GLP duration", "glpDuration"],
-      ["Reason stopped", "glpReasonStopped"],
-      ["Side effects", "glpSideEffects"],
-      ["Contraindications", "contraindications"],
-      ["Family MTC / MEN2", "familyMtcMen2"],
-      ["Allergic reaction", "allergicReactionAny"],
-      ["Allergic reaction details", "allergicReactionDetails"],
-    ],
-  },
-  {
-    title: "Notes & signatures",
-    fields: [
-      ["Scheduling status", "requestedDate"],
-      ["Preferred time", "requestedTime"],
-      ["Discussion notes", "schedulingNotes"],
-      ["Attestation name", "attestationName"],
-      ["Attestation date", "attestationDate"],
-    ],
-  },
-];
 
 export default function AdminIntakePage() {
   const [submissions, setSubmissions] = useState<IntakeSubmission[]>([]);
@@ -372,19 +306,7 @@ export default function AdminIntakePage() {
               </div>
             </div>
 
-            {DETAIL_SECTIONS.map((section) => (
-              <section key={section.title} className="rounded-2xl border border-[#efe4d4] bg-[#fffaf3] p-4">
-                <h3 className="font-serif text-lg text-[#1f1a15]">{section.title}</h3>
-                <dl className="mt-3 grid gap-3 sm:grid-cols-2">
-                  {section.fields.map(([label, key]) => (
-                    <div key={key}>
-                      <dt className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">{label}</dt>
-                      <dd className="mt-1 text-sm text-[#2b2218]">{fieldValue(selected, key)}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </section>
-            ))}
+            <IntakeFullFormView submission={selected} payload={selected.payload ?? null} />
 
             <section className="rounded-2xl border border-[#efe4d4] bg-[#fffaf3] p-4">
               <h3 className="font-serif text-lg text-[#1f1a15]">Signatures</h3>

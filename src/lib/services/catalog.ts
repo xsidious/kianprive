@@ -37,6 +37,111 @@ export const serviceCatalog: ServiceDetail[] = [
     ],
   },
   {
+    slug: "lab-panel-essential",
+    title: "Essential Wellness Panel",
+    image: "/images/blood-work.webp",
+    description:
+      "Core diagnostic panel for general health screening—diabetes, kidney/liver function, cholesterol, thyroid, and infection markers.",
+    details: [
+      "Includes CBC with Differential, CMP, Lipid Panel, Hemoglobin A1C, TSH, and Urinalysis with Microscopy.",
+      "Ideal baseline screening for wellness planning and early risk detection.",
+      "Physician interpretation with protocol recommendations through KIAN Privé.",
+    ],
+    includes: [
+      "CBC with Differential",
+      "Comprehensive Metabolic Panel (CMP)",
+      "Lipid Panel",
+      "Hemoglobin A1C",
+      "TSH",
+      "Urinalysis with Microscopy",
+      "Physician review",
+    ],
+    pricing: ["Guest: $224", "Member: $179"],
+  },
+  {
+    slug: "lab-panel-metabolic",
+    title: "Metabolic Health Panel",
+    image: "/images/blood-work.webp",
+    description:
+      "Essential Wellness markers plus insulin resistance, inflammation, cardiovascular risk, and nutritional deficiency screening.",
+    details: [
+      "Includes everything in Essential Wellness plus Fasting Insulin, Ferritin, Magnesium, hs-CRP, and Homocysteine.",
+      "Designed to detect metabolic dysfunction and inflammatory burden earlier.",
+    ],
+    includes: [
+      "All Essential Wellness tests",
+      "Fasting Insulin",
+      "Ferritin",
+      "Magnesium",
+      "High-Sensitivity CRP (hs-CRP)",
+      "Homocysteine",
+      "Physician review",
+    ],
+    pricing: ["Guest: $324", "Member: $259"],
+  },
+  {
+    slug: "lab-panel-hormone",
+    title: "Hormone Balance Panel",
+    image: "/images/blood-work.webp",
+    description:
+      "Thyroid optimization, menopause/andropause evaluation, fatigue workup, and hormone replacement monitoring.",
+    details: [
+      "Includes CBC, CMP, TSH, Free T3, Free T4, TPO Antibodies, Thyroglobulin, Estradiol, Total Testosterone, SHBG, and Ferritin.",
+      "Supports hormone therapy planning and ongoing clinical monitoring.",
+    ],
+    includes: [
+      "CBC & CMP",
+      "TSH, Free T3, Free T4",
+      "TPO Antibodies & Thyroglobulin",
+      "Estradiol",
+      "Total Testosterone & SHBG",
+      "Ferritin",
+      "Physician review",
+    ],
+    pricing: ["Guest: $449", "Member: $359"],
+  },
+  {
+    slug: "lab-panel-longevity",
+    title: "Longevity Panel",
+    image: "/images/blood-work.webp",
+    description:
+      "Metabolic Health foundation plus vitamin and nutrient markers for healthy aging, immune function, and cardiovascular risk reduction.",
+    details: [
+      "Includes Metabolic Health Panel plus Vitamin D, Vitamin B12, Magnesium, Homocysteine, and hs-CRP coverage for longevity optimization.",
+    ],
+    includes: [
+      "All Metabolic Health Panel tests",
+      "Vitamin D",
+      "Vitamin B12",
+      "Magnesium",
+      "Homocysteine",
+      "hs-CRP",
+      "Physician review",
+    ],
+    pricing: ["Guest: $599", "Member: $479"],
+  },
+  {
+    slug: "lab-panel-executive",
+    title: "Executive Brain & Longevity Panel",
+    image: "/images/blood-work.webp",
+    description:
+      "Comprehensive executive assessment spanning cardiovascular, metabolic, endocrine, inflammatory, nutritional, and brain-health markers.",
+    details: [
+      "Full suite including CBC, CMP, lipids, A1C, insulin, thyroid panel with antibodies, vitamins, ferritin, magnesium, hs-CRP, ESR, homocysteine, estradiol, testosterone, SHBG, and urinalysis.",
+      "Built for high-performance clients who want a complete clinical baseline.",
+    ],
+    includes: [
+      "CBC, CMP, Lipid Panel, A1C, Insulin",
+      "TSH, Free T3, Free T4, TPO, Thyroglobulin",
+      "Vitamin D & B12, Ferritin, Magnesium",
+      "hs-CRP, ESR, Homocysteine",
+      "Estradiol, Testosterone, SHBG",
+      "Urinalysis",
+      "Physician review",
+    ],
+    pricing: ["Guest: $1,099", "Member: $879"],
+  },
+  {
     slug: "icoone-laser",
     title: "Icoone® Lymphatic Drainage",
     image: icoonePrimaryImage,

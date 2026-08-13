@@ -45,7 +45,16 @@ export const serviceMenuCategories: ServiceMenuCategory[] = [
     title: "Physician Services",
     description:
       "Physician-led telemedicine, diagnostics, and clinical wellness pathways—including blood work review and IV therapy planning.",
-    slugs: ["telemedicine", "comprehensive-bloodwork", "iv-therapy"],
+    slugs: [
+      "telemedicine",
+      "comprehensive-bloodwork",
+      "lab-panel-essential",
+      "lab-panel-metabolic",
+      "lab-panel-hormone",
+      "lab-panel-longevity",
+      "lab-panel-executive",
+      "iv-therapy",
+    ],
   },
   {
     id: "compounding-peptides",
@@ -70,6 +79,11 @@ export const allCatalogServices: ServiceListingItem[] = serviceCatalog.map((entr
 export const coreServices: ServiceListingItem[] = [
   bySlug("telemedicine"),
   bySlug("comprehensive-bloodwork"),
+  bySlug("lab-panel-essential"),
+  bySlug("lab-panel-metabolic"),
+  bySlug("lab-panel-hormone"),
+  bySlug("lab-panel-longevity"),
+  bySlug("lab-panel-executive"),
   bySlug("icoone-laser"),
   bySlug("iv-therapy"),
   bySlug("nutrition"),

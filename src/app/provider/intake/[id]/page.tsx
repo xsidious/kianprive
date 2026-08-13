@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { SignaturePad } from "@/components/intake/SignaturePad";
 import { IntakeMessageThread } from "@/components/intake/IntakeMessageThread";
 import { IntakeTherapyPicker } from "@/components/intake/IntakeTherapyPicker";
+import { IntakeFullFormView } from "@/components/intake/IntakeFullFormView";
 import {
   adminBtnGhost,
   adminBtnPrimary,
@@ -239,6 +240,8 @@ export default function ProviderIntakeDetailPage() {
         <p className="text-sm sm:col-span-2"><span className="text-[#8f6f3e]">GLP history:</span> {field(payload, "glpMedications")}</p>
         <p className="text-sm sm:col-span-2"><span className="text-[#8f6f3e]">Contraindications:</span> {field(payload, "contraindications")}</p>
       </section>
+
+      <IntakeFullFormView submission={submission} payload={payload} />
 
       <section className={`${adminPanel} p-5`}>
         <h2 className="font-serif text-xl text-[#1f1a15]">Client signature</h2>
