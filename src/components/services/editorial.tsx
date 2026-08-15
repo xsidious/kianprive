@@ -28,7 +28,7 @@ export function EditorialSection({
   return (
     <section
       id={id}
-      className={`scroll-mt-28 px-4 py-16 sm:px-6 sm:py-20 ${dark ? "bg-[#1a1612] text-[#f7f1e8]" : "bg-[#fffdf9]"} ${className}`}
+      className={`scroll-mt-40 px-4 py-14 sm:scroll-mt-44 sm:px-6 sm:py-16 ${dark ? "bg-[#1a1612] text-[#f7f1e8]" : "bg-[#fffdf9]"} ${className}`}
     >
       <div className="mx-auto max-w-7xl">{children}</div>
     </section>
@@ -72,15 +72,19 @@ export function ProtocolCard({
   title,
   items,
   featured = false,
+  bookHref,
+  bookLabel = "Book now",
 }: {
   eyebrow: string;
   title: string;
   items: string[];
   featured?: boolean;
+  bookHref?: string;
+  bookLabel?: string;
 }) {
   return (
     <article
-      className={`relative rounded-sm border bg-[#fffcf7] p-7 sm:p-8 ${
+      className={`relative flex h-full flex-col rounded-sm border bg-[#fffcf7] p-6 sm:p-7 ${
         featured ? "border-[#b78d4b]" : "border-[#e4d9c8]"
       }`}
     >
@@ -91,7 +95,7 @@ export function ProtocolCard({
       ) : null}
       <p className="text-[11px] tracking-[0.22em] text-[#b78d4b]">{eyebrow}</p>
       <h3 className="mt-3 font-serif text-3xl text-[#1f1a15]">{title}</h3>
-      <ul className="mt-6 space-y-3">
+      <ul className="mt-6 flex-1 space-y-3">
         {items.map((item) => (
           <li key={item} className="flex items-start gap-3 text-sm leading-relaxed text-[#5f5344]">
             <span className="mt-1 text-[#b78d4b]" aria-hidden>
@@ -101,6 +105,14 @@ export function ProtocolCard({
           </li>
         ))}
       </ul>
+      {bookHref ? (
+        <Link
+          href={bookHref}
+          className="mt-6 inline-flex min-h-[44px] items-center justify-center rounded-sm bg-[#b78d4b] px-4 text-[11px] tracking-[0.16em] text-white transition hover:bg-[#a67d42]"
+        >
+          {bookLabel.toUpperCase()}
+        </Link>
+      ) : null}
     </article>
   );
 }
@@ -136,7 +148,7 @@ export function WellnessInfoCard({
 
 export function PeptideCategoryCard({ title, description }: { title: string; description: string }) {
   return (
-    <article className="rounded-sm border border-[#e8dfd0] bg-[#f8f3ea] p-5 sm:p-6">
+    <article className="rounded-sm border border-[#e4d9c8] bg-[#fffcf7] p-5 sm:p-6">
       <p className="text-[10px] tracking-[0.22em] text-[#b78d4b]">PEPTIDE CATEGORY</p>
       <h3 className="mt-3 font-serif text-xl text-[#1f1a15]">{title}</h3>
       <p className="mt-3 text-sm leading-relaxed text-[#6f6251]">{description}</p>

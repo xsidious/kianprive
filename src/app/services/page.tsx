@@ -10,16 +10,16 @@ import {
   ProtocolCard,
   PeptideCategoryCard,
   TakeHomeCard,
-  EditorialCtaLink,
 } from "@/components/services/editorial";
 import {
   IvPricingTable,
   LabPanelCards,
   PricedMenuTable,
   SectionCtaBar,
-  ServiceJumpNav,
+  SectionHeader,
   ServicePriceCtaCard,
 } from "@/components/services/PricedMenus";
+import { ServicesStickyNav } from "@/components/services/ServicesStickyNav";
 import {
   brandIntro,
   featuredProviderLogos,
@@ -189,44 +189,48 @@ export default async function ServicesPage() {
     <div className="-mt-[1px]">
       <CinematicHero
         description={cms.description ?? brandIntro.lead}
-        primaryCta={{ label: "View the Menu", href: "#all-services" }}
-        secondaryCta={{ label: "Reserve a Session", href: "/book-online" }}
+        primaryCta={{ label: "Reserve a Session", href: "/book-online" }}
+        secondaryCta={{ label: "View the Menu", href: "#all-services" }}
         imageSrc="/images/facial-treatments.webp"
         imageAlt="KIAN Privé luxury wellness treatment suite"
         priority={false}
       />
 
-      <EditorialSection id="all-services" className="!py-10 sm:!py-12">
-        <EditorialEyebrow>THE MENU</EditorialEyebrow>
-        <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#1f1a15] sm:text-4xl">Choose a pathway, then book.</h2>
-        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#6f6251] sm:text-base">
-          Guest prices are full retail. Member prices are 20% off unless a plan lists a different rate. IV therapy also
-          offers 10% and 15% savings on 2× and 3× monthly plans.
-        </p>
-        <div className="mt-8">
-          <ServiceJumpNav items={jumpNav} />
-        </div>
+      <div id="all-services">
+        <ServicesStickyNav items={jumpNav} />
+      </div>
+
+      <EditorialSection className="!py-10 sm:!py-12">
+        <SectionHeader
+          eyebrow="THE MENU"
+          title="Choose a pathway, then book."
+          description="Guest prices are full retail. Members save 20% unless a plan lists a different rate. IV therapy also offers 10% and 15% savings on 2× and 3× monthly plans."
+        />
       </EditorialSection>
 
       <EditorialSection id="icoone">
-        <EditorialEyebrow>ICOONE® LASER</EditorialEyebrow>
-        <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#1f1a15] sm:text-4xl md:text-[2.75rem]">
-          Lymphatic drainage &amp; body wellness.
-        </h2>
-        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#6f6251] sm:text-base">
-          Physician-guided Icoone® lymphatic drainage using Roboderm® microstimulation to support detox, circulation,
-          and recovery—while helping reduce puffiness, refine contour, and improve skin quality.
-        </p>
-        <div className="mt-10 grid gap-10 lg:grid-cols-2">
-          <PricedMenuTable title="40-minute packages" items={icoonePricedMenu.packages40} />
+        <SectionHeader
+          eyebrow="ICOONE® LASER"
+          title="Lymphatic drainage & body wellness."
+          description="Physician-guided Icoone® lymphatic drainage using Roboderm® microstimulation to support detox, circulation, and recovery—while helping reduce puffiness, refine contour, and improve skin quality."
+        />
+        <div className="mt-10 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
+          <PricedMenuTable
+            title="40-minute packages"
+            items={icoonePricedMenu.packages40}
+            bookHref="/book-online?service=icoone-laser"
+          />
           <PricedMenuTable
             title="50-minute programs"
             items={icoonePricedMenu.packages50}
             footnote="Monthly packages require a one-month security deposit upon signing. 4 month minimum."
+            bookHref="/book-online?service=icoone-laser"
           />
-        </div>
-        <div className="mt-10 max-w-xl">
-          <PricedMenuTable title="80-minute programs" items={icoonePricedMenu.packages80} />
+          <PricedMenuTable
+            title="80-minute programs"
+            items={icoonePricedMenu.packages80}
+            bookHref="/book-online?service=icoone-laser"
+          />
         </div>
         <SectionCtaBar
           bookHref="/book-online?service=icoone-laser"
@@ -247,26 +251,35 @@ export default async function ServicesPage() {
       </section>
 
       <EditorialSection id="recovery">
-        <EditorialEyebrow>PAIN RELIEF &amp; SURGICAL RECOVERY</EditorialEyebrow>
-        <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#1f1a15] sm:text-4xl md:text-[2.75rem]">
-          Physician-supported monthly recovery protocols.
-        </h2>
-        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#6f6251] sm:text-base">
-          Designed for clients managing chronic pain or preparing for and recovering from surgical procedures. The most
-          clinically effective non-invasive therapies, combined into one deeply restorative monthly protocol.
-        </p>
+        <SectionHeader
+          eyebrow="PAIN RELIEF & SURGICAL RECOVERY"
+          title="Physician-supported monthly recovery protocols."
+          description="Designed for clients managing chronic pain or preparing for and recovering from surgical procedures. The most clinically effective non-invasive therapies, combined into one deeply restorative monthly protocol."
+        />
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
-          <ProtocolCard eyebrow="PAIN RELIEF & RECOVERY" title="Essential" items={essentialProtocol} />
-          <ProtocolCard eyebrow="PAIN RELIEF & RECOVERY" title="Advanced" items={advancedProtocol} featured />
+          <ProtocolCard
+            eyebrow="PAIN RELIEF & RECOVERY"
+            title="Essential"
+            items={essentialProtocol}
+            bookHref="/book-online?service=icoone-laser"
+            bookLabel="Start Essential"
+          />
+          <ProtocolCard
+            eyebrow="PAIN RELIEF & RECOVERY"
+            title="Advanced"
+            items={advancedProtocol}
+            featured
+            bookHref="/book-online?service=icoone-laser"
+            bookLabel="Start Advanced"
+          />
         </div>
-        <SectionCtaBar bookHref="/book-online?service=icoone-laser" bookLabel="Start a recovery protocol" />
       </EditorialSection>
 
       <EditorialSection id="face-body-wellness">
-        <EditorialEyebrow>FACE, BODY &amp; WELLNESS</EditorialEyebrow>
-        <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#1f1a15] sm:text-4xl md:text-[2.75rem]">
-          Skin, restoration, and nutrition—each with a clear next step.
-        </h2>
+        <SectionHeader
+          eyebrow="FACE, BODY & WELLNESS"
+          title="Skin, restoration, and nutrition—each with a clear next step."
+        />
         <div className="mt-10 grid gap-5 md:grid-cols-2">
           <ServicePriceCtaCard
             eyebrow="KOREAN & ORGANIC SKINCARE"
@@ -293,8 +306,10 @@ export default async function ServicesPage() {
             title="Exosome scalp & hair protocols"
             description="Physician-guided diagnostics and regenerative pathways for healthier density and scalp vitality."
             detailsHref="/services/hair-restoration"
-            bookHref="/book-online?service=microneedling-with-exosomes"
+            bookHref="/book-online?service=hair-restoration"
             bookLabel="Book a consult"
+            guestPrice={100}
+            memberPrice={80}
           />
           <ServicePriceCtaCard
             eyebrow="MEDICAL AESTHETICS"
@@ -329,30 +344,27 @@ export default async function ServicesPage() {
       </EditorialSection>
 
       <EditorialSection id="iv-therapy">
-        <EditorialEyebrow>IV THERAPY</EditorialEyebrow>
-        <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#1f1a15] sm:text-4xl md:text-[2.75rem]">
-          Drips, injections, and add-ons—priced for guests and members.
-        </h2>
-        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#6f6251] sm:text-base">
-          Full retail for non-members. Save 10% on a 2× monthly plan ($49/mo), 15% on 3× ($74/mo), or 20% on 4× ($99/mo)
-          and with an active KIAN Privé membership. All services administered by licensed medical professionals.
-        </p>
+        <SectionHeader
+          eyebrow="IV THERAPY"
+          title="Drips, injections, and add-ons—priced for guests and members."
+          description="Full retail for non-members. Save 10% on a 2× monthly plan ($49/mo), 15% on 3× ($74/mo), or 20% on 4× ($99/mo) and with an active KIAN Privé membership. All services administered by licensed medical professionals."
+        />
         <div className="mt-6 flex flex-wrap gap-2">
           {ivMembershipTiers.map((tier) => (
             <span
               key={tier.label}
-              className="rounded-sm border border-[#e4d9c8] bg-white px-3 py-2 text-xs text-[#5f5344]"
+              className="rounded-sm border border-[#e4d9c8] bg-[#fffcf7] px-3 py-2 text-xs text-[#5f5344]"
             >
               <span className="font-medium text-[#3b3024]">{tier.label}</span> · {tier.detail}
             </span>
           ))}
         </div>
-        <div className="mt-10 space-y-10">
+        <div className="mt-10 grid gap-5">
           <IvPricingTable title="IV drips" items={ivDripMenu} />
           <IvPricingTable title="Injections" items={ivInjectionMenu} />
           <IvPricingTable title="IV add-ons" items={ivAddOnMenu} />
         </div>
-        <ul className="mt-8 space-y-2">
+        <ul className="mt-8 grid gap-2 sm:grid-cols-2">
           {ivMemberBenefits.map((benefit) => (
             <li key={benefit} className="flex items-start gap-3 text-sm text-[#5f5344]">
               <span className="mt-1 text-[#b78d4b]" aria-hidden>
@@ -370,14 +382,11 @@ export default async function ServicesPage() {
       </EditorialSection>
 
       <EditorialSection id="lab-panels">
-        <EditorialEyebrow>WELLNESS TECH LAB PANELS</EditorialEyebrow>
-        <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#1f1a15] sm:text-4xl md:text-[2.75rem]">
-          Orderable diagnostic panels with physician review.
-        </h2>
-        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#6f6251] sm:text-base">
-          Core panels use the mid-point of Wellness Tech suggested retail, with 20% member pricing. Add-on panels are
-          targeted for brain health, weight management, hormone optimization, and cardiovascular risk.
-        </p>
+        <SectionHeader
+          eyebrow="WELLNESS TECH LAB PANELS"
+          title="Orderable diagnostic panels with physician review."
+          description="Core panels use the mid-point of Wellness Tech suggested retail, with 20% member pricing. Add-on panels are targeted for brain health, weight management, hormone optimization, and cardiovascular risk."
+        />
         <div className="mt-10">
           <LabPanelCards panels={coreLabPanels} eyebrow="CORE PANEL" />
         </div>
@@ -389,14 +398,19 @@ export default async function ServicesPage() {
         <div className="mt-8">
           <LabPanelCards panels={addOnLabPanels} eyebrow="ADD-ON PANEL" />
         </div>
+        <SectionCtaBar
+          bookHref="/book-online?service=comprehensive-bloodwork"
+          detailsHref="/services/comprehensive-bloodwork"
+          bookLabel="Order labs"
+        />
       </EditorialSection>
 
       <EditorialSection id="provider-visits">
-        <EditorialEyebrow>PROVIDER VISITS</EditorialEyebrow>
-        <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#1f1a15] sm:text-4xl md:text-[2.75rem]">
-          Physician, nurse, and peptide consultations.
-        </h2>
-        <div className="mt-10 grid gap-10 lg:grid-cols-2">
+        <SectionHeader
+          eyebrow="PROVIDER VISITS"
+          title="Physician, nurse, and peptide consultations."
+        />
+        <div className="mt-10 grid gap-5 lg:grid-cols-2">
           <PricedMenuTable
             title="Physician — in person"
             items={providerVisitMenu.inPerson}
@@ -409,8 +423,6 @@ export default async function ServicesPage() {
           />
           <PricedMenuTable title="Asynchronous" items={providerVisitMenu.async} bookHref="/book-online?service=telemedicine" />
           <PricedMenuTable title="Nurse visits" items={providerVisitMenu.nurse} bookHref="/book-online?service=comprehensive-bloodwork" />
-        </div>
-        <div className="mt-10 max-w-xl">
           <PricedMenuTable
             title="Peptide optimization"
             items={providerVisitMenu.peptide}
@@ -425,15 +437,31 @@ export default async function ServicesPage() {
       </EditorialSection>
 
       <EditorialSection id="personal-training">
-        <EditorialEyebrow>PERSONAL TRAINING</EditorialEyebrow>
-        <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#1f1a15] sm:text-4xl md:text-[2.75rem]">
-          Consults, sessions, packages, and weekly memberships.
-        </h2>
-        <div className="mt-10 grid gap-10 lg:grid-cols-2">
-          <PricedMenuTable title="Consultations & assessments" items={personalTrainingMenu.assessments} />
-          <PricedMenuTable title="Single sessions" items={personalTrainingMenu.sessions} />
-          <PricedMenuTable title="Session packages" items={personalTrainingMenu.packages} />
-          <PricedMenuTable title="Monthly membership" items={personalTrainingMenu.membership} />
+        <SectionHeader
+          eyebrow="PERSONAL TRAINING"
+          title="Consults, sessions, packages, and weekly memberships."
+        />
+        <div className="mt-10 grid gap-5 lg:grid-cols-2">
+          <PricedMenuTable
+            title="Consultations & assessments"
+            items={personalTrainingMenu.assessments}
+            bookHref="/book-online?service=personal-training"
+          />
+          <PricedMenuTable
+            title="Single sessions"
+            items={personalTrainingMenu.sessions}
+            bookHref="/book-online?service=personal-training"
+          />
+          <PricedMenuTable
+            title="Session packages"
+            items={personalTrainingMenu.packages}
+            bookHref="/book-online?service=personal-training"
+          />
+          <PricedMenuTable
+            title="Monthly membership"
+            items={personalTrainingMenu.membership}
+            bookHref="/book-online?service=personal-training"
+          />
         </div>
         <SectionCtaBar
           bookHref="/book-online?service=personal-training"
@@ -451,7 +479,7 @@ export default async function ServicesPage() {
           Physician-curated products selected to support healing, barrier repair, photoprotection, and ongoing
           regenerative progress at home — coordinated with your in-suite protocols.
         </p>
-        <EditorialCtaLink href="/shop">ASK FOR PRODUCT RECOMMENDATIONS →</EditorialCtaLink>
+        <SectionCtaBar bookHref="/shop" bookLabel="Shop take-home care" />
         <div className="mt-12 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {takeHomeProducts.map((product) => (
             <TakeHomeCard key={product.title} title={product.title} description={product.description} />
@@ -464,55 +492,44 @@ export default async function ServicesPage() {
       </EditorialSection>
 
       <EditorialSection id="compounding-peptides">
-        <EditorialEyebrow>PHYSICIAN-LED PEPTIDE THERAPY</EditorialEyebrow>
-        <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#1f1a15] sm:text-4xl md:text-[2.75rem]">
-          Over 100 peptides, precisely prescribed.
-        </h2>
-        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#6f6251] sm:text-base">
-          Board-certified physicians curate personalized protocols from a clinical formulary spanning longevity,
-          recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. Peptide optimization
-          consult: $100 guest / $80 member. Complete secure intake first for physician review.
-        </p>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <SectionHeader
+          eyebrow="PHYSICIAN-LED PEPTIDE THERAPY"
+          title="Over 100 peptides, precisely prescribed."
+          description="Board-certified physicians curate personalized protocols from a clinical formulary spanning longevity, recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. Peptide optimization consult: $100 guest / $80 member. Complete secure intake first for physician review."
+        />
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {peptideCategories.map((category) => (
             <PeptideCategoryCard key={category.title} title={category.title} description={category.description} />
           ))}
         </div>
-        <div className="mt-8 flex flex-wrap gap-3">
+        <SectionCtaBar
+          bookHref="/book-online?service=glp1-peptides"
+          detailsHref="/services/glp1-peptides"
+          bookLabel="Book consult · $100"
+        />
+        <div className="mt-4">
           <a
             href="https://www.privetherapeutics.solutions/"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex min-h-[44px] items-center rounded-sm bg-[#b78d4b] px-5 text-xs tracking-[0.18em] text-white"
+            className="inline-flex min-h-[44px] items-center rounded-sm border border-[#b78d4b80] px-5 text-[11px] tracking-[0.16em] text-[#3b3024] transition hover:bg-[#fff6e8]"
           >
             START INTAKE
           </a>
-          <Link
-            href="/services/glp1-peptides"
-            className="inline-flex min-h-[44px] items-center rounded-sm border border-[#b78d4b80] px-5 text-xs tracking-[0.18em] text-[#3b3024]"
-          >
-            VIEW PROGRAM DETAILS
-          </Link>
-          <Link
-            href="/book-online?service=glp1-peptides"
-            className="inline-flex min-h-[44px] items-center rounded-sm border border-[#b78d4b80] px-5 text-xs tracking-[0.18em] text-[#3b3024]"
-          >
-            BOOK CONSULT · $100
-          </Link>
         </div>
       </EditorialSection>
 
       {partnerAddOnServices.length > 0 ? (
         <EditorialSection id="partners">
-          <EditorialEyebrow>PARTNER ENHANCEMENTS</EditorialEyebrow>
-          <h2 className="mt-4 font-serif text-3xl text-[#1f1a15] sm:text-4xl">Add-ons &amp; partner services</h2>
-          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#6f6251] sm:text-base">
-            MindTap, beauty partner services, salt therapy, PEMF, infrared, and additional partner offerings coordinated
-            by KIAN Privé concierge.
-          </p>
+          <SectionHeader
+            eyebrow="PARTNER ENHANCEMENTS"
+            title="Add-ons & partner services"
+            description="MindTap, beauty partner services, salt therapy, PEMF, infrared, and additional partner offerings coordinated by KIAN Privé concierge."
+          />
           <div className="mt-10">
             <ServiceCardsWithModal services={partnerAddOnServices} label="PARTNER" layout="grid" />
           </div>
+          <SectionCtaBar bookHref="/contact" bookLabel="Coordinate a partner visit" />
           <div className="mt-8">
             <p className="text-[11px] tracking-[0.18em] text-[#b78d4b]">FEATURED PROVIDER PROGRAMS</p>
             <div className="mt-3 flex flex-wrap items-center gap-4">

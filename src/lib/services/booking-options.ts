@@ -45,6 +45,7 @@ export const bookingServiceOptions: BookingServiceOption[] = [
   bookingOption("inbody-scan", 30, 0, 20),
   bookingOption("microneedling-with-exosomes", 600, 480, 60),
   bookingOption("korean-organic-skincare", 195, 156, 60),
+  bookingOption("hair-restoration", 100, 80, 45),
   bookingOption("glp1-peptides", 100, 80, 45),
 ];
 

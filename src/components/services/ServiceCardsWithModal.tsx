@@ -90,48 +90,30 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
           return layout === "grid" ? (
             <article
               key={key}
-              className="group flex flex-col overflow-hidden rounded-[1.75rem] border border-[#b78d4b22] bg-white shadow-[0_22px_50px_-38px_rgba(66,45,14,0.5)] transition hover:border-[#b78d4b55] hover:shadow-[0_28px_55px_-32px_rgba(66,45,14,0.45)]"
+              className="flex flex-col overflow-hidden rounded-sm border border-[#e4d9c8] bg-[#fffcf7]"
             >
-              <div className="relative h-48 overflow-hidden">
+              <div className="relative h-48 overflow-hidden bg-[#f3ebe0]">
                 <Image
                   src={activeSlide}
                   alt=""
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                  className="object-cover transition duration-500 group-hover:scale-105"
+                  className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1f1a15]/80 via-[#1f1a15]/10 to-transparent" />
-                <p className="absolute left-4 top-4 rounded-sm bg-white/90 px-3 py-1 text-[10px] font-medium tracking-[0.16em] text-[#8f6f3e]">
+                <p className="absolute left-4 top-4 rounded-sm bg-white/90 px-3 py-1 text-[10px] tracking-[0.16em] text-[#8f6f3e]">
                   {label}
                 </p>
-                <h3 className="absolute bottom-4 left-4 right-4 text-xl font-medium leading-snug text-white">
-                  {service.title}
-                </h3>
-                {slides.length > 1 ? (
-                  <div className="absolute bottom-2 right-3 flex gap-1.5 rounded-sm bg-white/80 px-2 py-1">
-                    {slides.map((slide, slideIndex) => (
-                      <button
-                        key={slide}
-                        type="button"
-                        onClick={() => setSliderIndexByService((prev) => ({ ...prev, [key]: slideIndex }))}
-                        aria-label={`Show slide ${slideIndex + 1}`}
-                        className={`h-2 rounded-full transition-all ${
-                          slideIndex === (sliderIndexByService[key] ?? 0) ? "w-5 bg-[#8a682e]" : "w-2 bg-[#c4b49a]"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                ) : null}
               </div>
-              <div className="flex flex-1 flex-col p-5">
+              <div className="flex flex-1 flex-col p-6">
+                <h3 className="font-serif text-2xl text-[#1f1a15]">{service.title}</h3>
                 {service.partnerLogo ? (
-                  <div className="mb-3 inline-flex items-center rounded-sm border border-[#1f7a7a2e] bg-[#f8fcfc] px-3 py-1.5">
+                  <div className="mt-3 inline-flex items-center rounded-sm border border-[#e4d9c8] bg-white px-3 py-1.5">
                     <div className="relative h-7 w-24">
                       <Image src={service.partnerLogo} alt={`${service.partnerName ?? "Partner"} logo`} fill className="object-contain" />
                     </div>
                   </div>
                 ) : null}
-                <p className="flex-1 text-sm leading-relaxed text-[#5f5344]">
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-[#6f6251]">
                   {shortDescription(service.description)}
                 </p>
                 {service.guestPrice != null ? (
@@ -144,37 +126,36 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                       : ""}
                   </p>
                 ) : null}
-                <div className="mt-5 flex flex-col gap-2">
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {(() => {
+                    const href = getServiceBookingHref(service);
+                    return (
+                      <Link
+                        href={href}
+                        target={isExternalHref(href) ? "_blank" : undefined}
+                        rel={isExternalHref(href) ? "noreferrer" : undefined}
+                        className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-sm bg-[#b78d4b] px-4 text-[11px] tracking-[0.16em] text-white"
+                      >
+                        {getServiceCtaLabel(service).toUpperCase()}
+                      </Link>
+                    );
+                  })()}
                   {service.slug ? (
                     <Link
                       href={`/services/${service.slug}`}
-                      className="inline-flex min-h-[44px] items-center justify-center rounded-sm border-2 border-[#b78d4b44] bg-[#fffaf2] text-sm font-medium text-[#3b3024]"
+                      className="inline-flex min-h-[44px] items-center justify-center rounded-sm border border-[#b78d4b80] px-4 text-[11px] tracking-[0.16em] text-[#3b3024]"
                     >
-                      Full details
+                      DETAILS
                     </Link>
-                  ) : null}
-                  <div className="flex gap-2">
+                  ) : (
                     <button
                       type="button"
                       onClick={() => setSelectedService(service)}
-                      className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-sm border-2 border-[#e8dcc8] text-sm text-[#3b3024]"
+                      className="inline-flex min-h-[44px] items-center justify-center rounded-sm border border-[#b78d4b80] px-4 text-[11px] tracking-[0.16em] text-[#3b3024]"
                     >
-                      Quick view
+                      DETAILS
                     </button>
-                    {(() => {
-                      const href = getServiceBookingHref(service);
-                      return (
-                        <Link
-                          href={href}
-                          target={isExternalHref(href) ? "_blank" : undefined}
-                          rel={isExternalHref(href) ? "noreferrer" : undefined}
-                          className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-sm bg-gradient-to-r from-[#b78d4b] to-[#a67d42] text-sm font-semibold text-white"
-                        >
-                          {getServiceCtaLabel(service)}
-                        </Link>
-                      );
-                    })()}
-                  </div>
+                  )}
                 </div>
               </div>
             </article>
@@ -275,7 +256,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
           onClick={() => setSelectedService(null)}
         >
           <div
-            className="max-h-[90vh] w-full max-w-3xl overflow-auto rounded-sm border border-[#1f7a7a3d] bg-[linear-gradient(170deg,#ffffff_10%,#f1f9f8_100%)] p-6 shadow-[0_25px_80px_-45px_rgba(20,58,58,0.65)]"
+            className="max-h-[90vh] w-full max-w-3xl overflow-auto rounded-sm border border-[#e4d9c8] bg-[#fffcf7] p-6"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-4">
@@ -283,7 +264,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
               <button
                 type="button"
                 onClick={() => setSelectedService(null)}
-                className="rounded-sm border border-[#1f7a7a66] px-3 py-1 text-xs tracking-[0.14em] text-[#1f6f75]"
+                className="rounded-sm border border-[#b78d4b80] px-3 py-1 text-xs tracking-[0.14em] text-[#3b3024]"
               >
                 CLOSE
               </button>
@@ -334,7 +315,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
             ) : null}
             {selectedService.details && selectedService.details.length > 0 ? (
               <div className="mt-5">
-                <p className="text-xs tracking-[0.16em] text-[#1f6f75]">DETAILS</p>
+                <p className="text-xs tracking-[0.16em] text-[#b78d4b]">DETAILS</p>
                 <div className="mt-2 space-y-2">
                   {selectedService.details.map((item) => (
                     <p key={item} className="text-sm leading-relaxed text-[#5f5344]">
@@ -372,7 +353,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                   )
                   .map((section) => (
                   <div key={section.title}>
-                    <p className="text-xs tracking-[0.16em] text-[#1f6f75]">{section.title.toUpperCase()}</p>
+                    <p className="text-xs tracking-[0.16em] text-[#b78d4b]">{section.title.toUpperCase()}</p>
                     {section.paragraphs?.map((paragraph) => (
                       <p key={paragraph} className="mt-2 text-sm leading-relaxed text-[#5f5344]">
                         {paragraph}
@@ -392,10 +373,10 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
               </div>
             ) : null}
             {selectedService.pricing && selectedService.pricing.length > 0 ? (
-              <div className="mt-5 rounded-sm border border-[#1f7a7a30] bg-[#eef8f8] p-3">
-                <p className="text-xs tracking-[0.16em] text-[#1f6f75]">PRICING</p>
+              <div className="mt-5 rounded-sm border border-[#e4d9c8] bg-white p-3">
+                <p className="text-xs tracking-[0.16em] text-[#b78d4b]">PRICING</p>
                 {selectedService.guestPrice != null ? (
-                  <p className="mt-2 text-sm font-medium text-[#28585a]">
+                  <p className="mt-2 text-sm font-medium text-[#1f1a15]">
                     From {formatUsd(selectedService.guestPrice)}
                     {selectedService.memberPrice != null
                       ? selectedService.memberPrice === 0
@@ -406,7 +387,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                 ) : null}
                 <ul className="mt-2 space-y-1">
                   {selectedService.pricing.map((item) => (
-                    <li key={item} className="text-sm text-[#28585a]">
+                    <li key={item} className="text-sm text-[#5f5344]">
                       {item}
                     </li>
                   ))}
@@ -427,7 +408,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
             ) : null}
             {selectedService.availability && selectedService.availability.length > 0 ? (
               <div className="mt-5">
-                <p className="text-xs tracking-[0.16em] text-[#1f6f75]">AVAILABILITY</p>
+                <p className="text-xs tracking-[0.16em] text-[#b78d4b]">AVAILABILITY</p>
                 <ul className="mt-2 space-y-1">
                   {selectedService.availability.map((item) => (
                     <li key={item} className="text-sm text-[#5f5344]">
@@ -445,7 +426,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                     href={href}
                     target={isExternalHref(href) ? "_blank" : undefined}
                     rel={isExternalHref(href) ? "noreferrer" : undefined}
-                    className="inline-flex rounded-sm bg-[#8a682e] px-5 py-2 text-sm text-white"
+                    className="inline-flex min-h-[44px] rounded-sm bg-[#b78d4b] px-5 py-2 text-[11px] tracking-[0.16em] text-white"
                   >
                     {selectedService.externalBookingUrl
                       ? "Book on Partner Site"
