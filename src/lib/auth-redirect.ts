@@ -51,7 +51,16 @@ export function getPortalLabelForRole(role?: Role | string | null) {
 }
 
 /** Resolve post-login destination, respecting safe callback URLs. */
-export function resolvePostLoginPath(role: Role | string | null | undefined, callbackUrl?: string | null) {
+export function resolvePostLoginPath(
+  role: Role | string | null | undefined,
+  callbackUrl?: string | null,
+  flags?: { mustSetPassword?: boolean; memberOnboardingComplete?: boolean },
+) {
+  if (flags?.mustSetPassword) return "/welcome";
+  if (flags?.memberOnboardingComplete === false && (role === Role.MEMBER || role === Role.GUEST || role === "MEMBER" || role === "GUEST")) {
+    return "/onboarding";
+  }
+
   const home = getPortalHomeForRole(role);
   if (!callbackUrl) return home;
   if (!callbackUrl.startsWith("/") || callbackUrl.startsWith("//")) return home;

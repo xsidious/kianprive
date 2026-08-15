@@ -60,7 +60,7 @@ function LoginForm() {
             <div className="mt-7 grid gap-3 text-sm text-[#5f5344]">
               <p className={`${editorialPanel} px-4 py-3`}>Fast access for approved private members.</p>
               <p className={`${editorialPanel} px-4 py-3`}>Secure credential login with role-based access.</p>
-              <p className={`${editorialPanel} px-4 py-3`}>Onboarding for new members is consultation-led.</p>
+              <p className={`${editorialPanel} px-4 py-3`}>Existing clients: create your password on first visit.</p>
             </div>
           </aside>
 
@@ -89,6 +89,14 @@ function LoginForm() {
                 <button type="submit" disabled={loading} className={`w-full ${editorialCtaPrimary}`}>
                   {loading ? "SIGNING IN…" : "LOGIN"}
                 </button>
+                <div className="flex flex-wrap gap-3 text-sm">
+                  <Link href="/welcome" className="text-[#8f6f3e] underline underline-offset-2">
+                    First visit? Create your password
+                  </Link>
+                  <Link href="/forgot-password" className="text-[#8f6f3e] underline underline-offset-2">
+                    Forgot password
+                  </Link>
+                </div>
               </form>
             </div>
 

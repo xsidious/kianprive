@@ -16,6 +16,7 @@ import { RotatingServiceGallery } from "@/components/services/RotatingServiceGal
 import { PeptidesInteractiveShowcase } from "@/components/services/PeptidesInteractiveShowcase";
 import { nutritionPromoImage, NUTRITION_SERVICE_SLUG } from "@/lib/media/nutrition";
 import { getServiceBySlug, serviceCatalog } from "@/lib/services/catalog";
+import { formatUsd } from "@/lib/services/pricing-menus";
 import { buildSeoMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, serviceJsonLd } from "@/lib/seo/json-ld";
@@ -72,30 +73,24 @@ export default async function ServiceDetailPage({
   if (!service) redirect("/services");
 
   const session = await auth();
-  const canViewPricing =
-    session?.user?.subscriptionStatus === "ACTIVE" ||
-    session?.user?.role === "ADMIN" ||
-    session?.user?.role === "OPERATIONS" ||
-    session?.user?.role === "EDITOR";
   if (service.requiresLogin && !session?.user?.id) {
     redirect("/login");
   }
 
   const isNutrition = slug === NUTRITION_SERVICE_SLUG;
-  const showPricing = canViewPricing || isNutrition;
   const heroImage = isNutrition ? service.promoImage ?? nutritionPromoImage : service.image;
   const isPeptides = slug === "glp1-peptides";
   const bookingHref = service.externalBookingUrl
     ? service.externalBookingUrl
     : service.slug === "glp1-peptides"
       ? `/services/${service.slug}`
-      : "/book-online";
+      : `/book-online?service=${service.slug}`;
   const bookingIsExternal = bookingHref.startsWith("http://") || bookingHref.startsWith("https://");
   const bookingLabel = service.externalBookingUrl
     ? "Book with Partner"
     : service.slug === "glp1-peptides"
-      ? "Learn More"
-      : "Book Consultation";
+      ? "Start Intake"
+      : "Book This Service";
   const heroTitle = splitHeroTitle(service.title);
 
   return (
@@ -210,7 +205,10 @@ export default async function ServiceDetailPage({
           {service.slug === "beauty-hair-nails" ? (
             <RotatingServiceGallery title="Inside the Beauty Salon" items={service.gallery} />
           ) : (
-            <IcooneMediaGallery title="Treatment Experience" items={service.gallery} />
+            <IcooneMediaGallery
+              title={service.slug === "hair-restoration" ? "Client Results" : "Treatment Experience"}
+              items={service.gallery}
+            />
           )}
         </EditorialSection>
       ) : null}
@@ -273,34 +271,39 @@ export default async function ServiceDetailPage({
         </EditorialSection>
       ) : null}
 
-      {service.pricing?.length ? (
+      {service.pricing?.length || service.guestPrice != null ? (
         <EditorialSection>
           <EditorialEyebrow>PRICING</EditorialEyebrow>
           <h2 className="mt-4 font-serif text-2xl text-[#1f1a15] sm:text-3xl">
             {isNutrition ? "Consultation Pricing" : "Pricing"}
           </h2>
+          {service.guestPrice != null ? (
+            <p className="mt-3 text-lg text-[#1f1a15]">
+              From {formatUsd(service.guestPrice)}
+              {service.memberPrice != null ? (
+                <span className="ml-2 text-sm text-[#8f6f3e]">
+                  {service.memberPrice === 0
+                    ? "· Included for members"
+                    : `· Member ${formatUsd(service.memberPrice)}`}
+                </span>
+              ) : null}
+            </p>
+          ) : null}
           <div className={`mt-4 ${editorialPanel} p-5`}>
-            {showPricing ? (
+            {service.pricing?.length ? (
               <ul className="space-y-2 text-[#5f5344]">
                 {service.pricing.map((line) => (
                   <li key={line}>{line}</li>
                 ))}
               </ul>
             ) : (
-              <div>
-                <p className="text-[#5f5344]">
-                  Pricing is only visible for logged-in members with active access.
-                </p>
-                <div className="mt-4 flex flex-wrap gap-3">
-                  <Link href="/login" className={editorialCtaPrimary}>
-                    MEMBER LOGIN
-                  </Link>
-                  <Link href="/pricing" className={editorialCtaSecondary}>
-                    VIEW MEMBERSHIP
-                  </Link>
-                </div>
-              </div>
+              <p className="text-[#5f5344]">Ask concierge for a personalized quote.</p>
             )}
+            <div className="mt-5">
+              <Link href={bookingHref} className={editorialCtaPrimary}>
+                {bookingLabel.toUpperCase()}
+              </Link>
+            </div>
           </div>
         </EditorialSection>
       ) : null}
@@ -336,7 +339,29 @@ export default async function ServiceDetailPage({
             </div>
           </div>
         </EditorialSection>
-      ) : null}
+      ) : (
+        <EditorialSection>
+          <div className={`${editorialPanel} border-[#b78d4b4f] bg-gradient-to-b from-[#fff8ed] to-[#f1e7d7] p-8 text-center`}>
+            <h2 className="font-serif text-2xl text-[#1f1a15] sm:text-3xl">Ready to begin?</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-[#5f5344]">
+              Reserve {service.title} online, or contact concierge if you would like a tailored protocol.
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Link
+                href={bookingHref}
+                target={bookingIsExternal ? "_blank" : undefined}
+                rel={bookingIsExternal ? "noreferrer" : undefined}
+                className={editorialCtaPrimary}
+              >
+                {bookingLabel.toUpperCase()}
+              </Link>
+              <Link href="/contact" className={editorialCtaSecondary}>
+                CONTACT CONCIERGE
+              </Link>
+            </div>
+          </div>
+        </EditorialSection>
+      )}
     </div>
   );
 }

@@ -17,6 +17,7 @@ import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { bookingServiceOptions, getBookingOptionById } from "@/lib/services/booking-options";
+import { formatUsd } from "@/lib/services/pricing-menus";
 import { DEFAULT_TIMEZONE } from "@/lib/scheduling/config";
 import { capturePartnerReferralFromUrl, readPartnerReferralClient } from "@/lib/partner-referral";
 
@@ -642,6 +643,12 @@ export function BookOnlineWizard() {
                       </div>
                       <div className="bg-white p-4">
                         <p className="font-medium text-[#1f1a15]">{service.title}</p>
+                        <p className="mt-1 text-sm font-medium text-[#8f6f3e]">
+                          {formatUsd(service.guestPrice)}
+                          {service.memberPrice === 0
+                            ? " · Included for members"
+                            : ` · Member ${formatUsd(service.memberPrice)}`}
+                        </p>
                         <p className="mt-1 line-clamp-2 text-sm text-[#6f6251]">{service.description}</p>
                       </div>
                     </button>

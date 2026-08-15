@@ -12,6 +12,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (home !== "/dashboard") {
     redirect(home);
   }
+  if (session.user.memberOnboardingComplete === false) {
+    redirect("/onboarding");
+  }
 
   return children;
 }

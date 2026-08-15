@@ -14,6 +14,9 @@ export default async function AuthContinuePage({ searchParams }: Props) {
   }
 
   const params = searchParams ? await searchParams : {};
-  const dest = resolvePostLoginPath(session.user.role, params.callbackUrl ?? null);
+  const dest = resolvePostLoginPath(session.user.role, params.callbackUrl ?? null, {
+    mustSetPassword: session.user.mustSetPassword,
+    memberOnboardingComplete: session.user.memberOnboardingComplete,
+  });
   redirect(dest);
 }

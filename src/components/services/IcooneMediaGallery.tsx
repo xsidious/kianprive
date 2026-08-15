@@ -22,8 +22,14 @@ export function IcooneMediaGallery({
             key={item.src}
             className="overflow-hidden rounded-sm border border-[#b78d4b2d] bg-white shadow-[0_14px_35px_-30px_rgba(66,45,14,0.35)]"
           >
-            <div className="relative aspect-[4/3]">
-              <Image src={item.src} alt={item.alt} fill sizes="(max-width: 1024px) 50vw, 25vw" className="object-cover" />
+            <div className="relative aspect-[4/3] bg-[#f3ebe0]">
+              <Image
+                src={item.src}
+                alt={item.alt}
+                fill
+                sizes="(max-width: 1024px) 50vw, 25vw"
+                className={item.src.includes("/results/") ? "object-contain" : "object-cover"}
+              />
             </div>
             {item.caption ? <figcaption className="px-4 py-3 text-sm text-[#5f5344]">{item.caption}</figcaption> : null}
           </figure>

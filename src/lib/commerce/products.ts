@@ -26,6 +26,7 @@ export const shopCategories = [
   "Skincare",
   "Hair Care",
   "Body Care",
+  "Home",
   "Nutrients",
   "Professional",
 ] as const;
@@ -45,32 +46,70 @@ export const catalogProducts: CatalogProduct[] = [
     slug: "kian-toner",
     name: "KIAN Toner",
     category: "Skincare",
-    price: 0,
-    image: "/images/facial-treatments.webp",
+    price: 20,
+    image: "/images/products/kian-toner.webp",
+    summary: "Balancing and hydrating — a daily toner to reset skin after cleanse. 4 oz and 8 oz.",
+    description:
+      "KIAN Toner is a balancing and hydrating finish after cleanse — a light daily step that helps rebalance the complexion and ready skin for serums and oils.\n\nUse morning and evening on clean skin, then follow with facial oil or moisturizer. Choose 4 fl oz (120 ml) for travel and first rituals, or 8 fl oz for everyday use at home.",
+    options: [
+      { id: "kian-toner-4oz", label: "4 ounce", price: 20 },
+      { id: "kian-toner-8oz", label: "8 ounce", price: 38 },
+    ],
   },
   {
     id: "soap",
     slug: "soap",
-    name: "Soap",
+    name: "KIAN Natural Soap",
     category: "Skincare",
     price: 0,
-    image: "/images/esthetics.avif",
+    image: "/images/products/kian-natural-soap.webp",
+    summary: "Cleanse • Nourish • Soothe — 5 oz / 140 g bar for face and body.",
+    description:
+      "KIAN Natural Soap is a 5 oz (140 g) bar made for a simple, sensorial cleanse. The speckled bar and wrap carry the same apothecary language as the rest of the line: cleanse, nourish, and soothe.\n\nWork into a lather with warm water and rinse.",
+  },
+  {
+    id: "kian-anti-aging-facial-oil",
+    slug: "kian-anti-aging-facial-oil",
+    name: "KIAN Anti Aging Facial Oil",
+    category: "Skincare",
+    price: 0,
+    image: "/images/products/kian-anti-aging-facial-oil.webp",
+    summary: "Restore • Rejuvenate • Renew — 2 fl oz / 60 ml dropper.",
+    description:
+      "KIAN Anti Aging Facial Oil is a 2 fl oz (60 ml) facial oil in amber glass with a dropper. The ritual is simple: restore, rejuvenate, renew — a few drops pressed into clean skin after toner.",
+  },
+  {
+    id: "kian-scar-oil",
+    slug: "kian-scar-oil",
+    name: "KIAN Scar Oil",
+    category: "Skincare",
+    price: 0,
+    image: "/images/products/kian-scar-oil.webp",
+    summary: "Repair • Restore • Renew — 2 fl oz / 60 ml dropper.",
+    description:
+      "KIAN Scar Oil is a 2 fl oz (60 ml) treatment oil in amber glass with a dropper, made for targeted repair, restore, and renew rituals.\n\nApply a small amount to clean, dry skin and massage until absorbed.",
   },
   {
     id: "hair-mask",
     slug: "hair-mask",
-    name: "Hair Mask",
+    name: "KIAN Hair Mask",
     category: "Hair Care",
     price: 0,
-    image: "/images/hairrestoration.jpeg",
+    image: "/images/products/kian-hair-mask.webp",
+    summary: "Nourish • Repair • Strengthen — deep conditioning for all hair types. 8.45 fl oz.",
+    description:
+      "KIAN Hair Mask is a deep conditioning treatment for all hair types, in an 8.45 fl oz (250 ml) jar. The ritual is nourish, repair, and strengthen — a richer step when hair needs more than a daily conditioner.\n\nApply to clean, damp hair, leave on as directed, then rinse.",
   },
   {
     id: "hair-serum",
     slug: "hair-serum",
-    name: "Hair Serum",
+    name: "KIAN Hair Serum",
     category: "Hair Care",
     price: 22,
-    image: "/images/HairReatorationpicture.jpeg",
+    image: "/images/products/kian-hair-serum.webp",
+    summary: "Nourish • Repair • Strengthen — 4 fl oz / 120 ml dropper.",
+    description:
+      "KIAN Hair Serum is a 4 fl oz (120 ml) leave-in treatment in amber glass with a dropper. Use it to nourish, repair, and strengthen — a few drops through damp or dry hair, concentrating on ends and areas that need more slip and shine.",
   },
   {
     id: "shampoo",
@@ -105,20 +144,59 @@ export const catalogProducts: CatalogProduct[] = [
     image: "/images/esthetics.avif",
   },
   {
-    id: "kian-anti-aging-facial-oil",
-    slug: "kian-anti-aging-facial-oil",
-    name: "KIAN Anti Aging Facial Oil",
-    category: "Skincare",
-    price: 0,
-    image: "/images/esthetics.avif",
-  },
-  {
     id: "kian-body-oil",
     slug: "kian-body-oil",
     name: "KIAN Body Oil",
-    category: "Skincare",
+    category: "Body Care",
     price: 0,
-    image: "/images/facial-treatments.webp",
+    image: "/images/products/kian-body-oil.webp",
+    summary: "Nourish • Hydrate • Glow — 8 fl oz / 240 ml pump.",
+    description:
+      "KIAN Body Oil is an 8 fl oz (240 ml) nourishing oil in amber glass with a pump. Smooth over damp skin after bath or shower to nourish, hydrate, and glow.",
+  },
+  {
+    id: "kian-body-lotion",
+    slug: "kian-body-lotion",
+    name: "KIAN Body Lotion",
+    category: "Body Care",
+    price: 0,
+    image: "/images/products/kian-body-lotion.webp",
+    summary: "Nourish • Hydrate • Soften — 8 fl oz / 240 ml pump.",
+    description:
+      "KIAN Body Lotion is an 8 fl oz (240 ml) daily moisturizer in amber glass with a pump. Use morning or evening to nourish, hydrate, and soften.",
+  },
+  {
+    id: "kian-hand-sanitizer",
+    slug: "kian-hand-sanitizer",
+    name: "KIAN Hand Sanitizer",
+    category: "Body Care",
+    price: 0,
+    image: "/images/products/kian-hand-sanitizer.webp",
+    summary: "Cleanse • Protect • Refresh — 2 fl oz / 60 ml spray.",
+    description:
+      "KIAN Hand Sanitizer is a 2 fl oz (60 ml) spray for on-the-go cleanse, protect, and refresh — the same apothecary bottle language as the rest of the line, in a travel size.",
+  },
+  {
+    id: "kian-serenity-room-spray",
+    slug: "kian-serenity-room-spray",
+    name: "KIAN Serenity Room Spray",
+    category: "Home",
+    price: 0,
+    image: "/images/products/kian-serenity-room-spray.webp",
+    summary: "Calm • Refresh • Uplift — 8 fl oz / 240 ml.",
+    description:
+      "KIAN Serenity is an 8 fl oz (240 ml) room spray. Mist into the air or onto linens to calm, refresh, and uplift a room.",
+  },
+  {
+    id: "kian-bliss-room-spray",
+    slug: "kian-bliss-room-spray",
+    name: "KIAN Bliss Room Spray",
+    category: "Home",
+    price: 0,
+    image: "/images/products/kian-bliss-room-spray.webp",
+    summary: "Calm • Refresh • Uplift — 8 fl oz / 240 ml.",
+    description:
+      "KIAN Bliss is an 8 fl oz (240 ml) room spray. Mist into the air or onto linens to calm, refresh, and uplift a room.",
   },
   {
     id: "moringa-capsules",
@@ -184,7 +262,7 @@ export const catalogProducts: CatalogProduct[] = [
     name: "Professional",
     category: "Professional",
     price: 0,
-    image: "/images/wellness.avif",
+    image: "/images/products/wellness-tech-bio-distribution.webp",
     redirectUrl: "https://wellnesstechbiodistribution.com/",
   },
 ];
@@ -219,4 +297,9 @@ export function getCatalogDisplayPrice(product: CatalogProduct) {
     return Math.min(...product.options.map((option) => option.price));
   }
   return product.price;
+}
+
+export function isCatalogProductPriced(product: CatalogProduct) {
+  if (product.redirectUrl) return false;
+  return getCatalogDisplayPrice(product) > 0;
 }

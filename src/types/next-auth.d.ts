@@ -7,6 +7,8 @@ declare module "next-auth" {
       role: Role;
       subscriptionStatus: string;
       subscriptionTier: string;
+      mustSetPassword?: boolean;
+      memberOnboardingComplete?: boolean;
       name?: string | null;
       email?: string | null;
       image?: string | null;
@@ -23,5 +25,7 @@ declare module "next-auth/jwt" {
     role?: Role;
     subscriptionStatus?: string;
     subscriptionTier?: string;
+    mustSetPassword?: boolean;
+    memberOnboardingComplete?: boolean;
   }
 }

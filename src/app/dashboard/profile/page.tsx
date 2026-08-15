@@ -18,7 +18,17 @@ export default function DashboardProfilePage() {
   const [phone, setPhone] = useState("");
   const [company, setCompany] = useState("");
   const [email, setEmail] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [medicalConditions, setMedicalConditions] = useState("");
+  const [allergies, setAllergies] = useState("");
+  const [medications, setMedications] = useState("");
+  const [emergencyContact, setEmergencyContact] = useState("");
+  const [emergencyPhone, setEmergencyPhone] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [saved, setSaved] = useState(false);
+  const [passwordMessage, setPasswordMessage] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,12 +39,29 @@ export default function DashboardProfilePage() {
         return;
       }
       const payload = (await res.json()) as {
-        profile: { name: string; phone: string; company: string; email: string };
+        profile: {
+          name: string;
+          phone: string;
+          company: string;
+          email: string;
+          dateOfBirth: string;
+          medicalConditions: string;
+          allergies: string;
+          medications: string;
+          emergencyContact: string;
+          emergencyPhone: string;
+        };
       };
       setName(payload.profile.name ?? "");
       setPhone(payload.profile.phone ?? "");
       setCompany(payload.profile.company ?? "");
       setEmail(payload.profile.email ?? "");
+      setDateOfBirth(payload.profile.dateOfBirth ?? "");
+      setMedicalConditions(payload.profile.medicalConditions ?? "");
+      setAllergies(payload.profile.allergies ?? "");
+      setMedications(payload.profile.medications ?? "");
+      setEmergencyContact(payload.profile.emergencyContact ?? "");
+      setEmergencyPhone(payload.profile.emergencyPhone ?? "");
       setLoading(false);
     }
     void loadProfile();
@@ -46,7 +73,17 @@ export default function DashboardProfilePage() {
     const res = await fetch("/api/profile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, phone, company }),
+      body: JSON.stringify({
+        name,
+        phone,
+        company,
+        dateOfBirth,
+        medicalConditions,
+        allergies,
+        medications,
+        emergencyContact,
+        emergencyPhone,
+      }),
     });
     if (res.ok) setSaved(true);
   }
@@ -100,10 +137,102 @@ export default function DashboardProfilePage() {
             value={company}
             onChange={(e) => setCompany(e.target.value)}
           />
+          <input
+            className={editorialInput}
+            placeholder="Date of birth"
+            value={dateOfBirth}
+            onChange={(e) => setDateOfBirth(e.target.value)}
+          />
+          <textarea
+            className={`${editorialInput} min-h-24`}
+            placeholder="Medical conditions"
+            value={medicalConditions}
+            onChange={(e) => setMedicalConditions(e.target.value)}
+          />
+          <textarea
+            className={`${editorialInput} min-h-20`}
+            placeholder="Allergies"
+            value={allergies}
+            onChange={(e) => setAllergies(e.target.value)}
+          />
+          <textarea
+            className={`${editorialInput} min-h-20`}
+            placeholder="Medications"
+            value={medications}
+            onChange={(e) => setMedications(e.target.value)}
+          />
+          <input
+            className={editorialInput}
+            placeholder="Emergency contact name"
+            value={emergencyContact}
+            onChange={(e) => setEmergencyContact(e.target.value)}
+          />
+          <input
+            className={editorialInput}
+            placeholder="Emergency contact phone"
+            value={emergencyPhone}
+            onChange={(e) => setEmergencyPhone(e.target.value)}
+          />
           <button disabled={loading} className={`${editorialCtaPrimary} disabled:cursor-not-allowed disabled:opacity-70`}>
             SAVE PROFILE
           </button>
           {saved ? <p className="text-sm text-[#8f6f3e]">Saved.</p> : null}
+        </form>
+
+        <form
+          className={`mt-8 space-y-4 ${editorialPanel} p-5`}
+          onSubmit={async (e) => {
+            e.preventDefault();
+            setPasswordMessage("");
+            if (newPassword !== confirmPassword) {
+              setPasswordMessage("New passwords do not match.");
+              return;
+            }
+            const res = await fetch("/api/account/password", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ currentPassword, newPassword }),
+            });
+            const payload = (await res.json()) as { error?: string };
+            if (!res.ok) {
+              setPasswordMessage(payload.error || "Could not change password.");
+              return;
+            }
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
+            setPasswordMessage("Password updated.");
+          }}
+        >
+          <h2 className="font-serif text-2xl text-[#1f1a15]">Change password</h2>
+          <input
+            className={editorialInput}
+            type="password"
+            placeholder="Current password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            required
+          />
+          <input
+            className={editorialInput}
+            type="password"
+            minLength={8}
+            placeholder="New password (min 8 characters)"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            required
+          />
+          <input
+            className={editorialInput}
+            type="password"
+            minLength={8}
+            placeholder="Confirm new password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+          <button className={editorialCtaPrimary}>UPDATE PASSWORD</button>
+          {passwordMessage ? <p className="text-sm text-[#8f6f3e]">{passwordMessage}</p> : null}
         </form>
       </EditorialSection>
     </div>

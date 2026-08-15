@@ -20,6 +20,10 @@ model User {
   image           String?
   passwordHash    String?
   role            Role           @default(GUEST)
+  mustSetPassword Boolean        @default(false)
+  memberOnboardingComplete Boolean @default(false)
+  setupTokenHash  String?        @unique
+  setupTokenExpires DateTime?
   subscription    Subscription?
   profile         Profile?
   partnerProfile  PartnerProfile?
@@ -163,14 +167,22 @@ model IntakeMessage {
 }
 
 model Profile {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  phone     String?
-  company   String?
-  notes     String?
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  phone              String?
+  company            String?
+  notes              String?  @db.Text
+  dateOfBirth        String?
+  medicalConditions  String?  @db.Text
+  allergies          String?  @db.Text
+  medications        String?  @db.Text
+  emergencyContact   String?
+  emergencyPhone     String?
+  importedNotes      String?  @db.Text
+  source             String?
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }
 
 model Subscription {

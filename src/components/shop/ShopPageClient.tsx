@@ -14,7 +14,7 @@ import {
   editorialInput,
   editorialPanel,
 } from "@/components/ui/editorial-primitives";
-import { catalogProducts, getCatalogDisplayPrice, shopCategories } from "@/lib/commerce/products";
+import { catalogProducts, getCatalogDisplayPrice, isCatalogProductPriced, shopCategories } from "@/lib/commerce/products";
 import type { ClinicalShopProduct } from "@/lib/commerce/clinical-shop";
 import type { CatalogProduct } from "@/lib/commerce/products";
 
@@ -185,8 +185,8 @@ export function ShopPageClient({ isLoggedIn = false, clinicalProducts = [] }: Pr
                         alt={product.name}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                        quality={70}
-                        className="object-cover transition hover:scale-[1.02]"
+                        quality={80}
+                        className={remoteImage ? "object-cover transition hover:scale-[1.02]" : "object-contain p-3"}
                         unoptimized={remoteImage}
                       />
                     </Link>
@@ -206,14 +206,16 @@ export function ShopPageClient({ isLoggedIn = false, clinicalProducts = [] }: Pr
                       ) : null}
                       {clinical ? (
                         <p className="mt-3 text-sm text-[#8f6f3e]">Member clinical · pricing via clinician plan</p>
-                      ) : product.redirectUrl || product.options?.length ? (
+                      ) : product.redirectUrl ? (
+                        <p className="mt-3 text-sm text-[#6f6251]">Variable options on product page.</p>
+                      ) : product.options?.length && isCatalogProductPriced(product) ? (
                         <p className="mt-3 text-sm text-[#6f6251]">
-                          {product.options?.length
-                            ? `From $${getCatalogDisplayPrice(product)} · choose size`
-                            : "Variable options on product page."}
+                          From ${getCatalogDisplayPrice(product)} · choose size
                         </p>
-                      ) : (
+                      ) : isCatalogProductPriced(product) ? (
                         <p className="mt-3 text-2xl text-[#1f1a15]">${product.price}</p>
+                      ) : (
+                        <p className="mt-3 text-sm text-[#8f6f3e]">Pricing coming soon</p>
                       )}
                       <div className="mt-4 flex flex-col gap-2">
                         <Link href={`/shop/${product.slug}`} className={editorialCtaSecondary}>
@@ -227,11 +229,11 @@ export function ShopPageClient({ isLoggedIn = false, clinicalProducts = [] }: Pr
                           <a href={product.redirectUrl} target="_blank" rel="noreferrer" className={editorialCtaPrimary}>
                             GO TO PRODUCT
                           </a>
-                        ) : product.options?.length ? (
+                        ) : product.options?.length && isCatalogProductPriced(product) ? (
                           <Link href={`/shop/${product.slug}`} className={editorialCtaPrimary}>
                             SELECT SIZE
                           </Link>
-                        ) : (
+                        ) : isCatalogProductPriced(product) ? (
                           <button
                             type="button"
                             onClick={() => {
@@ -248,7 +250,7 @@ export function ShopPageClient({ isLoggedIn = false, clinicalProducts = [] }: Pr
                           >
                             ADD TO CART
                           </button>
-                        )}
+                        ) : null}
                       </div>
                     </div>
                   </article>

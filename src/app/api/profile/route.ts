@@ -34,6 +34,13 @@ export async function GET() {
       phone: user.profile?.phone ?? "",
       company: user.profile?.company ?? "",
       email: user.email,
+      dateOfBirth: user.profile?.dateOfBirth ?? "",
+      medicalConditions: user.profile?.medicalConditions ?? "",
+      allergies: user.profile?.allergies ?? "",
+      medications: user.profile?.medications ?? "",
+      emergencyContact: user.profile?.emergencyContact ?? "",
+      emergencyPhone: user.profile?.emergencyPhone ?? "",
+      importedNotes: user.profile?.importedNotes ?? "",
     },
     subscription: user.subscription
       ? {
@@ -51,15 +58,37 @@ async function updateProfile(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = (await req.json()) as { name?: string; phone?: string; company?: string };
+  const body = (await req.json()) as {
+    name?: string;
+    phone?: string;
+    company?: string;
+    dateOfBirth?: string;
+    medicalConditions?: string;
+    allergies?: string;
+    medications?: string;
+    emergencyContact?: string;
+    emergencyPhone?: string;
+    completeOnboarding?: boolean;
+  };
+  const profileFields = {
+    phone: body.phone,
+    company: body.company,
+    dateOfBirth: body.dateOfBirth,
+    medicalConditions: body.medicalConditions,
+    allergies: body.allergies,
+    medications: body.medications,
+    emergencyContact: body.emergencyContact,
+    emergencyPhone: body.emergencyPhone,
+  };
   await prisma.user.update({
     where: { id: userId },
     data: {
       name: body.name,
+      memberOnboardingComplete: body.completeOnboarding ? true : undefined,
       profile: {
         upsert: {
-          create: { phone: body.phone, company: body.company },
-          update: { phone: body.phone, company: body.company },
+          create: profileFields,
+          update: profileFields,
         },
       },
     },

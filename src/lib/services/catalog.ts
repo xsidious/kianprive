@@ -1,6 +1,15 @@
 import type { ServiceDetail } from "@/lib/services/types";
 import { icooneMediaGallery, icoonePrimaryImage } from "@/lib/media/icoone";
 import { nutritionCardImage, nutritionPromoImage } from "@/lib/media/nutrition";
+import {
+  addOnLabPanels,
+  coreLabPanels,
+  ivPricingLines,
+  labPanelPricingLines,
+  personalTrainingMenu,
+  pricedMenuLines,
+  providerVisitMenu,
+} from "@/lib/services/pricing-menus";
 
 export type { ServiceDetail, ServiceContentSection, ServiceMediaItem } from "@/lib/services/types";
 
@@ -16,7 +25,18 @@ export const serviceCatalog: ServiceDetail[] = [
       "Protocols are personalized and adjusted through scheduled follow-up check-ins.",
     ],
     includes: ["Wellness planning", "Medication/protocol review", "Follow-up optimization"],
-    availability: ["Virtual consultations available."],
+    guestPrice: 300,
+    memberPrice: 240,
+    pricing: [
+      "Physician visits — in person",
+      ...pricedMenuLines(providerVisitMenu.inPerson),
+      "Physician visits — telemedicine",
+      ...pricedMenuLines(providerVisitMenu.telemedicine),
+      "Asynchronous consult: $50 guest · $40 member",
+      "Nurse visits",
+      ...pricedMenuLines(providerVisitMenu.nurse),
+    ],
+    availability: ["Virtual consultations available. In-person visits scheduled at the clinic."],
   },
   {
     slug: "comprehensive-bloodwork",
@@ -35,6 +55,9 @@ export const serviceCatalog: ServiceDetail[] = [
       "Baseline assessment and progress tracking",
       "Protocol calibration support",
     ],
+    guestPrice: 224,
+    memberPrice: 179,
+    pricing: ["Custom panels from $224 guest / $179 member. See named Wellness Tech panels for included tests."],
   },
   {
     slug: "lab-panel-essential",
@@ -56,7 +79,9 @@ export const serviceCatalog: ServiceDetail[] = [
       "Urinalysis with Microscopy",
       "Physician review",
     ],
-    pricing: ["Guest: $224", "Member: $179"],
+    guestPrice: 224,
+    memberPrice: 179,
+    pricing: labPanelPricingLines(coreLabPanels[0]!),
   },
   {
     slug: "lab-panel-metabolic",
@@ -77,7 +102,9 @@ export const serviceCatalog: ServiceDetail[] = [
       "Homocysteine",
       "Physician review",
     ],
-    pricing: ["Guest: $324", "Member: $259"],
+    guestPrice: 324,
+    memberPrice: 259,
+    pricing: labPanelPricingLines(coreLabPanels[1]!),
   },
   {
     slug: "lab-panel-hormone",
@@ -98,7 +125,9 @@ export const serviceCatalog: ServiceDetail[] = [
       "Ferritin",
       "Physician review",
     ],
-    pricing: ["Guest: $449", "Member: $359"],
+    guestPrice: 449,
+    memberPrice: 359,
+    pricing: labPanelPricingLines(coreLabPanels[2]!),
   },
   {
     slug: "lab-panel-longevity",
@@ -118,7 +147,9 @@ export const serviceCatalog: ServiceDetail[] = [
       "hs-CRP",
       "Physician review",
     ],
-    pricing: ["Guest: $599", "Member: $479"],
+    guestPrice: 599,
+    memberPrice: 479,
+    pricing: labPanelPricingLines(coreLabPanels[3]!),
   },
   {
     slug: "lab-panel-executive",
@@ -139,7 +170,59 @@ export const serviceCatalog: ServiceDetail[] = [
       "Urinalysis",
       "Physician review",
     ],
-    pricing: ["Guest: $1,099", "Member: $879"],
+    guestPrice: 1099,
+    memberPrice: 879,
+    pricing: labPanelPricingLines(coreLabPanels[4]!),
+  },
+  {
+    slug: "lab-panel-brain",
+    title: "Brain Health Panel",
+    image: "/images/blood-work.webp",
+    description:
+      "Targeted panel for cognitive concerns, concussion history, migraines, mood disorders, or neurological symptoms.",
+    details: [
+      addOnLabPanels[0]!.tests,
+      addOnLabPanels[0]!.purpose,
+      "Physician interpretation with protocol recommendations through KIAN Privé.",
+    ],
+    includes: addOnLabPanels[0]!.tests.split(", "),
+    guestPrice: addOnLabPanels[0]!.guest,
+    memberPrice: addOnLabPanels[0]!.member,
+    pricing: labPanelPricingLines(addOnLabPanels[0]!),
+  },
+  {
+    slug: "lab-panel-weight",
+    title: "Weight Management Panel",
+    image: "/images/blood-work.webp",
+    description: "Metabolic and thyroid baseline useful before starting GLP-1 or other weight management therapies.",
+    details: [addOnLabPanels[1]!.tests, addOnLabPanels[1]!.purpose],
+    includes: addOnLabPanels[1]!.tests.split(", "),
+    guestPrice: addOnLabPanels[1]!.guest,
+    memberPrice: addOnLabPanels[1]!.member,
+    pricing: labPanelPricingLines(addOnLabPanels[1]!),
+  },
+  {
+    slug: "lab-panel-hormone-optimization",
+    title: "Hormone Optimization Panel",
+    image: "/images/blood-work.webp",
+    description: "Focused hormone and thyroid markers designed for patients undergoing hormone replacement therapy.",
+    details: [addOnLabPanels[2]!.tests, addOnLabPanels[2]!.purpose, addOnLabPanels[2]!.note ?? ""],
+    includes: addOnLabPanels[2]!.tests.split(", "),
+    guestPrice: addOnLabPanels[2]!.guest,
+    memberPrice: addOnLabPanels[2]!.member,
+    pricing: labPanelPricingLines(addOnLabPanels[2]!),
+  },
+  {
+    slug: "lab-panel-cardio",
+    title: "Cardiovascular Risk Panel",
+    image: "/images/blood-work.webp",
+    description:
+      "Targeted cardiovascular risk screening. Troponin is included only when clinically indicated, not as routine screening.",
+    details: [addOnLabPanels[3]!.tests, addOnLabPanels[3]!.purpose, addOnLabPanels[3]!.note ?? ""],
+    includes: addOnLabPanels[3]!.tests.split(", "),
+    guestPrice: addOnLabPanels[3]!.guest,
+    memberPrice: addOnLabPanels[3]!.member,
+    pricing: labPanelPricingLines(addOnLabPanels[3]!),
   },
   {
     slug: "icoone-laser",
@@ -160,6 +243,8 @@ export const serviceCatalog: ServiceDetail[] = [
       "Pain, inflammation, and recovery support",
       "Face, neck, décolleté, and full-body targeting",
     ],
+    guestPrice: 195,
+    memberPrice: 156,
     pricing: [
       "40 min single: $175",
       "40 min 5-session package: $788 (save $87)",
@@ -192,6 +277,14 @@ export const serviceCatalog: ServiceDetail[] = [
       "Can be paired with recovery, immunity, and performance protocols.",
     ],
     includes: ["Hydration support", "Nutrient replenishment", "Recovery and energy support"],
+    guestPrice: 230,
+    memberPrice: 184,
+    pricing: ivPricingLines(),
+    membershipNotes: [
+      "IV memberships from $49/mo (2×), $74/mo (3×), or $99/mo (4×) with 10–20% savings.",
+      "KIAN Privé members receive the 20% member rate on drips, injections, and add-ons.",
+      "One free B12 with every 2 IV services; additional B12, add-on, and injection benefits at 3× and 4× plans.",
+    ],
   },
   {
     slug: "nutrition",
@@ -220,6 +313,8 @@ export const serviceCatalog: ServiceDetail[] = [
       "4-session package: $500",
       "8-session package: $950",
     ],
+    guestPrice: 150,
+    memberPrice: 120,
     contentSections: [
       {
         title: "Elevate Your Wellness",
@@ -268,6 +363,8 @@ export const serviceCatalog: ServiceDetail[] = [
       "Advanced skin rejuvenation treatment that supports collagen production and visible texture improvement through regenerative signaling.",
     details: ["Microneedling combined with exosome-based regenerative support for skin renewal."],
     pricing: ["Single session: $600", "4-session package: $1,800", "5-session package: $2,700", "10-session package: $5,000"],
+    guestPrice: 600,
+    memberPrice: 480,
     includes: ["Texture refinement", "Tone support", "Fine-line and radiance improvement"],
   },
   {
@@ -282,6 +379,13 @@ export const serviceCatalog: ServiceDetail[] = [
     ],
     includes: ["Scalp and follicle health support", "Density-focused treatment planning", "Progress tracking and follow-up care"],
     availability: ["Physician consultation required before treatment planning."],
+    gallery: [
+      {
+        src: "/images/results/hair-before-after.webp",
+        alt: "Hair restoration before and after — lymphatic drainage and exosomes",
+        caption: "Lymphatic drainage and exosomes — noticeable growth and thickness after 4 days.",
+      },
+    ],
   },
   {
     slug: "korean-organic-skincare",
@@ -291,6 +395,8 @@ export const serviceCatalog: ServiceDetail[] = [
       "Luxury preventive skincare protocols rooted in Korean methodology and clean organic formulations for barrier health and long-term skin quality.",
     details: ["Preventive, hydration-focused skincare philosophy designed for skin longevity and barrier integrity."],
     pricing: ["Single facial: $195", "4-session facial package: $725"],
+    guestPrice: 195,
+    memberPrice: 156,
     includes: ["Barrier support", "Hydration protocols", "Gentle clinical-luxury skincare"],
     contentSections: [
       {
@@ -313,7 +419,10 @@ export const serviceCatalog: ServiceDetail[] = [
     description:
       "Precision aesthetic services focused on natural-looking refinement and skin-forward outcomes in a physician-guided setting.",
     details: ["Facial aesthetics plans are structured to preserve natural expression while improving harmony and confidence."],
-    availability: ["Provider-specific scheduling through contact form."],
+    guestPrice: 310,
+    memberPrice: 248,
+    pricing: ["Guest: $310", "Member: $248"],
+    availability: ["Book online or request provider-specific scheduling through concierge."],
   },
   {
     slug: "glp1-peptides",
@@ -331,6 +440,9 @@ export const serviceCatalog: ServiceDetail[] = [
       "Includes monthly pathway options and follow-up optimization.",
       "Additional protocol add-ons are available after clinical review.",
     ],
+    guestPrice: 100,
+    memberPrice: 80,
+    pricing: pricedMenuLines(providerVisitMenu.peptide),
     availability: ["Physician-supervised protocols; route and dose selected after evaluation."],
     contentSections: [
       {
@@ -408,6 +520,8 @@ export const serviceCatalog: ServiceDetail[] = [
       "Included monthly in membership Tiers 1–3",
       "4× monthly included in Tier 4",
     ],
+    guestPrice: 30,
+    memberPrice: 0,
     availability: ["Facility-based; coordinated with consultations and memberships."],
   },
   {
@@ -427,7 +541,55 @@ export const serviceCatalog: ServiceDetail[] = [
       "Complimentary with active membership",
     ],
     pricing: ["Single session (non-member): $25", "Complimentary with any active membership"],
+    guestPrice: 25,
+    memberPrice: 0,
     availability: ["Facility-based; available with membership and select protocols."],
+  },
+  {
+    slug: "physician-visit",
+    title: "Physician Visit",
+    image: "/images/ConciergeHomevisit.jpeg",
+    description:
+      "In-person physician consultation for new patients and follow-ups—labs, protocols, and concierge care planning at the clinic.",
+    details: [
+      "New patient visits include history, goals, and treatment planning with your KIAN Privé physician.",
+      "Follow-ups refine protocols, review labs, and adjust medications or wellness plans.",
+    ],
+    includes: ["Clinical evaluation", "Protocol planning", "Lab and medication review"],
+    guestPrice: 350,
+    memberPrice: 280,
+    pricing: pricedMenuLines(providerVisitMenu.inPerson),
+    availability: ["In-clinic physician visits. Virtual options available under Telemedicine."],
+  },
+  {
+    slug: "personal-training",
+    title: "Personal Training",
+    image: "/images/corporate-wellness-venue.png",
+    description:
+      "One-on-one training with consultations, assessments, single sessions, packages, and weekly memberships designed around your performance goals.",
+    details: [
+      "Start with a 30-minute consult or a 60-minute comprehensive fitness assessment.",
+      "Session lengths from 30 to 60 minutes, plus premium and couples options.",
+      "Packages and weekly memberships for consistent progress.",
+    ],
+    includes: [
+      "Initial consultation or full assessment",
+      "Personalized session programming",
+      "Package and membership options",
+    ],
+    guestPrice: 125,
+    memberPrice: 100,
+    pricing: [
+      "Consultations & assessments",
+      ...pricedMenuLines(personalTrainingMenu.assessments),
+      "Single sessions",
+      ...pricedMenuLines(personalTrainingMenu.sessions),
+      "Packages",
+      ...pricedMenuLines(personalTrainingMenu.packages),
+      "Monthly membership",
+      ...pricedMenuLines(personalTrainingMenu.membership),
+    ],
+    availability: ["Facility-based training coordinated through KIAN Privé."],
   },
 ];
 

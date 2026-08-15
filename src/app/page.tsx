@@ -59,7 +59,7 @@ export default function Home() {
         <EditorialEyebrow>RESULTS</EditorialEyebrow>
         <h2 className="mt-4 font-serif text-3xl text-[#1f1a15] md:text-4xl">Before &amp; After</h2>
         <p className="mt-3 mb-6 max-w-3xl text-[#6f6251]">
-          Transformation examples organized by category. Final creatives can be produced in Canva for Body, Face, and Hair.
+          Client results by category — body contouring, facial renewal, and hair wellness.
         </p>
         <BeforeAfterGallery />
       </EditorialSection>

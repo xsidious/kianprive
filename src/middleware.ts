@@ -53,6 +53,14 @@ export async function middleware(req: Request & { nextUrl: URL }) {
   const role = token.role as string | undefined;
   const roleHome = getPortalHomeForRole(role);
 
+  if (
+    isMemberDashboard &&
+    token.memberOnboardingComplete === false &&
+    (role === "MEMBER" || role === "GUEST")
+  ) {
+    return NextResponse.redirect(new URL("/onboarding", req.url));
+  }
+
   if (isMemberDashboard && roleHome !== "/dashboard") {
     return NextResponse.redirect(new URL(roleHome, req.url));
   }

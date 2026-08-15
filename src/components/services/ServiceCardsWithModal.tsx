@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { PeptidesInteractiveShowcase } from "@/components/services/PeptidesInteractiveShowcase";
 
 import { NUTRITION_SERVICE_SLUG } from "@/lib/media/nutrition";
 import type { ServiceListingItem } from "@/lib/services/types";
+import { formatUsd } from "@/lib/services/pricing-menus";
 
 function isNutritionService(service: Pick<ServiceListingItem, "slug">) {
   return service.slug === NUTRITION_SERVICE_SLUG;
@@ -38,13 +38,7 @@ type ServiceCardsWithModalProps = {
 export function ServiceCardsWithModal({ services, label, layout = "list" }: ServiceCardsWithModalProps) {
   const [selectedService, setSelectedService] = useState<ServiceListingItem | null>(null);
   const [sliderIndexByService, setSliderIndexByService] = useState<Record<string, number>>({});
-  const { data } = useSession();
   const isPriorityGroup = label === "ADD-ON" || label === "SAME-LOCATION";
-  const canViewPricing =
-    data?.user?.subscriptionStatus === "ACTIVE" ||
-    data?.user?.role === "ADMIN" ||
-    data?.user?.role === "OPERATIONS" ||
-    data?.user?.role === "EDITOR";
 
   useEffect(() => {
     if (!selectedService) return;
@@ -140,6 +134,16 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                 <p className="flex-1 text-sm leading-relaxed text-[#5f5344]">
                   {shortDescription(service.description)}
                 </p>
+                {service.guestPrice != null ? (
+                  <p className="mt-3 text-sm font-medium text-[#8f6f3e]">
+                    From {formatUsd(service.guestPrice)}
+                    {service.memberPrice != null
+                      ? service.memberPrice === 0
+                        ? " · Included for members"
+                        : ` · Member ${formatUsd(service.memberPrice)}`
+                      : ""}
+                  </p>
+                ) : null}
                 <div className="mt-5 flex flex-col gap-2">
                   {service.slug ? (
                     <Link
@@ -389,20 +393,24 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
             ) : null}
             {selectedService.pricing && selectedService.pricing.length > 0 ? (
               <div className="mt-5 rounded-sm border border-[#1f7a7a30] bg-[#eef8f8] p-3">
-                <p className="text-xs tracking-[0.16em] text-[#1f6f75]">PRICING SNAPSHOT</p>
-                {canViewPricing ? (
-                  <ul className="mt-2 space-y-1">
-                    {selectedService.pricing.map((item) => (
-                      <li key={item} className="text-sm text-[#28585a]">
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="mt-2 text-sm text-[#28585a]">
-                    Pricing is available for active members only. Please login with your membership account.
+                <p className="text-xs tracking-[0.16em] text-[#1f6f75]">PRICING</p>
+                {selectedService.guestPrice != null ? (
+                  <p className="mt-2 text-sm font-medium text-[#28585a]">
+                    From {formatUsd(selectedService.guestPrice)}
+                    {selectedService.memberPrice != null
+                      ? selectedService.memberPrice === 0
+                        ? " · Included for members"
+                        : ` · Member ${formatUsd(selectedService.memberPrice)}`
+                      : ""}
                   </p>
-                )}
+                ) : null}
+                <ul className="mt-2 space-y-1">
+                  {selectedService.pricing.map((item) => (
+                    <li key={item} className="text-sm text-[#28585a]">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ) : null}
             {selectedService.membershipNotes && selectedService.membershipNotes.length > 0 ? (

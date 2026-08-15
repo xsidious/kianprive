@@ -62,6 +62,8 @@ export const authOptions: NextAuthOptions = {
       token.role = dbUser.role;
       token.subscriptionStatus = dbUser.subscription?.status ?? "INACTIVE";
       token.subscriptionTier = dbUser.subscription?.tier ?? "BASIC";
+      token.mustSetPassword = dbUser.mustSetPassword;
+      token.memberOnboardingComplete = dbUser.memberOnboardingComplete;
       return token;
     },
     async session({ session, token }) {
@@ -70,6 +72,8 @@ export const authOptions: NextAuthOptions = {
         session.user.role = (token.role as Role) ?? Role.GUEST;
         session.user.subscriptionStatus = (token.subscriptionStatus as string) ?? "INACTIVE";
         session.user.subscriptionTier = (token.subscriptionTier as string) ?? "BASIC";
+        session.user.mustSetPassword = Boolean(token.mustSetPassword);
+        session.user.memberOnboardingComplete = token.memberOnboardingComplete !== false;
       }
       return session;
     },

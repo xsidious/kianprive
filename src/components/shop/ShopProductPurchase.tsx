@@ -8,6 +8,7 @@ import {
   editorialCtaSecondary,
 } from "@/components/ui/editorial-primitives";
 import type { CatalogProduct } from "@/lib/commerce/products";
+import { isCatalogProductPriced } from "@/lib/commerce/products";
 
 type Props = {
   product: CatalogProduct;
@@ -22,6 +23,8 @@ export function ShopProductPurchase({ product }: Props) {
   const price = selected?.price ?? product.price;
   const cartName = selected ? `${product.name} — ${selected.label}` : product.name;
   const cartId = selected?.id ?? product.id;
+
+  const canPurchase = isCatalogProductPriced(product) && price > 0;
 
   return (
     <div className="mt-6 space-y-5">
@@ -51,14 +54,18 @@ export function ShopProductPurchase({ product }: Props) {
         </div>
       ) : null}
 
-      <p className="text-3xl text-[#1f1a15]">${price.toFixed(2)}</p>
+      {canPurchase ? (
+        <p className="text-3xl text-[#1f1a15]">${price.toFixed(2)}</p>
+      ) : (
+        <p className="text-sm tracking-[0.08em] text-[#8f6f3e]">PRICING COMING SOON</p>
+      )}
 
       <div className="flex flex-wrap gap-3">
         {product.redirectUrl ? (
           <a href={product.redirectUrl} target="_blank" rel="noreferrer" className={editorialCtaPrimary}>
             GO TO PRODUCT
           </a>
-        ) : (
+        ) : canPurchase ? (
           <button
             type="button"
             className={editorialCtaPrimary}
@@ -75,7 +82,7 @@ export function ShopProductPurchase({ product }: Props) {
           >
             ADD TO CART
           </button>
-        )}
+        ) : null}
         <Link href="/shop#products" className={editorialCtaSecondary}>
           BACK TO CATALOG
         </Link>

@@ -64,14 +64,14 @@ export default async function ShopProductPage({ params }: Props) {
     return (
       <EditorialSection className="pt-24">
         <div className={`grid gap-8 lg:grid-cols-2 ${editorialPanel} overflow-hidden p-0`}>
-          <div className="relative min-h-[320px] bg-[#1a1714]">
+          <div className="relative min-h-[320px] bg-[#f3ebe0]">
             <Image
               src={retail.image}
               alt={retail.name}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              quality={80}
-              className="object-cover"
+              quality={85}
+              className="object-contain p-6"
               priority={false}
             />
           </div>
@@ -91,7 +91,7 @@ export default async function ShopProductPage({ params }: Props) {
               <p className="mt-4 text-[#5f5344]">Product details and options for {retail.name.toLowerCase()}.</p>
             )}
 
-            {retail.options?.length ? (
+            {retail.options?.length && fromPrice > 0 ? (
               <p className="mt-4 text-sm text-[#8f6f3e]">
                 Available in {retail.options.map((o) => o.label).join(", ")}. From ${fromPrice}.
               </p>

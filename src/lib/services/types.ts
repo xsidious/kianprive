@@ -26,6 +26,8 @@ export type ServiceDetail = {
   details?: string[];
   includes?: string[];
   pricing?: string[];
+  guestPrice?: number;
+  memberPrice?: number;
   membershipNotes?: string[];
   availability?: string[];
   showPeptidesExperience?: boolean;

@@ -8,6 +8,11 @@ export const CONSULTATION_SERVICE_SLUGS = [
   "lab-panel-hormone",
   "lab-panel-longevity",
   "lab-panel-executive",
+  "lab-panel-brain",
+  "lab-panel-weight",
+  "lab-panel-hormone-optimization",
+  "lab-panel-cardio",
+  "physician-visit",
 ] as const;
 
 /** Prescription / compound pathways — providers do not earn commission on these. */

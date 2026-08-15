@@ -92,6 +92,9 @@ export async function createOrUpdateCartItem(input: {
   if (!product) {
     throw new Error("Product not found");
   }
+  if (Number(product.price) <= 0) {
+    throw new Error("This product is not available for purchase yet.");
+  }
 
   const cart =
     (input.cartId
@@ -158,7 +161,7 @@ export async function replaceCartItems(input: {
   for (const item of input.items) {
     if (item.quantity <= 0) continue;
     const product = await resolveProduct(item.productId);
-    if (!product) continue;
+    if (!product || Number(product.price) <= 0) continue;
     await prisma.cartItem.create({
       data: {
         cartId: cart.id,
