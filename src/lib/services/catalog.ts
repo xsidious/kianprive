@@ -32,7 +32,7 @@ export const serviceCatalog: ServiceDetail[] = [
       ...pricedMenuLines(providerVisitMenu.inPerson),
       "Physician visits — telemedicine",
       ...pricedMenuLines(providerVisitMenu.telemedicine),
-      "Asynchronous consult: $50 guest · $40 member",
+      "Asynchronous consult: $50",
       "Nurse visits",
       ...pricedMenuLines(providerVisitMenu.nurse),
     ],
@@ -57,7 +57,7 @@ export const serviceCatalog: ServiceDetail[] = [
     ],
     guestPrice: 224,
     memberPrice: 179,
-    pricing: ["Custom panels from $224 guest / $179 member. See named Wellness Tech panels for included tests."],
+    pricing: ["Custom panels from $224. See named Wellness Tech panels for included tests."],
   },
   {
     slug: "lab-panel-essential",
@@ -269,7 +269,7 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "iv-therapy",
     title: "IV Therapy",
-    image: "/images/wellness.avif",
+    image: "/images/heroes/iv-hero.jpg",
     description:
       "Physician-guided IV protocols deliver targeted nutrients and hydration to support immunity, energy, recovery, and cellular performance.",
     details: [
@@ -280,11 +280,6 @@ export const serviceCatalog: ServiceDetail[] = [
     guestPrice: 230,
     memberPrice: 184,
     pricing: ivPricingLines(),
-    membershipNotes: [
-      "IV memberships from $49/mo (2×), $74/mo (3×), or $99/mo (4×) with 10–20% savings.",
-      "KIAN Privé members receive the 20% member rate on drips, injections, and add-ons.",
-      "One free B12 with every 2 IV services; additional B12, add-on, and injection benefits at 3× and 4× plans.",
-    ],
   },
   {
     slug: "nutrition",
@@ -390,7 +385,7 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "korean-organic-skincare",
     title: "Korean Organic Skincare",
-    image: "/images/esthetics.avif",
+    image: "/images/facial-treatments.jpg",
     description:
       "Luxury preventive skincare protocols rooted in Korean methodology and clean organic formulations for barrier health and long-term skin quality.",
     details: ["Preventive, hydration-focused skincare philosophy designed for skin longevity and barrier integrity."],
@@ -421,7 +416,7 @@ export const serviceCatalog: ServiceDetail[] = [
     details: ["Facial aesthetics plans are structured to preserve natural expression while improving harmony and confidence."],
     guestPrice: 310,
     memberPrice: 248,
-    pricing: ["Guest: $310", "Member: $248"],
+    pricing: ["From $310"],
     availability: ["Book online or request provider-specific scheduling through concierge."],
   },
   {
@@ -462,7 +457,7 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "mindtap",
     title: "MindTap",
-    image: "/images/beauty.avif",
+    image: "/images/heroes/meditation.jpg",
     description:
       "Focused cognitive conditioning and mental performance coaching integrated into your concierge wellness plan.",
     includes: ["Focus and composure training", "Performance psychology support", "Cognitive conditioning"],
@@ -502,7 +497,7 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "inbody-scan",
     title: "InBody Scan — Body Composition",
-    image: "/images/stock/service-wellness.jpg",
+    image: "/images/heroes/spa-massage.jpg",
     description:
       "Comprehensive, non-invasive body composition analysis—muscle mass, body fat, visceral fat, hydration, and metabolic insights reviewed with your physician.",
     details: [
@@ -513,13 +508,8 @@ export const serviceCatalog: ServiceDetail[] = [
       "Body composition report",
       "Physician roadmap integration",
       "Progress tracking over time",
-      "Membership-tier complimentary access",
     ],
-    pricing: [
-      "Single scan (non-member): $30",
-      "Included monthly in membership Tiers 1–3",
-      "4× monthly included in Tier 4",
-    ],
+    pricing: ["Single scan: $30"],
     guestPrice: 30,
     memberPrice: 0,
     availability: ["Facility-based; coordinated with consultations and memberships."],
@@ -527,7 +517,7 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "power-plate",
     title: "Power Plate — Vibration Therapy",
-    image: "/images/stock/service-esthetics.jpg",
+    image: "/images/heroes/spa-treatment-room.jpg",
     description:
       "Whole-body vibration therapy using Precision Vibration Technology™ to support recovery, circulation, balance, and metabolic performance.",
     details: [
@@ -538,9 +528,8 @@ export const serviceCatalog: ServiceDetail[] = [
       "Whole-body vibration session",
       "Recovery and circulation support",
       "Balance and neuromuscular support",
-      "Complimentary with active membership",
     ],
-    pricing: ["Single session (non-member): $25", "Complimentary with any active membership"],
+    pricing: ["Single session: $25"],
     guestPrice: 25,
     memberPrice: 0,
     availability: ["Facility-based; available with membership and select protocols."],
@@ -564,7 +553,7 @@ export const serviceCatalog: ServiceDetail[] = [
   {
     slug: "personal-training",
     title: "Personal Training",
-    image: "/images/corporate-wellness-venue.png",
+    image: "/images/heroes/training-hero.jpg",
     description:
       "One-on-one training with consultations, assessments, single sessions, packages, and weekly memberships designed around your performance goals.",
     details: [

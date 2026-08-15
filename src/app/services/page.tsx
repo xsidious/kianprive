@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getCmsPageContent } from "@/lib/cms/pages";
 import { CinematicHero } from "@/components/ui/CinematicHero";
+import { pageHeroes } from "@/lib/media/heroes";
 import { ServiceCardsWithModal } from "@/components/services/ServiceCardsWithModal";
 import {
   EditorialEyebrow,
@@ -33,8 +34,6 @@ import {
   ivAddOnMenu,
   ivDripMenu,
   ivInjectionMenu,
-  ivMemberBenefits,
-  ivMembershipTiers,
   personalTrainingMenu,
   providerVisitMenu,
 } from "@/lib/services/pricing-menus";
@@ -191,8 +190,8 @@ export default async function ServicesPage() {
         description={cms.description ?? brandIntro.lead}
         primaryCta={{ label: "Reserve a Session", href: "/book-online" }}
         secondaryCta={{ label: "View the Menu", href: "#all-services" }}
-        imageSrc="/images/facial-treatments.webp"
-        imageAlt="KIAN Privé luxury wellness treatment suite"
+        imageSrc={pageHeroes.services.src}
+        imageAlt={pageHeroes.services.alt}
         priority={false}
       />
 
@@ -204,7 +203,7 @@ export default async function ServicesPage() {
         <SectionHeader
           eyebrow="THE MENU"
           title="Choose a pathway, then book."
-          description="Guest prices are full retail. Members save 20% unless a plan lists a different rate. IV therapy also offers 10% and 15% savings on 2× and 3× monthly plans."
+          description="Published rates for each pathway. Book online or ask concierge to reserve your visit."
         />
       </EditorialSection>
 
@@ -286,7 +285,6 @@ export default async function ServicesPage() {
             title="Luxury Facial"
             description="Preventive, hydration-focused facial protocols rooted in Korean methodology and clean organic formulations."
             guestPrice={195}
-            memberPrice={156}
             items={["Single facial: $195", "4-session package: $725"]}
             detailsHref="/services/korean-organic-skincare"
             bookHref="/book-online?service=korean-organic-skincare"
@@ -296,7 +294,6 @@ export default async function ServicesPage() {
             title="Microneedling with Exosomes"
             description="Collagen support and texture refinement through microneedling with regenerative signaling."
             guestPrice={600}
-            memberPrice={480}
             items={["Single: $600", "4 sessions: $1,800", "5 sessions: $2,700", "10 sessions: $5,000"]}
             detailsHref="/services/microneedling-with-exosomes"
             bookHref="/book-online?service=microneedling-with-exosomes"
@@ -309,14 +306,12 @@ export default async function ServicesPage() {
             bookHref="/book-online?service=hair-restoration"
             bookLabel="Book a consult"
             guestPrice={100}
-            memberPrice={80}
           />
           <ServicePriceCtaCard
             eyebrow="MEDICAL AESTHETICS"
             title="Facial Aesthetics"
             description="Precision aesthetic services focused on natural-looking refinement in a physician-guided setting."
             guestPrice={310}
-            memberPrice={248}
             detailsHref="/services/facial-aesthetics"
             bookHref="/book-online?service=facial-aesthetics"
           />
@@ -325,7 +320,6 @@ export default async function ServicesPage() {
             title="Cherie Johnson, Certified Nutritionist"
             description="Personalized consultations, meal planning, and sustainable wellness habits—virtual sessions available."
             guestPrice={150}
-            memberPrice={120}
             items={["Follow-up: $150", "4 sessions: $500", "8 sessions: $950"]}
             detailsHref="/services/nutrition"
             bookHref="/book-online?service=nutrition"
@@ -336,7 +330,6 @@ export default async function ServicesPage() {
             title="InBody Scan"
             description="Muscle, fat, visceral fat, hydration, and metabolic insights reviewed with your physician."
             guestPrice={30}
-            memberPrice={0}
             detailsHref="/services/inbody-scan"
             bookHref="/book-online?service=inbody-scan"
           />
@@ -346,34 +339,14 @@ export default async function ServicesPage() {
       <EditorialSection id="iv-therapy">
         <SectionHeader
           eyebrow="IV THERAPY"
-          title="Drips, injections, and add-ons—priced for guests and members."
-          description="Full retail for non-members. Save 10% on a 2× monthly plan ($49/mo), 15% on 3× ($74/mo), or 20% on 4× ($99/mo) and with an active KIAN Privé membership. All services administered by licensed medical professionals."
+          title="Drips, injections, and add-ons."
+          description="All services administered by licensed medical professionals."
         />
-        <div className="mt-6 flex flex-wrap gap-2">
-          {ivMembershipTiers.map((tier) => (
-            <span
-              key={tier.label}
-              className="rounded-sm border border-[#e4d9c8] bg-[#fffcf7] px-3 py-2 text-xs text-[#5f5344]"
-            >
-              <span className="font-medium text-[#3b3024]">{tier.label}</span> · {tier.detail}
-            </span>
-          ))}
-        </div>
         <div className="mt-10 grid gap-5">
           <IvPricingTable title="IV drips" items={ivDripMenu} />
           <IvPricingTable title="Injections" items={ivInjectionMenu} />
           <IvPricingTable title="IV add-ons" items={ivAddOnMenu} />
         </div>
-        <ul className="mt-8 grid gap-2 sm:grid-cols-2">
-          {ivMemberBenefits.map((benefit) => (
-            <li key={benefit} className="flex items-start gap-3 text-sm text-[#5f5344]">
-              <span className="mt-1 text-[#b78d4b]" aria-hidden>
-                ✦
-              </span>
-              <span>{benefit}</span>
-            </li>
-          ))}
-        </ul>
         <SectionCtaBar
           bookHref="/book-online?service=iv-therapy"
           detailsHref="/services/iv-therapy"
@@ -385,7 +358,7 @@ export default async function ServicesPage() {
         <SectionHeader
           eyebrow="WELLNESS TECH LAB PANELS"
           title="Orderable diagnostic panels with physician review."
-          description="Core panels use the mid-point of Wellness Tech suggested retail, with 20% member pricing. Add-on panels are targeted for brain health, weight management, hormone optimization, and cardiovascular risk."
+          description="Core Wellness Tech panels with physician review. Add-on panels are targeted for brain health, weight management, hormone optimization, and cardiovascular risk."
         />
         <div className="mt-10">
           <LabPanelCards panels={coreLabPanels} eyebrow="CORE PANEL" />
@@ -495,7 +468,7 @@ export default async function ServicesPage() {
         <SectionHeader
           eyebrow="PHYSICIAN-LED PEPTIDE THERAPY"
           title="Over 100 peptides, precisely prescribed."
-          description="Board-certified physicians curate personalized protocols from a clinical formulary spanning longevity, recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. Peptide optimization consult: $100 guest / $80 member. Complete secure intake first for physician review."
+          description="Board-certified physicians curate personalized protocols from a clinical formulary spanning longevity, recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. Peptide optimization consult: $100. Complete secure intake first for physician review."
         />
         <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {peptideCategories.map((category) => (

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BadgeCheck, Globe, Mail, MapPin, Phone, Share2 } from "lucide-react";
 import { CinematicHero } from "@/components/ui/CinematicHero";
+import { pageHeroes } from "@/lib/media/heroes";
 import {
   EditorialEyebrow,
   EditorialSection,
@@ -28,8 +29,8 @@ export default function ContactPage() {
         description="Connect with the KIAN Privé team for private onboarding, membership support, retreat inquiries, and priority booking requests."
         primaryCta={{ label: "Book Online", href: "/book-online" }}
         secondaryCta={{ label: "View Services", href: "/services" }}
-        imageSrc="/images/stock/hero-luxury-clinic.jpg"
-        imageAlt="Contact KIAN Privé concierge team"
+        imageSrc={pageHeroes.contact.src}
+        imageAlt={pageHeroes.contact.alt}
         priority={false}
       />
 

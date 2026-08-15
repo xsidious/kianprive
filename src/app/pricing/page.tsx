@@ -7,6 +7,7 @@ import {
 } from "@/components/policies/KianPrivePaymentPolicies";
 import { PricingTable } from "@/components/pricing/PricingTable";
 import { CinematicHero } from "@/components/ui/CinematicHero";
+import { pageHeroes } from "@/lib/media/heroes";
 import { EditorialEyebrow, EditorialSection } from "@/components/ui/editorial-primitives";
 import { buildSeoMetadata } from "@/lib/seo/metadata";
 
@@ -28,8 +29,8 @@ export default function PricingPage() {
         description="Existing members can log in and subscribe directly. New members begin with a paid consultation and approval before account activation."
         primaryCta={{ label: "View Plans", href: "#plans" }}
         secondaryCta={{ label: "Book Consultation", href: "/book-online" }}
-        imageSrc="/images/facial-treatments.webp"
-        imageAlt="KIAN Privé membership wellness"
+        imageSrc={pageHeroes.pricing.src}
+        imageAlt={pageHeroes.pricing.alt}
         priority={false}
       />
 

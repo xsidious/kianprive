@@ -220,21 +220,20 @@ export const icoonePricedMenu = {
 };
 
 export function labPanelPricingLines(panel: Pick<LabPanelMenuItem, "guest" | "member">) {
-  return [`Guest: ${formatUsd(panel.guest)}`, `Member: ${formatUsd(panel.member)}`];
+  return [formatUsd(panel.guest)];
 }
 
 export function pricedMenuLines(items: PricedMenuItem[]) {
   return items.map((item) => {
-    const member = item.guest === item.member ? "" : ` · Member ${formatUsd(item.member)}`;
     const note = item.note ? ` (${item.note})` : "";
-    return `${item.name}: ${formatUsd(item.guest)}${member}${note}`;
+    return `${item.name}: ${formatUsd(item.guest)}${note}`;
   });
 }
 
 export function ivPricingLines() {
   return [
-    ...ivDripMenu.map((item) => `${item.name}: Guest ${formatUsd(item.retail)} · Member ${formatUsd(item.save20)}`),
-    ...ivInjectionMenu.map((item) => `${item.name}: Guest ${formatUsd(item.retail)} · Member ${formatUsd(item.save20)}`),
-    ...ivAddOnMenu.map((item) => `Add-on · ${item.name}: Guest ${formatUsd(item.retail)} · Member ${formatUsd(item.save20)}`),
+    ...ivDripMenu.map((item) => `${item.name}: ${formatUsd(item.retail)}`),
+    ...ivInjectionMenu.map((item) => `${item.name}: ${formatUsd(item.retail)}`),
+    ...ivAddOnMenu.map((item) => `Add-on · ${item.name}: ${formatUsd(item.retail)}`),
   ];
 }

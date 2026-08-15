@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { CinematicHero } from "@/components/ui/CinematicHero";
+import { pageHeroes } from "@/lib/media/heroes";
 import {
   EditorialEyebrow,
   EditorialSection,
@@ -48,8 +49,8 @@ export default function EventsRetreatsPage() {
         description="We guide you through personalized, global journeys of relaxation, rejuvenation, and learning. Uncover nature's secrets to longevity as you indulge in nourishing treatments and find blissful balance."
         primaryCta={{ label: "View Events", href: "#events" }}
         secondaryCta={{ label: "Book Online", href: "/book-online" }}
-        imageSrc="/images/stock/hero-luxury-clinic.jpg"
-        imageAlt="Luxury retreat event"
+        imageSrc={pageHeroes.events.src}
+        imageAlt={pageHeroes.events.alt}
       />
 
       <EditorialSection>

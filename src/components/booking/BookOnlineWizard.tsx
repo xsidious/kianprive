@@ -511,7 +511,7 @@ export function BookOnlineWizard() {
                   >
                     <LogIn className="text-[#b78d4b]" size={28} />
                     <p className="mt-4 text-xl font-medium text-[#1f1a15]">Yes, I have an account</p>
-                    <p className="mt-2 text-sm text-[#6f6251]">Sign in for member pricing and saved preferences.</p>
+                    <p className="mt-2 text-sm text-[#6f6251]">Sign in for saved preferences and faster checkout.</p>
                     {visitorType === "member" ? (
                       <Link
                         href="/login?callbackUrl=/book-online"
@@ -645,9 +645,6 @@ export function BookOnlineWizard() {
                         <p className="font-medium text-[#1f1a15]">{service.title}</p>
                         <p className="mt-1 text-sm font-medium text-[#8f6f3e]">
                           {formatUsd(service.guestPrice)}
-                          {service.memberPrice === 0
-                            ? " · Included for members"
-                            : ` · Member ${formatUsd(service.memberPrice)}`}
                         </p>
                         <p className="mt-1 line-clamp-2 text-sm text-[#6f6251]">{service.description}</p>
                       </div>

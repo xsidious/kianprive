@@ -23,7 +23,7 @@ export function CinematicHero({
   description = "KIAN Privé is a concierge wellness provider — physicians, nurses, aestheticians and specialists delivering clinical medicine, advanced skincare and regenerative therapies in a serene, intimate setting. At our suite, or yours.",
   primaryCta = { label: "View the Menu", href: "#all-services" },
   secondaryCta = { label: "Reserve a Session", href: "/book-online" },
-  imageSrc = "/images/facial-treatments.webp",
+  imageSrc = "/images/facial-treatments.jpg",
   imageAlt = "KIAN Privé luxury wellness suite",
   priority = false,
 }: CinematicHeroProps) {

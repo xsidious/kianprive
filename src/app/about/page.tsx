@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { CinematicHero } from "@/components/ui/CinematicHero";
+import { pageHeroes } from "@/lib/media/heroes";
 import { EditorialEyebrow, EditorialSection, editorialPanel } from "@/components/ui/editorial-primitives";
 import { getCmsPageContent } from "@/lib/cms/pages";
 import { buildSeoMetadata } from "@/lib/seo/metadata";
@@ -60,8 +61,8 @@ export default async function AboutPage() {
         }
         primaryCta={{ label: "Meet the Team", href: "#team" }}
         secondaryCta={{ label: "Book Consultation", href: "/book-online" }}
-        imageSrc="/images/abougpage.jpeg"
-        imageAlt="KIAN Privé team and wellness sanctuary"
+        imageSrc={pageHeroes.about.src}
+        imageAlt={pageHeroes.about.alt}
         priority={false}
       />
 

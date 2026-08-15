@@ -278,16 +278,7 @@ export default async function ServiceDetailPage({
             {isNutrition ? "Consultation Pricing" : "Pricing"}
           </h2>
           {service.guestPrice != null ? (
-            <p className="mt-3 text-lg text-[#1f1a15]">
-              From {formatUsd(service.guestPrice)}
-              {service.memberPrice != null ? (
-                <span className="ml-2 text-sm text-[#8f6f3e]">
-                  {service.memberPrice === 0
-                    ? "· Included for members"
-                    : `· Member ${formatUsd(service.memberPrice)}`}
-                </span>
-              ) : null}
-            </p>
+            <p className="mt-3 text-lg text-[#1f1a15]">From {formatUsd(service.guestPrice)}</p>
           ) : null}
           <div className={`mt-4 ${editorialPanel} p-5`}>
             {service.pricing?.length ? (

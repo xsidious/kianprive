@@ -201,7 +201,7 @@ export const gymServices: ServiceListingItem[] = [
   {
     slug: "adapt-fitness",
     title: "Adapt",
-    image: "/images/stock/service-beauty-salon.jpg",
+    image: "/images/heroes/training-hero.jpg",
     partnerName: "Adapt",
     partnerLogo: "/images/providers/vcs-vitamin-c-to-sea.png",
     externalBookingUrl: "/contact",

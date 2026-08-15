@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CinematicHero } from "@/components/ui/CinematicHero";
+import { pageHeroes } from "@/lib/media/heroes";
 import { EditorialSection, editorialCtaPrimary } from "@/components/ui/editorial-primitives";
 
 export default function AthletesPage() {
@@ -13,8 +14,8 @@ export default function AthletesPage() {
         description="This members-only portal provides athlete-specific protocols, recovery frameworks, and performance support resources."
         primaryCta={{ label: "Book Athlete Session", href: "/book-online" }}
         secondaryCta={{ label: "View Membership", href: "/pricing" }}
-        imageSrc="/images/stock/service-wellness.jpg"
-        imageAlt="Athlete wellness and recovery"
+        imageSrc={pageHeroes.athletes.src}
+        imageAlt={pageHeroes.athletes.alt}
       />
       <EditorialSection>
         <p className="max-w-2xl text-[#6f6251]">

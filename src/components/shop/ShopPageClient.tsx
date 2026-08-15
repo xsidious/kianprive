@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { ShieldCheck, Truck } from "lucide-react";
 import { useCart } from "@/components/providers/cart-provider";
 import { CinematicHero } from "@/components/ui/CinematicHero";
+import { pageHeroes } from "@/lib/media/heroes";
 import {
   EditorialEyebrow,
   EditorialSection,
@@ -83,8 +84,8 @@ export function ShopPageClient({ isLoggedIn = false, clinicalProducts = [] }: Pr
         description="Hand-selected products designed to extend your in-clinic results at home—from nutraceutical support to skin performance essentials."
         primaryCta={{ label: "Browse Products", href: "#products" }}
         secondaryCta={{ label: "View Cart", href: "/cart" }}
-        imageSrc="/images/facial-treatments.webp"
-        imageAlt="Premium wellness products"
+        imageSrc={pageHeroes.shop.src}
+        imageAlt={pageHeroes.shop.alt}
         priority={false}
       />
 

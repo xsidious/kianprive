@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { CinematicHero } from "@/components/ui/CinematicHero";
+import { pageHeroes } from "@/lib/media/heroes";
 import { EditorialEyebrow, EditorialSection, editorialPanel } from "@/components/ui/editorial-primitives";
 
 const offerings = [
@@ -8,19 +9,19 @@ const offerings = [
     title: "Privé Services",
     description: "Comprehensive concierge wellness services blending medicine, aesthetics, and recovery.",
     href: "/services",
-    image: "/images/wellness.avif",
+    image: "/images/icoone-lymphatic-drainage.png",
   },
   {
     title: "About Us",
     description: "Learn the KIAN Privé mission, philosophy, and multidisciplinary care model.",
     href: "/about",
-    image: "/images/esthetics.avif",
+    image: "/images/abougpage.jpeg",
   },
   {
     title: "Corporate Wellness",
     description: "High-performance wellness programs built for teams, leaders, and organizations.",
     href: "/corporate-wellness",
-    image: "/images/medicalaesthetics.avif",
+    image: "/images/heroes/corporate-hero.jpg",
   },
   {
     title: "Icoone® Lymphatic Drainage",
@@ -32,13 +33,13 @@ const offerings = [
     title: "Practitioners",
     description: "Specialized certification tracks for clinical professionals and med spa teams.",
     href: "/practitioners",
-    image: "/images/nutrition.avif",
+    image: "/images/icoone-consultation.png",
   },
   {
     title: "Athletes",
     description: "Members-only performance and recovery resources for athletes.",
     href: "/athletes",
-    image: "/images/stock/service-wellness.jpg",
+    image: "/images/heroes/spa-massage.jpg",
   },
 ];
 
@@ -53,8 +54,8 @@ export default function WhatWeDoPage() {
         description="Explore every part of the KIAN Privé ecosystem, from private wellness services to premium practitioner education."
         primaryCta={{ label: "View Services", href: "/services" }}
         secondaryCta={{ label: "Contact Us", href: "/contact" }}
-        imageSrc="/images/wellness.avif"
-        imageAlt="KIAN Privé wellness offerings"
+        imageSrc={pageHeroes.whatWeDo.src}
+        imageAlt={pageHeroes.whatWeDo.alt}
       />
 
       <EditorialSection>

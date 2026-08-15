@@ -119,11 +119,6 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                 {service.guestPrice != null ? (
                   <p className="mt-3 text-sm font-medium text-[#8f6f3e]">
                     From {formatUsd(service.guestPrice)}
-                    {service.memberPrice != null
-                      ? service.memberPrice === 0
-                        ? " · Included for members"
-                        : ` · Member ${formatUsd(service.memberPrice)}`
-                      : ""}
                   </p>
                 ) : null}
                 <div className="mt-5 flex flex-wrap gap-2">
@@ -378,27 +373,10 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                 {selectedService.guestPrice != null ? (
                   <p className="mt-2 text-sm font-medium text-[#1f1a15]">
                     From {formatUsd(selectedService.guestPrice)}
-                    {selectedService.memberPrice != null
-                      ? selectedService.memberPrice === 0
-                        ? " · Included for members"
-                        : ` · Member ${formatUsd(selectedService.memberPrice)}`
-                      : ""}
                   </p>
                 ) : null}
                 <ul className="mt-2 space-y-1">
                   {selectedService.pricing.map((item) => (
-                    <li key={item} className="text-sm text-[#5f5344]">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-            {selectedService.membershipNotes && selectedService.membershipNotes.length > 0 ? (
-              <div className="mt-5 rounded-sm border border-[#b78d4b38] bg-[#fffaf2] p-3">
-                <p className="text-xs tracking-[0.16em] text-[#8f6f3e]">MEMBERSHIP NOTES</p>
-                <ul className="mt-2 space-y-1">
-                  {selectedService.membershipNotes.map((item) => (
                     <li key={item} className="text-sm text-[#5f5344]">
                       {item}
                     </li>

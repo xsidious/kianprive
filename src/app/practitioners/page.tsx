@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { CinematicHero } from "@/components/ui/CinematicHero";
+import { pageHeroes } from "@/lib/media/heroes";
 import {
   EditorialEyebrow,
   EditorialSection,
@@ -69,8 +70,8 @@ export default function PractitionersPage() {
         description="Learn from the most experienced Icoone® training program in the United States. Backed by over 8 years of clinical experience, nearly 8,000 hands-on treatment hours, and the distinction of being the first certified hands-on Icoone® training program in both the U.S. and Italy."
         primaryCta={{ label: "Unlock Premium Access", href: "/pricing" }}
         secondaryCta={{ label: "Explore Icoone", href: "/icoone-training" }}
-        imageSrc="/images/facial-treatments.webp"
-        imageAlt="Practitioner training program"
+        imageSrc={pageHeroes.practitioners.src}
+        imageAlt={pageHeroes.practitioners.alt}
       />
 
       <EditorialSection>

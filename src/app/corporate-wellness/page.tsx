@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CinematicHero } from "@/components/ui/CinematicHero";
+import { pageHeroes } from "@/lib/media/heroes";
 import {
   EditorialEyebrow,
   EditorialSection,
@@ -32,8 +33,8 @@ export default function CorporateWellnessPage() {
         description="KIAN Privé — where modern medicine meets holistic living. Founded by a physician and a wellness coach united by a common vision: to bring natural technology and modern medicine together for a truly comprehensive approach to health."
         primaryCta={{ label: "Schedule Consultation", href: "#consultation" }}
         secondaryCta={{ label: "Book Online", href: "/book-online" }}
-        imageSrc="/images/stock/hero-luxury-clinic.jpg"
-        imageAlt="Corporate wellness concierge medicine"
+        imageSrc={pageHeroes.corporate.src}
+        imageAlt={pageHeroes.corporate.alt}
       />
 
       <EditorialSection>

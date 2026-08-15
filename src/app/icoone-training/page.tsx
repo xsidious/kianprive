@@ -1,13 +1,14 @@
 import Image from "next/image";
 import { IcooneMediaGallery } from "@/components/services/IcooneMediaGallery";
 import { CinematicHero } from "@/components/ui/CinematicHero";
+import { pageHeroes } from "@/lib/media/heroes";
 import {
   EditorialEyebrow,
   EditorialSection,
   EditorialPrimaryLink,
   editorialPanel,
 } from "@/components/ui/editorial-primitives";
-import { getIcooneImage, icoonePrimaryImage } from "@/lib/media/icoone";
+import { getIcooneImage } from "@/lib/media/icoone";
 
 const benefits = [
   {
@@ -75,8 +76,8 @@ export default function IcooneTrainingPage() {
         description="Icoone is a non-invasive treatment that utilizes advanced robotic technology to perform micro-stimulation of the skin and underlying tissues. It is primarily known for body contouring, lymphatic drainage, and skin tightening."
         primaryCta={{ label: "Learn More", href: "/contact" }}
         secondaryCta={{ label: "Book Now", href: "/book-online" }}
-        imageSrc={icoonePrimaryImage}
-        imageAlt="Icoone lymphatic drainage session"
+        imageSrc={pageHeroes.icooneTraining.src}
+        imageAlt={pageHeroes.icooneTraining.alt}
       />
 
       <EditorialSection>

@@ -78,9 +78,6 @@ export function PricedMenuTable({
             </div>
             <div className="shrink-0 text-right">
               <p className="text-sm font-medium text-[#1f1a15]">{formatUsd(item.guest)}</p>
-              <p className="text-xs text-[#8f6f3e]">
-                {item.member === 0 ? "Included" : `Member ${formatUsd(item.member)}`}
-              </p>
             </div>
           </li>
         ))}
@@ -109,13 +106,7 @@ export function IvPricingTable({
         {items.map((item) => (
           <li key={item.name} className="flex flex-col gap-2 py-3.5 sm:flex-row sm:items-center sm:justify-between">
             <p className="font-serif text-[15px] text-[#2b2218]">{item.name}</p>
-            <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm">
-              <p className="font-medium text-[#1f1a15]">{formatUsd(item.retail)}</p>
-              <p className="text-[#8f6f3e]">Member {formatUsd(item.save20)}</p>
-              <p className="text-xs text-[#8a7a66]">
-                2× {formatUsd(item.save10)} · 3× {formatUsd(item.save15)}
-              </p>
-            </div>
+            <p className="font-medium text-[#1f1a15]">{formatUsd(item.retail)}</p>
           </li>
         ))}
       </ul>
@@ -142,7 +133,6 @@ export function LabPanelCards({
           <div className="mt-5 flex flex-col gap-4 border-t border-[#e8dfd0] pt-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-lg font-medium text-[#1f1a15]">{formatUsd(panel.guest)}</p>
-              <p className="text-sm text-[#8f6f3e]">Member {formatUsd(panel.member)}</p>
             </div>
             <div className="flex gap-2">
               <Link href={`/services/${panel.slug}`} className={secondaryCta}>
@@ -164,7 +154,6 @@ export function ServicePriceCtaCard({
   title,
   description,
   guestPrice,
-  memberPrice,
   items,
   detailsHref,
   bookHref,
@@ -174,7 +163,6 @@ export function ServicePriceCtaCard({
   title: string;
   description: string;
   guestPrice?: number;
-  memberPrice?: number;
   items?: string[];
   detailsHref: string;
   bookHref: string;
@@ -186,14 +174,7 @@ export function ServicePriceCtaCard({
       <h3 className="mt-3 font-serif text-2xl text-[#1f1a15] sm:text-[1.75rem]">{title}</h3>
       <p className="mt-3 flex-1 text-sm leading-relaxed text-[#6f6251]">{description}</p>
       {guestPrice != null ? (
-        <p className="mt-4 text-lg text-[#1f1a15]">
-          From {formatUsd(guestPrice)}
-          {memberPrice != null ? (
-            <span className="ml-2 text-sm text-[#8f6f3e]">
-              {memberPrice === 0 ? "· Included for members" : `· Member ${formatUsd(memberPrice)}`}
-            </span>
-          ) : null}
-        </p>
+        <p className="mt-4 text-lg text-[#1f1a15]">{formatUsd(guestPrice)}</p>
       ) : (
         <p className="mt-4 text-sm text-[#8f6f3e]">Physician consult required</p>
       )}

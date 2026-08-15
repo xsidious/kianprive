@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BeforeAfterGallery } from "@/components/home/BeforeAfterGallery";
 import { GetUpdatesSection } from "@/components/home/GetUpdatesSection";
 import { CinematicHero } from "@/components/ui/CinematicHero";
+import { pageHeroes } from "@/lib/media/heroes";
 import { EditorialEyebrow, EditorialSection } from "@/components/ui/editorial-primitives";
 import { ServiceCard } from "@/components/ui/ServiceCard";
 import { TrustBadges } from "@/components/layout/TrustBadges";
@@ -28,8 +29,8 @@ export default function Home() {
         description="Delivering uninterrupted, personalized care at your location or ours. No busy waiting rooms. No rush. Just elite professionals, precision protocols, and luxury-level results."
         primaryCta={{ label: "Book Consultation", href: "/book-online" }}
         secondaryCta={{ label: "Explore Services", href: "/services" }}
-        imageSrc="/images/facial-treatments.webp"
-        imageAlt="KIAN Privé luxury wellness care in Miami"
+        imageSrc={pageHeroes.home.src}
+        imageAlt={pageHeroes.home.alt}
         priority
       />
 

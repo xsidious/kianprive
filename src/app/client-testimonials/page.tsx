@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Play } from "lucide-react";
 import { CinematicHero } from "@/components/ui/CinematicHero";
+import { pageHeroes } from "@/lib/media/heroes";
 import { EditorialEyebrow, EditorialSection, editorialPanel } from "@/components/ui/editorial-primitives";
 
 const writtenTestimonials = [
@@ -41,8 +42,8 @@ export default function ClientTestimonialsPage() {
         description="Written and video stories from clients following personalized concierge wellness protocols."
         primaryCta={{ label: "Book Consultation", href: "/book-online" }}
         secondaryCta={{ label: "Explore Services", href: "/services" }}
-        imageSrc="/images/facial-treatments.webp"
-        imageAlt="KIAN Privé client results"
+        imageSrc={pageHeroes.testimonials.src}
+        imageAlt={pageHeroes.testimonials.alt}
       />
 
       <EditorialSection>
@@ -66,7 +67,7 @@ export default function ClientTestimonialsPage() {
           {videoTestimonials.map((item) => (
             <article key={item.title} className="overflow-hidden rounded-sm border border-[#c9a86a33] bg-[#221c17]">
               <div className="relative h-44">
-                <Image src="/images/facial-treatments.webp" alt="" fill className="object-cover opacity-40" />
+                <Image src="/images/HairReatorationpicture.jpeg" alt="" fill className="object-cover opacity-40" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
                   <span className="flex h-12 w-12 items-center justify-center rounded-sm border border-white/40 bg-white/15 text-white backdrop-blur-sm">
                     <Play size={22} fill="currentColor" />

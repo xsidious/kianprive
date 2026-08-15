@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getBlogPosts } from "@/lib/content";
 import { BlogGrid } from "@/components/blog/blog-grid";
 import { CinematicHero } from "@/components/ui/CinematicHero";
+import { pageHeroes } from "@/lib/media/heroes";
 import { EditorialEyebrow, EditorialSection } from "@/components/ui/editorial-primitives";
 import { buildSeoMetadata } from "@/lib/seo/metadata";
 
@@ -25,8 +26,8 @@ export default async function BlogPage() {
         description="Explore practical guidance from the KIAN Privé perspective on concierge care, recovery strategy, and premium protocol design."
         primaryCta={{ label: "Read the Journal", href: "#journal" }}
         secondaryCta={{ label: "Book Online", href: "/book-online" }}
-        imageSrc="/images/facial-treatments.webp"
-        imageAlt="Wellness editorial"
+        imageSrc={pageHeroes.blog.src}
+        imageAlt={pageHeroes.blog.alt}
         priority={false}
       />
 
