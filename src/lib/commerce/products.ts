@@ -28,6 +28,7 @@ export const shopCategories = [
   "Body Care",
   "Home",
   "Nutrients",
+  "Supplies",
   "Professional",
 ] as const;
 
@@ -250,11 +251,78 @@ export const catalogProducts: CatalogProduct[] = [
   {
     id: "agara-coffee",
     slug: "agara-coffee",
-    name: "Agara Coffee",
+    name: "AGARA Cafe",
     category: "Nutrients",
     price: 0,
-    image: "/images/beauty.avif",
-    redirectUrl: "https://shop.kianprive.com/r/NRM2TY",
+    image: "/images/products/agara-cafe.png",
+    summary: "Dark roast premium Arabica — energy, focus, mood, appetite balance, and metabolism support.",
+    description:
+      "AGARA Cafe is your daily brew for energy, clarity, and appetite balance. This dark roast premium Arabica blend is crafted with natural ingredients to support energy, focus, mood, appetite balance, and metabolism.\n\nNet Wt. 3.18 oz (90 g). Purchase is completed on AGARA Life — KIAN Privé does not process this order in-cart.",
+    redirectUrl: "https://www.agaralife.com/Shop/Cafe/44550",
+  },
+  {
+    id: "bac-water-10ml",
+    slug: "bac-water-10ml",
+    name: "BAC Water — 10 ml",
+    category: "Supplies",
+    price: 0,
+    image: "/images/products/bac-water-10ml.jpg",
+    summary: "Bacteriostatic sterile water for reconstitution — 10 ml vial.",
+    description:
+      "BAC Water is bacteriostatic sterile water used to reconstitute physician-prescribed peptides and compounds. This is an accessory supply, not a prescription therapy.\n\nPeptide compounds themselves are prescribed on Privé Therapeutics after clinical intake — they are not sold in this shop.",
+  },
+  {
+    id: "pen-tips",
+    slug: "pen-tips",
+    name: "Pen Tips — Box of 100",
+    category: "Supplies",
+    price: 0,
+    image: "/images/products/pen-tips.png",
+    summary: "Pen needles for use with injection pens — box of 100.",
+    description:
+      "Pen tips (pen needles) for use with compatible injection pens. These are accessory supplies for an existing protocol — not filled peptide pens or prescription compounds.\n\nFilled peptide pens and other compound therapies are prescribed on Privé Therapeutics.",
+  },
+  {
+    id: "pen-tips-alcohol-pad-kit",
+    slug: "pen-tips-alcohol-pad-kit",
+    name: "Pen Tips & Alcohol Pad Kit",
+    category: "Supplies",
+    price: 0,
+    image: "/images/products/pen-tips-alcohol-kit.png",
+    summary: "20-count kit of pen tips with alcohol pads.",
+    description:
+      "A 20-count kit of pen tips paired with alcohol pads for injection-site prep. Accessory supplies only — not a peptide or compound therapy.",
+  },
+  {
+    id: "insulin-syringes",
+    slug: "insulin-syringes",
+    name: "Insulin Syringes — 1 mL × 31G × 8 mm",
+    category: "Supplies",
+    price: 0,
+    image: "/images/products/insulin-syringe.png",
+    summary: "Insulin syringes for reconstitution and injection protocols. Boxes of 10, 20, or 100.",
+    description:
+      "1 mL × 31G × 8 mm insulin syringes for use with physician-directed reconstitution and injection protocols. Accessory supplies — not prescription peptides.\n\nChoose a 10-count kit, 20-count kit, or a box of 100 individually wrapped syringes.",
+    options: [
+      { id: "insulin-syringes-10", label: "Box of 10", price: 0 },
+      { id: "insulin-syringes-20", label: "Box of 20", price: 0 },
+      { id: "insulin-syringes-100", label: "Box of 100", price: 0 },
+    ],
+  },
+  {
+    id: "alcohol-pads",
+    slug: "alcohol-pads",
+    name: "Alcohol Pads",
+    category: "Supplies",
+    price: 0,
+    image: "/images/products/pen-tips-alcohol-kit.png",
+    summary: "Alcohol pads for injection-site prep — boxes of 100 or 200.",
+    description:
+      "Alcohol pads for cleaning the vial stopper and injection site before a physician-directed protocol. Accessory supplies only.",
+    options: [
+      { id: "alcohol-pads-100", label: "Box of 100", price: 0 },
+      { id: "alcohol-pads-200", label: "Box of 200", price: 0 },
+    ],
   },
   {
     id: "professional-distribution",
@@ -302,4 +370,17 @@ export function getCatalogDisplayPrice(product: CatalogProduct) {
 export function isCatalogProductPriced(product: CatalogProduct) {
   if (product.redirectUrl) return false;
   return getCatalogDisplayPrice(product) > 0;
+}
+
+/** Unpriced retail items stay visible but cannot be purchased. */
+export function isCatalogProductComingSoon(product: CatalogProduct) {
+  return !product.redirectUrl && !isCatalogProductPriced(product);
+}
+
+export function shopCategoryList(products: CatalogProduct[]) {
+  const known = new Set<string>(shopCategories);
+  const extra = [...new Set(products.map((product) => product.category).filter(Boolean))]
+    .filter((category) => !known.has(category))
+    .sort((a, b) => a.localeCompare(b));
+  return [...shopCategories, ...extra];
 }

@@ -192,7 +192,14 @@ export default function AdminProductsPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
-    setStatus(response.ok ? (editing ? "Product updated." : "Product created.") : "Could not save product.");
+    const payload = (await response.json().catch(() => ({}))) as { error?: string };
+    setStatus(
+      response.ok
+        ? editing
+          ? "Product updated."
+          : "Product created."
+        : payload.error || "Could not save product.",
+    );
     if (response.ok) {
       setEditorOpen(false);
       await loadProducts();

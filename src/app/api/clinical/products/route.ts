@@ -2,17 +2,21 @@ import { NextResponse } from "next/server";
 import { ProductCatalogKind, ProductStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { canAccessAdmin } from "@/lib/rbac";
+import { canAccessAdmin, canAccessProviderPortal } from "@/lib/rbac";
 
 /**
- * Clinical therapeutics catalog.
- * - Members / providers: no prices in response (unless admin)
- * - Admin: full pricing + wholesale
+ * Clinical therapeutics catalog for physicians and admin only.
+ * Not a public or member storefront.
  */
 export async function GET(req: Request) {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Sign in required." }, { status: 401 });
+  }
+
+  const role = session.user.role;
+  if (!canAccessAdmin(role) && !canAccessProviderPortal(role)) {
+    return NextResponse.json({ error: "Clinical catalog is limited to the care team." }, { status: 403 });
   }
 
   const { searchParams } = new URL(req.url);

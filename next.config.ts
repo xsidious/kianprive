@@ -38,6 +38,11 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      { source: "/services/personal-training", destination: "/services", permanent: true },
+    ];
+  },
   typescript: {
     ignoreBuildErrors: true,
   },

@@ -116,7 +116,7 @@ export default async function DashboardPage() {
             <FileText size={16} /> MY CLINICAL INTAKE
           </Link>
           <Link className={`inline-flex items-center gap-2 ${editorialCtaSecondary}`} href="/dashboard/therapeutics">
-            <Pill size={16} /> THERAPEUTICS CATALOG
+            <Pill size={16} /> PEPTIDE THERAPY
           </Link>
           <Link className={`inline-flex items-center gap-2 ${editorialCtaSecondary}`} href="/dashboard/subscription">
             <BadgeDollarSign size={16} /> VIEW SUBSCRIPTION

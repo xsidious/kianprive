@@ -52,7 +52,8 @@ export default function AdminCommercePage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(product),
     });
-    setStatus(response.ok ? "Product updated." : "Failed to update product.");
+    const payload = (await response.json().catch(() => ({}))) as { error?: string };
+    setStatus(response.ok ? "Product updated." : payload.error || "Failed to update product.");
     if (response.ok) await loadAll();
   }
 

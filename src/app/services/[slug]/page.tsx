@@ -14,7 +14,9 @@ import { auth } from "@/lib/auth";
 import { IcooneMediaGallery } from "@/components/services/IcooneMediaGallery";
 import { RotatingServiceGallery } from "@/components/services/RotatingServiceGallery";
 import { PeptidesInteractiveShowcase } from "@/components/services/PeptidesInteractiveShowcase";
+import { TherapeuticsConsultants } from "@/components/services/TherapeuticsConsultants";
 import { nutritionPromoImage, NUTRITION_SERVICE_SLUG } from "@/lib/media/nutrition";
+import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
 import { getServiceBySlug, serviceCatalog } from "@/lib/services/catalog";
 import { formatUsd } from "@/lib/services/pricing-menus";
 import { buildSeoMetadata } from "@/lib/seo/metadata";
@@ -83,13 +85,13 @@ export default async function ServiceDetailPage({
   const bookingHref = service.externalBookingUrl
     ? service.externalBookingUrl
     : service.slug === "glp1-peptides"
-      ? `/services/${service.slug}`
+      ? PRIVETHERAPEUTICS_URL
       : `/book-online?service=${service.slug}`;
   const bookingIsExternal = bookingHref.startsWith("http://") || bookingHref.startsWith("https://");
   const bookingLabel = service.externalBookingUrl
     ? "Book with Partner"
     : service.slug === "glp1-peptides"
-      ? "Start Intake"
+      ? "Browse Peptides"
       : "Book This Service";
   const heroTitle = splitHeroTitle(service.title);
 
@@ -179,22 +181,24 @@ export default async function ServiceDetailPage({
       {isPeptides ? (
         <EditorialSection className="!py-8 sm:!py-10">
           <PeptidesInteractiveShowcase />
-          <div className={`mt-4 ${editorialPanel} p-5`}>
+          <div className="mt-8">
+            <TherapeuticsConsultants />
+          </div>
+          <div className={`mt-8 ${editorialPanel} p-5`}>
             <p className="text-xs tracking-[0.18em] text-[#8a682e]">START YOUR WELLNESS JOURNEY</p>
-            <h2 className="mt-2 font-serif text-2xl text-[#1f1a15]">Complete your therapeutics intake first</h2>
+            <h2 className="mt-2 font-serif text-2xl text-[#1f1a15]">Complete your therapeutics intake</h2>
             <p className="mt-3 max-w-3xl text-sm text-[#5f5344]">
-              Submit the HIPAA-protected intake form so our team and your reviewing physician can evaluate eligibility.
-              After approval, you will be contacted with booking and purchasing next steps.
+              After connecting with a consultant, complete intake on Privé Therapeutics so your reviewing physician can
+              evaluate eligibility. After approval, you will be contacted with booking and purchasing next steps.
+              Injection supplies such as sterile water, pen tips, and needles are available in the KIAN shop.
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
-              <a
-                href="https://www.privetherapeutics.solutions/"
-                target="_blank"
-                rel="noreferrer"
-                className={editorialCtaPrimary}
-              >
-                START NOW
+              <a href={PRIVETHERAPEUTICS_URL} target="_blank" rel="noreferrer" className={editorialCtaPrimary}>
+                BROWSE PEPTIDES
               </a>
+              <Link href="/shop" className={editorialCtaSecondary}>
+                SHOP SUPPLIES
+              </Link>
             </div>
           </div>
         </EditorialSection>

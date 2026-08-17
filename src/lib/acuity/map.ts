@@ -30,7 +30,6 @@ const DEFAULT_ACUITY_APPOINTMENT_TYPES: Record<string, number> = {
   "lab-panel-hormone-optimization": 74887377,
   "lab-panel-cardio": 74887377,
   "physician-visit": 74887377,
-  "personal-training": 74887377,
   "beauty-hair-nails": 78612009, // Aesthetics
   "inbody-scan": 74887377,
   "power-plate": 74887377,
@@ -61,7 +60,6 @@ const DEFAULT_ACUITY_CALENDARS: Record<string, number> = {
   "lab-panel-hormone-optimization": ACUITY_CALENDAR.TOTAL_BODY,
   "lab-panel-cardio": ACUITY_CALENDAR.TOTAL_BODY,
   "physician-visit": ACUITY_CALENDAR.TOTAL_BODY,
-  "personal-training": ACUITY_CALENDAR.ADAPT,
   "beauty-hair-nails": ACUITY_CALENDAR.SPA,
   "inbody-scan": ACUITY_CALENDAR.TOTAL_BODY,
   "power-plate": ACUITY_CALENDAR.TOTAL_BODY,

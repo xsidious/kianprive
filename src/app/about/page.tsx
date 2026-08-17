@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { CinematicHero } from "@/components/ui/CinematicHero";
 import { pageHeroes } from "@/lib/media/heroes";
 import { EditorialEyebrow, EditorialSection, editorialPanel } from "@/components/ui/editorial-primitives";
+import { AboutTeamGrid } from "@/components/about/AboutTeamGrid";
 import { getCmsPageContent } from "@/lib/cms/pages";
 import { buildSeoMetadata } from "@/lib/seo/metadata";
 
@@ -18,33 +18,6 @@ export async function generateMetadata(): Promise<Metadata> {
     noIndex: Boolean(cms.noIndex),
   });
 }
-
-const aboutTeam = [
-  { name: "Alycia Lerer", title: "Founder", subtitle: "Wellness Coach", image: "/images/AlyciaLerer.png" },
-  { name: "Cherie Johnson", title: "Co-Founder", subtitle: "Nutritionist", image: "/images/NutritionServices.jpeg" },
-  { name: "Chyle Beaird, M.D.", title: "Medical Director", subtitle: "Physician", image: "/images/ChyleBeaird.avif" },
-  { name: "Jacqueline Hayes", title: "Pharmacy Technician", subtitle: "Clinical Support", image: "/images/JacquelineHayes.png" },
-  { name: "Dr. Karl Ryan, DDS", title: "Aesthetic Injector", subtitle: "Provider", image: "/images/KarlRyan.avif" },
-  {
-    name: "Carolina Millan",
-    title: "Director of Business Affairs",
-    subtitle: "Operations Leadership",
-    image: "/images/CarolinaMillan.png",
-  },
-  {
-    name: "Dr. John Maarouf, DO",
-    title: "Concierge and Telemedicine",
-    subtitle: "Family & Sports Medicine",
-    image: "/images/JohnMaarouf.jpeg",
-    bio: "Dr. Maarouf is a dual board certified physician in Family and Sports Medicine who specializes in non surgical orthopedics and orthobiologics to remedy common injuries for every level of athlete like knee pain, meniscus injuries, rotator cuff tears, tennis/golfers elbow, plantar fasciitis and more. With a calm presence, sharp diagnostics, and an eye for detail, Dr. Maarouf guides personalized care that gets results.",
-  },
-  {
-    name: "Dr. Carmen Ramirez",
-    title: "Physician",
-    subtitle: "Clinical Care",
-    image: "/images/CarmenRamirez.png",
-  },
-];
 
 export default async function AboutPage() {
   const cms = await getCmsPageContent("about");
@@ -121,25 +94,7 @@ export default async function AboutPage() {
       <EditorialSection id="team">
         <EditorialEyebrow>THE TEAM</EditorialEyebrow>
         <h2 className="mt-4 font-serif text-3xl text-[#1f1a15] md:text-4xl">Meet The Team</h2>
-        <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {aboutTeam.map((member) => (
-            <article key={member.name} className={`${editorialPanel} p-4`}>
-              <div className="relative h-60 overflow-hidden rounded-sm border border-[#e4d9c8] bg-[#f7efe3]">
-                <Image
-                  src={member.image}
-                  alt={member.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 20vw"
-                  className={member.name === "Dr. Karl Ryan, DDS" ? "object-contain object-center p-0" : "object-contain object-top p-2"}
-                />
-              </div>
-              <p className="mt-4 text-lg text-[#2b2218]">{member.name}</p>
-              <p className="text-sm text-[#6f6251]">{member.title}</p>
-              <p className="text-xs text-[#8f6f3e]">{member.subtitle}</p>
-              {"bio" in member ? <p className="mt-3 text-sm leading-relaxed text-[#5f5344]">{member.bio}</p> : null}
-            </article>
-          ))}
-        </div>
+        <AboutTeamGrid />
       </EditorialSection>
     </div>
   );

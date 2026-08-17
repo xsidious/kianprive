@@ -6,7 +6,6 @@ import {
   coreLabPanels,
   ivPricingLines,
   labPanelPricingLines,
-  personalTrainingMenu,
   pricedMenuLines,
   providerVisitMenu,
 } from "@/lib/services/pricing-menus";
@@ -425,11 +424,11 @@ export const serviceCatalog: ServiceDetail[] = [
     image: "/images/Peptidesandexosomes.jpeg",
     showPeptidesExperience: true,
     description:
-      "Physician-guided compound therapy with GLP-1 and peptide protocols—secure intake, clinical review, and personalized pathways.",
+      "Physician-prescribed compound therapy with GLP-1 and peptide protocols. Browse the catalog on Privé Therapeutics. These therapies are not sold in the KIAN retail shop—they are prescribed as part of a wellness plan, including the first order and every refill.",
     details: [
-      "Includes injectable and sublingual pathway options selected from your intake and clinical profile.",
-      "If clinically indicated, you are routed to a physician consultation before approval.",
-      "Once approved, you can proceed with booking and purchasing through the program workflow.",
+      "Complete secure intake for physician review of your history, labs, and goals.",
+      "If clinically indicated, a KIAN Privé physician prescribes a personalized protocol.",
+      "Initial orders and refills are fulfilled only under an active prescription as part of your wellness plan.",
     ],
     membershipNotes: [
       "Includes monthly pathway options and follow-up optimization.",
@@ -549,36 +548,6 @@ export const serviceCatalog: ServiceDetail[] = [
     memberPrice: 280,
     pricing: pricedMenuLines(providerVisitMenu.inPerson),
     availability: ["In-clinic physician visits. Virtual options available under Telemedicine."],
-  },
-  {
-    slug: "personal-training",
-    title: "Personal Training",
-    image: "/images/heroes/training-hero.jpg",
-    description:
-      "One-on-one training with consultations, assessments, single sessions, packages, and weekly memberships designed around your performance goals.",
-    details: [
-      "Start with a 30-minute consult or a 60-minute comprehensive fitness assessment.",
-      "Session lengths from 30 to 60 minutes, plus premium and couples options.",
-      "Packages and weekly memberships for consistent progress.",
-    ],
-    includes: [
-      "Initial consultation or full assessment",
-      "Personalized session programming",
-      "Package and membership options",
-    ],
-    guestPrice: 125,
-    memberPrice: 100,
-    pricing: [
-      "Consultations & assessments",
-      ...pricedMenuLines(personalTrainingMenu.assessments),
-      "Single sessions",
-      ...pricedMenuLines(personalTrainingMenu.sessions),
-      "Packages",
-      ...pricedMenuLines(personalTrainingMenu.packages),
-      "Monthly membership",
-      ...pricedMenuLines(personalTrainingMenu.membership),
-    ],
-    availability: ["Facility-based training coordinated through KIAN Privé."],
   },
 ];
 

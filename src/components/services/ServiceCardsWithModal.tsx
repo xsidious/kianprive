@@ -8,6 +8,7 @@ import { PeptidesInteractiveShowcase } from "@/components/services/PeptidesInter
 import { NUTRITION_SERVICE_SLUG } from "@/lib/media/nutrition";
 import type { ServiceListingItem } from "@/lib/services/types";
 import { formatUsd } from "@/lib/services/pricing-menus";
+import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
 
 function isNutritionService(service: Pick<ServiceListingItem, "slug">) {
   return service.slug === NUTRITION_SERVICE_SLUG;
@@ -15,13 +16,13 @@ function isNutritionService(service: Pick<ServiceListingItem, "slug">) {
 
 function getServiceBookingHref(service: ServiceListingItem) {
   if (service.externalBookingUrl) return service.externalBookingUrl;
-  if (service.slug === "glp1-peptides") return `/services/${service.slug}`;
+  if (service.slug === "glp1-peptides") return PRIVETHERAPEUTICS_URL;
   return service.slug ? `/book-online?service=${service.slug}` : "/book-online";
 }
 
 function getServiceCtaLabel(service: ServiceListingItem) {
   if (service.externalBookingUrl) return "Book with Partner";
-  if (service.slug === "glp1-peptides") return "Learn More";
+  if (service.slug === "glp1-peptides") return "Browse Peptides";
   return "Book Now";
 }
 
@@ -409,7 +410,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                     {selectedService.externalBookingUrl
                       ? "Book on Partner Site"
                       : selectedService.slug === "glp1-peptides"
-                        ? "Learn More"
+                        ? "Browse Peptides"
                         : "Book This Service"}
                   </Link>
                 );

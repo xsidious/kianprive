@@ -173,30 +173,6 @@ export const providerVisitMenu = {
   peptide: [{ name: "Peptide Optimization Consultation", guest: 100, member: memberFromGuest(100) }] satisfies PricedMenuItem[],
 };
 
-export const personalTrainingMenu = {
-  assessments: [
-    { name: "Initial Fitness Consultation (30 min)", guest: 75, member: memberFromGuest(75) },
-    { name: "Comprehensive Fitness Assessment (60 min)", guest: 150, member: memberFromGuest(150) },
-  ] satisfies PricedMenuItem[],
-  sessions: [
-    { name: "Personal Training (30 min)", guest: 60, member: memberFromGuest(60) },
-    { name: "Personal Training (45 min)", guest: 85, member: memberFromGuest(85) },
-    { name: "Personal Training (60 min)", guest: 125, member: memberFromGuest(125) },
-    { name: "Premium Session", guest: 150, member: memberFromGuest(150) },
-    { name: "Couples Session", guest: 175, member: memberFromGuest(175) },
-  ] satisfies PricedMenuItem[],
-  packages: [
-    { name: "5 Sessions", guest: 600, member: memberFromGuest(600) },
-    { name: "10 Sessions", guest: 1200, member: memberFromGuest(1200) },
-    { name: "20 Sessions", guest: 2400, member: memberFromGuest(2400) },
-  ] satisfies PricedMenuItem[],
-  membership: [
-    { name: "1× / Week", guest: 500, member: memberFromGuest(500) },
-    { name: "2× / Week", guest: 1000, member: memberFromGuest(1000) },
-    { name: "3× / Week", guest: 1500, member: memberFromGuest(1500) },
-  ] satisfies PricedMenuItem[],
-};
-
 export const icoonePricedMenu = {
   packages40: [
     { name: "Single session — 40 min", guest: 175, member: memberFromGuest(175) },

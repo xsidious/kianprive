@@ -22,7 +22,6 @@ const SERVICE_OPTIONS = [
   "lab-panel-hormone-optimization",
   "lab-panel-cardio",
   "physician-visit",
-  "personal-training",
   "beauty-hair-nails",
   "inbody-scan",
   "microneedling-with-exosomes",

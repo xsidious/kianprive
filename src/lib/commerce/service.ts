@@ -4,81 +4,51 @@ import { getCatalogProduct } from "@/lib/commerce/products";
 import { calculateShipping, getShippingConfig } from "@/lib/commerce/shipping";
 import { stripe } from "@/lib/stripe";
 
+async function findRetailProduct(idOrSlug: string) {
+  const byId = await prisma.product.findUnique({ where: { id: idOrSlug } });
+  if (byId) return byId.catalogKind === "CLINICAL" ? null : byId;
+
+  const bySlug = await prisma.product.findUnique({ where: { slug: idOrSlug } });
+  if (bySlug) return bySlug.catalogKind === "CLINICAL" ? null : bySlug;
+
+  return undefined;
+}
+
+/** Resolve a shop product without overwriting admin-saved prices or copy. */
 async function resolveProduct(productIdOrSlug: string) {
+  const existing = await findRetailProduct(productIdOrSlug);
+  if (existing !== undefined) return existing;
+
+  if (productIdOrSlug === "exosomes") {
+    const renamed = await findRetailProduct("korean-skincare");
+    if (renamed !== undefined) return renamed;
+  }
+
   const catalog = getCatalogProduct(productIdOrSlug);
-
-  const byId = await prisma.product.findUnique({ where: { id: productIdOrSlug } });
-  if (byId) {
-    if (!catalog) return byId;
-    return prisma.product.update({
-      where: { id: byId.id },
-      data: {
-        slug: catalog.slug,
-        title: catalog.name,
-        category: catalog.category,
-        price: catalog.price,
-        featuredImage: catalog.image,
-        status: "ACTIVE",
-      },
-    });
-  }
-
-  const bySlug = await prisma.product.findUnique({ where: { slug: productIdOrSlug } });
-  if (bySlug) {
-    if (!catalog) return bySlug;
-    return prisma.product.update({
-      where: { id: bySlug.id },
-      data: {
-        slug: catalog.slug,
-        title: catalog.name,
-        category: catalog.category,
-        price: catalog.price,
-        featuredImage: catalog.image,
-        status: "ACTIVE",
-      },
-    });
-  }
-
-  // Legacy slug for renamed Korean Skincare product
-  if (catalog?.id === "exosomes") {
-    const legacy = await prisma.product.findUnique({ where: { slug: "exosomes" } });
-    if (legacy) {
-      return prisma.product.update({
-        where: { id: legacy.id },
-        data: {
-          slug: catalog.slug,
-          title: catalog.name,
-          category: catalog.category,
-          price: catalog.price,
-          featuredImage: catalog.image,
-          status: "ACTIVE",
-        },
-      });
-    }
-  }
-
   if (!catalog) return null;
 
-  return prisma.product.upsert({
-    where: { slug: catalog.slug },
-    update: {
-      title: catalog.name,
-      category: catalog.category,
-      price: catalog.price,
-      featuredImage: catalog.image,
-      status: "ACTIVE",
-    },
-    create: {
-      slug: catalog.slug,
-      title: catalog.name,
-      description: `${catalog.name} by KIAN Privé`,
-      category: catalog.category,
-      price: catalog.price,
-      featuredImage: catalog.image,
-      status: "ACTIVE",
-      inventoryQty: 250,
-    },
-  });
+  const already = await findRetailProduct(catalog.slug);
+  if (already !== undefined) return already;
+
+  try {
+    return await prisma.product.create({
+      data: {
+        slug: catalog.slug,
+        title: catalog.name,
+        description: catalog.description ?? `${catalog.name} by KIAN Privé`,
+        category: catalog.category,
+        price: catalog.price,
+        featuredImage: catalog.image,
+        status: "ACTIVE",
+        catalogKind: "RETAIL",
+        inventoryQty: 250,
+      },
+    });
+  } catch {
+    const raced = await findRetailProduct(catalog.slug);
+    if (raced !== undefined) return raced;
+    return null;
+  }
 }
 
 export async function createOrUpdateCartItem(input: {
@@ -91,6 +61,9 @@ export async function createOrUpdateCartItem(input: {
   const product = await resolveProduct(input.productId);
   if (!product) {
     throw new Error("Product not found");
+  }
+  if (product.catalogKind === "CLINICAL") {
+    throw new Error("Prescription therapies are not sold in the shop.");
   }
   if (Number(product.price) <= 0) {
     throw new Error("This product is not available for purchase yet.");
@@ -161,7 +134,7 @@ export async function replaceCartItems(input: {
   for (const item of input.items) {
     if (item.quantity <= 0) continue;
     const product = await resolveProduct(item.productId);
-    if (!product || Number(product.price) <= 0) continue;
+    if (!product || product.catalogKind === "CLINICAL" || Number(product.price) <= 0) continue;
     await prisma.cartItem.create({
       data: {
         cartId: cart.id,

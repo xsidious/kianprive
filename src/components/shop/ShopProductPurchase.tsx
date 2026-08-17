@@ -57,7 +57,7 @@ export function ShopProductPurchase({ product }: Props) {
       {canPurchase ? (
         <p className="text-3xl text-[#1f1a15]">${price.toFixed(2)}</p>
       ) : (
-        <p className="text-sm tracking-[0.08em] text-[#8f6f3e]">PRICING COMING SOON</p>
+        <p className="text-sm tracking-[0.08em] text-[#8f6f3e]">COMING SOON</p>
       )}
 
       <div className="flex flex-wrap gap-3">

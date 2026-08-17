@@ -17,7 +17,6 @@ export const SERVICE_COMMISSION_POLICY = {
     "lab-panel-hormone-optimization": 10,
     "lab-panel-cardio": 10,
     "iv-therapy": 10,
-    "personal-training": 10,
     /** Peptide / GLP pathway referral sales */
     "glp1-peptides": 10,
   } as Record<string, number>,

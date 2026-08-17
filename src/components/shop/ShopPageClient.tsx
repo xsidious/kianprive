@@ -15,73 +15,42 @@ import {
   editorialInput,
   editorialPanel,
 } from "@/components/ui/editorial-primitives";
-import { catalogProducts, getCatalogDisplayPrice, isCatalogProductPriced, shopCategories } from "@/lib/commerce/products";
-import type { ClinicalShopProduct } from "@/lib/commerce/clinical-shop";
 import type { CatalogProduct } from "@/lib/commerce/products";
+import {
+  getCatalogDisplayPrice,
+  isCatalogProductComingSoon,
+  isCatalogProductPriced,
+  shopCategoryList,
+} from "@/lib/commerce/products";
+import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
 
-type ShopItem = CatalogProduct | ClinicalShopProduct;
-
-function isClinical(product: ShopItem): product is ClinicalShopProduct {
-  return "isClinical" in product && product.isClinical === true;
-}
-
-type Props = {
-  isLoggedIn?: boolean;
-  clinicalProducts?: ClinicalShopProduct[];
-};
-
-export function ShopPageClient({ isLoggedIn = false, clinicalProducts = [] }: Props) {
+export function ShopPageClient({ products }: { products: CatalogProduct[] }) {
   const [category, setCategory] = useState("All");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("featured");
   const { itemCount, addItem, openCart, subtotal } = useCart();
-
-  const categories = useMemo(() => {
-    const clinicalCats = Array.from(new Set(clinicalProducts.map((p) => p.category))).sort((a, b) =>
-      a.localeCompare(b),
-    );
-    const base: string[] = [...shopCategories];
-    for (const cat of clinicalCats) {
-      if (!base.includes(cat)) base.push(cat);
-    }
-    return base;
-  }, [clinicalProducts]);
-
-  const allProducts = useMemo(() => {
-    if (!isLoggedIn || !clinicalProducts.length) return catalogProducts as ShopItem[];
-    return [...catalogProducts, ...clinicalProducts] as ShopItem[];
-  }, [isLoggedIn, clinicalProducts]);
+  const categories = useMemo(() => shopCategoryList(products), [products]);
 
   const filteredProducts = useMemo(() => {
-    let list = allProducts.filter((p) => (category === "All" ? true : p.category === category));
+    let list = products.filter((p) => (category === "All" ? true : p.category === category));
     list = list.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
     if (sort === "price-asc") {
-      list = [...list].sort((a, b) => {
-        if (isClinical(a) && isClinical(b)) return a.name.localeCompare(b.name);
-        if (isClinical(a)) return 1;
-        if (isClinical(b)) return -1;
-        return a.price - b.price;
-      });
+      list = [...list].sort((a, b) => getCatalogDisplayPrice(a) - getCatalogDisplayPrice(b));
     }
     if (sort === "price-desc") {
-      list = [...list].sort((a, b) => {
-        if (isClinical(a) && isClinical(b)) return a.name.localeCompare(b.name);
-        if (isClinical(a)) return 1;
-        if (isClinical(b)) return -1;
-        return b.price - a.price;
-      });
+      list = [...list].sort((a, b) => getCatalogDisplayPrice(b) - getCatalogDisplayPrice(a));
     }
     return list;
-  }, [allProducts, category, search, sort]);
+  }, [products, category, search, sort]);
 
   return (
     <div className="-mt-[1px]">
       <CinematicHero
         eyebrow="SHOP"
         lineOne="Curated essentials."
-        lineTwo="Clinical intent."
-        lineThree="Home continuum."
-        description="Hand-selected products designed to extend your in-clinic results at home—from nutraceutical support to skin performance essentials."
+        lineTwo="Home continuum."
+        lineThree="Physician-guided care."
+        description="Hand-selected retail products designed to extend your in-clinic results at home—from nutraceutical support to skin performance essentials."
         primaryCta={{ label: "Browse Products", href: "#products" }}
         secondaryCta={{ label: "View Cart", href: "/cart" }}
         imageSrc={pageHeroes.shop.src}
@@ -93,20 +62,19 @@ export function ShopPageClient({ isLoggedIn = false, clinicalProducts = [] }: Pr
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
             <EditorialEyebrow>CATALOG</EditorialEyebrow>
-            <h2 className="mt-3 font-serif text-3xl text-[#1f1a15]">Wellness &amp; beauty</h2>
-            {isLoggedIn && clinicalProducts.length > 0 ? (
-              <p className="mt-2 max-w-2xl text-sm text-[#6f6251]">
-                Member access unlocked: {clinicalProducts.length} clinical therapies &amp; peptides are included
-                below. Pricing is shared only when your clinician recommends a plan.
-              </p>
-            ) : !isLoggedIn ? (
-              <p className="mt-2 max-w-2xl text-sm text-[#6f6251]">
-                <Link href="/login?callbackUrl=/shop" className="text-[#8f6f3e] underline underline-offset-2">
-                  Sign in
-                </Link>{" "}
-                to browse our full peptides &amp; clinical therapeutics catalog.
-              </p>
-            ) : null}
+            <h2 className="mt-3 font-serif text-3xl text-[#1f1a15]">Wellness, beauty &amp; supplies</h2>
+            <p className="mt-2 max-w-2xl text-sm text-[#6f6251]">
+              Retail skincare, nutrients, and injection supplies — sterile water, pen tips, and needles. Peptides and
+              compound therapies are prescribed on Privé Therapeutics after clinical intake.
+            </p>
+            <a
+              href={PRIVETHERAPEUTICS_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-flex min-h-[40px] items-center text-[11px] tracking-[0.16em] text-[#8f6f3e] underline-offset-4 hover:underline"
+            >
+              BROWSE PEPTIDES ON PRIVÉ THERAPEUTICS
+            </a>
           </div>
           <p className={`${editorialPanel} px-4 py-2 text-sm text-[#3b3024]`}>
             Cart Items: <span className="text-[#8f6f3e]">{itemCount}</span>
@@ -176,10 +144,9 @@ export function ShopPageClient({ isLoggedIn = false, clinicalProducts = [] }: Pr
             </div>
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {filteredProducts.map((product) => {
-                const clinical = isClinical(product);
-                const remoteImage = product.image.startsWith("http");
+                const comingSoon = isCatalogProductComingSoon(product);
                 return (
-                  <article key={`${clinical ? "clinical" : "retail"}-${product.id}`} className={`overflow-hidden ${editorialPanel}`}>
+                  <article key={product.id} className={`overflow-hidden ${editorialPanel}`}>
                     <Link href={`/shop/${product.slug}`} className="relative block h-56 bg-[#f3ebe0]">
                       <Image
                         src={product.image}
@@ -187,16 +154,16 @@ export function ShopPageClient({ isLoggedIn = false, clinicalProducts = [] }: Pr
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                         quality={80}
-                        className={remoteImage ? "object-cover transition hover:scale-[1.02]" : "object-contain p-3"}
-                        unoptimized={remoteImage}
+                        className={`object-contain p-3 ${comingSoon ? "opacity-70" : "transition hover:scale-[1.02]"}`}
                       />
+                      {comingSoon ? (
+                        <span className="absolute left-3 top-3 rounded-sm bg-[#1f1a15]/85 px-2.5 py-1 text-[10px] tracking-[0.16em] text-white">
+                          COMING SOON
+                        </span>
+                      ) : null}
                     </Link>
                     <div className="p-5">
-                      <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">
-                        {product.category.toUpperCase()}
-                        {clinical && product.isPrescription ? " · RX" : ""}
-                        {clinical ? " · CLINICAL" : ""}
-                      </p>
+                      <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">{product.category.toUpperCase()}</p>
                       <Link href={`/shop/${product.slug}`}>
                         <h2 className="mt-2 font-serif text-xl text-[#2b2218] transition hover:text-[#8a682e]">
                           {product.name}
@@ -205,31 +172,29 @@ export function ShopPageClient({ isLoggedIn = false, clinicalProducts = [] }: Pr
                       {product.summary ? (
                         <p className="mt-2 line-clamp-2 text-sm text-[#6f6251]">{product.summary}</p>
                       ) : null}
-                      {clinical ? (
-                        <p className="mt-3 text-sm text-[#8f6f3e]">Member clinical · pricing via clinician plan</p>
-                      ) : product.redirectUrl ? (
+                      {product.redirectUrl ? (
                         <p className="mt-3 text-sm text-[#6f6251]">Variable options on product page.</p>
-                      ) : product.options?.length && isCatalogProductPriced(product) ? (
+                      ) : comingSoon ? (
+                        <p className="mt-3 text-sm text-[#8f6f3e]">Coming soon</p>
+                      ) : product.options?.length ? (
                         <p className="mt-3 text-sm text-[#6f6251]">
                           From ${getCatalogDisplayPrice(product)} · choose size
                         </p>
-                      ) : isCatalogProductPriced(product) ? (
-                        <p className="mt-3 text-2xl text-[#1f1a15]">${product.price}</p>
                       ) : (
-                        <p className="mt-3 text-sm text-[#8f6f3e]">Pricing coming soon</p>
+                        <p className="mt-3 text-2xl text-[#1f1a15]">${product.price}</p>
                       )}
                       <div className="mt-4 flex flex-col gap-2">
                         <Link href={`/shop/${product.slug}`} className={editorialCtaSecondary}>
                           VIEW DETAILS
                         </Link>
-                        {clinical ? (
-                          <Link href="/dashboard/intake" className={editorialCtaPrimary}>
-                            REQUEST VIA INTAKE
-                          </Link>
-                        ) : product.redirectUrl ? (
+                        {product.redirectUrl ? (
                           <a href={product.redirectUrl} target="_blank" rel="noreferrer" className={editorialCtaPrimary}>
                             GO TO PRODUCT
                           </a>
+                        ) : comingSoon ? (
+                          <span className="inline-flex min-h-[44px] items-center justify-center rounded-sm border border-[#e4d9c8] px-5 text-[11px] tracking-[0.16em] text-[#8a7a66]">
+                            COMING SOON
+                          </span>
                         ) : product.options?.length && isCatalogProductPriced(product) ? (
                           <Link href={`/shop/${product.slug}`} className={editorialCtaPrimary}>
                             SELECT SIZE

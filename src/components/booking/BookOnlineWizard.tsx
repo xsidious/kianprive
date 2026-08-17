@@ -342,7 +342,7 @@ export function BookOnlineWizard() {
 
   function toggleService(id: string) {
     if (id === "glp1-peptides") {
-      window.location.href = "/intake/peptides-glp";
+      window.location.href = "/services/glp1-peptides#consultants";
       return;
     }
     const next = computeNextServices(selectedServices, id);

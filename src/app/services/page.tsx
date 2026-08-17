@@ -34,7 +34,6 @@ import {
   ivAddOnMenu,
   ivDripMenu,
   ivInjectionMenu,
-  personalTrainingMenu,
   providerVisitMenu,
 } from "@/lib/services/pricing-menus";
 import {
@@ -45,6 +44,7 @@ import {
   membershipPolicySummary,
 } from "@/lib/policies/kian-prive-policies";
 import { buildSeoMetadata } from "@/lib/seo/metadata";
+import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
 
 export async function generateMetadata(): Promise<Metadata> {
   const cms = await getCmsPageContent("services");
@@ -176,7 +176,6 @@ const jumpNav = [
   { href: "#iv-therapy", label: "IV Therapy" },
   { href: "#lab-panels", label: "Lab Panels" },
   { href: "#provider-visits", label: "Provider Visits" },
-  { href: "#personal-training", label: "Training" },
   { href: "#compounding-peptides", label: "Peptides" },
   { href: "#partners", label: "Partners" },
 ];
@@ -409,40 +408,6 @@ export default async function ServicesPage() {
         />
       </EditorialSection>
 
-      <EditorialSection id="personal-training">
-        <SectionHeader
-          eyebrow="PERSONAL TRAINING"
-          title="Consults, sessions, packages, and weekly memberships."
-        />
-        <div className="mt-10 grid gap-5 lg:grid-cols-2">
-          <PricedMenuTable
-            title="Consultations & assessments"
-            items={personalTrainingMenu.assessments}
-            bookHref="/book-online?service=personal-training"
-          />
-          <PricedMenuTable
-            title="Single sessions"
-            items={personalTrainingMenu.sessions}
-            bookHref="/book-online?service=personal-training"
-          />
-          <PricedMenuTable
-            title="Session packages"
-            items={personalTrainingMenu.packages}
-            bookHref="/book-online?service=personal-training"
-          />
-          <PricedMenuTable
-            title="Monthly membership"
-            items={personalTrainingMenu.membership}
-            bookHref="/book-online?service=personal-training"
-          />
-        </div>
-        <SectionCtaBar
-          bookHref="/book-online?service=personal-training"
-          detailsHref="/services/personal-training"
-          bookLabel="Book training"
-        />
-      </EditorialSection>
-
       <EditorialSection dark>
         <EditorialEyebrow tone="dark">TAKE-HOME CARE</EditorialEyebrow>
         <h2 className="mt-4 max-w-3xl font-serif text-3xl text-[#f7f1e8] sm:text-4xl md:text-[2.75rem]">
@@ -468,7 +433,7 @@ export default async function ServicesPage() {
         <SectionHeader
           eyebrow="PHYSICIAN-LED PEPTIDE THERAPY"
           title="Over 100 peptides, precisely prescribed."
-          description="Board-certified physicians curate personalized protocols from a clinical formulary spanning longevity, recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. Peptide optimization consult: $100. Complete secure intake first for physician review."
+          description="Board-certified physicians prescribe personalized protocols from a clinical formulary spanning longevity, recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. Browse the peptide catalog on Privé Therapeutics. These therapies are not sold in the KIAN shop—initial orders and refills require a physician prescription. Peptide optimization consult: $100."
         />
         <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {peptideCategories.map((category) => (
@@ -480,15 +445,21 @@ export default async function ServicesPage() {
           detailsHref="/services/glp1-peptides"
           bookLabel="Book consult · $100"
         />
-        <div className="mt-4">
+        <div className="mt-4 flex flex-wrap gap-3">
           <a
-            href="https://www.privetherapeutics.solutions/"
+            href={PRIVETHERAPEUTICS_URL}
             target="_blank"
             rel="noreferrer"
+            className="inline-flex min-h-[44px] items-center rounded-sm bg-[#b78d4b] px-5 text-[11px] tracking-[0.16em] text-white transition hover:bg-[#a37c3f]"
+          >
+            BROWSE PEPTIDES
+          </a>
+          <Link
+            href="/services/glp1-peptides#consultants"
             className="inline-flex min-h-[44px] items-center rounded-sm border border-[#b78d4b80] px-5 text-[11px] tracking-[0.16em] text-[#3b3024] transition hover:bg-[#fff6e8]"
           >
-            START INTAKE
-          </a>
+            MEET CONSULTANTS
+          </Link>
         </div>
       </EditorialSection>
 

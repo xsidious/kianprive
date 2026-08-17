@@ -103,10 +103,10 @@ export default function MemberIntakePage() {
         </div>
         <div className="flex gap-2">
           <Link
-            href="/dashboard/therapeutics"
+            href="/intake/peptides-glp"
             className="rounded-full border border-[#d8cbb5] px-4 py-2 text-sm text-[#6f6251]"
           >
-            Catalog
+            Start intake
           </Link>
           <Link href="/dashboard" className="rounded-full border border-[#d8cbb5] px-4 py-2 text-sm text-[#6f6251]">
             Dashboard

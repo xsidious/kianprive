@@ -40,7 +40,6 @@ export const bookingServiceOptions: BookingServiceOption[] = [
   bookingOption("comprehensive-bloodwork", 224, 179, 30),
   ...coreLabPanels.map((panel) => labBooking(panel.slug, panel.slug === "lab-panel-executive" ? 45 : 30)),
   ...addOnLabPanels.map((panel) => labBooking(panel.slug)),
-  bookingOption("personal-training", 125, memberFromGuest(125), 60),
   bookingOption("beauty-hair-nails", 120, 96, 60),
   bookingOption("inbody-scan", 30, 0, 20),
   bookingOption("microneedling-with-exosomes", 600, 480, 60),

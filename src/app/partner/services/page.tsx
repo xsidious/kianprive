@@ -25,7 +25,6 @@ const SERVICE_TITLES: Record<string, string> = {
   "lab-panel-hormone-optimization": "Hormone Optimization Panel",
   "lab-panel-cardio": "Cardiovascular Risk Panel",
   "physician-visit": "Physician Visit",
-  "personal-training": "Personal Training",
   "beauty-hair-nails": "Beauty · Hair · Nails",
   "inbody-scan": "InBody Scan",
   "microneedling-with-exosomes": "Microneedling with Exosomes",

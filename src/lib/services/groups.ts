@@ -62,13 +62,6 @@ export const serviceMenuCategories: ServiceMenuCategory[] = [
     ],
   },
   {
-    id: "training",
-    eyebrow: "TRAINING & PERFORMANCE",
-    title: "Personal Training",
-    description: "Consultations, assessments, sessions, packages, and weekly training memberships.",
-    slugs: ["personal-training"],
-  },
-  {
     id: "compounding-peptides",
     eyebrow: "COMPOUNDING & PEPTIDES",
     title: "Compound Therapy",
@@ -104,7 +97,6 @@ export const coreServices: ServiceListingItem[] = [
   bySlug("icoone-laser"),
   bySlug("iv-therapy"),
   bySlug("nutrition"),
-  bySlug("personal-training"),
   bySlug("microneedling-with-exosomes"),
   bySlug("hair-restoration"),
   bySlug("korean-organic-skincare"),
@@ -197,20 +189,7 @@ export const sameLocationAddOns: ServiceListingItem[] = [
 
 export const differentLocationAddOns: ServiceListingItem[] = [];
 
-export const gymServices: ServiceListingItem[] = [
-  {
-    slug: "adapt-fitness",
-    title: "Adapt",
-    image: "/images/heroes/training-hero.jpg",
-    partnerName: "Adapt",
-    partnerLogo: "/images/providers/vcs-vitamin-c-to-sea.png",
-    externalBookingUrl: "/contact",
-    isPartnerService: true,
-    description: "Gym services partner focused on training support, recovery, and performance-driven movement programs.",
-    includes: ["Performance movement", "Conditioning support", "Recovery integration"],
-    availability: ["Partner access coordinated through contact form."],
-  },
-];
+export const gymServices: ServiceListingItem[] = [];
 
 export const partnerAddOnServices: ServiceListingItem[] = [
   { ...bySlug("mindtap"), partnerName: "MindTap", partnerLogo: "/images/providers/mindtap.png", externalBookingUrl: "/contact", isPartnerService: true },
@@ -236,7 +215,6 @@ export const preferredProviders = [
   { name: "PEMF", logo: "/images/providers/omg-aesthetics.png", href: "/contact" },
   { name: "Far Infrared", logo: "/images/providers/facial-design-studio.png", href: "/contact" },
   { name: "MindTap", logo: "/images/providers/mindtap.png", href: "/contact" },
-  { name: "Adapt", logo: "/images/providers/vcs-vitamin-c-to-sea.png", href: "/contact" },
 ];
 
 export const featuredProviderLogos = [
