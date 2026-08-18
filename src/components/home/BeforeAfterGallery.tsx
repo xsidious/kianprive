@@ -19,8 +19,7 @@ const beforeAfterByCategory: Record<Category, ShowcaseItem[]> = {
   Body: [
     {
       treatment: "Icoone® Body Contouring",
-      beforeImage: "/images/results/body-before.webp",
-      afterImage: "/images/results/body-after.webp",
+      combinedImage: "/images/results/body-before-after.webp",
     },
   ],
   Face: [
@@ -48,6 +47,29 @@ const beforeAfterByCategory: Record<Category, ShowcaseItem[]> = {
 
 const categories: Category[] = ["Body", "Face", "Hair"];
 
+function ResultImage({
+  src,
+  alt,
+  sizes,
+}: {
+  src: string;
+  alt: string;
+  sizes: string;
+}) {
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      width={1600}
+      height={1600}
+      sizes={sizes}
+      quality={85}
+      className="h-auto w-full bg-[#f3ebe0]"
+      loading="lazy"
+    />
+  );
+}
+
 export function BeforeAfterGallery() {
   const [active, setActive] = useState<Category>("Body");
   const items = beforeAfterByCategory[active];
@@ -62,8 +84,8 @@ export function BeforeAfterGallery() {
             onClick={() => setActive(category)}
             className={`rounded-sm border px-4 py-2 text-[11px] tracking-[0.16em] transition ${
               active === category
-                ? "border-[#7a5c32] bg-[#fff3df] text-[#5c4524]"
-                : "border-[#e4d9c8] bg-white text-[#5f5344] hover:bg-[#fffaf2]"
+                ? "border-[#7a5c32] bg-[#fff3df] text-[#5c4524] shadow-[0_1px_0_rgba(183,141,75,0.25)]"
+                : "border-[#e4d9c8] bg-white text-[#5f5344] hover:border-[#c9b48a] hover:bg-[#fffaf2]"
             }`}
           >
             {category.toUpperCase()}
@@ -74,49 +96,37 @@ export function BeforeAfterGallery() {
         {items.map((item) => (
           <article
             key={item.treatment}
-            className={`rounded-sm border border-[#e4d9c8] bg-[#fffcf7] p-4 ${item.combinedImage ? "lg:col-span-2" : ""}`}
+            className={`rounded-sm border border-[#e4d9c8] bg-[#fffcf7] p-3 sm:p-4 ${item.combinedImage ? "lg:col-span-2" : ""}`}
           >
             <p className="mb-1 text-xs tracking-[0.18em] text-[#8f6f3e]">{active.toUpperCase()}</p>
             <p className="mb-3 font-serif text-lg text-[#2b2218]">{item.treatment}</p>
             {item.combinedImage ? (
-              <div className="relative aspect-square overflow-hidden rounded-sm border border-[#e4d9c8] bg-[#f3ebe0] sm:aspect-[4/3] lg:aspect-[16/10]">
-                <Image
+              <div className="overflow-hidden rounded-sm border border-[#e4d9c8] bg-[#f3ebe0]">
+                <ResultImage
                   src={item.combinedImage}
                   alt={`${item.treatment} before and after`}
-                  fill
                   sizes="100vw"
-                  quality={85}
-                  className="object-contain"
-                  loading="lazy"
                 />
               </div>
             ) : (
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
                   <p className="mb-2 text-xs tracking-[0.18em] text-[#8f6f3e]">BEFORE</p>
-                  <div className="relative h-64 overflow-hidden rounded-sm border border-[#e4d9c8] bg-[#f3ebe0] sm:h-80">
-                    <Image
+                  <div className="overflow-hidden rounded-sm border border-[#e4d9c8] bg-[#f3ebe0]">
+                    <ResultImage
                       src={item.beforeImage ?? ""}
                       alt={`${item.treatment} before`}
-                      fill
                       sizes="(max-width: 640px) 100vw, 50vw"
-                      quality={80}
-                      className="object-cover object-top"
-                      loading="lazy"
                     />
                   </div>
                 </div>
                 <div>
                   <p className="mb-2 text-xs tracking-[0.18em] text-[#8f6f3e]">AFTER</p>
-                  <div className="relative h-64 overflow-hidden rounded-sm border border-[#e4d9c8] bg-[#f3ebe0] sm:h-80">
-                    <Image
+                  <div className="overflow-hidden rounded-sm border border-[#e4d9c8] bg-[#f3ebe0]">
+                    <ResultImage
                       src={item.afterImage ?? ""}
                       alt={`${item.treatment} after`}
-                      fill
                       sizes="(max-width: 640px) 100vw, 50vw"
-                      quality={80}
-                      className="object-cover object-top"
-                      loading="lazy"
                     />
                   </div>
                 </div>

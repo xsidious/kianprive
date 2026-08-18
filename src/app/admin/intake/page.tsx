@@ -283,7 +283,11 @@ export default function AdminIntakePage() {
               }}
             />
 
-            <IntakeTherapyPicker intakeSubmissionId={selected.id} onSaved={() => void loadSubmissions()} />
+            <IntakeTherapyPicker
+              intakeSubmissionId={selected.id}
+              allowPricing
+              onSaved={() => void loadSubmissions()}
+            />
 
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="text-sm">

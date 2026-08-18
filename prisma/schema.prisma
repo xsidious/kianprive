@@ -95,6 +95,7 @@ model TherapeuticsIntakeSubmission {
   orders                   Order[]
   messages                 IntakeMessage[]
   therapyProposals         IntakeTherapyProposal[]
+  therapySubscriptions     TherapySubscription[]
   createdAt                DateTime                 @default(now())
   updatedAt                DateTime                 @updatedAt
 
@@ -121,10 +122,13 @@ model IntakeTherapyProposal {
   notes              String?                     @db.Text
   sentAt             DateTime?
   paidAt             DateTime?
+  billingInterval    TherapyBillingInterval @default(ONE_TIME)
+  intervalDays       Int?
   intakeSubmission   TherapeuticsIntakeSubmission @relation(fields: [intakeSubmissionId], references: [id], onDelete: Cascade)
   providerPartner    PartnerProfile              @relation(fields: [providerPartnerId], references: [id], onDelete: Cascade)
   order              Order?                      @relation(fields: [orderId], references: [id], onDelete: SetNull)
   items              IntakeTherapyItem[]
+  subscription       TherapySubscription?
   createdAt          DateTime                    @default(now())
   updatedAt          DateTime                    @updatedAt
 
@@ -137,6 +141,7 @@ model IntakeTherapyItem {
   proposalId    String
   productId     String
   quantity      Int                   @default(1)
+  unitPrice     Decimal?              @db.Decimal(10, 2)
   titleSnapshot String
   proposal      IntakeTherapyProposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   product       Product               @relation(fields: [productId], references: [id], onDelete: Restrict)
@@ -377,11 +382,14 @@ model Product {
   cartItems      CartItem[]
   partnerAssignments PartnerProductAssignment[]
   therapyItems   IntakeTherapyItem[]
+  vendorId       String?
+  vendor         Vendor?       @relation(fields: [vendorId], references: [id], onDelete: SetNull)
   collection     ProductCollection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
   @@index([catalogKind, status, category])
+  @@index([vendorId])
 }
 
 model ProductVariant {
@@ -453,12 +461,17 @@ model Order {
   stripeCheckoutSessionId String?   @unique
   stripePaymentIntentId String?     @unique
   authorizeNetTransId  String?      @unique
+  paymentToken         String?      @unique
+  paymentTokenExpiresAt DateTime?
   items                OrderItem[]
   fulfillments         Fulfillment[]
   payments             PaymentRecord[]
   refunds              RefundRecord[]
   messages             OrderMessage[]
   therapyProposal      IntakeTherapyProposal?
+  vendorPayables       VendorPayable[]
+  therapySubscriptionId String?
+  therapySubscription  TherapySubscription? @relation(fields: [therapySubscriptionId], references: [id], onDelete: SetNull)
   user                 User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
   partner              PartnerProfile? @relation(fields: [partnerId], references: [id], onDelete: SetNull)
   intakeSubmission     TherapeuticsIntakeSubmission? @relation(fields: [intakeSubmissionId], references: [id], onDelete: SetNull)
@@ -468,6 +481,7 @@ model Order {
   @@index([partnerId, createdAt])
   @@index([intakeSubmissionId])
   @@index([userId, createdAt])
+  @@index([therapySubscriptionId])
 }
 
 enum OrderMessageAuthor {
@@ -915,4 +929,95 @@ enum IntakeSubmissionStatus {
   APPROVED
   NEEDS_FOLLOW_UP
   DECLINED
+}
+
+enum VendorPayableStatus {
+  OPEN
+  SENT
+  PAID
+  CANCELED
+}
+
+model Vendor {
+  id             String          @id @default(cuid())
+  name           String
+  contactName    String?
+  email          String?
+  phone          String?
+  paymentMethod  String?
+  payoutDetails  Json?
+  notes          String?
+  products       Product[]
+  payables       VendorPayable[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model VendorPayable {
+  id            String              @id @default(cuid())
+  vendorId      String
+  orderId       String
+  status        VendorPayableStatus @default(OPEN)
+  amount        Decimal             @db.Decimal(10, 2)
+  currency      String              @default("USD")
+  reference     String              @unique
+  notes         String?
+  sentAt        DateTime?
+  paidAt        DateTime?
+  paidReference String?
+  vendor        Vendor              @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  order         Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  @@index([vendorId, status])
+  @@index([orderId])
+}
+
+enum TherapyBillingInterval {
+  ONE_TIME
+  WEEKLY
+  EVERY_2_WEEKS
+  EVERY_4_WEEKS
+  MONTHLY
+  EVERY_6_WEEKS
+  EVERY_8_WEEKS
+  CUSTOM
+}
+
+enum TherapySubscriptionStatus {
+  PENDING
+  ACTIVE
+  PAUSED
+  PAST_DUE
+  CANCELED
+}
+
+model TherapySubscription {
+  id                   String                     @id @default(cuid())
+  proposalId           String                     @unique
+  intakeSubmissionId   String
+  status               TherapySubscriptionStatus  @default(PENDING)
+  interval             TherapyBillingInterval
+  intervalDays         Int
+  amount               Decimal                    @db.Decimal(10, 2)
+  currency             String                     @default("USD")
+  email                String?
+  nextChargeAt         DateTime?
+  lastChargedAt        DateTime?
+  startedAt            DateTime?
+  canceledAt           DateTime?
+  customerProfileId    String?
+  paymentProfileId     String?
+  cardLast4            String?
+  failureCount         Int                        @default(0)
+  lastError            String?
+  proposal             IntakeTherapyProposal      @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  intakeSubmission     TherapeuticsIntakeSubmission @relation(fields: [intakeSubmissionId], references: [id], onDelete: Cascade)
+  orders               Order[]
+  createdAt            DateTime                   @default(now())
+  updatedAt            DateTime                   @updatedAt
+
+  @@index([status, nextChargeAt])
+  @@index([intakeSubmissionId])
 }

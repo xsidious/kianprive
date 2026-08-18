@@ -7,7 +7,7 @@ export function GetUpdatesSection() {
   const [subscribed, setSubscribed] = useState(false);
 
   return (
-    <div className="rounded-sm border border-[#e4d9c8] bg-[#fffcf7] p-6 sm:p-8">
+    <div className="rounded-sm border border-[#e4d9c8] bg-[linear-gradient(180deg,#fffdf9_0%,#fff6e8_100%)] p-6 sm:p-10">
       <p className="text-xs tracking-[0.22em] text-[#7a5c32]">GET UPDATES</p>
       <h2 className="mt-2 font-serif text-2xl text-[#1f1a15] sm:text-3xl md:text-4xl">Stay connected with KIAN Privé</h2>
       <p className="mt-3 max-w-2xl text-[#6f6251]">

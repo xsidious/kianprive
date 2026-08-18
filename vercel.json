@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/therapy-subscriptions",
+      "schedule": "0 14 * * *"
+    }
+  ]
+}

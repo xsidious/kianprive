@@ -38,6 +38,8 @@ type Product = {
   price: number | string;
   wholesalePrice?: number | string | null;
   catalogKind?: "RETAIL" | "CLINICAL";
+  vendorId?: string | null;
+  vendor?: { id: string; name: string } | null;
   category?: string | null;
   subcategory?: string | null;
   form?: string | null;
@@ -72,11 +74,14 @@ export default function AdminProductsPage() {
   const [search, setSearch] = useState("");
   const [editorOpen, setEditorOpen] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
+  const [vendors, setVendors] = useState<Array<{ id: string; name: string }>>([]);
   const [draft, setDraft] = useState({
     title: "",
     slug: "",
     description: "",
     price: "",
+    wholesalePrice: "",
+    vendorId: "",
     status: "ACTIVE",
     category: "General",
     isPrescription: false,
@@ -91,10 +96,18 @@ export default function AdminProductsPage() {
   });
 
   async function loadProducts() {
-    const response = await fetch("/api/admin/commerce/products");
-    if (!response.ok) return;
-    const payload = (await response.json()) as { products: Product[] };
-    setProducts(payload.products);
+    const [response, vendorsRes] = await Promise.all([
+      fetch("/api/admin/commerce/products"),
+      fetch("/api/admin/vendors"),
+    ]);
+    if (response.ok) {
+      const payload = (await response.json()) as { products: Product[] };
+      setProducts(payload.products);
+    }
+    if (vendorsRes.ok) {
+      const payload = (await vendorsRes.json()) as { vendors: Array<{ id: string; name: string }> };
+      setVendors(payload.vendors ?? []);
+    }
   }
 
   useEffect(() => {
@@ -108,6 +121,8 @@ export default function AdminProductsPage() {
       slug: "",
       description: "",
       price: "",
+      wholesalePrice: "",
+      vendorId: "",
       status: "ACTIVE",
       category: "General",
       isPrescription: false,
@@ -130,6 +145,8 @@ export default function AdminProductsPage() {
       slug: product.slug,
       description: product.description ?? "",
       price: String(product.price),
+      wholesalePrice: product.wholesalePrice != null ? String(product.wholesalePrice) : "",
+      vendorId: product.vendorId ?? "",
       status: product.status,
       category: product.category ?? "General",
       isPrescription: Boolean(product.isPrescription),
@@ -162,6 +179,8 @@ export default function AdminProductsPage() {
       slug: draft.slug,
       description: draft.description,
       price: Number(draft.price || 0),
+      wholesalePrice: draft.wholesalePrice === "" ? null : Number(draft.wholesalePrice),
+      vendorId: draft.vendorId || null,
       status: draft.status,
       category: draft.category,
       isPrescription: draft.isPrescription,
@@ -390,11 +409,22 @@ export default function AdminProductsPage() {
               value={draft.price}
               onChange={(e) => setDraft((d) => ({ ...d, price: e.target.value }))}
             />
-            {editing?.catalogKind === "CLINICAL" && editing.wholesalePrice != null ? (
-              <p className="flex items-center text-sm text-[#6f6251]">
-                Wholesale / cost reference: {money(editing.wholesalePrice)}
-              </p>
-            ) : null}
+            <input
+              className={adminInput}
+              placeholder="Wholesale / vendor cost"
+              type="number"
+              step="0.01"
+              value={draft.wholesalePrice}
+              onChange={(e) => setDraft((d) => ({ ...d, wholesalePrice: e.target.value }))}
+            />
+            <select className={adminSelect} value={draft.vendorId} onChange={(e) => setDraft((d) => ({ ...d, vendorId: e.target.value }))}>
+              <option value="">No vendor</option>
+              {vendors.map((vendor) => (
+                <option key={vendor.id} value={vendor.id}>
+                  {vendor.name}
+                </option>
+              ))}
+            </select>
             <select className={adminSelect} value={draft.status} onChange={(e) => setDraft((d) => ({ ...d, status: e.target.value }))}>
               {productStatuses.map((entry) => (
                 <option key={entry} value={entry}>

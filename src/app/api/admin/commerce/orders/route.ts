@@ -35,12 +35,8 @@ export async function GET() {
           status: true,
         },
       },
-      therapyProposal: {
-        select: {
-          id: true,
-          status: true,
-          notes: true,
-        },
+      vendorPayables: {
+        include: { vendor: { select: { id: true, name: true, email: true } } },
       },
     },
   });

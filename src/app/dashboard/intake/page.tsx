@@ -11,6 +11,14 @@ type TherapyInfo = {
   providerName: string;
   notes: string | null;
   items: Array<{ title: string; quantity: number }>;
+  billing?: {
+    status: string;
+    label: string;
+    amount: number;
+    nextChargeAt: string | null;
+    nextChargeLabel: string | null;
+    cardLast4: string | null;
+  } | null;
   order: {
     id: string;
     orderNumber: string;
@@ -195,6 +203,19 @@ export default function MemberIntakePage() {
                     </li>
                   ))}
                 </ul>
+                {row.therapy.billing ? (
+                  <p className="mt-3 text-sm text-[#6f6251]">
+                    Billed {row.therapy.billing.label}
+                    {row.therapy.billing.cardLast4 ? ` · Card ending ${row.therapy.billing.cardLast4}` : ""}
+                    {row.therapy.billing.nextChargeLabel
+                      ? ` · Next charge ${row.therapy.billing.nextChargeLabel}`
+                      : row.therapy.order?.paymentStatus !== "PAID"
+                        ? " after this first payment"
+                        : ""}
+                    {row.therapy.billing.status === "PAUSED" ? " · Paused" : ""}
+                    {row.therapy.billing.status === "PAST_DUE" ? " · Past due" : ""}
+                  </p>
+                ) : null}
                 {row.therapy.order &&
                 row.therapy.order.paymentStatus !== "PAID" &&
                 typeof row.therapy.order.total === "number" ? (

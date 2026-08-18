@@ -36,6 +36,7 @@ type TrackResult = {
     providerName: string;
     notes: string | null;
     items: Array<{ title: string; quantity: number }>;
+    billing?: { status: string; label: string; nextChargeLabel: string | null } | null;
     order: { orderNumber: string; total?: number; paymentStatus: string } | null;
   } | null;
 };
@@ -285,6 +286,14 @@ function TrackIntakeForm() {
                   </li>
                 ))}
               </ul>
+              {result.therapy.billing ? (
+                <p className="mt-3 text-sm text-[#6f6251]">
+                  Billed {result.therapy.billing.label}
+                  {result.therapy.billing.nextChargeLabel
+                    ? ` · Next charge ${result.therapy.billing.nextChargeLabel}`
+                    : ""}
+                </p>
+              ) : null}
               {result.therapy.order && result.therapy.order.paymentStatus !== "PAID" ? (
                 <p className="mt-3 text-sm text-[#6f6251]">Sign in to Accept &amp; Pay for this therapy plan.</p>
               ) : null}

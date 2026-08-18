@@ -61,6 +61,8 @@ export async function PATCH(req: Request, { params }: Params) {
           status: body.status as ProductStatus | undefined,
           inventoryQty: body.inventoryQty != null ? Number(body.inventoryQty) : undefined,
           price,
+          wholesalePrice: body.wholesalePrice === undefined ? undefined : asMoney(body.wholesalePrice) ?? null,
+          vendorId: body.vendorId === undefined ? undefined : body.vendorId || null,
           compareAtPrice: body.compareAtPrice === undefined ? undefined : asMoney(body.compareAtPrice) ?? null,
           sku: body.sku === "" ? null : body.sku,
           seoTitle: body.seoTitle,

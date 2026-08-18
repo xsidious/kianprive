@@ -7,6 +7,7 @@ import {
   patientFacingIntakeStatus,
 } from "@/lib/intake/tracking";
 import { listIntakeMessages } from "@/lib/intake/messages";
+import { formatChargeDate, intervalLabel } from "@/lib/commerce/therapy-billing";
 
 const querySchema = z.object({
   email: z.string().email(),
@@ -88,6 +89,14 @@ export async function POST(req: Request) {
             },
           },
           providerPartner: { select: { displayName: true } },
+          subscription: {
+            select: {
+              status: true,
+              interval: true,
+              intervalDays: true,
+              nextChargeAt: true,
+            },
+          },
         },
       },
     },
@@ -136,6 +145,23 @@ export async function POST(req: Request) {
                 title: item.titleSnapshot || item.product.title,
                 quantity: item.quantity,
               })),
+              billing:
+                proposal.subscription && proposal.subscription.interval !== "ONE_TIME"
+                  ? {
+                      status: proposal.subscription.status,
+                      label: intervalLabel(
+                        proposal.subscription.interval,
+                        proposal.subscription.intervalDays,
+                      ),
+                      nextChargeLabel: formatChargeDate(proposal.subscription.nextChargeAt),
+                    }
+                  : proposal.billingInterval !== "ONE_TIME"
+                    ? {
+                        status: "PENDING",
+                        label: intervalLabel(proposal.billingInterval, proposal.intervalDays ?? 0),
+                        nextChargeLabel: null,
+                      }
+                    : null,
               order: proposal.order
                 ? {
                     orderNumber: proposal.order.orderNumber,

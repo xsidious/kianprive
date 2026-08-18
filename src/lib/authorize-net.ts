@@ -106,6 +106,7 @@ function simulateTestCharge(input: ChargeInput) {
     transId: `TEST-${Date.now()}`,
     authCode: "TESTOK",
     testMode: true as const,
+    last4: card.slice(-4),
     raw: { mode: "test", last4: card.slice(-4), amount: input.amount },
   };
 }
@@ -161,6 +162,7 @@ export async function chargeAuthorizeNetCard(input: ChargeInput) {
     transactionResponse?: {
       transId?: string;
       authCode?: string;
+      accountNumber?: string;
       errors?: Array<{ errorText?: string }>;
       messages?: Array<{ description?: string }>;
     };
@@ -180,6 +182,143 @@ export async function chargeAuthorizeNetCard(input: ChargeInput) {
     transId,
     authCode: data.transactionResponse?.authCode ?? "",
     testMode: false as const,
+    last4: last4FromAccountNumber(data.transactionResponse?.accountNumber),
+    raw: data,
+  };
+}
+
+function last4FromAccountNumber(value?: string) {
+  const digits = digitsOnly(value || "");
+  return digits.length >= 4 ? digits.slice(-4) : null;
+}
+
+type AuthNetJson = {
+  messages?: { resultCode?: string; message?: Array<{ text?: string; code?: string }> };
+  transactionResponse?: {
+    transId?: string;
+    authCode?: string;
+    accountNumber?: string;
+    errors?: Array<{ errorText?: string }>;
+    messages?: Array<{ description?: string }>;
+  };
+  customerProfileId?: string;
+  customerPaymentProfileIdList?: string[];
+};
+
+async function authorizeNetRequest(payload: Record<string, unknown>): Promise<AuthNetJson> {
+  const response = await fetch(endpoint(), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const text = await response.text();
+  return JSON.parse(text.replace(/^\uFEFF/, "")) as AuthNetJson;
+}
+
+function merchantAuth() {
+  return {
+    name: process.env.AUTHORIZE_NET_API_LOGIN_ID,
+    transactionKey: process.env.AUTHORIZE_NET_TRANSACTION_KEY,
+  };
+}
+
+export async function createCustomerProfileFromTransaction(input: {
+  transId: string;
+  email?: string | null;
+  merchantCustomerId: string;
+}) {
+  if (isTherapyPaymentTestMode()) {
+    const suffix = input.merchantCustomerId.replace(/[^a-zA-Z0-9]/g, "").slice(-12) || "TEST";
+    return {
+      customerProfileId: `TEST-CUST-${suffix}`,
+      paymentProfileId: `TEST-PAY-${suffix}`,
+      testMode: true as const,
+    };
+  }
+
+  if (!authorizeNetConfigured()) {
+    throw new Error("Authorize.net is not configured. Set keys or THERAPY_PAYMENT_MODE=test.");
+  }
+
+  const data = await authorizeNetRequest({
+    createCustomerProfileFromTransactionRequest: {
+      merchantAuthentication: merchantAuth(),
+      transId: input.transId,
+      customer: {
+        merchantCustomerId: input.merchantCustomerId.replace(/[^a-zA-Z0-9]/g, "").slice(0, 20) || "kianprive",
+        email: input.email || undefined,
+      },
+    },
+  });
+
+  const customerProfileId = data.customerProfileId;
+  const paymentProfileId = data.customerPaymentProfileIdList?.[0];
+  if (data.messages?.resultCode !== "Ok" || !customerProfileId || !paymentProfileId) {
+    throw new Error(data.messages?.message?.[0]?.text || "Could not save the card on file.");
+  }
+
+  return { customerProfileId, paymentProfileId, testMode: false as const };
+}
+
+export async function chargeCustomerProfile(input: {
+  amount: number;
+  orderNumber: string;
+  customerProfileId: string;
+  paymentProfileId: string;
+  email?: string | null;
+}) {
+  if (isTherapyPaymentTestMode()) {
+    if (input.customerProfileId.startsWith("TEST-DECLINE")) {
+      throw new Error("Test profile declined.");
+    }
+    return {
+      transId: `TEST-RX-${Date.now()}`,
+      authCode: "TESTOK",
+      testMode: true as const,
+      last4: null as string | null,
+      raw: { mode: "test", profile: input.customerProfileId, amount: input.amount },
+    };
+  }
+
+  if (!authorizeNetConfigured()) {
+    throw new Error("Authorize.net is not configured. Set keys or THERAPY_PAYMENT_MODE=test.");
+  }
+
+  const data = await authorizeNetRequest({
+    createTransactionRequest: {
+      merchantAuthentication: merchantAuth(),
+      refId: input.orderNumber.slice(0, 20),
+      transactionRequest: {
+        transactionType: "authCaptureTransaction",
+        amount: input.amount.toFixed(2),
+        profile: {
+          customerProfileId: input.customerProfileId,
+          paymentProfile: { paymentProfileId: input.paymentProfileId },
+        },
+        order: {
+          invoiceNumber: input.orderNumber.slice(0, 20),
+          description: "KIAN Prive therapy refill",
+        },
+        customer: input.email ? { email: input.email } : undefined,
+      },
+    },
+  });
+
+  const resultCode = data.messages?.resultCode;
+  const transId = data.transactionResponse?.transId;
+  if (resultCode !== "Ok" || !transId) {
+    const err =
+      data.transactionResponse?.errors?.[0]?.errorText ||
+      data.messages?.message?.[0]?.text ||
+      "Authorize.net declined the refill charge.";
+    throw new Error(err);
+  }
+
+  return {
+    transId,
+    authCode: data.transactionResponse?.authCode ?? "",
+    testMode: false as const,
+    last4: last4FromAccountNumber(data.transactionResponse?.accountNumber),
     raw: data,
   };
 }

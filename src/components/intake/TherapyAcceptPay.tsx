@@ -36,10 +36,12 @@ type Props = {
   orderId: string;
   total: number;
   orderNumber: string;
+  endpoint?: string;
+  buttonLabel?: string;
   onPaid?: () => void;
 };
 
-export function TherapyAcceptPay({ orderId, total, orderNumber, onPaid }: Props) {
+export function TherapyAcceptPay({ orderId, total, orderNumber, endpoint, buttonLabel, onPaid }: Props) {
   const [ready, setReady] = useState(false);
   const [config, setConfig] = useState<AuthConfig | null>(null);
   const [cardNumber, setCardNumber] = useState("");
@@ -94,7 +96,7 @@ export function TherapyAcceptPay({ orderId, total, orderNumber, onPaid }: Props)
     }
 
     const submit = async (opaqueData: { dataDescriptor: string; dataValue: string }) => {
-      const res = await fetch(`/api/commerce/orders/${orderId}/pay`, {
+      const res = await fetch(endpoint ?? `/api/commerce/orders/${orderId}/pay`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -229,7 +231,7 @@ export function TherapyAcceptPay({ orderId, total, orderNumber, onPaid }: Props)
         onClick={() => void pay()}
         className="mt-4 w-full rounded-sm bg-[#b78d4b] px-4 py-3 text-sm text-white disabled:opacity-60"
       >
-        {busy ? "Processing…" : config?.testMode ? "Accept therapy & pay (test)" : "Accept therapy & pay"}
+        {busy ? "Processing…" : config?.testMode ? `${buttonLabel ?? "Accept therapy & pay"} (test)` : buttonLabel ?? "Accept therapy & pay"}
       </button>
       {status ? <p className="mt-2 text-sm text-[#1b6568]">{status}</p> : null}
     </div>

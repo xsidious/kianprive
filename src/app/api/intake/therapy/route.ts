@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import type { Role } from "@prisma/client";
+import type { Role, TherapyBillingInterval } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { canAccessAdmin } from "@/lib/rbac";
@@ -14,11 +14,26 @@ const bodySchema = z.object({
   intakeSubmissionId: z.string().min(1),
   notes: z.string().max(4000).optional().nullable(),
   send: z.boolean().optional().default(false),
+  billingInterval: z
+    .enum([
+      "ONE_TIME",
+      "WEEKLY",
+      "EVERY_2_WEEKS",
+      "EVERY_4_WEEKS",
+      "MONTHLY",
+      "EVERY_6_WEEKS",
+      "EVERY_8_WEEKS",
+      "CUSTOM",
+    ])
+    .optional()
+    .default("ONE_TIME"),
+  intervalDays: z.number().int().min(1).max(365).optional().nullable(),
   items: z
     .array(
       z.object({
         productId: z.string().min(1),
         quantity: z.number().int().min(1).max(50),
+        unitPrice: z.number().min(0).optional().nullable(),
       }),
     )
     .min(1),
@@ -119,6 +134,9 @@ export async function POST(req: Request) {
       notes: parsed.data.notes,
       items: parsed.data.items,
       send: parsed.data.send,
+      persistCatalogPrices: isAdmin,
+      billingInterval: parsed.data.billingInterval as TherapyBillingInterval,
+      intervalDays: parsed.data.intervalDays,
     });
     return NextResponse.json({
       proposal: proposal

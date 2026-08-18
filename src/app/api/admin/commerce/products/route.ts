@@ -34,7 +34,7 @@ export async function GET() {
 
   const products = await prisma.product.findMany({
     orderBy: { updatedAt: "desc" },
-    include: { variants: { orderBy: { createdAt: "asc" } }, collection: true },
+    include: { variants: { orderBy: { createdAt: "asc" } }, collection: true, vendor: { select: { id: true, name: true } } },
   });
   return NextResponse.json({ products: products.map(serializeAdminProduct) });
 }
@@ -63,6 +63,8 @@ export async function POST(req: Request) {
         galleryImages: parseGallery(body.galleryImages),
         hasVariants,
         price,
+        wholesalePrice: asMoney(body.wholesalePrice) ?? null,
+        vendorId: body.vendorId || null,
         compareAtPrice: asMoney(body.compareAtPrice) ?? null,
         currency: body.currency ?? "USD",
         sku: body.sku || null,

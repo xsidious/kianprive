@@ -9,6 +9,7 @@ const adminGroups = [
     links: [
       { href: "/admin", label: "Overview", exact: true },
       { href: "/admin/intake", label: "Clinical Intake" },
+      { href: "/admin/prescriptions", label: "Prescriptions" },
       { href: "/admin/bookings", label: "Bookings" },
       { href: "/admin/consultations", label: "Consultations" },
     ],
@@ -26,6 +27,9 @@ const adminGroups = [
     label: "Commerce",
     links: [
       { href: "/admin/products", label: "Products" },
+      { href: "/admin/invoices", label: "Invoices" },
+      { href: "/admin/subscriptions", label: "Therapy billing" },
+      { href: "/admin/vendors", label: "Vendors" },
       { href: "/admin/orders", label: "Orders" },
       { href: "/admin/commerce", label: "Commerce Hub" },
     ],

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { patientFacingIntakeStatus } from "@/lib/intake/tracking";
 import { serializeIntakeMessage } from "@/lib/intake/messages";
 import { patientOrderProgress } from "@/lib/orders/progress";
+import { formatChargeDate, intervalLabel } from "@/lib/commerce/therapy-billing";
 
 export async function GET() {
   const session = await auth();
@@ -71,6 +72,16 @@ export async function GET() {
             },
           },
           providerPartner: { select: { displayName: true } },
+          subscription: {
+            select: {
+              status: true,
+              interval: true,
+              intervalDays: true,
+              amount: true,
+              nextChargeAt: true,
+              cardLast4: true,
+            },
+          },
         },
       },
     },
@@ -121,6 +132,29 @@ export async function GET() {
                 title: item.titleSnapshot || item.product.title,
                 quantity: item.quantity,
               })),
+              billing:
+                proposal.subscription && proposal.subscription.interval !== "ONE_TIME"
+                  ? {
+                      status: proposal.subscription.status,
+                      label: intervalLabel(
+                        proposal.subscription.interval,
+                        proposal.subscription.intervalDays,
+                      ),
+                      amount: Number(proposal.subscription.amount),
+                      nextChargeAt: proposal.subscription.nextChargeAt?.toISOString() ?? null,
+                      nextChargeLabel: formatChargeDate(proposal.subscription.nextChargeAt),
+                      cardLast4: proposal.subscription.cardLast4,
+                    }
+                  : proposal.billingInterval && proposal.billingInterval !== "ONE_TIME"
+                    ? {
+                        status: "PENDING",
+                        label: intervalLabel(proposal.billingInterval, proposal.intervalDays ?? 0),
+                        amount: proposal.order ? Number(proposal.order.total) : 0,
+                        nextChargeAt: null,
+                        nextChargeLabel: null,
+                        cardLast4: null,
+                      }
+                    : null,
               order: proposal.order
                 ? {
                     id: proposal.order.id,
