@@ -18,6 +18,7 @@ import {
   PricedMenuTable,
   SectionCtaBar,
   SectionHeader,
+  SectionPhoto,
   ServicePriceCtaCard,
 } from "@/components/services/PricedMenus";
 import { ServicesStickyNav } from "@/components/services/ServicesStickyNav";
@@ -45,6 +46,8 @@ import {
 } from "@/lib/policies/kian-prive-policies";
 import { buildSeoMetadata } from "@/lib/seo/metadata";
 import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
+import { getServiceBySlug } from "@/lib/services/catalog";
+import { icoonePrimaryImage } from "@/lib/media/icoone";
 
 export async function generateMetadata(): Promise<Metadata> {
   const cms = await getCmsPageContent("services");
@@ -212,6 +215,7 @@ export default async function ServicesPage() {
           title="Lymphatic drainage & body wellness."
           description="Physician-guided Icoone® lymphatic drainage using Roboderm® microstimulation to support detox, circulation, and recovery—while helping reduce puffiness, refine contour, and improve skin quality."
         />
+        <SectionPhoto src={icoonePrimaryImage} alt="Icoone® lymphatic drainage treatment" />
         <div className="mt-10 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
           <PricedMenuTable
             title="40-minute packages"
@@ -287,6 +291,7 @@ export default async function ServicesPage() {
             items={["Single facial: $195", "4-session package: $725"]}
             detailsHref="/services/korean-organic-skincare"
             bookHref="/book-online?service=korean-organic-skincare"
+            image={getServiceBySlug("korean-organic-skincare")?.image}
           />
           <ServicePriceCtaCard
             eyebrow="REGENERATIVE SKIN"
@@ -296,6 +301,7 @@ export default async function ServicesPage() {
             items={["Single: $600", "4 sessions: $1,800", "5 sessions: $2,700", "10 sessions: $5,000"]}
             detailsHref="/services/microneedling-with-exosomes"
             bookHref="/book-online?service=microneedling-with-exosomes"
+            image={getServiceBySlug("microneedling-with-exosomes")?.image}
           />
           <ServicePriceCtaCard
             eyebrow="HAIR RESTORATION"
@@ -305,6 +311,7 @@ export default async function ServicesPage() {
             bookHref="/book-online?service=hair-restoration"
             bookLabel="Book a consult"
             guestPrice={100}
+            image={getServiceBySlug("hair-restoration")?.image}
           />
           <ServicePriceCtaCard
             eyebrow="MEDICAL AESTHETICS"
@@ -313,16 +320,18 @@ export default async function ServicesPage() {
             guestPrice={310}
             detailsHref="/services/facial-aesthetics"
             bookHref="/book-online?service=facial-aesthetics"
+            image={getServiceBySlug("facial-aesthetics")?.image}
           />
           <ServicePriceCtaCard
             eyebrow="NUTRITION"
-            title="Cherie Johnson, Certified Nutritionist"
+            title="Certified Nutritionist"
             description="Personalized consultations, meal planning, and sustainable wellness habits—virtual sessions available."
             guestPrice={150}
             items={["Follow-up: $150", "4 sessions: $500", "8 sessions: $950"]}
             detailsHref="/services/nutrition"
             bookHref="/book-online?service=nutrition"
             bookLabel="Schedule consultation"
+            image={getServiceBySlug("nutrition")?.image}
           />
           <ServicePriceCtaCard
             eyebrow="BODY COMPOSITION"
@@ -331,6 +340,7 @@ export default async function ServicesPage() {
             guestPrice={30}
             detailsHref="/services/inbody-scan"
             bookHref="/book-online?service=inbody-scan"
+            image={getServiceBySlug("inbody-scan")?.image}
           />
         </div>
       </EditorialSection>
@@ -341,6 +351,7 @@ export default async function ServicesPage() {
           title="Drips, injections, and add-ons."
           description="All services administered by licensed medical professionals."
         />
+        <SectionPhoto src={getServiceBySlug("iv-therapy")?.image ?? "/images/heroes/iv-hero.jpg"} alt="IV therapy" />
         <div className="mt-10 grid gap-5">
           <IvPricingTable title="IV drips" items={ivDripMenu} />
           <IvPricingTable title="Injections" items={ivInjectionMenu} />
@@ -359,6 +370,7 @@ export default async function ServicesPage() {
           title="Orderable diagnostic panels with physician review."
           description="Core Wellness Tech panels with physician review. Add-on panels are targeted for brain health, weight management, hormone optimization, and cardiovascular risk."
         />
+        <SectionPhoto src="/images/blood-work.webp" alt="Wellness lab panels" />
         <div className="mt-10">
           <LabPanelCards panels={coreLabPanels} eyebrow="CORE PANEL" />
         </div>
@@ -381,6 +393,10 @@ export default async function ServicesPage() {
         <SectionHeader
           eyebrow="PROVIDER VISITS"
           title="Physician, nurse, and peptide consultations."
+        />
+        <SectionPhoto
+          src={getServiceBySlug("physician-visit")?.image ?? "/images/ConciergeHomevisit.jpeg"}
+          alt="Physician visit"
         />
         <div className="mt-10 grid gap-5 lg:grid-cols-2">
           <PricedMenuTable
@@ -434,6 +450,10 @@ export default async function ServicesPage() {
           eyebrow="PHYSICIAN-LED PEPTIDE THERAPY"
           title="Over 100 peptides, precisely prescribed."
           description="Board-certified physicians prescribe personalized protocols from a clinical formulary spanning longevity, recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. Browse the peptide catalog on Privé Therapeutics. These therapies are not sold in the KIAN shop—initial orders and refills require a physician prescription. Peptide optimization consult: $100."
+        />
+        <SectionPhoto
+          src={getServiceBySlug("glp1-peptides")?.image ?? "/images/Peptidesandexosomes.jpeg"}
+          alt="Physician-led peptide therapy"
         />
         <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {peptideCategories.map((category) => (

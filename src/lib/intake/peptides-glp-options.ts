@@ -43,6 +43,7 @@ export const PREVIOUS_WEIGHT_LOSS_OPTIONS = [
   "Personal trainer",
   "Prescription medications",
   "Other",
+  "None of the above",
 ] as const;
 
 export const PREVIOUS_THERAPY_OPTIONS = [
@@ -55,6 +56,7 @@ export const PREVIOUS_THERAPY_OPTIONS = [
   "Cagrilintide",
   "Tesofensine",
   "Other peptide / injectable",
+  "None of the above",
 ] as const;
 
 export const MEDICAL_CONDITION_OPTIONS = [
@@ -90,6 +92,7 @@ export const MEDICAL_CONDITION_OPTIONS = [
   "Chronic Pain",
   "Cancer",
   "Hormonal Disorder",
+  "None of the above",
 ] as const;
 
 export const CONTRAINDICATION_OPTIONS = [

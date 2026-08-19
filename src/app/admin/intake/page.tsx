@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { AdminModal } from "@/components/admin/AdminModal";
 import { IntakeMessageThread } from "@/components/intake/IntakeMessageThread";
 import { IntakeTherapyPicker } from "@/components/intake/IntakeTherapyPicker";
@@ -43,6 +45,11 @@ type IntakeSubmission = {
     body: string;
     createdAt: string;
   } | null;
+  therapy?: {
+    status: string;
+    paymentStatus: string | null;
+    itemCount: number;
+  } | null;
 };
 
 const statuses = [
@@ -66,6 +73,7 @@ function payloadText(value: unknown) {
 }
 
 export default function AdminIntakePage() {
+  const searchParams = useSearchParams();
   const [submissions, setSubmissions] = useState<IntakeSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
@@ -88,6 +96,11 @@ export default function AdminIntakePage() {
   useEffect(() => {
     void loadSubmissions();
   }, []);
+
+  useEffect(() => {
+    const open = searchParams.get("open");
+    if (open) setModalId(open);
+  }, [searchParams]);
 
   async function updateStatus(id: string, status: string) {
     const response = await fetch("/api/admin/intake/peptides-glp", {
@@ -194,6 +207,15 @@ export default function AdminIntakePage() {
                     {submission.latestMessage?.authorRole === "PATIENT" ? " · patient replied" : ""}
                   </span>
                 ) : null}
+                <span
+                  className={`rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] ${statusTone(
+                    submission.therapy?.paymentStatus || submission.therapy?.status || "NO THERAPY",
+                  )}`}
+                >
+                  {submission.therapy
+                    ? submission.therapy.paymentStatus || submission.therapy.status
+                    : "No therapy"}
+                </span>
                 {submission.programs.slice(0, 2).map((program) => (
                   <span key={program} className="rounded-full bg-[#f7f2ea] px-2.5 py-1">
                     {program}
@@ -224,6 +246,12 @@ export default function AdminIntakePage() {
                 <a href={`mailto:${submission.email}`} className={adminBtnGhost}>
                   Email
                 </a>
+                <Link href={`/admin/prescriptions?intake=${submission.id}`} className={adminBtnGhost}>
+                  {submission.therapy ? "Therapy" : "Assign therapy"}
+                </Link>
+                <Link href={`/admin/invoices?patient=${submission.id}`} className={adminBtnGhost}>
+                  Invoice
+                </Link>
                 <button
                   type="button"
                   className="rounded-sm border border-[#d07b7b80] px-4 py-2 text-sm text-[#7c2c2c] hover:bg-[#fdeeee]"
@@ -283,33 +311,6 @@ export default function AdminIntakePage() {
               }}
             />
 
-            <IntakeTherapyPicker
-              intakeSubmissionId={selected.id}
-              allowPricing
-              onSaved={() => void loadSubmissions()}
-            />
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              <label className="text-sm">
-                <span className="mb-1 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Update status</span>
-                <select
-                  value={selected.status}
-                  onChange={(event) => void updateStatus(selected.id, event.target.value)}
-                  className={`${adminSelect} w-full`}
-                >
-                  {statuses.map((status) => (
-                    <option key={status} value={status}>
-                      {status.replaceAll("_", " ")}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <div className="text-sm">
-                <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Submitted</p>
-                <p className="mt-2 text-[#2b2218]">{new Date(selected.createdAt).toLocaleString()}</p>
-              </div>
-            </div>
-
             <IntakeFullFormView submission={selected} payload={selected.payload ?? null} />
 
             <section className="rounded-2xl border border-[#efe4d4] bg-[#fffaf3] p-4">
@@ -351,6 +352,33 @@ export default function AdminIntakePage() {
                 </div>
               </div>
             </section>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="text-sm">
+                <span className="mb-1 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Update status</span>
+                <select
+                  value={selected.status}
+                  onChange={(event) => void updateStatus(selected.id, event.target.value)}
+                  className={`${adminSelect} w-full`}
+                >
+                  {statuses.map((status) => (
+                    <option key={status} value={status}>
+                      {status.replaceAll("_", " ")}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <div className="text-sm">
+                <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Submitted</p>
+                <p className="mt-2 text-[#2b2218]">{new Date(selected.createdAt).toLocaleString()}</p>
+              </div>
+            </div>
+
+            <IntakeTherapyPicker
+              intakeSubmissionId={selected.id}
+              allowPricing
+              onSaved={() => void loadSubmissions()}
+            />
 
             <div className="flex flex-wrap gap-2">
               <a href={`mailto:${selected.email}`} className={adminBtnPrimary}>

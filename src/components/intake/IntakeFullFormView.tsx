@@ -232,9 +232,11 @@ function buildPeptidesSections(payload: Record<string, unknown>): Section[] {
       title: "09 Acknowledgments",
       rows: rowsFromPairs(payload, [
         ["Acknowledgments", "acknowledgments"],
-        ["Attestation name", "attestationName"],
-        ["Attestation date", "attestationDate"],
-        ["Additional notes", "additionalNotes"],
+        ["Accuracy confirmation", "consent.accuracyTypedYes"],
+        ["Client signature", "consent.clientSignature"],
+        ["Printed name", "consent.printedName"],
+        ["Signature date", "consent.signatureDate"],
+        ["Referral source", "consent.referralSource"],
       ]),
     },
   ];

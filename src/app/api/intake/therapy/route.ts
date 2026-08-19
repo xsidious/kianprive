@@ -134,7 +134,7 @@ export async function POST(req: Request) {
       notes: parsed.data.notes,
       items: parsed.data.items,
       send: parsed.data.send,
-      persistCatalogPrices: isAdmin,
+      persistCatalogPrices: false,
       billingInterval: parsed.data.billingInterval as TherapyBillingInterval,
       intervalDays: parsed.data.intervalDays,
     });

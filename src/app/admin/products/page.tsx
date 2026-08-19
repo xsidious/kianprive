@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { AdminModal } from "@/components/admin/AdminModal";
+import { PricingCalculatorDrawer } from "@/components/admin/PricingCalculatorDrawer";
+import { ProductPricingHint, type VendorOffer } from "@/components/admin/ProductPricingHint";
 import {
   adminBtnGhost,
   adminBtnPrimary,
@@ -53,7 +55,15 @@ type Product = {
   seoTitle?: string | null;
   seoDescription?: string | null;
   variants?: Variant[];
+  vendorOffers?: VendorOffer[];
+  bestVendor?: VendorOffer | null;
+  suggestedPrice?: number | null;
+  landedCost?: number | null;
+  profitPerUnit?: number | null;
 };
+
+type ShippingDefaults = { flatRate: number; freeThreshold: number; alwaysFree: boolean };
+type PricingDefaults = { marginPercent: number; extraDollars: number; includeStoreShipping: boolean };
 
 const productStatuses = ["DRAFT", "ACTIVE", "ARCHIVED"] as const;
 
@@ -75,6 +85,9 @@ export default function AdminProductsPage() {
   const [editorOpen, setEditorOpen] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
   const [vendors, setVendors] = useState<Array<{ id: string; name: string }>>([]);
+  const [shipping, setShipping] = useState<ShippingDefaults | null>(null);
+  const [pricing, setPricing] = useState<PricingDefaults | null>(null);
+  const [calcProductId, setCalcProductId] = useState<string | null>(null);
   const [draft, setDraft] = useState({
     title: "",
     slug: "",
@@ -96,9 +109,11 @@ export default function AdminProductsPage() {
   });
 
   async function loadProducts() {
-    const [response, vendorsRes] = await Promise.all([
+    const [response, vendorsRes, pricingRes, shippingRes] = await Promise.all([
       fetch("/api/admin/commerce/products"),
       fetch("/api/admin/vendors"),
+      fetch("/api/admin/commerce/pricing"),
+      fetch("/api/admin/commerce/shipping"),
     ]);
     if (response.ok) {
       const payload = (await response.json()) as { products: Product[] };
@@ -107,6 +122,14 @@ export default function AdminProductsPage() {
     if (vendorsRes.ok) {
       const payload = (await vendorsRes.json()) as { vendors: Array<{ id: string; name: string }> };
       setVendors(payload.vendors ?? []);
+    }
+    if (pricingRes.ok) {
+      const payload = (await pricingRes.json()) as { pricing?: PricingDefaults };
+      setPricing(payload.pricing ?? null);
+    }
+    if (shippingRes.ok) {
+      const payload = (await shippingRes.json()) as { config?: ShippingDefaults };
+      setShipping(payload.config ?? null);
     }
   }
 
@@ -364,22 +387,39 @@ export default function AdminProductsPage() {
               <p className="text-sm text-[#2b2218]">
                 Retail {money(product.price)}
                 {product.catalogKind === "CLINICAL" && product.wholesalePrice != null ? (
-                  <span className="text-[#6f6251]"> · Cost {money(product.wholesalePrice)}</span>
+                  <span className="text-[#6f6251]"> · Best cost {money(product.wholesalePrice)}</span>
                 ) : null}
                 {product.catalogKind === "CLINICAL" && Number(product.price) <= 0 ? (
                   <span className="ml-2 text-[#7c2c2c]">Needs price</span>
                 ) : null}
               </p>
+              {product.catalogKind === "CLINICAL" ? (
+                <ProductPricingHint
+                  bestVendor={product.bestVendor}
+                  landedCost={product.landedCost}
+                  price={Number(product.price)}
+                  suggestedPrice={product.suggestedPrice}
+                  compact
+                />
+              ) : null}
               <div className="flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.12em] text-[#8f6f3e]">
                 <span className={adminBtnSoft}>{product.catalogKind === "CLINICAL" ? "Clinical" : "Retail"}</span>
                 <span className={adminBtnSoft}>{product.category || "General"}</span>
                 {product.isPrescription ? <span className={adminBtnSoft}>Rx</span> : null}
                 {product.hasVariants ? <span className={adminBtnSoft}>Variable · {product.variants?.length ?? 0}</span> : null}
+                {product.catalogKind === "CLINICAL" && (product.vendorOffers?.length ?? 0) > 0 ? (
+                  <span className={adminBtnSoft}>{product.vendorOffers!.length} vendor quote{product.vendorOffers!.length === 1 ? "" : "s"}</span>
+                ) : null}
               </div>
               <div className="flex flex-wrap gap-2">
                 <button type="button" className={adminBtnPrimary} onClick={() => openEdit(product)}>
                   {product.catalogKind === "CLINICAL" ? "Set price" : "Edit"}
                 </button>
+                {product.catalogKind === "CLINICAL" ? (
+                  <button type="button" className={adminBtnGhost} onClick={() => setCalcProductId(product.id)}>
+                    Vendor quotes
+                  </button>
+                ) : null}
                 <button type="button" className={adminBtnGhost} onClick={() => void deleteProduct(product.id)}>
                   Delete
                 </button>
@@ -601,6 +641,24 @@ export default function AdminProductsPage() {
           </div>
         </div>
       </AdminModal>
+
+      <PricingCalculatorDrawer
+        catalog={products.map((p) => ({
+          id: p.id,
+          title: p.title,
+          wholesalePrice: p.wholesalePrice != null ? Number(p.wholesalePrice) : null,
+          price: Number(p.price),
+          vendorOffers: p.vendorOffers,
+          bestVendor: p.bestVendor,
+          suggestedPrice: p.suggestedPrice,
+        }))}
+        vendors={vendors}
+        shipping={shipping}
+        pricing={pricing}
+        selectedProductId={calcProductId}
+        onCloseSelect={() => setCalcProductId(null)}
+        onChanged={() => void loadProducts()}
+      />
     </div>
   );
 }

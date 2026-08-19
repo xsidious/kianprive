@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { createPatientInvoice, sendInvoiceEmail } from "@/lib/commerce/invoices";
 import { issueOrderPaymentToken } from "@/lib/commerce/payment-link";
 import { writeAuditLog } from "@/lib/ops/audit";
+import { getShippingConfig } from "@/lib/commerce/shipping";
+import { getPricingConfig, serializeProductWithVendorPricing } from "@/lib/commerce/vendor-pricing";
 
 const createSchema = z.object({
   fullName: z.string().min(2).max(120),
@@ -82,7 +84,7 @@ export async function GET() {
   const guard = await requireAdminAccess();
   if (!guard.ok) return guard.response;
 
-  const [orders, intakes, products] = await Promise.all([
+  const [orders, intakes, products, vendors, shipping, pricing] = await Promise.all([
     prisma.order.findMany({
       where: {
         OR: [{ orderNumber: { startsWith: "KP-INV-" } }, { orderNumber: { startsWith: "KP-THERAPY-" } }, { paymentToken: { not: null } }],
@@ -97,10 +99,16 @@ export async function GET() {
       select: { id: true, fullName: true, email: true, phone: true, status: true },
     }),
     prisma.product.findMany({
-      where: { status: "ACTIVE", price: { gt: 0 } },
-      orderBy: [{ catalogKind: "asc" }, { title: "asc" }],
-      select: { id: true, title: true, price: true, catalogKind: true, category: true, vendorId: true, wholesalePrice: true },
+      where: { status: "ACTIVE" },
+      orderBy: [{ catalogKind: "asc" }, { category: "asc" }, { title: "asc" }],
+      include: {
+        vendor: { select: { id: true, name: true } },
+        vendorOffers: { include: { vendor: { select: { id: true, name: true } } } },
+      },
     }),
+    prisma.vendor.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } }),
+    getShippingConfig(),
+    getPricingConfig(),
   ]);
 
   return NextResponse.json({
@@ -111,11 +119,11 @@ export async function GET() {
       }),
     ),
     patients: intakes,
-    products: products.map((product) => ({
-      ...product,
-      price: Number(product.price),
-      wholesalePrice: product.wholesalePrice != null ? Number(product.wholesalePrice) : null,
-    })),
+    products: products.map((product) => serializeProductWithVendorPricing(product, shipping, pricing)),
+    categories: [...new Set(products.map((product) => product.category).filter(Boolean))] as string[],
+    vendors,
+    shipping,
+    pricing,
   });
 }
 

@@ -27,6 +27,7 @@ const adminGroups = [
     label: "Commerce",
     links: [
       { href: "/admin/products", label: "Products" },
+      { href: "/admin/shipping", label: "Shipping" },
       { href: "/admin/invoices", label: "Invoices" },
       { href: "/admin/subscriptions", label: "Therapy billing" },
       { href: "/admin/vendors", label: "Vendors" },

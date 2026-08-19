@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminAccess } from "@/lib/admin-guard";
 import { writeAuditLog } from "@/lib/ops/audit";
 import { asMoney, serializeAdminProduct } from "@/lib/commerce/serialize-product";
+import { upsertVendorOffer, getPricingConfig, serializeProductWithVendorPricing } from "@/lib/commerce/vendor-pricing";
+import { getShippingConfig } from "@/lib/commerce/shipping";
 import { revalidatePath } from "next/cache";
 
 type VariantInput = {
@@ -32,11 +34,32 @@ export async function GET() {
   const guard = await requireAdminAccess();
   if (!guard.ok) return guard.response;
 
-  const products = await prisma.product.findMany({
-    orderBy: { updatedAt: "desc" },
-    include: { variants: { orderBy: { createdAt: "asc" } }, collection: true, vendor: { select: { id: true, name: true } } },
+  const [products, shipping, pricing] = await Promise.all([
+    prisma.product.findMany({
+      orderBy: { updatedAt: "desc" },
+      include: {
+        variants: { orderBy: { createdAt: "asc" } },
+        collection: true,
+        vendor: { select: { id: true, name: true } },
+        vendorOffers: { include: { vendor: { select: { id: true, name: true } } } },
+      },
+    }),
+    getShippingConfig(),
+    getPricingConfig(),
+  ]);
+  return NextResponse.json({
+    products: products.map((product) => {
+      const enriched = serializeProductWithVendorPricing(product, shipping, pricing);
+      return {
+        ...serializeAdminProduct(product),
+        vendorOffers: enriched.vendorOffers,
+        bestVendor: enriched.bestVendor,
+        suggestedPrice: enriched.suggestedPrice,
+        landedCost: enriched.landedCost,
+        profitPerUnit: enriched.profitPerUnit,
+      };
+    }),
   });
-  return NextResponse.json({ products: products.map(serializeAdminProduct) });
 }
 
 export async function POST(req: Request) {
@@ -91,6 +114,14 @@ export async function POST(req: Request) {
       },
       include: { variants: true },
     });
+
+    if (product.vendorId && product.wholesalePrice != null) {
+      await upsertVendorOffer({
+        productId: product.id,
+        vendorId: product.vendorId,
+        unitCost: Number(product.wholesalePrice),
+      });
+    }
 
     await writeAuditLog({
       userId: guard.userId,

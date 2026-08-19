@@ -8,8 +8,8 @@ async function main() {
     update: {
       title: "Payment Test ($1)",
       description:
-        "Temporary $1.00 item for verifying live checkout. Remove after payment testing is complete.",
-      status: ProductStatus.ACTIVE,
+        "Temporary $1.00 item for verifying live checkout. Currently archived.",
+      status: ProductStatus.ARCHIVED,
       category: "Nutrients",
       catalogKind: ProductCatalogKind.RETAIL,
       isPrescription: false,

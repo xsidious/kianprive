@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
+import { suggestedTherapyUnitPrice } from "@/lib/commerce/therapy-price";
 
 export type ClinicalProduct = {
   id: string;
@@ -14,6 +15,10 @@ export type ClinicalProduct = {
   isPrescription?: boolean;
   description?: string | null;
   price?: number;
+  wholesalePrice?: number;
+  suggestedPrice?: number | null;
+  landedCost?: number | null;
+  bestVendor?: { vendorName: string; unitCost: number; shippingCost: number; landedCost: number } | null;
 };
 
 type TherapyLine = {
@@ -27,6 +32,25 @@ type Props = {
   allowPricing?: boolean;
   onSaved?: () => void;
 };
+
+function productLanded(product: ClinicalProduct) {
+  if (product.landedCost != null && product.landedCost > 0) return product.landedCost;
+  return product.wholesalePrice != null && product.wholesalePrice > 0 ? product.wholesalePrice : 0;
+}
+
+function suggestedUnitPrice(product: ClinicalProduct, shippingTotal: number, lineCount: number, quantity: number) {
+  if (product.suggestedPrice != null && product.suggestedPrice > 0) return product.suggestedPrice;
+  const cost = productLanded(product);
+  if (cost > 0) {
+    return suggestedTherapyUnitPrice({
+      cost,
+      shippingTotal,
+      productCount: Math.max(1, lineCount),
+      quantity,
+    });
+  }
+  return product.price && product.price > 0 ? product.price : 0;
+}
 
 export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, onSaved }: Props) {
   const [products, setProducts] = useState<ClinicalProduct[]>([]);
@@ -43,13 +67,16 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [shipping, setShipping] = useState("12");
+  const [priceTouched, setPriceTouched] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     void (async () => {
       setLoading(true);
-      const [catalogRes, proposalRes] = await Promise.all([
+      const [catalogRes, proposalRes, shippingRes] = await Promise.all([
         fetch("/api/clinical/products"),
         fetch(`/api/intake/therapy?intakeSubmissionId=${intakeSubmissionId}`),
+        allowPricing ? fetch("/api/admin/commerce/shipping") : Promise.resolve(null),
       ]);
       let catalog: ClinicalProduct[] = [];
       if (catalogRes.ok) {
@@ -74,6 +101,7 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
           if (data.proposal.intervalDays) setCustomDays(String(data.proposal.intervalDays));
           const byId = new Map(catalog.map((p) => [p.id, p]));
           const lines: TherapyLine[] = [];
+          const touched: Record<string, boolean> = {};
           for (const item of data.proposal.items ?? []) {
             const product = byId.get(item.productId);
             if (product) {
@@ -82,11 +110,18 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
                 quantity: item.quantity,
                 unitPrice: item.unitPrice ?? product.price ?? 0,
               });
+              if (item.unitPrice != null) touched[item.productId] = true;
             }
           }
           setTherapy(lines);
+          setPriceTouched(touched);
           if (data.proposal.status) setStatus(`Current proposal: ${data.proposal.status}`);
         }
+      }
+      if (shippingRes && shippingRes.ok) {
+        const shipData = (await shippingRes.json()) as { config?: { flatRate?: number; alwaysFree?: boolean } };
+        if (shipData.config?.alwaysFree) setShipping("0");
+        else if (shipData.config?.flatRate != null) setShipping(String(shipData.config.flatRate));
       }
       setLoading(false);
     })();
@@ -103,18 +138,42 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
 
   const therapyIds = useMemo(() => new Set(therapy.map((l) => l.product.id)), [therapy]);
   const activeProduct = activeId ? products.find((p) => p.id === activeId) ?? null : null;
+  const shippingTotal = Math.max(0, Number(shipping) || 0);
   const planTotal = therapy.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0);
+  const suggestedTotal = therapy.reduce(
+    (sum, line) => sum + suggestedUnitPrice(line.product, shippingTotal, therapy.length, line.quantity) * line.quantity,
+    0,
+  );
+
+  useEffect(() => {
+    if (!allowPricing || !therapy.length) return;
+    setTherapy((prev) => {
+      let changed = false;
+      const next = prev.map((line) => {
+        if (priceTouched[line.product.id]) return line;
+        const suggested = suggestedUnitPrice(line.product, shippingTotal, prev.length, line.quantity);
+        if (suggested == null || suggested === line.unitPrice) return line;
+        changed = true;
+        return { ...line, unitPrice: suggested };
+      });
+      return changed ? next : prev;
+    });
+  }, [allowPricing, shippingTotal, priceTouched, therapy.length]);
 
   function selectProduct(product: ClinicalProduct) {
     setActiveId(product.id);
     const existing = therapy.find((l) => l.product.id === product.id);
     setPickQty(existing?.quantity ?? 1);
+    const count = existing ? therapy.length : therapy.length + 1;
+    const suggested = suggestedUnitPrice(product, shippingTotal, count, existing?.quantity ?? 1);
     setPickPrice(
       existing
         ? String(existing.unitPrice || "")
-        : product.price && product.price > 0
-          ? String(product.price)
-          : "",
+        : suggested > 0
+          ? String(suggested)
+          : product.price && product.price > 0
+            ? String(product.price)
+            : "",
     );
     setStatus("");
   }
@@ -122,7 +181,19 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
   function addToTherapy() {
     if (!activeProduct) return;
     const qty = Math.max(1, Math.min(50, pickQty));
-    const price = allowPricing ? Number(pickPrice || 0) : activeProduct.price ?? 0;
+    const nextCount = therapyIds.has(activeProduct.id) ? therapy.length : therapy.length + 1;
+    const suggested = suggestedUnitPrice(activeProduct, shippingTotal, nextCount, qty);
+    const typed = Number(pickPrice || 0);
+    const price = allowPricing ? (Number.isFinite(typed) ? typed : suggested) : activeProduct.price ?? 0;
+    if (allowPricing && Math.abs(price - suggested) > 0.009) {
+      setPriceTouched((prev) => ({ ...prev, [activeProduct.id]: true }));
+    } else {
+      setPriceTouched((prev) => {
+        const next = { ...prev };
+        delete next[activeProduct.id];
+        return next;
+      });
+    }
     setTherapy((prev) => {
       const idx = prev.findIndex((l) => l.product.id === activeProduct.id);
       const nextLine = { product: activeProduct, quantity: qty, unitPrice: Number.isFinite(price) ? price : 0 };
@@ -146,15 +217,30 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
       const byId = new Map(prev.map((line) => [line.product.id, line]));
       for (const product of rx) {
         if (byId.has(product.id)) continue;
-        byId.set(product.id, {
-          product,
-          quantity: 1,
-          unitPrice: product.price ?? 0,
-        });
+        byId.set(product.id, { product, quantity: 1, unitPrice: 0 });
       }
-      return [...byId.values()];
+      const merged = [...byId.values()];
+      return merged.map((line) =>
+        priceTouched[line.product.id]
+          ? line
+          : {
+              ...line,
+              unitPrice: suggestedUnitPrice(line.product, shippingTotal, merged.length, line.quantity),
+            },
+      );
     });
     setStatus(`Added ${rx.length} prescription product${rx.length === 1 ? "" : "s"} from this view.`);
+  }
+
+  function applySuggestedPrices() {
+    setPriceTouched({});
+    setTherapy((prev) =>
+      prev.map((line) => ({
+        ...line,
+        unitPrice: suggestedUnitPrice(line.product, shippingTotal, prev.length, line.quantity),
+      })),
+    );
+    setStatus("Applied system suggested prices from vendor cost + margin.");
   }
 
   function updateTherapyQty(productId: string, quantity: number) {
@@ -165,6 +251,7 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
   }
 
   function updateTherapyPrice(productId: string, unitPrice: number) {
+    setPriceTouched((prev) => ({ ...prev, [productId]: true }));
     setTherapy((prev) =>
       prev.map((l) => (l.product.id === productId ? { ...l, unitPrice: Number.isFinite(unitPrice) ? unitPrice : 0 } : l)),
     );
@@ -218,7 +305,7 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
           <h3 className="mt-1 font-serif text-xl text-[#1f1a15]">Build therapy</h3>
           <p className="mt-1 text-sm text-[#6f6251]">
             {allowPricing
-              ? "Set quantity and patient price for each prescription. Saving also updates the prescription catalog."
+              ? "Default patient price uses the best vendor landed cost plus your margin settings (Shipping page). Override any line as needed."
               : "Click a product card → set quantity → Add to therapy. Prices stay hidden for providers."}
           </p>
         </div>
@@ -307,7 +394,16 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
                         ) : null}
                         {allowPricing ? (
                           <p className="text-[11px] text-[#8f6f3e]">
-                            {product.price && product.price > 0 ? `$${product.price.toFixed(2)}` : "Set price"}
+                            {productLanded(product) > 0
+                              ? `${product.bestVendor ? `${product.bestVendor.vendorName} · ` : ""}cost $${productLanded(product).toFixed(2)} · suggest $${suggestedUnitPrice(
+                                  product,
+                                  shippingTotal,
+                                  therapyIds.has(product.id) ? therapy.length : therapy.length + 1,
+                                  1,
+                                ).toFixed(2)}`
+                              : product.price && product.price > 0
+                                ? `$${product.price.toFixed(2)} · add vendor quotes`
+                                : "Add vendor quotes"}
                           </p>
                         ) : null}
                       </div>
@@ -386,6 +482,33 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
           <aside className="rounded-xl border border-[#efe4d4] bg-white p-4">
             <p className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Therapy cart</p>
             <h4 className="mt-1 font-serif text-lg text-[#1f1a15]">Ready to send</h4>
+            {allowPricing ? (
+              <div className="mt-3 space-y-2 rounded-lg border border-[#efe4d4] bg-[#fffaf3] p-3">
+                <label className="block text-sm text-[#6f6251]">
+                  Shipping to patient ($)
+                  <input
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    value={shipping}
+                    onChange={(e) => setShipping(e.target.value)}
+                    className="mt-1 h-9 w-full rounded-sm border border-[#d8cbb5] bg-white px-2 text-sm"
+                  />
+                </label>
+                <p className="text-xs text-[#6f6251]">
+                  Suggested prices use best vendor cost + shipping + store margin. Adjust shipping below only when you want
+                  legacy split pricing for products without vendor quotes.
+                </p>
+                <button
+                  type="button"
+                  className="w-full rounded-sm border border-[#b78d4b80] bg-white px-3 py-2 text-xs uppercase tracking-[0.12em] text-[#8f6f3e] disabled:opacity-50"
+                  disabled={!therapy.length}
+                  onClick={applySuggestedPrices}
+                >
+                  Apply suggested prices
+                </button>
+              </div>
+            ) : null}
 
             {therapy.length === 0 ? (
               <p className="mt-4 text-sm text-[#6f6251]">No products added yet.</p>
@@ -407,6 +530,16 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium text-[#1f1a15]">{line.product.title}</p>
+                        {allowPricing ? (
+                          <p className="text-[11px] text-[#6f6251]">
+                            Cost ${productLanded(line.product).toFixed(2)}
+                            {line.product.bestVendor
+                              ? ` (${line.product.bestVendor.vendorName})`
+                              : ""}
+                            {" · suggest $"}
+                            {suggestedUnitPrice(line.product, shippingTotal, therapy.length, line.quantity).toFixed(2)}
+                          </p>
+                        ) : null}
                         <div className="mt-2 flex flex-wrap items-center gap-2">
                           <div className="flex items-center gap-1">
                             <button
@@ -454,7 +587,10 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
             )}
 
             {allowPricing && therapy.length ? (
-              <p className="mt-3 text-right font-serif text-xl text-[#1f1a15]">${planTotal.toFixed(2)}</p>
+              <div className="mt-3 space-y-1 text-right">
+                <p className="text-xs text-[#8f6f3e]">Suggested total ${suggestedTotal.toFixed(2)}</p>
+                <p className="font-serif text-xl text-[#1f1a15]">${planTotal.toFixed(2)}</p>
+              </div>
             ) : null}
 
             <label className="mt-4 block text-sm">

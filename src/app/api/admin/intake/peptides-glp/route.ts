@@ -42,11 +42,21 @@ export async function GET() {
           createdAt: true,
         },
       },
+      therapyProposals: {
+        orderBy: { updatedAt: "desc" },
+        take: 1,
+        select: {
+          id: true,
+          status: true,
+          order: { select: { paymentStatus: true } },
+          _count: { select: { items: true } },
+        },
+      },
     },
   });
 
   return NextResponse.json({
-    submissions: submissions.map(({ messages, _count, ...row }) => ({
+    submissions: submissions.map(({ messages, _count, therapyProposals, ...row }) => ({
       ...row,
       messageCount: _count.messages,
       latestMessage: messages[0]
@@ -59,6 +69,13 @@ export async function GET() {
                 : messages[0].authorName || "Clinical team",
             body: messages[0].body,
             createdAt: messages[0].createdAt.toISOString(),
+          }
+        : null,
+      therapy: therapyProposals[0]
+        ? {
+            status: therapyProposals[0].status,
+            paymentStatus: therapyProposals[0].order?.paymentStatus ?? null,
+            itemCount: therapyProposals[0]._count.items,
           }
         : null,
     })),

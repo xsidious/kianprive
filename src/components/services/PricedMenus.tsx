@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { PricedMenuItem, IvDripItem, LabPanelMenuItem } from "@/lib/services/pricing-menus";
 import { formatUsd } from "@/lib/services/pricing-menus";
 
@@ -149,6 +150,14 @@ export function LabPanelCards({
   );
 }
 
+export function SectionPhoto({ src, alt }: { src: string; alt: string }) {
+  return (
+    <div className="relative mt-8 h-52 overflow-hidden rounded-sm sm:h-72 lg:h-80">
+      <Image src={src} alt={alt} fill sizes="100vw" className="object-cover" />
+    </div>
+  );
+}
+
 export function ServicePriceCtaCard({
   eyebrow,
   title,
@@ -158,6 +167,7 @@ export function ServicePriceCtaCard({
   detailsHref,
   bookHref,
   bookLabel = "Book now",
+  image,
 }: {
   eyebrow: string;
   title: string;
@@ -167,33 +177,47 @@ export function ServicePriceCtaCard({
   detailsHref: string;
   bookHref: string;
   bookLabel?: string;
+  image?: string;
 }) {
   return (
-    <article className="flex h-full flex-col rounded-sm border border-[#e4d9c8] bg-[#fffcf7] p-6 sm:p-7">
-      <p className="text-[11px] tracking-[0.22em] text-[#b78d4b]">{eyebrow}</p>
-      <h3 className="mt-3 font-serif text-2xl text-[#1f1a15] sm:text-[1.75rem]">{title}</h3>
-      <p className="mt-3 flex-1 text-sm leading-relaxed text-[#6f6251]">{description}</p>
-      {guestPrice != null ? (
-        <p className="mt-4 text-lg text-[#1f1a15]">{formatUsd(guestPrice)}</p>
-      ) : (
-        <p className="mt-4 text-sm text-[#8f6f3e]">Physician consult required</p>
-      )}
-      {items?.length ? (
-        <ul className="mt-4 space-y-2 border-t border-[#e8dfd0] pt-4">
-          {items.map((item) => (
-            <li key={item} className="text-sm text-[#3b3024]">
-              {item}
-            </li>
-          ))}
-        </ul>
+    <article className="flex h-full flex-col overflow-hidden rounded-sm border border-[#e4d9c8] bg-[#fffcf7]">
+      {image ? (
+        <div className="relative h-48 sm:h-56">
+          <Image
+            src={image}
+            alt=""
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className={title.includes("Nutrition") || title.includes("Cherie") ? "object-cover object-top" : "object-cover"}
+          />
+        </div>
       ) : null}
-      <div className="mt-6 flex flex-wrap gap-2">
-        <Link href={bookHref} className={`${primaryCta} flex-1`}>
-          {bookLabel.toUpperCase()}
-        </Link>
-        <Link href={detailsHref} className={secondaryCta}>
-          DETAILS
-        </Link>
+      <div className="flex flex-1 flex-col p-6 sm:p-7">
+        <p className="text-[11px] tracking-[0.22em] text-[#b78d4b]">{eyebrow}</p>
+        <h3 className="mt-3 font-serif text-2xl text-[#1f1a15] sm:text-[1.75rem]">{title}</h3>
+        <p className="mt-3 flex-1 text-sm leading-relaxed text-[#6f6251]">{description}</p>
+        {guestPrice != null ? (
+          <p className="mt-4 text-lg text-[#1f1a15]">{formatUsd(guestPrice)}</p>
+        ) : (
+          <p className="mt-4 text-sm text-[#8f6f3e]">Physician consult required</p>
+        )}
+        {items?.length ? (
+          <ul className="mt-4 space-y-2 border-t border-[#e8dfd0] pt-4">
+            {items.map((item) => (
+              <li key={item} className="text-sm text-[#3b3024]">
+                {item}
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        <div className="mt-6 flex flex-wrap gap-2">
+          <Link href={bookHref} className={`${primaryCta} flex-1`}>
+            {bookLabel.toUpperCase()}
+          </Link>
+          <Link href={detailsHref} className={secondaryCta}>
+            DETAILS
+          </Link>
+        </div>
       </div>
     </article>
   );

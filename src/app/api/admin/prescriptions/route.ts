@@ -5,6 +5,12 @@ import { requireAdminAccess } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
 import { asMoney } from "@/lib/commerce/serialize-product";
 import { writeAuditLog } from "@/lib/ops/audit";
+import { getShippingConfig } from "@/lib/commerce/shipping";
+import {
+  getPricingConfig,
+  serializeProductWithVendorPricing,
+  upsertVendorOffer,
+} from "@/lib/commerce/vendor-pricing";
 
 function slugify(value: string) {
   return (
@@ -20,11 +26,14 @@ export async function GET() {
   const guard = await requireAdminAccess();
   if (!guard.ok) return guard.response;
 
-  const [catalog, records, vendors] = await Promise.all([
+  const [catalog, records, vendors, intakes, shipping, pricing] = await Promise.all([
     prisma.product.findMany({
       where: { catalogKind: ProductCatalogKind.CLINICAL },
       orderBy: [{ isPrescription: "desc" }, { title: "asc" }],
-      include: { vendor: { select: { id: true, name: true } } },
+      include: {
+        vendor: { select: { id: true, name: true } },
+        vendorOffers: { include: { vendor: { select: { id: true, name: true } } } },
+      },
     }),
     prisma.intakeTherapyProposal.findMany({
       orderBy: { updatedAt: "desc" },
@@ -43,14 +52,39 @@ export async function GET() {
       },
     }),
     prisma.vendor.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } }),
+    prisma.therapeuticsIntakeSubmission.findMany({
+      orderBy: { updatedAt: "desc" },
+      take: 150,
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        status: true,
+        createdAt: true,
+        assignedPartner: { select: { displayName: true } },
+        therapyProposals: {
+          orderBy: { updatedAt: "desc" },
+          take: 1,
+          include: {
+            items: {
+              include: { product: { select: { id: true, title: true, isPrescription: true, price: true } } },
+              orderBy: { createdAt: "asc" },
+            },
+            order: { select: { id: true, orderNumber: true, total: true, paymentStatus: true } },
+            providerPartner: { select: { displayName: true } },
+            subscription: {
+              select: { status: true, interval: true, intervalDays: true, nextChargeAt: true },
+            },
+          },
+        },
+      },
+    }),
+    getShippingConfig(),
+    getPricingConfig(),
   ]);
 
   return NextResponse.json({
-    catalog: catalog.map((product) => ({
-      ...product,
-      price: Number(product.price),
-      wholesalePrice: product.wholesalePrice != null ? Number(product.wholesalePrice) : null,
-    })),
+    catalog: catalog.map((product) => serializeProductWithVendorPricing(product, shipping, pricing)),
     records: records.map((row) => ({
       id: row.id,
       status: row.status,
@@ -86,6 +120,50 @@ export async function GET() {
             : null,
     })),
     vendors,
+    shipping,
+    pricing,
+    intakes: intakes.map((intake) => {
+      const proposal = intake.therapyProposals[0] ?? null;
+      const items =
+        proposal?.items.map((item) => ({
+          id: item.id,
+          title: item.titleSnapshot || item.product.title,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice != null ? Number(item.unitPrice) : Number(item.product.price),
+          isPrescription: item.product.isPrescription,
+        })) ?? [];
+      return {
+        id: intake.id,
+        fullName: intake.fullName,
+        email: intake.email,
+        status: intake.status,
+        createdAt: intake.createdAt,
+        provider: proposal?.providerPartner.displayName || intake.assignedPartner?.displayName || "Unassigned",
+        hasTherapy: Boolean(proposal && items.length),
+        therapy: proposal
+          ? {
+              id: proposal.id,
+              status: proposal.status,
+              sentAt: proposal.sentAt,
+              paidAt: proposal.paidAt,
+              notes: proposal.notes,
+              order: proposal.order ? { ...proposal.order, total: Number(proposal.order.total) } : null,
+              items,
+              total: items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0),
+              billing:
+                proposal.subscription && proposal.subscription.interval !== "ONE_TIME"
+                  ? {
+                      status: proposal.subscription.status,
+                      interval: proposal.subscription.interval,
+                      nextChargeAt: proposal.subscription.nextChargeAt,
+                    }
+                  : proposal.billingInterval !== "ONE_TIME"
+                    ? { status: "PENDING", interval: proposal.billingInterval, nextChargeAt: null }
+                    : null,
+            }
+          : null,
+      };
+    }),
   });
 }
 
@@ -146,6 +224,14 @@ export async function POST(req: Request) {
     },
   });
 
+  if (parsed.data.vendorId && parsed.data.wholesalePrice != null) {
+    await upsertVendorOffer({
+      productId: product.id,
+      vendorId: parsed.data.vendorId,
+      unitCost: parsed.data.wholesalePrice,
+    });
+  }
+
   await writeAuditLog({
     userId: guard.userId,
     action: "prescription.create",
@@ -188,6 +274,14 @@ export async function PATCH(req: Request) {
       category: body.data.category === undefined ? undefined : body.data.category,
     },
   });
+
+  if (body.data.vendorId && body.data.wholesalePrice != null) {
+    await upsertVendorOffer({
+      productId: product.id,
+      vendorId: body.data.vendorId,
+      unitCost: body.data.wholesalePrice,
+    });
+  }
 
   return NextResponse.json({ product: { ...product, price: Number(product.price) } });
 }

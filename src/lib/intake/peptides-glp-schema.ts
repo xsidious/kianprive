@@ -1,16 +1,26 @@
 import { z } from "zod";
 import { ACKNOWLEDGMENT_STATEMENTS } from "@/lib/intake/peptides-glp-options";
 
-const yesNo = z.enum(["yes", "no"]);
+const yesNo = z.enum(["yes", "no"], { message: "Select yes or no." });
+const requiredText = z.string().trim().min(1, "This field is required.");
 const optionalText = z.string().trim().optional().default("");
 
-const previousTherapyEntrySchema = z.object({
-  therapy: z.string().min(1),
-  dose: optionalText,
-  duration: optionalText,
-  reasonStopped: optionalText,
-  sideEffects: optionalText,
-});
+const previousTherapyEntrySchema = z
+  .object({
+    therapy: z.string().min(1),
+    dose: z.string().trim().default(""),
+    duration: z.string().trim().default(""),
+    reasonStopped: z.string().trim().default(""),
+    sideEffects: z.string().trim().default(""),
+  })
+  .superRefine((entry, ctx) => {
+    if (entry.therapy === "None of the above") return;
+    (["dose", "duration", "reasonStopped", "sideEffects"] as const).forEach((key) => {
+      if (!entry[key]?.trim()) {
+        ctx.addIssue({ code: "custom", message: "Required.", path: [key] });
+      }
+    });
+  });
 
 export const peptidesGlpIntakeSchema = z.object({
   patient: z.object({
@@ -24,78 +34,114 @@ export const peptidesGlpIntakeSchema = z.object({
     genderIdentity: optionalText,
     phone: z.string().trim().min(7, "Phone number is required."),
     email: z.string().trim().email("A valid email is required."),
-    primaryCarePhysician: optionalText,
+    primaryCarePhysician: requiredText,
     referringPhysician: optionalText,
     firstAppointmentDate: optionalText,
   }),
   programs: z.array(z.string()).min(1, "Select at least one program of interest."),
-  goals: z.object({
-    primaryGoals: z.array(z.string()).min(1, "Select at least one treatment goal."),
-    otherGoal: optionalText,
-    desiredGoalWeight: optionalText,
-    aestheticOutcomes: optionalText,
-  }),
+  goals: z
+    .object({
+      primaryGoals: z.array(z.string()).min(1, "Select at least one treatment goal."),
+      otherGoal: optionalText,
+      desiredGoalWeight: requiredText,
+      aestheticOutcomes: requiredText,
+    })
+    .superRefine((value, ctx) => {
+      if (value.primaryGoals.includes("Other") && !value.otherGoal.trim()) {
+        ctx.addIssue({ code: "custom", message: "Describe your other goal.", path: ["otherGoal"] });
+      }
+    }),
   weightHistory: z.object({
-    currentWeight: optionalText,
-    highestAdultWeight: optionalText,
-    lowestAdultWeight: optionalText,
-    struggleDuration: z.string().optional().default(""),
-    previousApproaches: z.array(z.string()).default([]),
-    previousTherapies: z.array(previousTherapyEntrySchema).default([]),
-    previousTherapyExperience: optionalText,
+    currentWeight: requiredText,
+    highestAdultWeight: requiredText,
+    lowestAdultWeight: requiredText,
+    struggleDuration: requiredText,
+    previousApproaches: z.array(z.string()).min(1, "Select at least one previous approach, or None of the above."),
+    previousTherapies: z.array(previousTherapyEntrySchema).min(1, "Select previous therapies, or None of the above."),
+    previousTherapyExperience: requiredText,
   }),
-  medicalHistory: z.object({
-    conditions: z.array(z.string()).default([]),
-    hormonalDisorderDetail: optionalText,
-    otherConditions: yesNo,
-    otherConditionsDetail: optionalText,
-    recentSurgery: yesNo,
-    recentSurgeryDetail: optionalText,
-    pregnantBreastfeedingPlanning: yesNo,
-  }),
-  contraindications: z.object({
-    items: z.array(z.string()).default([]),
-    medicationAllergy: yesNo,
-    medicationAllergyDetail: optionalText,
-  }),
-  familyHistory: z.array(z.string()).default([]),
+  medicalHistory: z
+    .object({
+      conditions: z.array(z.string()).min(1, "Select medical conditions, or None of the above."),
+      hormonalDisorderDetail: optionalText,
+      otherConditions: yesNo,
+      otherConditionsDetail: optionalText,
+      recentSurgery: yesNo,
+      recentSurgeryDetail: optionalText,
+      pregnantBreastfeedingPlanning: yesNo,
+    })
+    .superRefine((value, ctx) => {
+      if (value.conditions.includes("Hormonal Disorder") && !value.hormonalDisorderDetail.trim()) {
+        ctx.addIssue({ code: "custom", message: "Describe the hormonal disorder.", path: ["hormonalDisorderDetail"] });
+      }
+      if (value.otherConditions === "yes" && !value.otherConditionsDetail.trim()) {
+        ctx.addIssue({ code: "custom", message: "Please specify.", path: ["otherConditionsDetail"] });
+      }
+      if (value.recentSurgery === "yes" && !value.recentSurgeryDetail.trim()) {
+        ctx.addIssue({ code: "custom", message: "Please specify.", path: ["recentSurgeryDetail"] });
+      }
+    }),
+  contraindications: z
+    .object({
+      items: z.array(z.string()).min(1, "Complete contraindication screening."),
+      medicationAllergy: yesNo,
+      medicationAllergyDetail: optionalText,
+    })
+    .superRefine((value, ctx) => {
+      if (value.medicationAllergy === "yes" && !value.medicationAllergyDetail.trim()) {
+        ctx.addIssue({ code: "custom", message: "Describe the reaction.", path: ["medicationAllergyDetail"] });
+      }
+    }),
+  familyHistory: z.array(z.string()).min(1, "Select family history, or None of the above."),
   medications: z.object({
-    prescriptions: optionalText,
-    supplements: optionalText,
-    peptidesInUse: optionalText,
-    hormones: optionalText,
-    medicationAllergies: optionalText,
-    foodAllergies: optionalText,
-    otherAllergies: optionalText,
+    prescriptions: requiredText,
+    supplements: requiredText,
+    peptidesInUse: requiredText,
+    hormones: requiredText,
+    medicationAllergies: requiredText,
+    foodAllergies: requiredText,
+    otherAllergies: requiredText,
   }),
-  lifestyle: z.object({
-    activityFrequency: z.string().optional().default(""),
-    averageDailySteps: optionalText,
-    averageSleepHours: optionalText,
-    dietType: z.string().optional().default(""),
-    otherDiet: optionalText,
-    skincareRoutine: yesNo.optional(),
-    skincareRoutineDetail: optionalText,
-    alcoholOrSubstances: yesNo.optional(),
-    alcoholOrSubstancesDetail: optionalText,
-    smokingStatus: z.array(z.string()).default([]),
-    stressLevel: z.string().optional().default(""),
-  }),
+  lifestyle: z
+    .object({
+      activityFrequency: requiredText,
+      averageDailySteps: requiredText,
+      averageSleepHours: requiredText,
+      dietType: requiredText,
+      otherDiet: optionalText,
+      skincareRoutine: yesNo,
+      skincareRoutineDetail: optionalText,
+      alcoholOrSubstances: yesNo,
+      alcoholOrSubstancesDetail: optionalText,
+      smokingStatus: z.array(z.string()).min(1, "Select smoking status."),
+      stressLevel: requiredText,
+    })
+    .superRefine((value, ctx) => {
+      if (value.dietType === "Other" && !value.otherDiet.trim()) {
+        ctx.addIssue({ code: "custom", message: "Describe your diet.", path: ["otherDiet"] });
+      }
+      if (value.skincareRoutine === "yes" && !value.skincareRoutineDetail.trim()) {
+        ctx.addIssue({ code: "custom", message: "Describe your routine.", path: ["skincareRoutineDetail"] });
+      }
+      if (value.alcoholOrSubstances === "yes" && !value.alcoholOrSubstancesDetail.trim()) {
+        ctx.addIssue({ code: "custom", message: "Describe frequency and type.", path: ["alcoholOrSubstancesDetail"] });
+      }
+    }),
   nutrition: z.object({
-    mealsPerDay: optionalText,
-    waterIntakeOz: optionalText,
-    proteinIntakeG: optionalText,
-    eatingPatterns: z.array(z.string()).default([]),
+    mealsPerDay: requiredText,
+    waterIntakeOz: requiredText,
+    proteinIntakeG: requiredText,
+    eatingPatterns: z.array(z.string()).min(1, "Select eating patterns, or None of the above."),
   }),
   womensHealth: z.object({
-    lastMenstrualPeriod: optionalText,
-    birthControlMethod: optionalText,
-    selections: z.array(z.string()).default([]),
+    lastMenstrualPeriod: requiredText,
+    birthControlMethod: requiredText,
+    selections: z.array(z.string()).min(1, "Complete women's health, or None of the above / N/A."),
   }),
   labs: z.object({
-    recentLabs: z.array(z.string()).default([]),
+    recentLabs: z.array(z.string()).min(1, "Select recent labs, or None on file."),
   }),
-  symptoms: z.array(z.string()).default([]),
+  symptoms: z.array(z.string()).min(1, "Select symptoms, or None of the above."),
   acknowledgments: z.object({
     initials: z
       .record(z.string())
@@ -104,25 +150,37 @@ export const peptidesGlpIntakeSchema = z.object({
         "Initial each acknowledgment statement.",
       ),
   }),
-  consent: z.object({
-    informedSafetyDiscussed: z.literal(true, {
-      errorMap: () => ({ message: "Confirm that safety information has been reviewed." }),
+  consent: z
+    .object({
+      accuracyTypedYes: z
+        .string()
+        .trim()
+        .refine((value) => value.toLowerCase() === "yes", {
+          message: "Type YES to confirm the information on this form is true and complete.",
+        }),
+      informedSafetyDiscussed: z.boolean().refine((value) => value === true, {
+        message: "Confirm that safety information has been reviewed.",
+      }),
+      telemedicineAttestation: z.boolean().refine((value) => value === true, {
+        message: "Telemedicine attestation is required.",
+      }),
+      informedConsent: z.boolean().refine((value) => value === true, {
+        message: "Informed consent is required.",
+      }),
+      hipaaPrivacyAcknowledged: z.boolean().refine((value) => value === true, {
+        message: "HIPAA privacy acknowledgment is required.",
+      }),
+      referralSource: z.string().min(1, "Please tell us how you heard about KIAN Privé."),
+      referralOther: optionalText,
+      clientSignature: z.string().trim().min(2, "Client signature is required."),
+      signatureDate: z.string().min(1, "Signature date is required."),
+      printedName: z.string().trim().min(2, "Printed name is required."),
+    })
+    .superRefine((value, ctx) => {
+      if (value.referralSource === "Other" && !value.referralOther.trim()) {
+        ctx.addIssue({ code: "custom", message: "Please specify.", path: ["referralOther"] });
+      }
     }),
-    telemedicineAttestation: z.literal(true, {
-      errorMap: () => ({ message: "Telemedicine attestation is required when applicable." }),
-    }),
-    informedConsent: z.literal(true, {
-      errorMap: () => ({ message: "Informed consent is required." }),
-    }),
-    hipaaPrivacyAcknowledged: z.literal(true, {
-      errorMap: () => ({ message: "HIPAA privacy acknowledgment is required." }),
-    }),
-    referralSource: z.string().min(1, "Please tell us how you heard about KIAN Privé."),
-    referralOther: optionalText,
-    clientSignature: z.string().trim().min(2, "Client signature is required."),
-    signatureDate: z.string().min(1, "Signature date is required."),
-    printedName: z.string().trim().min(2, "Printed name is required."),
-  }),
 });
 
 export type PeptidesGlpIntakeFormData = z.infer<typeof peptidesGlpIntakeSchema>;
@@ -200,9 +258,9 @@ export const defaultPeptidesGlpIntake: PeptidesGlpIntakeFormData = {
     averageSleepHours: "",
     dietType: "",
     otherDiet: "",
-    skincareRoutine: undefined,
+    skincareRoutine: undefined as unknown as "yes" | "no",
     skincareRoutineDetail: "",
-    alcoholOrSubstances: undefined,
+    alcoholOrSubstances: undefined as unknown as "yes" | "no",
     alcoholOrSubstancesDetail: "",
     smokingStatus: [],
     stressLevel: "",
@@ -226,10 +284,11 @@ export const defaultPeptidesGlpIntake: PeptidesGlpIntakeFormData = {
     initials: {},
   },
   consent: {
-    informedSafetyDiscussed: true,
-    telemedicineAttestation: true,
-    informedConsent: true,
-    hipaaPrivacyAcknowledged: true,
+    accuracyTypedYes: "",
+    informedSafetyDiscussed: false,
+    telemedicineAttestation: false,
+    informedConsent: false,
+    hipaaPrivacyAcknowledged: false,
     referralSource: "",
     referralOther: "",
     clientSignature: "",

@@ -2,6 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { AdminModal } from "@/components/admin/AdminModal";
+import { PricingCalculatorDrawer } from "@/components/admin/PricingCalculatorDrawer";
+import { IntakeTherapyPicker } from "@/components/intake/IntakeTherapyPicker";
 import {
   adminBtnGhost,
   adminBtnPrimary,
@@ -14,6 +18,15 @@ import {
   money,
   statusTone,
 } from "@/components/admin/ui";
+
+type VendorOffer = {
+  id: string;
+  vendorId: string;
+  vendorName: string;
+  unitCost: number;
+  shippingCost: number;
+  landedCost: number;
+};
 
 type CatalogItem = {
   id: string;
@@ -28,30 +41,49 @@ type CatalogItem = {
   status: string;
   vendorId: string | null;
   vendor: { id: string; name: string } | null;
+  vendorOffers?: VendorOffer[];
+  bestVendor?: VendorOffer | null;
+  suggestedPrice?: number | null;
 };
 
-type RecordRow = {
+type TherapyItem = { id: string; title: string; quantity: number; unitPrice: number };
+
+type IntakeRow = {
   id: string;
+  fullName: string;
+  email: string;
   status: string;
-  patient: { id: string; fullName: string; email: string; status: string };
+  createdAt: string;
   provider: string;
-  order: { id: string; orderNumber: string; total: number; paymentStatus: string } | null;
-  items: Array<{ id: string; title: string; quantity: number; unitPrice: number }>;
-  total: number;
-  sentAt: string | null;
-  billing?: { status: string; interval: string; nextChargeAt: string | null } | null;
+  hasTherapy: boolean;
+  therapy: {
+    id: string;
+    status: string;
+    order: { id: string; orderNumber: string; total: number; paymentStatus: string } | null;
+    items: TherapyItem[];
+    total: number;
+    billing?: { status: string; interval: string; nextChargeAt: string | null } | null;
+  } | null;
 };
 
 type Vendor = { id: string; name: string };
+type ShippingDefaults = { flatRate: number; freeThreshold: number; alwaysFree: boolean };
+type PricingDefaults = { marginPercent: number; extraDollars: number; includeStoreShipping: boolean };
 
 export default function AdminPrescriptionsPage() {
-  const [tab, setTab] = useState<"catalog" | "patients">("catalog");
+  const searchParams = useSearchParams();
+  const [tab, setTab] = useState<"patients" | "catalog">("patients");
   const [catalog, setCatalog] = useState<CatalogItem[]>([]);
-  const [records, setRecords] = useState<RecordRow[]>([]);
+  const [intakes, setIntakes] = useState<IntakeRow[]>([]);
   const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [shipping, setShipping] = useState<ShippingDefaults | null>(null);
+  const [pricing, setPricing] = useState<PricingDefaults | null>(null);
+  const [calcProductId, setCalcProductId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [patientSearch, setPatientSearch] = useState("");
   const [status, setStatus] = useState("");
   const [prices, setPrices] = useState<Record<string, string>>({});
+  const [therapyIntakeId, setTherapyIntakeId] = useState<string | null>(null);
   const [draft, setDraft] = useState({
     title: "",
     category: "Peptides",
@@ -71,12 +103,16 @@ export default function AdminPrescriptionsPage() {
     }
     const data = (await res.json()) as {
       catalog: CatalogItem[];
-      records: RecordRow[];
+      intakes: IntakeRow[];
       vendors: Vendor[];
+      shipping?: ShippingDefaults;
+      pricing?: PricingDefaults;
     };
     setCatalog(data.catalog);
-    setRecords(data.records);
+    setIntakes(data.intakes ?? []);
     setVendors(data.vendors);
+    setShipping(data.shipping ?? null);
+    setPricing(data.pricing ?? null);
     const next: Record<string, string> = {};
     for (const item of data.catalog) next[item.id] = item.price > 0 ? String(item.price) : "";
     setPrices(next);
@@ -86,6 +122,14 @@ export default function AdminPrescriptionsPage() {
     void load();
   }, []);
 
+  useEffect(() => {
+    const id = searchParams.get("intake");
+    if (id) {
+      setTab("patients");
+      setTherapyIntakeId(id);
+    }
+  }, [searchParams]);
+
   const visible = useMemo(() => {
     const q = search.trim().toLowerCase();
     return catalog.filter((item) => {
@@ -93,6 +137,17 @@ export default function AdminPrescriptionsPage() {
       return `${item.title} ${item.category ?? ""} ${item.sku ?? ""} ${item.strength ?? ""}`.toLowerCase().includes(q);
     });
   }, [catalog, search]);
+
+  const visibleIntakes = useMemo(() => {
+    const q = patientSearch.trim().toLowerCase();
+    if (!q) return intakes;
+    return intakes.filter((row) =>
+      `${row.fullName} ${row.email} ${row.provider} ${row.status}`.toLowerCase().includes(q),
+    );
+  }, [intakes, patientSearch]);
+
+  const therapyIntake = intakes.find((row) => row.id === therapyIntakeId) ?? null;
+  const withTherapy = intakes.filter((row) => row.hasTherapy).length;
 
   async function savePrice(id: string) {
     const price = Number(prices[id] || 0);
@@ -102,6 +157,17 @@ export default function AdminPrescriptionsPage() {
       body: JSON.stringify({ id, price, isPrescription: true }),
     });
     setStatus(res.ok ? "Price saved." : "Could not save price.");
+    if (res.ok) await load();
+  }
+
+  async function applySuggested(id: string) {
+    const res = await fetch("/api/admin/vendor-offers", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "applySuggested", productId: id }),
+    });
+    const data = (await res.json()) as { error?: string; suggestedRetail?: number };
+    setStatus(res.ok ? `Price set to ${money(data.suggestedRetail ?? 0)}.` : data.error || "Could not apply price.");
     if (res.ok) await load();
   }
 
@@ -146,8 +212,8 @@ export default function AdminPrescriptionsPage() {
           <p className={adminEyebrow}>Clinical</p>
           <h1 className={adminTitle}>Prescriptions</h1>
           <p className={adminMuted}>
-            Price every peptide and compound here, then assign them on intake. Patient prescriptions sent from intake
-            appear on the second tab so you can track what was prescribed and whether it was paid.
+            Every intake appears here automatically. On Catalog, add each company’s price and shipping — we keep the
+            cheapest quote and suggest a patient price that covers cost, shipping, and profit.
           </p>
         </div>
         <Link href="/admin/intake" className={adminBtnGhost}>
@@ -160,21 +226,94 @@ export default function AdminPrescriptionsPage() {
       <div className="flex gap-2">
         <button
           type="button"
+          className={tab === "patients" ? adminBtnPrimary : adminBtnGhost}
+          onClick={() => setTab("patients")}
+        >
+          Intakes ({intakes.length})
+        </button>
+        <button
+          type="button"
           className={tab === "catalog" ? adminBtnPrimary : adminBtnGhost}
           onClick={() => setTab("catalog")}
         >
           Catalog ({catalog.length})
         </button>
-        <button
-          type="button"
-          className={tab === "patients" ? adminBtnPrimary : adminBtnGhost}
-          onClick={() => setTab("patients")}
-        >
-          Patient prescriptions ({records.length})
-        </button>
       </div>
 
-      {tab === "catalog" ? (
+      {tab === "patients" ? (
+        <section className="space-y-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <input
+              className={`${adminInput} max-w-sm`}
+              placeholder="Search patients…"
+              value={patientSearch}
+              onChange={(e) => setPatientSearch(e.target.value)}
+            />
+            <p className="text-xs uppercase tracking-[0.12em] text-[#8f6f3e]">
+              {withTherapy} with prescriptions · {intakes.length - withTherapy} need therapy
+            </p>
+          </div>
+          {visibleIntakes.map((row) => (
+            <article key={row.id} className={`${adminPanel} p-5`}>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="font-serif text-xl text-[#1f1a15]">{row.fullName}</p>
+                  <p className="text-sm text-[#6f6251]">
+                    {row.email} · {row.provider}
+                    {row.therapy?.order ? ` · ${row.therapy.order.orderNumber}` : ""}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className={`rounded-full px-2 py-1 text-[10px] uppercase tracking-[0.12em] ${statusTone(row.status)}`}>
+                    {row.status.replaceAll("_", " ")}
+                  </span>
+                  <span
+                    className={`rounded-full px-2 py-1 text-[10px] uppercase tracking-[0.12em] ${statusTone(
+                      row.therapy?.order?.paymentStatus || row.therapy?.status || "NO THERAPY",
+                    )}`}
+                  >
+                    {row.hasTherapy ? row.therapy?.order?.paymentStatus || row.therapy?.status : "No therapy"}
+                  </span>
+                </div>
+              </div>
+              {row.hasTherapy && row.therapy ? (
+                <>
+                  <ul className="mt-3 text-sm text-[#4f4335]">
+                    {row.therapy.items.map((item) => (
+                      <li key={item.id}>
+                        {item.title} × {item.quantity}
+                        {item.unitPrice > 0 ? ` · ${money(item.unitPrice)}` : ""}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-3 font-serif text-lg">{money(row.therapy.total)}</p>
+                  {row.therapy.billing ? (
+                    <p className="mt-1 text-xs uppercase tracking-[0.12em] text-[#8f6f3e]">
+                      {row.therapy.billing.interval.replace(/_/g, " ").toLowerCase()} · {row.therapy.billing.status}
+                    </p>
+                  ) : null}
+                </>
+              ) : (
+                <p className="mt-3 text-sm text-[#6f6251]">No therapy assigned yet. Create prescriptions from this intake.</p>
+              )}
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button type="button" className={adminBtnPrimary} onClick={() => setTherapyIntakeId(row.id)}>
+                  {row.hasTherapy ? "Edit therapy" : "Create therapy"}
+                </button>
+                <Link href={`/admin/intake?open=${row.id}`} className={adminBtnGhost}>
+                  View intake
+                </Link>
+                <Link href={`/admin/invoices?patient=${row.id}`} className={adminBtnGhost}>
+                  Invoice
+                </Link>
+              </div>
+            </article>
+          ))}
+          {!visibleIntakes.length ? (
+            <p className="text-sm text-[#6f6251]">No intake forms yet. New peptide / GLP intakes will appear here automatically.</p>
+          ) : null}
+        </section>
+      ) : (
         <>
           <section className={`${adminPanel} space-y-3 p-5`}>
             <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Add prescription</p>
@@ -214,10 +353,9 @@ export default function AdminPrescriptionsPage() {
               <thead>
                 <tr className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">
                   <th className="px-3 py-2">Prescription</th>
-                  <th className="px-3 py-2">Category</th>
-                  <th className="px-3 py-2">Price</th>
-                  <th className="px-3 py-2">Cost</th>
-                  <th className="px-3 py-2">Vendor</th>
+                  <th className="px-3 py-2">Best vendor</th>
+                  <th className="px-3 py-2">Our price</th>
+                  <th className="px-3 py-2">Suggested</th>
                   <th className="px-3 py-2" />
                 </tr>
               </thead>
@@ -231,7 +369,19 @@ export default function AdminPrescriptionsPage() {
                         {item.isPrescription ? " · Rx" : ""}
                       </p>
                     </td>
-                    <td className="px-3 py-3 text-[#6f6251]">{item.category || "—"}</td>
+                    <td className="px-3 py-3 text-[#6f6251]">
+                      {item.bestVendor ? (
+                        <>
+                          <p>{item.bestVendor.vendorName}</p>
+                          <p className="text-xs">
+                            {money(item.bestVendor.landedCost)} landed
+                            {(item.vendorOffers?.length ?? 0) > 1 ? ` · ${item.vendorOffers?.length} quotes` : ""}
+                          </p>
+                        </>
+                      ) : (
+                        "Add vendor quotes"
+                      )}
+                    </td>
                     <td className="px-3 py-3">
                       <input
                         className={`${adminInput} w-28`}
@@ -241,12 +391,24 @@ export default function AdminPrescriptionsPage() {
                         onChange={(e) => setPrices((prev) => ({ ...prev, [item.id]: e.target.value }))}
                       />
                     </td>
-                    <td className="px-3 py-3 text-[#6f6251]">{item.wholesalePrice != null ? money(item.wholesalePrice) : "—"}</td>
-                    <td className="px-3 py-3 text-[#6f6251]">{item.vendor?.name || "—"}</td>
+                    <td className="px-3 py-3 text-[#6f6251]">{item.suggestedPrice != null ? money(item.suggestedPrice) : "—"}</td>
                     <td className="px-3 py-3">
-                      <button type="button" className={adminBtnGhost} onClick={() => void savePrice(item.id)}>
-                        Save price
-                      </button>
+                      <div className="flex flex-wrap gap-2">
+                        <button type="button" className={adminBtnGhost} onClick={() => void savePrice(item.id)}>
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          className={adminBtnGhost}
+                          disabled={!item.suggestedPrice}
+                          onClick={() => void applySuggested(item.id)}
+                        >
+                          Use suggested
+                        </button>
+                        <button type="button" className={adminBtnGhost} onClick={() => setCalcProductId(item.id)}>
+                          Vendors
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -255,44 +417,36 @@ export default function AdminPrescriptionsPage() {
             {!visible.length ? <p className="p-6 text-sm text-[#6f6251]">No prescriptions match.</p> : null}
           </div>
         </>
-      ) : (
-        <section className="space-y-3">
-          {records.map((row) => (
-            <article key={row.id} className={`${adminPanel} p-5`}>
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="font-serif text-xl text-[#1f1a15]">{row.patient.fullName}</p>
-                  <p className="text-sm text-[#6f6251]">
-                    {row.patient.email} · {row.provider}
-                    {row.order ? ` · ${row.order.orderNumber}` : ""}
-                  </p>
-                </div>
-                <span className={`rounded-full px-2 py-1 text-[10px] uppercase tracking-[0.12em] ${statusTone(row.order?.paymentStatus || row.status)}`}>
-                  {row.order?.paymentStatus || row.status}
-                </span>
-              </div>
-              <ul className="mt-3 text-sm text-[#4f4335]">
-                {row.items.map((item) => (
-                  <li key={item.id}>
-                    {item.title} × {item.quantity}
-                    {item.unitPrice > 0 ? ` · ${money(item.unitPrice)}` : ""}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-3 font-serif text-lg">{money(row.total)}</p>
-              {row.billing ? (
-                <p className="mt-1 text-xs uppercase tracking-[0.12em] text-[#8f6f3e]">
-                  {row.billing.interval.replace(/_/g, " ").toLowerCase()} · {row.billing.status}
-                </p>
-              ) : null}
-              <Link href="/admin/intake" className="mt-2 inline-block text-xs uppercase tracking-[0.12em] text-[#8f6f3e]">
-                Open intake
-              </Link>
-            </article>
-          ))}
-          {!records.length ? <p className="text-sm text-[#6f6251]">No patient prescriptions sent yet.</p> : null}
-        </section>
       )}
+
+      <AdminModal
+        open={Boolean(therapyIntake)}
+        title={therapyIntake?.fullName ?? "Therapy"}
+        eyebrow={therapyIntake?.hasTherapy ? "Edit prescription" : "Create prescription"}
+        wide
+        onClose={() => setTherapyIntakeId(null)}
+      >
+        {therapyIntake ? (
+          <IntakeTherapyPicker
+            key={therapyIntake.id}
+            intakeSubmissionId={therapyIntake.id}
+            allowPricing
+            onSaved={() => {
+              void load();
+            }}
+          />
+        ) : null}
+      </AdminModal>
+
+      <PricingCalculatorDrawer
+        catalog={catalog}
+        vendors={vendors}
+        shipping={shipping}
+        pricing={pricing}
+        selectedProductId={calcProductId}
+        onCloseSelect={() => setCalcProductId(null)}
+        onChanged={() => void load()}
+      />
     </div>
   );
 }

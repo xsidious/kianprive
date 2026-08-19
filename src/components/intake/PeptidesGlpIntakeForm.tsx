@@ -37,6 +37,8 @@ import {
   peptidesGlpStepValidators,
   type PeptidesGlpIntakeFormData,
 } from "@/lib/intake/peptides-glp-schema";
+import { AuthorizeNetPayForm } from "@/components/commerce/AuthorizeNetPayForm";
+import { INTAKE_REVIEW_FEE_USD } from "@/lib/intake/review-fee";
 
 export function PeptidesGlpIntakeForm() {
   const [step, setStep] = useState(0);
@@ -77,35 +79,45 @@ export function PeptidesGlpIntakeForm() {
     setStep((value) => Math.max(value - 1, 0));
   };
 
-  const submit = async () => {
-    if (!validateStep()) return;
+  const submitWithPayment = async (input: {
+    opaqueData: { dataDescriptor: string; dataValue: string };
+    billTo: { zip?: string };
+    testCardNumber?: string;
+  }) => {
+    if (!validateStep()) {
+      throw new Error("Please complete the required fields on this step before paying.");
+    }
     const parsed = peptidesGlpIntakeSchema.safeParse(form);
     if (!parsed.success) {
       setFieldErrors(parsed.error.flatten().fieldErrors as Record<string, string[]>);
-      setError("Please review the form and complete all required fields.");
-      return;
+      throw new Error("Please review the form and complete all required fields.");
     }
 
     setSubmitting(true);
     setError("");
-    try {
-      const response = await fetch("/api/intake/peptides-glp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(parsed.data),
-      });
-      const payload = (await response.json()) as { error?: string; referenceId?: string };
-      if (!response.ok) {
-        setError(payload.error ?? "Submission failed. Please try again or contact concierge.");
-        return;
-      }
-      setReferenceId(payload.referenceId ?? null);
-      setStep(INTAKE_STEPS.length);
-    } catch {
-      setError("Network error. Please try again.");
-    } finally {
-      setSubmitting(false);
+    const response = await fetch("/api/intake/peptides-glp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        intake: parsed.data,
+        opaqueData: input.opaqueData,
+        billTo: input.billTo,
+        testCardNumber: input.testCardNumber,
+      }),
+    });
+    const payload = (await response.json()) as { error?: string; referenceId?: string; testMode?: boolean };
+    setSubmitting(false);
+    if (!response.ok) {
+      throw new Error(payload.error ?? "Submission failed. Please try again or contact concierge.");
     }
+    setReferenceId(payload.referenceId ?? null);
+    setStep(INTAKE_STEPS.length);
+    return {
+      testMode: payload.testMode,
+      message: payload.testMode
+        ? "Test payment recorded. Intake sent for physician review."
+        : "Payment received. Intake sent for physician review.",
+    };
   };
 
   const bmiPreview = useMemo(() => {
@@ -122,8 +134,9 @@ export function PeptidesGlpIntakeForm() {
         <p className="text-xs tracking-[0.2em] text-[#1b6568]">INTAKE RECEIVED</p>
         <h2 className="mt-3 text-3xl text-[#1f1a15]">Thank you</h2>
         <p className="mx-auto mt-4 max-w-2xl text-[#28585a]">
-          Your Comprehensive Therapeutics Intake has been securely submitted. A KIAN Privé clinician will review your
-          information and contact you regarding approval and next steps.
+          Your Comprehensive Therapeutics Intake has been securely submitted with the $55 physician review
+          fee. A KIAN Privé clinician will review your information and contact you regarding approval and next
+          steps.
         </p>
         <p className="mt-4 text-sm text-[#1b6568]">
           Reference ID: <strong>{referenceId}</strong>
@@ -151,8 +164,8 @@ export function PeptidesGlpIntakeForm() {
         <h1 className="mt-2 text-3xl text-[#1f1a15] md:text-4xl">Comprehensive Therapeutics Intake</h1>
         <p className="mt-3 max-w-3xl text-sm text-[#6f6251]">
           Peptide Therapy • GLP-1 / GLP-2 / GLP-3 Receptor Agonist Therapy. This form is strictly confidential and
-          protected under HIPAA guidelines. Information is transmitted securely to KIAN Privé operations and your
-          reviewing clinician only.
+          protected under HIPAA guidelines. A ${INTAKE_REVIEW_FEE_USD} physician review fee is required before your
+          intake is sent to the doctor.
         </p>
         <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#f1e7d7]">
           <div className="h-full rounded-sm bg-[#b78d4b] transition-all" style={{ width: `${progress}%` }} />
@@ -203,8 +216,8 @@ export function PeptidesGlpIntakeForm() {
             <Field label="Email *">
               <TextInput type="email" value={form.patient.email} onChange={(v) => update("patient", { ...form.patient, email: v })} required />
             </Field>
-            <Field label="Primary Care Physician">
-              <TextInput value={form.patient.primaryCarePhysician} onChange={(v) => update("patient", { ...form.patient, primaryCarePhysician: v })} />
+            <Field label="Primary Care Physician *">
+              <TextInput value={form.patient.primaryCarePhysician} onChange={(v) => update("patient", { ...form.patient, primaryCarePhysician: v })} required placeholder="Type None if you do not have one" />
             </Field>
             <Field label="Referring Physician (if any)">
               <TextInput value={form.patient.referringPhysician} onChange={(v) => update("patient", { ...form.patient, referringPhysician: v })} />
@@ -224,13 +237,13 @@ export function PeptidesGlpIntakeForm() {
           <Field label="Primary goals for therapy *">
             <CheckboxGroup options={PRIMARY_GOAL_OPTIONS} selected={form.goals.primaryGoals} onChange={(primaryGoals) => update("goals", { ...form.goals, primaryGoals })} />
           </Field>
-          <Field label="Other goal (if selected)">
+          <Field label="Other goal (required if you selected Other)">
             <TextInput value={form.goals.otherGoal} onChange={(v) => update("goals", { ...form.goals, otherGoal: v })} />
           </Field>
-          <Field label="Desired goal weight (if applicable)">
-            <TextInput value={form.goals.desiredGoalWeight} onChange={(v) => update("goals", { ...form.goals, desiredGoalWeight: v })} />
+          <Field label="Desired goal weight *">
+            <TextInput value={form.goals.desiredGoalWeight} onChange={(v) => update("goals", { ...form.goals, desiredGoalWeight: v })} required />
           </Field>
-          <Field label="Specific aesthetic or wellness outcomes you hope to achieve">
+          <Field label="Specific aesthetic or wellness outcomes you hope to achieve *">
             <TextArea value={form.goals.aestheticOutcomes} onChange={(v) => update("goals", { ...form.goals, aestheticOutcomes: v })} />
           </Field>
         </div>
@@ -240,23 +253,24 @@ export function PeptidesGlpIntakeForm() {
         <div className="space-y-6">
           <SectionIntro eyebrow="SECTION 04" title="Weight & Metabolic History" />
           <div className="grid gap-4 md:grid-cols-3">
-            <Field label="Current Weight"><TextInput value={form.weightHistory.currentWeight} onChange={(v) => update("weightHistory", { ...form.weightHistory, currentWeight: v })} /></Field>
-            <Field label="Highest Adult Weight"><TextInput value={form.weightHistory.highestAdultWeight} onChange={(v) => update("weightHistory", { ...form.weightHistory, highestAdultWeight: v })} /></Field>
-            <Field label="Lowest Adult Weight"><TextInput value={form.weightHistory.lowestAdultWeight} onChange={(v) => update("weightHistory", { ...form.weightHistory, lowestAdultWeight: v })} /></Field>
+            <Field label="Current Weight *"><TextInput value={form.weightHistory.currentWeight} onChange={(v) => update("weightHistory", { ...form.weightHistory, currentWeight: v })} required /></Field>
+            <Field label="Highest Adult Weight *"><TextInput value={form.weightHistory.highestAdultWeight} onChange={(v) => update("weightHistory", { ...form.weightHistory, highestAdultWeight: v })} required /></Field>
+            <Field label="Lowest Adult Weight *"><TextInput value={form.weightHistory.lowestAdultWeight} onChange={(v) => update("weightHistory", { ...form.weightHistory, lowestAdultWeight: v })} required /></Field>
           </div>
-          <Field label="How long have you struggled with your weight?">
+          <Field label="How long have you struggled with your weight? *">
             <select value={form.weightHistory.struggleDuration} onChange={(e) => update("weightHistory", { ...form.weightHistory, struggleDuration: e.target.value })} className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm">
               <option value="">Select one</option>
               {WEIGHT_STRUGGLE_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}
             </select>
           </Field>
-          <Field label="Previous weight-loss approaches">
-            <CheckboxGroup options={PREVIOUS_WEIGHT_LOSS_OPTIONS} selected={form.weightHistory.previousApproaches} onChange={(previousApproaches) => update("weightHistory", { ...form.weightHistory, previousApproaches })} />
+          <Field label="Previous weight-loss approaches *">
+            <CheckboxGroup options={PREVIOUS_WEIGHT_LOSS_OPTIONS} selected={form.weightHistory.previousApproaches} exclusiveOption="None of the above" onChange={(previousApproaches) => update("weightHistory", { ...form.weightHistory, previousApproaches })} />
           </Field>
-          <Field label="Previous peptide / GLP therapies used">
+          <Field label="Previous peptide / GLP therapies used *">
             <CheckboxGroup
               options={PREVIOUS_THERAPY_OPTIONS}
               selected={form.weightHistory.previousTherapies.map((item) => item.therapy)}
+              exclusiveOption="None of the above"
               onChange={(selected) =>
                 update("weightHistory", {
                   ...form.weightHistory,
@@ -265,19 +279,19 @@ export function PeptidesGlpIntakeForm() {
               }
             />
           </Field>
-          {form.weightHistory.previousTherapies.map((entry, index) => (
+          {form.weightHistory.previousTherapies.filter((entry) => entry.therapy !== "None of the above").map((entry, index) => (
             <div key={entry.therapy} className="rounded-sm border border-[#b78d4b2d] bg-[#fffaf2] p-4">
               <p className="text-sm font-medium text-[#3b3024]">{entry.therapy}</p>
               <div className="mt-3 grid gap-3 md:grid-cols-2">
-                <Field label="Dose"><TextInput value={entry.dose} onChange={(v) => { const next = [...form.weightHistory.previousTherapies]; next[index] = { ...entry, dose: v }; update("weightHistory", { ...form.weightHistory, previousTherapies: next }); }} /></Field>
-                <Field label="Duration"><TextInput value={entry.duration} onChange={(v) => { const next = [...form.weightHistory.previousTherapies]; next[index] = { ...entry, duration: v }; update("weightHistory", { ...form.weightHistory, previousTherapies: next }); }} /></Field>
-                <Field label="Reason stopped"><TextInput value={entry.reasonStopped} onChange={(v) => { const next = [...form.weightHistory.previousTherapies]; next[index] = { ...entry, reasonStopped: v }; update("weightHistory", { ...form.weightHistory, previousTherapies: next }); }} /></Field>
-                <Field label="Side effects"><TextInput value={entry.sideEffects} onChange={(v) => { const next = [...form.weightHistory.previousTherapies]; next[index] = { ...entry, sideEffects: v }; update("weightHistory", { ...form.weightHistory, previousTherapies: next }); }} /></Field>
+                <Field label="Dose *"><TextInput value={entry.dose} onChange={(v) => { const next = [...form.weightHistory.previousTherapies]; const i = next.findIndex((item) => item.therapy === entry.therapy); next[i] = { ...entry, dose: v }; update("weightHistory", { ...form.weightHistory, previousTherapies: next }); }} /></Field>
+                <Field label="Duration *"><TextInput value={entry.duration} onChange={(v) => { const next = [...form.weightHistory.previousTherapies]; const i = next.findIndex((item) => item.therapy === entry.therapy); next[i] = { ...entry, duration: v }; update("weightHistory", { ...form.weightHistory, previousTherapies: next }); }} /></Field>
+                <Field label="Reason stopped *"><TextInput value={entry.reasonStopped} onChange={(v) => { const next = [...form.weightHistory.previousTherapies]; const i = next.findIndex((item) => item.therapy === entry.therapy); next[i] = { ...entry, reasonStopped: v }; update("weightHistory", { ...form.weightHistory, previousTherapies: next }); }} /></Field>
+                <Field label="Side effects *"><TextInput value={entry.sideEffects} onChange={(v) => { const next = [...form.weightHistory.previousTherapies]; const i = next.findIndex((item) => item.therapy === entry.therapy); next[i] = { ...entry, sideEffects: v }; update("weightHistory", { ...form.weightHistory, previousTherapies: next }); }} /></Field>
               </div>
             </div>
           ))}
-          <Field label="Describe your experience with prior treatments">
-            <TextArea value={form.weightHistory.previousTherapyExperience} onChange={(v) => update("weightHistory", { ...form.weightHistory, previousTherapyExperience: v })} />
+          <Field label="Describe your experience with prior treatments *">
+            <TextArea value={form.weightHistory.previousTherapyExperience} onChange={(v) => update("weightHistory", { ...form.weightHistory, previousTherapyExperience: v })} placeholder="Type None if this does not apply" />
           </Field>
         </div>
       ) : null}
@@ -285,7 +299,7 @@ export function PeptidesGlpIntakeForm() {
       {step === 3 ? (
         <div className="space-y-6">
           <SectionIntro eyebrow="SECTION 05" title="Medical History" />
-          <CheckboxGroup options={MEDICAL_CONDITION_OPTIONS} selected={form.medicalHistory.conditions} onChange={(conditions) => update("medicalHistory", { ...form.medicalHistory, conditions })} />
+          <CheckboxGroup options={MEDICAL_CONDITION_OPTIONS} selected={form.medicalHistory.conditions} exclusiveOption="None of the above" onChange={(conditions) => update("medicalHistory", { ...form.medicalHistory, conditions })} />
           <Field label="Hormonal disorder details (if applicable)"><TextInput value={form.medicalHistory.hormonalDisorderDetail} onChange={(v) => update("medicalHistory", { ...form.medicalHistory, hormonalDisorderDetail: v })} /></Field>
           <YesNoField label="Other pre-existing medical conditions not listed?" value={form.medicalHistory.otherConditions} onChange={(otherConditions) => update("medicalHistory", { ...form.medicalHistory, otherConditions })} />
           {form.medicalHistory.otherConditions === "yes" ? <Field label="Please specify"><TextArea value={form.medicalHistory.otherConditionsDetail} onChange={(v) => update("medicalHistory", { ...form.medicalHistory, otherConditionsDetail: v })} /></Field> : null}
@@ -304,42 +318,42 @@ export function PeptidesGlpIntakeForm() {
           <SectionIntro eyebrow="SECTION 07" title="Family History" />
           <CheckboxGroup options={FAMILY_HISTORY_OPTIONS} selected={form.familyHistory} exclusiveOption="None of the above" onChange={(familyHistory) => update("familyHistory", familyHistory)} />
           <SectionIntro eyebrow="SECTION 08" title="Current Medications, Supplements & Allergies" />
-          <Field label="Prescription medications"><TextArea value={form.medications.prescriptions} onChange={(v) => update("medications", { ...form.medications, prescriptions: v })} /></Field>
-          <Field label="Supplements"><TextArea value={form.medications.supplements} onChange={(v) => update("medications", { ...form.medications, supplements: v })} /></Field>
-          <Field label="Peptides currently in use"><TextArea value={form.medications.peptidesInUse} onChange={(v) => update("medications", { ...form.medications, peptidesInUse: v })} /></Field>
-          <Field label="Hormones / hormone replacement therapy"><TextArea value={form.medications.hormones} onChange={(v) => update("medications", { ...form.medications, hormones: v })} /></Field>
-          <Field label="Medication allergies"><TextArea value={form.medications.medicationAllergies} onChange={(v) => update("medications", { ...form.medications, medicationAllergies: v })} /></Field>
-          <Field label="Food allergies"><TextArea value={form.medications.foodAllergies} onChange={(v) => update("medications", { ...form.medications, foodAllergies: v })} /></Field>
-          <Field label="Other allergies"><TextArea value={form.medications.otherAllergies} onChange={(v) => update("medications", { ...form.medications, otherAllergies: v })} /></Field>
+          <Field label="Prescription medications *"><TextArea value={form.medications.prescriptions} onChange={(v) => update("medications", { ...form.medications, prescriptions: v })} placeholder="Type None if none" /></Field>
+          <Field label="Supplements *"><TextArea value={form.medications.supplements} onChange={(v) => update("medications", { ...form.medications, supplements: v })} placeholder="Type None if none" /></Field>
+          <Field label="Peptides currently in use *"><TextArea value={form.medications.peptidesInUse} onChange={(v) => update("medications", { ...form.medications, peptidesInUse: v })} placeholder="Type None if none" /></Field>
+          <Field label="Hormones / hormone replacement therapy *"><TextArea value={form.medications.hormones} onChange={(v) => update("medications", { ...form.medications, hormones: v })} placeholder="Type None if none" /></Field>
+          <Field label="Medication allergies *"><TextArea value={form.medications.medicationAllergies} onChange={(v) => update("medications", { ...form.medications, medicationAllergies: v })} placeholder="Type None if none" /></Field>
+          <Field label="Food allergies *"><TextArea value={form.medications.foodAllergies} onChange={(v) => update("medications", { ...form.medications, foodAllergies: v })} placeholder="Type None if none" /></Field>
+          <Field label="Other allergies *"><TextArea value={form.medications.otherAllergies} onChange={(v) => update("medications", { ...form.medications, otherAllergies: v })} placeholder="Type None if none" /></Field>
         </div>
       ) : null}
 
       {step === 5 ? (
         <div className="space-y-6">
           <SectionIntro eyebrow="SECTION 09" title="Lifestyle & Wellness Profile" />
-          <Field label="Physical activity frequency">
+          <Field label="Physical activity frequency *">
             <select value={form.lifestyle.activityFrequency} onChange={(e) => update("lifestyle", { ...form.lifestyle, activityFrequency: e.target.value })} className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm">
               <option value="">Select one</option>
               {ACTIVITY_FREQUENCY_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}
             </select>
           </Field>
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Average daily steps"><TextInput value={form.lifestyle.averageDailySteps} onChange={(v) => update("lifestyle", { ...form.lifestyle, averageDailySteps: v })} /></Field>
-            <Field label="Average sleep (hours/night)"><TextInput value={form.lifestyle.averageSleepHours} onChange={(v) => update("lifestyle", { ...form.lifestyle, averageSleepHours: v })} /></Field>
+            <Field label="Average daily steps *"><TextInput value={form.lifestyle.averageDailySteps} onChange={(v) => update("lifestyle", { ...form.lifestyle, averageDailySteps: v })} required /></Field>
+            <Field label="Average sleep (hours/night) *"><TextInput value={form.lifestyle.averageSleepHours} onChange={(v) => update("lifestyle", { ...form.lifestyle, averageSleepHours: v })} required /></Field>
           </div>
-          <Field label="Typical diet">
+          <Field label="Typical diet *">
             <select value={form.lifestyle.dietType} onChange={(e) => update("lifestyle", { ...form.lifestyle, dietType: e.target.value })} className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm">
               <option value="">Select one</option>
               {DIET_TYPE_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}
             </select>
           </Field>
           {form.lifestyle.dietType === "Other" ? <Field label="Other diet"><TextInput value={form.lifestyle.otherDiet} onChange={(v) => update("lifestyle", { ...form.lifestyle, otherDiet: v })} /></Field> : null}
-          <YesNoField label="Follow a specific skincare or wellness routine?" value={form.lifestyle.skincareRoutine} onChange={(skincareRoutine) => update("lifestyle", { ...form.lifestyle, skincareRoutine })} />
-          {form.lifestyle.skincareRoutine === "yes" ? <Field label="Describe routine"><TextArea value={form.lifestyle.skincareRoutineDetail} onChange={(v) => update("lifestyle", { ...form.lifestyle, skincareRoutineDetail: v })} /></Field> : null}
-          <YesNoField label="Consume alcohol or use recreational substances?" value={form.lifestyle.alcoholOrSubstances} onChange={(alcoholOrSubstances) => update("lifestyle", { ...form.lifestyle, alcoholOrSubstances })} />
-          {form.lifestyle.alcoholOrSubstances === "yes" ? <Field label="Frequency and type"><TextArea value={form.lifestyle.alcoholOrSubstancesDetail} onChange={(v) => update("lifestyle", { ...form.lifestyle, alcoholOrSubstancesDetail: v })} /></Field> : null}
-          <Field label="Smoking status"><CheckboxGroup options={SMOKING_STATUS_OPTIONS} selected={form.lifestyle.smokingStatus} onChange={(smokingStatus) => update("lifestyle", { ...form.lifestyle, smokingStatus })} /></Field>
-          <Field label="Current stress level">
+          <YesNoField label="Follow a specific skincare or wellness routine? *" value={form.lifestyle.skincareRoutine} onChange={(skincareRoutine) => update("lifestyle", { ...form.lifestyle, skincareRoutine })} />
+          {form.lifestyle.skincareRoutine === "yes" ? <Field label="Describe routine *"><TextArea value={form.lifestyle.skincareRoutineDetail} onChange={(v) => update("lifestyle", { ...form.lifestyle, skincareRoutineDetail: v })} /></Field> : null}
+          <YesNoField label="Consume alcohol or use recreational substances? *" value={form.lifestyle.alcoholOrSubstances} onChange={(alcoholOrSubstances) => update("lifestyle", { ...form.lifestyle, alcoholOrSubstances })} />
+          {form.lifestyle.alcoholOrSubstances === "yes" ? <Field label="Frequency and type *"><TextArea value={form.lifestyle.alcoholOrSubstancesDetail} onChange={(v) => update("lifestyle", { ...form.lifestyle, alcoholOrSubstancesDetail: v })} /></Field> : null}
+          <Field label="Smoking status *"><CheckboxGroup options={SMOKING_STATUS_OPTIONS} selected={form.lifestyle.smokingStatus} onChange={(smokingStatus) => update("lifestyle", { ...form.lifestyle, smokingStatus })} /></Field>
+          <Field label="Current stress level *">
             <select value={form.lifestyle.stressLevel} onChange={(e) => update("lifestyle", { ...form.lifestyle, stressLevel: e.target.value })} className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm">
               <option value="">Select one</option>
               {STRESS_LEVEL_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}
@@ -347,15 +361,15 @@ export function PeptidesGlpIntakeForm() {
           </Field>
           <SectionIntro eyebrow="SECTION 10" title="Nutrition Profile" />
           <div className="grid gap-4 md:grid-cols-3">
-            <Field label="Meals per day"><TextInput value={form.nutrition.mealsPerDay} onChange={(v) => update("nutrition", { ...form.nutrition, mealsPerDay: v })} /></Field>
-            <Field label="Water intake (oz/day)"><TextInput value={form.nutrition.waterIntakeOz} onChange={(v) => update("nutrition", { ...form.nutrition, waterIntakeOz: v })} /></Field>
-            <Field label="Protein intake (g/day)"><TextInput value={form.nutrition.proteinIntakeG} onChange={(v) => update("nutrition", { ...form.nutrition, proteinIntakeG: v })} /></Field>
+            <Field label="Meals per day *"><TextInput value={form.nutrition.mealsPerDay} onChange={(v) => update("nutrition", { ...form.nutrition, mealsPerDay: v })} required /></Field>
+            <Field label="Water intake (oz/day) *"><TextInput value={form.nutrition.waterIntakeOz} onChange={(v) => update("nutrition", { ...form.nutrition, waterIntakeOz: v })} required /></Field>
+            <Field label="Protein intake (g/day) *"><TextInput value={form.nutrition.proteinIntakeG} onChange={(v) => update("nutrition", { ...form.nutrition, proteinIntakeG: v })} required /></Field>
           </div>
           <CheckboxGroup options={EATING_PATTERN_OPTIONS} selected={form.nutrition.eatingPatterns} exclusiveOption="None of the above" onChange={(eatingPatterns) => update("nutrition", { ...form.nutrition, eatingPatterns })} />
           <SectionIntro eyebrow="SECTION 11" title="Women's Health (if applicable)" />
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Last menstrual period"><TextInput value={form.womensHealth.lastMenstrualPeriod} onChange={(v) => update("womensHealth", { ...form.womensHealth, lastMenstrualPeriod: v })} /></Field>
-            <Field label="Birth control method"><TextInput value={form.womensHealth.birthControlMethod} onChange={(v) => update("womensHealth", { ...form.womensHealth, birthControlMethod: v })} /></Field>
+            <Field label="Last menstrual period *"><TextInput value={form.womensHealth.lastMenstrualPeriod} onChange={(v) => update("womensHealth", { ...form.womensHealth, lastMenstrualPeriod: v })} placeholder="Type N/A if not applicable" /></Field>
+            <Field label="Birth control method *"><TextInput value={form.womensHealth.birthControlMethod} onChange={(v) => update("womensHealth", { ...form.womensHealth, birthControlMethod: v })} placeholder="Type N/A if not applicable" /></Field>
           </div>
           <CheckboxGroup options={WOMENS_HEALTH_OPTIONS} selected={form.womensHealth.selections} exclusiveOption="None of the above" onChange={(selections) => update("womensHealth", { ...form.womensHealth, selections })} />
         </div>
@@ -429,11 +443,45 @@ export function PeptidesGlpIntakeForm() {
               {REFERRAL_SOURCE_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}
             </select>
           </Field>
-          {form.consent.referralSource === "Other" ? <Field label="Please specify"><TextInput value={form.consent.referralOther} onChange={(v) => update("consent", { ...form.consent, referralOther: v })} /></Field> : null}
-          <div className="grid gap-4 md:grid-cols-2">
+          {form.consent.referralSource === "Other" ? <Field label="Please specify *"><TextInput value={form.consent.referralOther} onChange={(v) => update("consent", { ...form.consent, referralOther: v })} /></Field> : null}
+          <div className="rounded-sm border border-[#8a682e55] bg-[#fff6e8] p-4 sm:p-5">
+            <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Accuracy disclaimer</p>
+            <p className="mt-2 text-sm leading-relaxed text-[#4f4335]">
+              I certify that all information in this intake form is true, complete, and accurate to the best of my
+              knowledge. I understand that my care plan depends on honest answers, and that I must tell KIAN Privé if
+              anything changes. Typing <strong>YES</strong> below is required before I can sign.
+            </p>
+            <Field label='Type YES to confirm *' hint="Type the word YES (not Y or a checkmark).">
+              <TextInput
+                value={form.consent.accuracyTypedYes}
+                onChange={(v) => update("consent", { ...form.consent, accuracyTypedYes: v })}
+                placeholder="YES"
+              />
+            </Field>
+          </div>
+          <div className={`grid gap-4 md:grid-cols-2 ${form.consent.accuracyTypedYes.trim().toLowerCase() === "yes" ? "" : "pointer-events-none opacity-45"}`}>
             <Field label="Client signature (type full legal name) *"><TextInput value={form.consent.clientSignature} onChange={(v) => update("consent", { ...form.consent, clientSignature: v })} /></Field>
             <Field label="Printed name *"><TextInput value={form.consent.printedName} onChange={(v) => update("consent", { ...form.consent, printedName: v })} /></Field>
             <Field label="Signature date *"><TextInput type="date" value={form.consent.signatureDate} onChange={(v) => update("consent", { ...form.consent, signatureDate: v })} /></Field>
+          </div>
+          {form.consent.accuracyTypedYes.trim().toLowerCase() !== "yes" ? (
+            <p className="text-sm text-[#8f2d2d]">Type YES above to unlock the signature fields.</p>
+          ) : null}
+          <div className="rounded-sm border border-[#efe4d4] bg-[#fffaf3] p-4 sm:p-5">
+            <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Physician review fee</p>
+            <p className="mt-2 text-sm leading-relaxed text-[#4f4335]">
+              A ${INTAKE_REVIEW_FEE_USD} payment is required before this intake is submitted to the doctor. Your form
+              is not sent for clinical review until this fee is paid.
+            </p>
+            <div className="mt-4">
+              <AuthorizeNetPayForm
+                amountLabel={`$${INTAKE_REVIEW_FEE_USD.toFixed(2)}`}
+                submitLabel={`Pay $${INTAKE_REVIEW_FEE_USD} and submit to physician`}
+                testSubmitLabel={`Pay $${INTAKE_REVIEW_FEE_USD} (test) and submit`}
+                onCharge={submitWithPayment}
+                onSuccess={() => undefined}
+              />
+            </div>
           </div>
         </div>
       ) : null}
@@ -452,9 +500,7 @@ export function PeptidesGlpIntakeForm() {
             Continue
           </button>
         ) : (
-          <button type="button" onClick={submit} disabled={submitting} className="rounded-sm bg-[#1f7a7a] px-5 py-2 text-sm text-white disabled:opacity-60">
-            {submitting ? "Submitting securely…" : "Submit Intake Form"}
-          </button>
+          <p className="text-sm text-[#6f6251]">Pay the ${INTAKE_REVIEW_FEE_USD} review fee above to send this intake to the doctor.</p>
         )}
       </div>
     </div>

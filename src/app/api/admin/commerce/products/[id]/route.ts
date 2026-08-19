@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminAccess } from "@/lib/admin-guard";
 import { writeAuditLog } from "@/lib/ops/audit";
 import { asMoney, serializeAdminProduct } from "@/lib/commerce/serialize-product";
+import { upsertVendorOffer } from "@/lib/commerce/vendor-pricing";
 
 type Params = {
   params: Promise<{ id: string }>;
@@ -108,6 +109,14 @@ export async function PATCH(req: Request, { params }: Params) {
         include: { variants: { orderBy: { createdAt: "asc" } } },
       });
     });
+
+    if (product?.vendorId && product.wholesalePrice != null) {
+      await upsertVendorOffer({
+        productId: product.id,
+        vendorId: product.vendorId,
+        unitCost: Number(product.wholesalePrice),
+      });
+    }
 
     await writeAuditLog({
       userId: guard.userId,

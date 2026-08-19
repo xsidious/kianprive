@@ -85,7 +85,13 @@ export async function listShopCatalogProducts(): Promise<CatalogProduct[]> {
 
   const listed = catalogProducts.map((product) => overlayCatalogWithDb(product, bySlug));
   const extras = rows
-    .filter((row) => !catalogKeys.has(row.slug) && !catalogKeys.has(row.id))
+    .filter(
+      (row) =>
+        !catalogKeys.has(row.slug) &&
+        !catalogKeys.has(row.id) &&
+        row.slug !== "payment-test-1" &&
+        !/payment test/i.test(row.title),
+    )
     .map((row) => dbRowToCatalog(row, getCatalogProduct(row.slug)));
 
   return [...listed, ...extras];

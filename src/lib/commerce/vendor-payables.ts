@@ -39,7 +39,12 @@ export async function createVendorPayablesForOrder(orderId: string) {
   for (const item of order.items) {
     const vendorId = item.product.vendorId;
     if (!vendorId) continue;
-    const unitCost = money(item.product.wholesalePrice);
+    const offer = await prisma.productVendorOffer.findUnique({
+      where: { productId_vendorId: { productId: item.product.id, vendorId } },
+    });
+    const unitCost = offer
+      ? money(offer.unitCost) + money(offer.shippingCost)
+      : money(item.product.wholesalePrice);
     const line = unitCost * item.quantity;
     const current = grouped.get(vendorId) ?? { amount: 0, notes: [] };
     current.amount += line;

@@ -63,7 +63,7 @@ export function AdminShippingSettings() {
       <div>
         <h2 className="font-serif text-xl text-[#1f1a15]">Shipping</h2>
         <p className="mt-1 text-sm text-[#6f6251]">
-          Controls cart, checkout, and Stripe shipping line items for retail shop orders.
+          Controls shop checkout, invoice defaults, and the starting shipping amount on clinical therapy pricing.
         </p>
       </div>
 
