@@ -346,19 +346,31 @@ export async function upsertTherapyProposal(input: {
       intervalDays,
       orderId: proposal.orderId,
     });
+
+    let paymentUrl: string | null = null;
+    if (proposal.orderId) {
+      const issued = await issueOrderPaymentToken(proposal.orderId);
+      paymentUrl = issued.paymentUrl;
+    }
+
+    const payLine = paymentUrl
+      ? `\n\nPay securely (no account required):\n${paymentUrl}`
+      : "";
+
     await createIntakeMessage({
       intakeSubmissionId: input.intakeSubmissionId,
       authorRole: "PROVIDER",
       authorName: provider?.displayName ?? "Clinical team",
-      body: `A therapy plan has been prepared for you. Review and use Accept & Pay when ready.${
-        recurringLabel ? ` After the first payment, refills are billed ${recurringLabel}.` : ""
+      body: `A therapy plan has been prepared for you.${payLine}${
+        recurringLabel ? `\n\nAfter the first payment, refills are billed ${recurringLabel}.` : ""
       }${input.notes ? `\n\nNote: ${input.notes}` : ""}`,
       notifyPatient: true,
+      paymentUrl,
     });
-    if (intake?.email && proposal.orderId) {
-      const issued = await issueOrderPaymentToken(proposal.orderId);
+
+    if (intake?.email && paymentUrl) {
       const order = await prisma.order.findUnique({
-        where: { id: proposal.orderId },
+        where: { id: proposal.orderId! },
         select: { orderNumber: true, total: true },
       });
       await sendInvoiceEmail({
@@ -366,7 +378,7 @@ export async function upsertTherapyProposal(input: {
         fullName: intake.fullName,
         orderNumber: order?.orderNumber ?? "therapy invoice",
         total: Number(order?.total ?? 0),
-        paymentUrl: issued.paymentUrl,
+        paymentUrl,
         notes: input.notes,
         recurringLabel,
       });

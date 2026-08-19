@@ -37,7 +37,7 @@ type TrackResult = {
     notes: string | null;
     items: Array<{ title: string; quantity: number }>;
     billing?: { status: string; label: string; nextChargeLabel: string | null } | null;
-    order: { orderNumber: string; total?: number; paymentStatus: string } | null;
+    order: { orderNumber: string; total?: number; paymentStatus: string; paymentUrl?: string | null } | null;
   } | null;
 };
 
@@ -295,7 +295,21 @@ function TrackIntakeForm() {
                 </p>
               ) : null}
               {result.therapy.order && result.therapy.order.paymentStatus !== "PAID" ? (
-                <p className="mt-3 text-sm text-[#6f6251]">Sign in to Accept &amp; Pay for this therapy plan.</p>
+                <div className="mt-4 space-y-3">
+                  {typeof result.therapy.order.total === "number" ? (
+                    <p className="font-serif text-2xl text-[#1f1a15]">${result.therapy.order.total.toFixed(2)} due</p>
+                  ) : null}
+                  {result.therapy.order.paymentUrl ? (
+                    <a
+                      href={result.therapy.order.paymentUrl}
+                      className="inline-flex rounded-full border border-[#8f6f3e] bg-[#8f6f3e] px-5 py-2.5 text-sm text-white"
+                    >
+                      Pay therapy invoice
+                    </a>
+                  ) : (
+                    <p className="text-sm text-[#6f6251]">Sign in to Accept &amp; Pay for this therapy plan.</p>
+                  )}
+                </div>
               ) : null}
               {result.therapy.order?.paymentStatus === "PAID" ? (
                 <p className="mt-3 text-sm text-[#1b6568]">
@@ -305,16 +319,21 @@ function TrackIntakeForm() {
             </div>
           ) : null}
           <div className="flex flex-wrap gap-3 pt-2">
-            {result.hasAccount || result.therapy?.order?.paymentStatus === "UNPAID" ? (
+            {result.hasAccount ? (
               <Link
                 href="/login?callbackUrl=/dashboard/intake"
                 className="rounded-full border border-[#8f6f3e] bg-[#8f6f3e] px-4 py-2 text-sm text-white"
               >
-                {result.therapy?.order?.paymentStatus === "UNPAID"
-                  ? "Sign in to Accept & Pay"
-                  : "Sign in to dashboard"}
+                Sign in to dashboard
               </Link>
-            ) : (
+            ) : result.therapy?.order?.paymentStatus === "UNPAID" && !result.therapy.order.paymentUrl ? (
+              <Link
+                href="/login?callbackUrl=/dashboard/intake"
+                className="rounded-full border border-[#8f6f3e] bg-[#8f6f3e] px-4 py-2 text-sm text-white"
+              >
+                Sign in to Accept & Pay
+              </Link>
+            ) : !result.therapy?.order?.paymentUrl ? (
               <button
                 type="button"
                 onClick={() => setMode("create")}
@@ -322,7 +341,7 @@ function TrackIntakeForm() {
               >
                 Create account to track online
               </button>
-            )}
+            ) : null}
             <Link href="/shop" className="rounded-full border border-[#d8cbb5] px-4 py-2 text-sm text-[#6f6251]">
               Visit shop
             </Link>

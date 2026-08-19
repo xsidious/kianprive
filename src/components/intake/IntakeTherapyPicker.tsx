@@ -293,7 +293,16 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
       setStatus(data.error || "Could not save therapy.");
       return;
     }
-    setStatus(send ? "Therapy sent to patient." : "Therapy draft saved.");
+    const payUrl =
+      data.proposal?.order?.paymentUrl ??
+      (data.paymentUrl as string | undefined);
+    setStatus(
+      send
+        ? payUrl
+          ? `Therapy sent. Patient pay link: ${payUrl}`
+          : "Therapy sent to patient."
+        : "Therapy draft saved.",
+    );
     onSaved?.();
   }
 

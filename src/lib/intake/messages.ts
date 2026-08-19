@@ -50,6 +50,8 @@ export async function createIntakeMessage(opts: {
   /** Mirror latest clinical ask onto statusNote for older UIs */
   syncStatusNote?: boolean;
   notifyPatient?: boolean;
+  /** Direct pay link included in patient email when therapy is invoiced */
+  paymentUrl?: string | null;
 }) {
   const body = opts.body.trim();
   if (!body) throw new Error("Message body is required.");
@@ -102,23 +104,33 @@ export async function createIntakeMessage(opts: {
 
     if (opts.notifyPatient && opts.authorRole === "PROVIDER" && submission.email) {
       try {
+        const payBlock = opts.paymentUrl
+          ? `\n\nPay your therapy invoice (no account required):\n${opts.paymentUrl}`
+          : "";
         await sendTransactionalEmail({
           to: submission.email,
-          subject: `KIAN Privé — Update on your intake (${referenceCode})`,
+          subject: opts.paymentUrl
+            ? `KIAN Privé — Your therapy plan is ready (${referenceCode})`
+            : `KIAN Privé — Update on your intake (${referenceCode})`,
           text: [
             `Hi ${submission.fullName},`,
             "",
             "Your clinical team sent a message about your intake request:",
             "",
             body,
+            payBlock,
             "",
             `Status: ${patientFacingIntakeStatus(submission.status)}`,
             `Request code: ${referenceCode}`,
-            `Reply here: ${track}`,
+            `Track and reply: ${track}`,
             "",
             "— KIAN Privé Concierge",
           ].join("\n"),
-          html: `<p>Hi ${submission.fullName},</p><p>Your clinical team sent a message about your intake request:</p><blockquote style="border-left:3px solid #c4a574;padding-left:12px;margin:16px 0;color:#1f1a15">${safeBody}</blockquote><p>Status: ${patientFacingIntakeStatus(submission.status)}<br/>Request code: <strong>${referenceCode}</strong></p><p><a href="${track}">View and reply</a></p><p>— KIAN Privé Concierge</p>`,
+          html: `<p>Hi ${submission.fullName},</p><p>Your clinical team sent a message about your intake request:</p><blockquote style="border-left:3px solid #c4a574;padding-left:12px;margin:16px 0;color:#1f1a15">${safeBody}</blockquote>${
+            opts.paymentUrl
+              ? `<p><a href="${opts.paymentUrl}" style="display:inline-block;margin:12px 0;padding:12px 18px;background:#b78d4b;color:#fff;text-decoration:none;border-radius:4px">Pay therapy invoice</a></p><p style="font-size:13px;color:#6f6251">No account required — pay securely on our site.</p>`
+              : ""
+          }<p>Status: ${patientFacingIntakeStatus(submission.status)}<br/>Request code: <strong>${referenceCode}</strong></p><p><a href="${track}">View and reply</a></p><p>— KIAN Privé Concierge</p>`,
         });
       } catch (err) {
         console.error("[intake/messages] patient notify failed:", err);

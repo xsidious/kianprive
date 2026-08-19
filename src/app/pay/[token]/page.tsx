@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { isPaymentTokenValid } from "@/lib/commerce/payment-link";
 import { InvoicePayClient } from "@/components/commerce/InvoicePayClient";
@@ -32,7 +32,24 @@ export default async function PayInvoicePage({ params }: Props) {
       intakeSubmission: { select: { fullName: true } },
     },
   });
-  if (!order) notFound();
+  if (!order) {
+    return (
+      <main className="mx-auto max-w-xl px-4 py-16">
+        <p className="text-[10px] uppercase tracking-[0.22em] text-[#8f6f3e]">KIAN Privé</p>
+        <h1 className="mt-2 font-serif text-3xl text-[#1f1a15]">Payment link not found</h1>
+        <p className="mt-4 text-sm leading-relaxed text-[#6f6251]">
+          This link may be expired, already used, or copied incorrectly. Ask your KIAN Privé care team to resend your
+          therapy invoice, or track your intake with the email and request code from your confirmation.
+        </p>
+        <Link
+          href="/track-intake"
+          className="mt-6 inline-flex rounded-full border border-[#8f6f3e] bg-[#8f6f3e] px-5 py-2.5 text-sm text-white"
+        >
+          Track my intake
+        </Link>
+      </main>
+    );
+  }
 
   const expired = !isPaymentTokenValid(order) && order.paymentStatus !== "PAID";
   const paid = order.paymentStatus === "PAID";

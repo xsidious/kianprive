@@ -138,6 +138,19 @@ export async function POST(req: Request) {
       billingInterval: parsed.data.billingInterval as TherapyBillingInterval,
       intervalDays: parsed.data.intervalDays,
     });
+
+    let paymentUrl: string | null = null;
+    if (parsed.data.send && proposal?.order?.id) {
+      const order = await prisma.order.findUnique({
+        where: { id: proposal.order.id },
+        select: { paymentToken: true },
+      });
+      if (order?.paymentToken) {
+        const { orderPaymentUrl } = await import("@/lib/commerce/payment-link");
+        paymentUrl = orderPaymentUrl(order.paymentToken);
+      }
+    }
+
     return NextResponse.json({
       proposal: proposal
         ? serializeProposal(proposal, {
@@ -145,6 +158,7 @@ export async function POST(req: Request) {
             includePayTotal: false,
           })
         : null,
+      paymentUrl,
     });
   } catch (error) {
     return NextResponse.json(

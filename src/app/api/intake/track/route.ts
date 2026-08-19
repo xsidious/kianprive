@@ -8,6 +8,7 @@ import {
 } from "@/lib/intake/tracking";
 import { listIntakeMessages } from "@/lib/intake/messages";
 import { formatChargeDate, intervalLabel } from "@/lib/commerce/therapy-billing";
+import { orderPaymentUrl } from "@/lib/commerce/payment-link";
 
 const querySchema = z.object({
   email: z.string().email(),
@@ -86,6 +87,7 @@ export async function POST(req: Request) {
               orderNumber: true,
               total: true,
               paymentStatus: true,
+              paymentToken: true,
             },
           },
           providerPartner: { select: { displayName: true } },
@@ -166,6 +168,12 @@ export async function POST(req: Request) {
                 ? {
                     orderNumber: proposal.order.orderNumber,
                     paymentStatus: proposal.order.paymentStatus,
+                    total:
+                      proposal.order.paymentStatus === "UNPAID" ? Number(proposal.order.total) : undefined,
+                    paymentUrl:
+                      proposal.order.paymentStatus === "UNPAID" && proposal.order.paymentToken
+                        ? orderPaymentUrl(proposal.order.paymentToken)
+                        : null,
                   }
                 : null,
             }
