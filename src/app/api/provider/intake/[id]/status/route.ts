@@ -5,6 +5,7 @@ import { requirePartnerProfile } from "@/lib/partner-guard";
 import { prisma } from "@/lib/prisma";
 import { canAccessAdmin } from "@/lib/rbac";
 import { sendTransactionalEmail } from "@/lib/email";
+import { buildIntakeStatusEmail } from "@/lib/email-templates";
 import {
   INTAKE_STATUS_OPTIONS,
   intakeTrackUrl,
@@ -142,36 +143,27 @@ export async function POST(req: Request, { params }: Params) {
       email: updated.email,
     });
     const label = patientFacingIntakeStatus(status);
+    const nextStep =
+      status === "APPROVED"
+        ? "Next step: our team will coordinate treatment and product fulfillment. Sign in at kianprive.com to view progress."
+        : status === "NEEDS_LABS"
+          ? "Please arrange updated labs or evaluation as noted. You can reply on your tracking page."
+          : "Our team will follow up if anything else is needed. You can reply on your tracking page.";
     try {
+      const content = buildIntakeStatusEmail({
+        fullName: updated.fullName,
+        statusLabel: label,
+        note,
+        referenceCode,
+        trackUrl: track,
+        orderNumber: order?.orderNumber,
+        nextStep,
+      });
       await sendTransactionalEmail({
         to: updated.email,
-        subject: `KIAN Privé — Intake update: ${label}`,
-        text: [
-          `Hi ${updated.fullName},`,
-          "",
-          `Your clinical intake status is now: ${label}.`,
-          note ? `\nNote from your provider:\n${note}\n` : "",
-          `Request code: ${referenceCode}`,
-          `Track and reply: ${track}`,
-          order ? `\nA fulfillment order draft was created: ${order.orderNumber}` : "",
-          "",
-          status === "APPROVED"
-            ? "Next step: our team will coordinate treatment / product fulfillment. Sign in at kianprive.com to view progress."
-            : status === "NEEDS_LABS"
-              ? "Please arrange updated labs or evaluation as noted. You can reply on your tracking page."
-              : "Our team will follow up if anything else is needed. You can reply on your tracking page.",
-          "",
-          "— KIAN Privé Clinical Team",
-        ]
-          .filter(Boolean)
-          .join("\n"),
-        html: `<p>Hi ${updated.fullName},</p><p>Your clinical intake status is now: <strong>${label}</strong>.</p>${
-          note
-            ? `<p><em>Note from your provider:</em><br/>${note.replace(/</g, "&lt;")}</p>`
-            : ""
-        }<p>Request code: <strong>${referenceCode}</strong></p><p><a href="${track}">Track and reply</a></p>${
-          order ? `<p>Order draft: <strong>${order.orderNumber}</strong></p>` : ""
-        }<p>— KIAN Privé Clinical Team</p>`,
+        subject: `KIAN Privé — ${content.subject}`,
+        text: content.text,
+        html: content.html,
       });
     } catch (err) {
       console.error("[intake/status] patient notify failed", err);

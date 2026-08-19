@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { sendTransactionalEmail } from "@/lib/email";
+import { buildInvoiceEmail } from "@/lib/email-templates";
 import { issueOrderPaymentToken, orderPaymentUrl } from "@/lib/commerce/payment-link";
 
 export async function createPatientInvoice(input: {
@@ -103,34 +104,12 @@ export async function sendInvoiceEmail(input: {
   notes?: string | null;
   recurringLabel?: string | null;
 }) {
-  const recurring = input.recurringLabel
-    ? `After this payment, your therapy will be billed ${input.recurringLabel} on the card you use.`
-    : null;
+  const content = buildInvoiceEmail(input);
   await sendTransactionalEmail({
     to: input.to,
-    subject: `Invoice ${input.orderNumber} — KIAN Privé`,
-    text: [
-      `Hello ${input.fullName},`,
-      "",
-      `Your KIAN Privé invoice ${input.orderNumber} is ready.`,
-      `Amount due: $${input.total.toFixed(2)}`,
-      recurring,
-      "",
-      `Pay securely on our site (no account required):`,
-      input.paymentUrl,
-      input.notes ? `\nNote from your care team:\n${input.notes}` : "",
-      "",
-      "— KIAN Privé",
-    ]
-      .filter((line) => line != null)
-      .join("\n"),
-    html: `<p>Hello ${input.fullName},</p>
-<p>Your KIAN Privé invoice <strong>${input.orderNumber}</strong> is ready.</p>
-<p>Amount due: <strong>$${input.total.toFixed(2)}</strong></p>
-${recurring ? `<p>${recurring}</p>` : ""}
-${input.notes ? `<p>${input.notes}</p>` : ""}
-<p><a href="${input.paymentUrl}">Pay this invoice</a> — you can pay on our site without signing in.</p>
-<p>— KIAN Privé</p>`,
+    subject: content.subject,
+    text: content.text,
+    html: content.html,
   });
 }
 

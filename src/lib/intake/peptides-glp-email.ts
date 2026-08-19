@@ -1,5 +1,7 @@
 import type { PeptidesGlpIntakeFormData } from "@/lib/intake/peptides-glp-schema";
 import { ACKNOWLEDGMENT_STATEMENTS } from "@/lib/intake/peptides-glp-options";
+import { buildIntakeConfirmationEmail } from "@/lib/email-templates";
+import { intakeTrackUrl } from "@/lib/intake/tracking";
 
 function escapeHtml(value: string) {
   return value
@@ -160,24 +162,14 @@ export function formatPeptideIntakeEmail(data: PeptidesGlpIntakeFormData, refere
   };
 }
 
-export function formatPeptideIntakePatientConfirmation(data: PeptidesGlpIntakeFormData, referenceId: string) {
-  const text = [
-    `Dear ${data.patient.fullName},`,
-    "",
-    "Thank you for submitting your KIAN Privé Comprehensive Therapeutics Intake Form.",
-    "",
-    `Reference ID: ${referenceId}`,
-    "We received your $55 physician review fee. A KIAN Privé clinician will review your information and contact you regarding next steps.",
-    "",
-    "This message confirms receipt only and does not constitute medical approval or a prescription.",
-    "",
-    "KIAN Privé — Physician-Led Luxury Wellness Concierge",
-    "North Miami Beach, Florida",
-  ].join("\n");
-
-  return {
-    subject: "We received your KIAN Privé therapeutics intake",
-    text,
-    html: `<p>${text.replaceAll("\n\n", "</p><p>").replaceAll("\n", "<br/>")}</p>`,
-  };
+export function formatPeptideIntakePatientConfirmation(
+  data: PeptidesGlpIntakeFormData,
+  referenceId: string,
+) {
+  const trackUrl = intakeTrackUrl({ referenceCode: referenceId, email: data.patient.email });
+  return buildIntakeConfirmationEmail({
+    fullName: data.patient.fullName,
+    referenceId,
+    trackUrl,
+  });
 }

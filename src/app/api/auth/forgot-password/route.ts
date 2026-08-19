@@ -3,6 +3,7 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { sendTransactionalEmail } from "@/lib/email";
+import { buildPasswordResetEmail } from "@/lib/email-templates";
 import { createSetupToken, SETUP_TOKEN_TTL_MS } from "@/lib/auth/setup-token";
 
 const schema = z.object({
@@ -37,11 +38,12 @@ export async function POST(req: Request) {
       },
     });
     const setupUrl = `${appBaseUrl()}/welcome?token=${token}`;
+    const content = buildPasswordResetEmail({ setupUrl });
     await sendTransactionalEmail({
       to: user.email,
-      subject: "Reset your KIAN Privé password",
-      text: `Use this link to choose a new password:\n${setupUrl}\n\nThis link expires in 24 hours.`,
-      html: `<p>Use this link to choose a new password:</p><p><a href="${setupUrl}">${setupUrl}</a></p><p>This link expires in 24 hours.</p>`,
+      subject: content.subject,
+      text: content.text,
+      html: content.html,
     });
   }
 

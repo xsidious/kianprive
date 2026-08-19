@@ -8,6 +8,7 @@ import {
 import { createProductCommissionsForOrder } from "@/lib/commissions";
 import { createIntakeMessage } from "@/lib/intake/messages";
 import { sendTransactionalEmail } from "@/lib/email";
+import { buildTherapyRefillEmail, buildSimpleEmail } from "@/lib/email-templates";
 import { createVendorPayablesForOrder } from "@/lib/commerce/vendor-payables";
 import { issueOrderPaymentToken } from "@/lib/commerce/payment-link";
 import { sendInvoiceEmail } from "@/lib/commerce/invoices";
@@ -351,11 +352,16 @@ export async function chargeTherapySubscription(
     });
 
     if (email) {
+      const content = buildTherapyRefillEmail({
+        orderNumber: order.orderNumber,
+        amount: amountDue,
+        billingLabel: label,
+      });
       await sendTransactionalEmail({
         to: email,
-        subject: `Therapy refill charged — ${order.orderNumber}`,
-        text: `We charged $${amountDue.toFixed(2)} for your therapy refill (${order.orderNumber}). This plan bills ${label}.`,
-        html: `<p>We charged <strong>$${amountDue.toFixed(2)}</strong> for your therapy refill <strong>${order.orderNumber}</strong>.</p><p>This plan bills ${label}.</p>`,
+        subject: content.subject,
+        text: content.text,
+        html: content.html,
       });
     }
 

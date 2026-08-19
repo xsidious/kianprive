@@ -1,5 +1,6 @@
-type SendEmailInput = {
-  to: string | string[];
+import { buildWelcomeEmail } from "@/lib/email-templates";
+
+type SendEmailInput = {  to: string | string[];
   subject: string;
   text?: string;
   html?: string;
@@ -73,9 +74,11 @@ export async function sendTransactionalEmail(input: SendEmailInput) {
 }
 
 export async function sendWelcomeEmail(email: string) {
+  const content = buildWelcomeEmail({ email });
   return sendTransactionalEmail({
     to: email,
-    subject: "Welcome to KIAN Prive",
-    text: "Welcome to KIAN Prive. Your account is ready.",
+    subject: content.subject,
+    text: content.text,
+    html: content.html,
   });
 }

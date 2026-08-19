@@ -1,6 +1,7 @@
 import type { IntakeMessage, IntakeMessageAuthor } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { sendTransactionalEmail } from "@/lib/email";
+import { buildIntakeUpdateEmail, buildSimpleEmail } from "@/lib/email-templates";
 import {
   intakeTrackUrl,
   patientFacingIntakeStatus,
@@ -96,41 +97,22 @@ export async function createIntakeMessage(opts: {
   if (submission) {
     const referenceCode = submission.publicTrackingToken || submission.id;
     const track = intakeTrackUrl({ referenceCode, email: submission.email });
-    const safeBody = body
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/\n/g, "<br/>");
 
     if (opts.notifyPatient && opts.authorRole === "PROVIDER" && submission.email) {
       try {
-        const payBlock = opts.paymentUrl
-          ? `\n\nPay your therapy invoice (no account required):\n${opts.paymentUrl}`
-          : "";
+        const content = buildIntakeUpdateEmail({
+          fullName: submission.fullName,
+          body,
+          statusLabel: patientFacingIntakeStatus(submission.status),
+          referenceCode,
+          trackUrl: track,
+          paymentUrl: opts.paymentUrl,
+        });
         await sendTransactionalEmail({
           to: submission.email,
-          subject: opts.paymentUrl
-            ? `KIAN Privé — Your therapy plan is ready (${referenceCode})`
-            : `KIAN Privé — Update on your intake (${referenceCode})`,
-          text: [
-            `Hi ${submission.fullName},`,
-            "",
-            "Your clinical team sent a message about your intake request:",
-            "",
-            body,
-            payBlock,
-            "",
-            `Status: ${patientFacingIntakeStatus(submission.status)}`,
-            `Request code: ${referenceCode}`,
-            `Track and reply: ${track}`,
-            "",
-            "— KIAN Privé Concierge",
-          ].join("\n"),
-          html: `<p>Hi ${submission.fullName},</p><p>Your clinical team sent a message about your intake request:</p><blockquote style="border-left:3px solid #c4a574;padding-left:12px;margin:16px 0;color:#1f1a15">${safeBody}</blockquote>${
-            opts.paymentUrl
-              ? `<p><a href="${opts.paymentUrl}" style="display:inline-block;margin:12px 0;padding:12px 18px;background:#b78d4b;color:#fff;text-decoration:none;border-radius:4px">Pay therapy invoice</a></p><p style="font-size:13px;color:#6f6251">No account required — pay securely on our site.</p>`
-              : ""
-          }<p>Status: ${patientFacingIntakeStatus(submission.status)}<br/>Request code: <strong>${referenceCode}</strong></p><p><a href="${track}">View and reply</a></p><p>— KIAN Privé Concierge</p>`,
+          subject: `KIAN Privé — ${content.subject}`,
+          text: content.text,
+          html: content.html,
         });
       } catch (err) {
         console.error("[intake/messages] patient notify failed:", err);
@@ -152,7 +134,19 @@ export async function createIntakeMessage(opts: {
               "",
               `Open in portal: ${process.env.NEXTAUTH_URL || "https://www.kianprive.com"}/provider/intake/${submission.id}`,
             ].join("\n"),
-            html: `<p>Patient reply on intake <strong>${referenceCode}</strong></p><p>${submission.fullName} &lt;${submission.email}&gt;</p><blockquote style="border-left:3px solid #c4a574;padding-left:12px">${safeBody}</blockquote><p><a href="${process.env.NEXTAUTH_URL || "https://www.kianprive.com"}/provider/intake/${submission.id}">Open in provider portal</a></p>`,
+            html: buildSimpleEmail({
+              title: "Patient intake reply",
+              preheader: `${submission.fullName} replied on ${referenceCode}`,
+              paragraphs: [
+                `Patient reply on intake ${referenceCode}.`,
+                `${submission.fullName} <${submission.email}>`,
+                body,
+              ],
+              button: {
+                href: `${process.env.NEXTAUTH_URL || "https://www.kianprive.com"}/provider/intake/${submission.id}`,
+                label: "Open in portal",
+              },
+            }),
             replyTo: submission.email,
           });
         } catch (err) {

@@ -3,6 +3,7 @@ import { chargeAuthorizeNetCard, isTherapyPaymentTestMode } from "@/lib/authoriz
 import { createProductCommissionsForOrder } from "@/lib/commissions";
 import { createIntakeMessage } from "@/lib/intake/messages";
 import { sendTransactionalEmail } from "@/lib/email";
+import { buildPaymentConfirmationEmail, buildSimpleEmail } from "@/lib/email-templates";
 import { createVendorPayablesForOrder } from "@/lib/commerce/vendor-payables";
 import { activateTherapySubscriptionFromPayment } from "@/lib/commerce/therapy-subscriptions";
 import { formatChargeDate, intervalLabel } from "@/lib/commerce/therapy-billing";
@@ -182,7 +183,14 @@ export async function processOrderCardPayment(input: {
       to: providerEmail,
       subject: `${testMode ? "[TEST] " : ""}Therapy paid — ${order.orderNumber}`,
       text: `Patient completed payment for order ${order.orderNumber}. Fulfillment can proceed.`,
-      html: `<p>Patient completed payment for order <strong>${order.orderNumber}</strong>.</p><p>Fulfillment can proceed.</p>`,
+      html: buildSimpleEmail({
+        title: "Therapy payment received",
+        preheader: `Order ${order.orderNumber} paid`,
+        paragraphs: [
+          `Patient completed payment for order ${order.orderNumber}.`,
+          "Fulfillment can proceed.",
+        ],
+      }),
     });
   }
 
@@ -221,15 +229,18 @@ export async function processOrderCardPayment(input: {
         : null;
     const refillNote =
       activated && activated.status === "ACTIVE"
-        ? ` This therapy bills ${intervalLabel(activated.interval, activated.intervalDays)}. Next charge: ${nextCharge ?? "scheduled"}.`
-        : "";
+        ? `This therapy bills ${intervalLabel(activated.interval, activated.intervalDays)}. Next charge: ${nextCharge ?? "scheduled"}.`
+        : null;
+    const content = buildPaymentConfirmationEmail({
+      orderNumber: order.orderNumber,
+      total: Number(order.total),
+      refillNote,
+    });
     await sendTransactionalEmail({
       to: (order.email || order.intakeSubmission?.email) as string,
-      subject: `Payment received — ${order.orderNumber}`,
-      text: `Thank you. We received payment for ${order.orderNumber} ($${Number(order.total).toFixed(2)}). Our team will fulfill your order.${refillNote}`,
-      html: `<p>Thank you. We received payment for <strong>${order.orderNumber}</strong> ($${Number(order.total).toFixed(2)}).</p><p>Our team will fulfill your order.</p>${
-        refillNote ? `<p>${refillNote.trim()}</p>` : ""
-      }`,
+      subject: content.subject,
+      text: content.text,
+      html: content.html,
     });
   }
 
