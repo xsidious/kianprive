@@ -1,6 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Lock, ShieldCheck } from "lucide-react";
+import { PaymentCardPreview } from "@/components/commerce/PaymentCardPreview";
+import { PaymentReceipt, type PaymentReceiptData } from "@/components/commerce/PaymentReceipt";
+import {
+  brandLabel,
+  cardLast4,
+  detectCardBrand,
+  digitsOnly,
+  formatCardNumber,
+} from "@/components/commerce/payment-card-utils";
 
 declare global {
   interface Window {
@@ -39,9 +49,31 @@ type Props = {
   endpoint?: string;
   buttonLabel?: string;
   onPaid?: () => void;
+  patientName?: string | null;
+  /** Show receipt immediately (e.g. page reload after paid). */
+  initialReceipt?: PaymentReceiptData | null;
 };
 
-export function TherapyAcceptPay({ orderId, total, orderNumber, endpoint, buttonLabel, onPaid }: Props) {
+type FocusField = "number" | "expMonth" | "expYear" | "cvv" | "zip" | null;
+
+function fieldClass(active: boolean) {
+  return `rounded-xl border bg-white px-3.5 py-3 text-sm text-[#1f1a15] outline-none transition-all duration-200 ${
+    active
+      ? "border-[#b78d4b] ring-2 ring-[#b78d4b33] shadow-[0_0_0_4px_rgba(183,141,75,0.08)]"
+      : "border-[#e7dcc8] hover:border-[#d4c2a0]"
+  }`;
+}
+
+export function TherapyAcceptPay({
+  orderId,
+  total,
+  orderNumber,
+  endpoint,
+  buttonLabel,
+  onPaid,
+  patientName,
+  initialReceipt,
+}: Props) {
   const [ready, setReady] = useState(false);
   const [config, setConfig] = useState<AuthConfig | null>(null);
   const [cardNumber, setCardNumber] = useState("");
@@ -49,8 +81,13 @@ export function TherapyAcceptPay({ orderId, total, orderNumber, endpoint, button
   const [expYear, setExpYear] = useState("");
   const [cvv, setCvv] = useState("");
   const [zip, setZip] = useState("");
-  const [status, setStatus] = useState("");
+  const [focusField, setFocusField] = useState<FocusField>(null);
+  const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [receipt, setReceipt] = useState<PaymentReceiptData | null>(initialReceipt ?? null);
+
+  const flipped = focusField === "cvv";
+  const brand = useMemo(() => detectCardBrand(cardNumber), [cardNumber]);
 
   useEffect(() => {
     void (async () => {
@@ -76,22 +113,32 @@ export function TherapyAcceptPay({ orderId, total, orderNumber, endpoint, button
 
   function fillTestCard() {
     if (!config?.testCard) return;
-    setCardNumber(config.testCard.number);
+    setCardNumber(formatCardNumber(config.testCard.number));
     setExpMonth(config.testCard.expMonth);
     setExpYear(config.testCard.expYear);
     setCvv(config.testCard.cvv);
     setZip(config.testCard.zip);
-    setStatus("");
+    setError("");
   }
 
   async function pay() {
     setBusy(true);
-    setStatus("");
+    setError("");
 
-    const digits = cardNumber.replace(/\D/g, "");
+    const digits = digitsOnly(cardNumber);
     if (digits.length < 13) {
       setBusy(false);
-      setStatus("Enter a card number (use the test card button in test mode).");
+      setError("Enter a valid card number.");
+      return;
+    }
+    if (!expMonth || !expYear) {
+      setBusy(false);
+      setError("Enter the card expiration date.");
+      return;
+    }
+    if (cvv.length < 3) {
+      setBusy(false);
+      setError("Enter the security code on the back of your card.");
       return;
     }
 
@@ -105,17 +152,29 @@ export function TherapyAcceptPay({ orderId, total, orderNumber, endpoint, button
           testCardNumber: config?.testMode ? digits : undefined,
         }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as {
+        error?: string;
+        transId?: string;
+        testMode?: boolean;
+        amountPaid?: number;
+      };
       setBusy(false);
       if (!res.ok) {
-        setStatus(data.error || "Payment failed.");
+        setError(data.error || "Payment failed. Please try again.");
         return;
       }
-      setStatus(
-        data.testMode
-          ? "Test payment recorded — no real charge. Order marked paid."
-          : "Payment successful. Thank you.",
-      );
+
+      const nextReceipt: PaymentReceiptData = {
+        orderNumber,
+        amount: data.amountPaid ?? total,
+        transId: data.transId,
+        paidAt: new Date().toISOString(),
+        cardLast4: cardLast4(digits),
+        cardBrand: brandLabel(brand),
+        testMode: data.testMode,
+        patientName,
+      };
+      setReceipt(nextReceipt);
       onPaid?.();
     };
 
@@ -129,13 +188,13 @@ export function TherapyAcceptPay({ orderId, total, orderNumber, endpoint, button
 
     if (!config?.configured) {
       setBusy(false);
-      setStatus("Authorize.net is not configured for live payments.");
+      setError("Live payments are not configured yet. Contact concierge.");
       return;
     }
 
     if (!ready || !window.Accept) {
       setBusy(false);
-      setStatus("Payment form still loading. Try again in a moment.");
+      setError("Secure payment is still loading. Please wait a moment.");
       return;
     }
 
@@ -156,7 +215,7 @@ export function TherapyAcceptPay({ orderId, total, orderNumber, endpoint, button
       (response) => {
         if (response.messages?.resultCode === "Error" || !response.opaqueData) {
           setBusy(false);
-          setStatus(response.messages?.message?.[0]?.text || "Card validation failed.");
+          setError(response.messages?.message?.[0]?.text || "Card validation failed.");
           return;
         }
         void submit(response.opaqueData);
@@ -164,76 +223,157 @@ export function TherapyAcceptPay({ orderId, total, orderNumber, endpoint, button
     );
   }
 
+  if (receipt) {
+    return <PaymentReceipt receipt={receipt} />;
+  }
+
   return (
-    <div className="rounded-2xl border border-[#efe4d4] bg-[#fffaf3] p-4">
-      <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Accept &amp; pay</p>
-      <p className="mt-1 font-serif text-2xl text-[#1f1a15]">${total.toFixed(2)}</p>
-      <p className="mt-1 text-xs text-[#6f6251]">Order {orderNumber}</p>
-
-      {config?.testMode ? (
-        <div className="mt-3 rounded-lg border border-[#d4b87a] bg-[#fff8e8] px-3 py-2 text-xs text-[#6f5230]">
-          <p className="font-medium">Test payment mode — no real charge</p>
-          <p className="mt-1">{config.testCard?.hint}</p>
-          <button
-            type="button"
-            onClick={fillTestCard}
-            className="mt-2 rounded-sm border border-[#b78d4b80] bg-white px-3 py-1.5 text-[#8f6f3e]"
-          >
-            Fill Visa test card
-          </button>
+    <div className="animate-fade-up overflow-hidden rounded-2xl border border-[#e7dcc8] bg-gradient-to-b from-[#fffdf9] to-[#fffaf3] shadow-[0_12px_40px_rgba(31,26,21,0.07)]">
+      <div className="border-b border-[#efe4d4] bg-[#fffcf7] px-5 py-4 sm:px-6">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Secure checkout</p>
+            <p className="mt-1 font-serif text-2xl text-[#1f1a15]">${total.toFixed(2)}</p>
+          </div>
+          <div className="text-right">
+            <p className="font-mono text-[11px] tracking-wide text-[#8a7d6c]">{orderNumber}</p>
+            <div className="mt-1 flex items-center justify-end gap-1 text-[11px] text-[#6f6251]">
+              <Lock className="h-3 w-3" aria-hidden />
+              Encrypted
+            </div>
+          </div>
         </div>
-      ) : (
-        <p className="mt-1 text-xs text-[#6f6251]">Secure card payment</p>
-      )}
-
-      <div className="mt-4 grid gap-2 sm:grid-cols-2">
-        <input
-          className="rounded-sm border border-[#b78d4b35] bg-white px-3 py-2 text-sm sm:col-span-2"
-          placeholder="Card number"
-          value={cardNumber}
-          onChange={(e) => setCardNumber(e.target.value)}
-          inputMode="numeric"
-          autoComplete="cc-number"
-        />
-        <input
-          className="rounded-sm border border-[#b78d4b35] bg-white px-3 py-2 text-sm"
-          placeholder="MM"
-          value={expMonth}
-          onChange={(e) => setExpMonth(e.target.value)}
-          autoComplete="cc-exp-month"
-        />
-        <input
-          className="rounded-sm border border-[#b78d4b35] bg-white px-3 py-2 text-sm"
-          placeholder="YYYY"
-          value={expYear}
-          onChange={(e) => setExpYear(e.target.value)}
-          autoComplete="cc-exp-year"
-        />
-        <input
-          className="rounded-sm border border-[#b78d4b35] bg-white px-3 py-2 text-sm"
-          placeholder="CVV"
-          value={cvv}
-          onChange={(e) => setCvv(e.target.value)}
-          autoComplete="cc-csc"
-        />
-        <input
-          className="rounded-sm border border-[#b78d4b35] bg-white px-3 py-2 text-sm"
-          placeholder="ZIP"
-          value={zip}
-          onChange={(e) => setZip(e.target.value)}
-          autoComplete="postal-code"
-        />
       </div>
 
-      <button
-        type="button"
-        disabled={busy}
-        onClick={() => void pay()}
-        className="mt-4 w-full rounded-sm bg-[#b78d4b] px-4 py-3 text-sm text-white disabled:opacity-60"
-      >
-        {busy ? "Processing…" : config?.testMode ? `${buttonLabel ?? "Accept therapy & pay"} (test)` : buttonLabel ?? "Accept therapy & pay"}
-      </button>
-      {status ? <p className="mt-2 text-sm text-[#1b6568]">{status}</p> : null}
+      <div className="space-y-6 px-5 py-6 sm:px-6">
+        <PaymentCardPreview
+          cardNumber={cardNumber}
+          expMonth={expMonth}
+          expYear={expYear}
+          cvv={cvv}
+          flipped={flipped}
+          holderName={patientName ?? undefined}
+        />
+
+        {config?.testMode ? (
+          <div className="rounded-xl border border-[#d4b87a]/60 bg-[#fff8e8] px-4 py-3 text-xs text-[#6f5230]">
+            <p className="font-medium">Test mode — no real charge</p>
+            <p className="mt-1">{config.testCard?.hint}</p>
+            <button
+              type="button"
+              onClick={fillTestCard}
+              className="mt-2 rounded-lg border border-[#b78d4b80] bg-white px-3 py-1.5 text-[11px] uppercase tracking-[0.12em] text-[#8f6f3e]"
+            >
+              Fill test card
+            </button>
+          </div>
+        ) : null}
+
+        <div className="space-y-3">
+          <label className="block">
+            <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Card number</span>
+            <input
+              className={`${fieldClass(focusField === "number")} w-full font-mono tracking-wider`}
+              placeholder="1234 5678 9012 3456"
+              value={cardNumber}
+              onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+              onFocus={() => setFocusField("number")}
+              onBlur={() => setFocusField(null)}
+              inputMode="numeric"
+              autoComplete="cc-number"
+              maxLength={19}
+            />
+          </label>
+
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <label className="block">
+              <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Month</span>
+              <input
+                className={fieldClass(focusField === "expMonth")}
+                placeholder="MM"
+                value={expMonth}
+                onChange={(e) => setExpMonth(digitsOnly(e.target.value).slice(0, 2))}
+                onFocus={() => setFocusField("expMonth")}
+                onBlur={() => setFocusField(null)}
+                inputMode="numeric"
+                autoComplete="cc-exp-month"
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Year</span>
+              <input
+                className={fieldClass(focusField === "expYear")}
+                placeholder="YYYY"
+                value={expYear}
+                onChange={(e) => setExpYear(digitsOnly(e.target.value).slice(0, 4))}
+                onFocus={() => setFocusField("expYear")}
+                onBlur={() => setFocusField(null)}
+                inputMode="numeric"
+                autoComplete="cc-exp-year"
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">CVV</span>
+              <input
+                className={fieldClass(focusField === "cvv")}
+                placeholder="•••"
+                value={cvv}
+                onChange={(e) => setCvv(digitsOnly(e.target.value).slice(0, brand === "amex" ? 4 : 3))}
+                onFocus={() => setFocusField("cvv")}
+                onBlur={() => setFocusField(null)}
+                inputMode="numeric"
+                autoComplete="cc-csc"
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">ZIP</span>
+              <input
+                className={fieldClass(focusField === "zip")}
+                placeholder="33160"
+                value={zip}
+                onChange={(e) => setZip(e.target.value.slice(0, 10))}
+                onFocus={() => setFocusField("zip")}
+                onBlur={() => setFocusField(null)}
+                autoComplete="postal-code"
+              />
+            </label>
+          </div>
+        </div>
+
+        {error ? (
+          <p className="rounded-xl border border-[#f0d4d4] bg-[#fff6f6] px-4 py-3 text-sm text-[#7c2c2c]">{error}</p>
+        ) : null}
+
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => void pay()}
+          className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-[#a67c32] via-[#b78d4b] to-[#a67c32] px-4 py-4 text-sm font-medium tracking-[0.06em] text-white shadow-[0_8px_24px_rgba(183,141,75,0.35)] disabled:opacity-60"
+        >
+          <span
+            className={`relative z-10 inline-flex items-center justify-center gap-2 ${busy ? "animate-pulse-soft" : ""}`}
+          >
+            {busy ? (
+              <>
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                Processing payment…
+              </>
+            ) : (
+              <>
+                <ShieldCheck className="h-4 w-4" aria-hidden />
+                {config?.testMode ? `${buttonLabel ?? "Accept & pay"} (test)` : buttonLabel ?? "Accept & pay"}
+              </>
+            )}
+          </span>
+          {!busy ? (
+            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+          ) : null}
+        </button>
+
+        <p className="text-center text-[11px] leading-relaxed text-[#8a7d6c]">
+          Your card details are encrypted and never stored on our servers.
+        </p>
+      </div>
     </div>
   );
 }

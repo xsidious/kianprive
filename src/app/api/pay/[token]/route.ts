@@ -18,6 +18,8 @@ export async function GET(_: Request, { params }: Params) {
       total: true,
       paymentStatus: true,
       paymentTokenExpiresAt: true,
+      authorizeNetTransId: true,
+      updatedAt: true,
       items: { select: { id: true, title: true, quantity: true, unitPrice: true, lineTotal: true } },
       intakeSubmission: { select: { fullName: true } },
     },
@@ -37,6 +39,8 @@ export async function GET(_: Request, { params }: Params) {
       total: Number(order.total),
       paymentStatus: order.paymentStatus,
       paid: order.paymentStatus === "PAID",
+      transId: order.authorizeNetTransId,
+      paidAt: order.updatedAt?.toISOString?.() ?? null,
       items: order.items.map((item) => ({
         id: item.id,
         title: item.title,

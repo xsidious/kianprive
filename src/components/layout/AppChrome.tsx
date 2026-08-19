@@ -15,6 +15,16 @@ const CartDrawer = dynamic(
   { ssr: false },
 );
 
+/** Public patient flows — no site nav or signed-in staff/member chrome. */
+function isPublicCheckoutRoute(pathname: string | null) {
+  if (!pathname) return false;
+  return (
+    pathname.startsWith("/pay") ||
+    pathname === "/track-intake" ||
+    pathname.startsWith("/checkout")
+  );
+}
+
 function SignedInContextBar() {
   const { data, status } = useSession();
   if (status !== "authenticated" || !data?.user) return null;
@@ -55,8 +65,13 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   const isPartnerRoute = pathname?.startsWith("/partner");
   const isAmbassadorRoute = pathname?.startsWith("/ambassador");
   const isProviderRoute = pathname?.startsWith("/provider");
+  const isCheckoutRoute = isPublicCheckoutRoute(pathname);
 
   if (isAdminRoute || isPartnerRoute || isAmbassadorRoute || isProviderRoute) {
+    return <main className="min-h-screen bg-[var(--bg)]">{children}</main>;
+  }
+
+  if (isCheckoutRoute) {
     return <main className="min-h-screen bg-[var(--bg)]">{children}</main>;
   }
 

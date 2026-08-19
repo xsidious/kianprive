@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { PortalSignOut } from "@/components/auth/PortalSignOut";
 import { IntakeMessageThread } from "@/components/intake/IntakeMessageThread";
 import { TherapyAcceptPay } from "@/components/intake/TherapyAcceptPay";
+import { PaymentReceipt } from "@/components/commerce/PaymentReceipt";
 
 type TherapyInfo = {
   status: string;
@@ -24,6 +25,8 @@ type TherapyInfo = {
     orderNumber: string;
     total?: number;
     paymentStatus: string;
+    transId?: string | null;
+    paidAt?: string | null;
   } | null;
 };
 
@@ -224,14 +227,26 @@ export default function MemberIntakePage() {
                       orderId={row.therapy.order.id}
                       total={row.therapy.order.total}
                       orderNumber={row.therapy.order.orderNumber}
-                      onPaid={() => void load()}
+                      patientName={row.fullName}
+                      buttonLabel="Accept therapy & pay"
+                      onPaid={() => {
+                        window.setTimeout(() => void load(), 5000);
+                      }}
                     />
                   </div>
                 ) : null}
                 {row.therapy.order?.paymentStatus === "PAID" ? (
-                  <p className="mt-3 text-sm text-[#1b6568]">
-                    Paid — order {row.therapy.order.orderNumber}. Our team will fulfill your therapy products.
-                  </p>
+                  <div className="mt-4">
+                    <PaymentReceipt
+                      receipt={{
+                        orderNumber: row.therapy.order.orderNumber,
+                        amount: row.therapy.order.total ?? 0,
+                        transId: row.therapy.order.transId,
+                        paidAt: row.therapy.order.paidAt,
+                        patientName: row.fullName,
+                      }}
+                    />
+                  </div>
                 ) : null}
               </div>
             ) : null}

@@ -6,9 +6,10 @@ type Props = {
   token: string;
   total: number;
   orderNumber: string;
+  patientName?: string | null;
 };
 
-export function InvoicePayClient({ token, total, orderNumber }: Props) {
+export function InvoicePayClient({ token, total, orderNumber, patientName }: Props) {
   return (
     <TherapyAcceptPay
       orderId={token}
@@ -16,6 +17,7 @@ export function InvoicePayClient({ token, total, orderNumber }: Props) {
       orderNumber={orderNumber}
       endpoint={`/api/pay/${token}`}
       buttonLabel="Pay invoice"
+      patientName={patientName}
     />
   );
 }

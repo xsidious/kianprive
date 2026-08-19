@@ -69,6 +69,8 @@ export async function GET() {
               status: true,
               paymentStatus: true,
               fulfillmentStatus: true,
+              authorizeNetTransId: true,
+              updatedAt: true,
             },
           },
           providerPartner: { select: { displayName: true } },
@@ -162,11 +164,13 @@ export async function GET() {
                     paymentStatus: proposal.order.paymentStatus,
                     fulfillmentStatus: proposal.order.fulfillmentStatus,
                     progress: patientOrderProgress(proposal.order),
+                    transId: proposal.order.authorizeNetTransId,
+                    paidAt: proposal.order.updatedAt.toISOString(),
                     // Total only while unpaid so Accept & Pay can charge; hidden after paid
                     total:
                       proposal.order.paymentStatus === "UNPAID"
                         ? Number(proposal.order.total)
-                        : undefined,
+                        : Number(proposal.order.total),
                   }
                 : null,
             }
