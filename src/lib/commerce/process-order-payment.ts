@@ -39,6 +39,9 @@ export async function processOrderCardPayment(input: {
   }
 
   const testMode = isTherapyPaymentTestMode();
+  if (!testMode && input.testCardNumber) {
+    throw new Error("Invalid payment request.");
+  }
   const charge = await chargeAuthorizeNetCard({
     amount: Number(order.total),
     orderNumber: order.orderNumber,

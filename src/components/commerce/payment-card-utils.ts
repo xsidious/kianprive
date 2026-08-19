@@ -38,6 +38,29 @@ export function formatExpiry(month: string, year: string) {
   return `${mm || "MM"}/${yy || "YY"}`;
 }
 
+/** Single expiry input — digits only, displayed as MM / YY. */
+export function formatExpiryField(raw: string) {
+  const d = digitsOnly(raw).slice(0, 4);
+  if (d.length <= 2) return d;
+  return `${d.slice(0, 2)} / ${d.slice(2)}`;
+}
+
+export function parseExpiryField(raw: string) {
+  const d = digitsOnly(raw).slice(0, 4);
+  return {
+    month: d.slice(0, 2),
+    year: d.length >= 4 ? `20${d.slice(2, 4)}` : "",
+  };
+}
+
+export function maxCardDigits(brand: CardBrand) {
+  return brand === "amex" ? 15 : 16;
+}
+
+export function maxCvvDigits(brand: CardBrand) {
+  return brand === "amex" ? 4 : 3;
+}
+
 export function cardLast4(number: string) {
   const d = digitsOnly(number);
   return d.slice(-4) || "••••";

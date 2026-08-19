@@ -116,6 +116,8 @@ export async function chargeAuthorizeNetCard(input: ChargeInput) {
     return simulateTestCharge(input);
   }
 
+  rejectSimulatedOpaqueDataInLiveMode(input.opaqueData);
+
   if (!authorizeNetConfigured()) {
     throw new Error("Authorize.net is not configured. Set keys or THERAPY_PAYMENT_MODE=test.");
   }
@@ -157,33 +159,15 @@ export async function chargeAuthorizeNetCard(input: ChargeInput) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  const data = (await response.json()) as {
-    messages?: { resultCode?: string; message?: Array<{ text?: string }> };
-    transactionResponse?: {
-      transId?: string;
-      authCode?: string;
-      accountNumber?: string;
-      errors?: Array<{ errorText?: string }>;
-      messages?: Array<{ description?: string }>;
-    };
-  };
-
-  const resultCode = data.messages?.resultCode;
-  const transId = data.transactionResponse?.transId;
-  if (resultCode !== "Ok" || !transId) {
-    const err =
-      data.transactionResponse?.errors?.[0]?.errorText ||
-      data.messages?.message?.[0]?.text ||
-      "Authorize.net declined the payment.";
-    throw new Error(err);
-  }
+  const data = (await response.json()) as AuthNetJson;
+  const approved = assertApprovedTransaction(data);
 
   return {
-    transId,
-    authCode: data.transactionResponse?.authCode ?? "",
+    transId: approved.transId,
+    authCode: approved.authCode,
     testMode: false as const,
-    last4: last4FromAccountNumber(data.transactionResponse?.accountNumber),
-    raw: data,
+    last4: approved.last4,
+    raw: approved.raw,
   };
 }
 
@@ -198,12 +182,52 @@ type AuthNetJson = {
     transId?: string;
     authCode?: string;
     accountNumber?: string;
+    responseCode?: string;
     errors?: Array<{ errorText?: string }>;
     messages?: Array<{ description?: string }>;
   };
   customerProfileId?: string;
   customerPaymentProfileIdList?: string[];
 };
+
+function assertApprovedTransaction(data: AuthNetJson) {
+  const resultCode = data.messages?.resultCode;
+  const tx = data.transactionResponse;
+  const transId = tx?.transId;
+
+  if (resultCode !== "Ok" || !transId) {
+    throw new Error(
+      tx?.errors?.[0]?.errorText ||
+        data.messages?.message?.[0]?.text ||
+        "Authorize.net could not process the payment.",
+    );
+  }
+
+  // Authorize.net: 1=Approved, 2=Declined, 3=Error, 4=Held for Review
+  const responseCode = tx?.responseCode;
+  if (responseCode !== "1") {
+    throw new Error(
+      tx?.errors?.[0]?.errorText ||
+        tx?.messages?.[0]?.description ||
+        (responseCode === "4"
+          ? "This payment is pending review. Please contact KIAN Privé concierge."
+          : "Your card was declined. Please try another card or contact your bank."),
+    );
+  }
+
+  return {
+    transId,
+    authCode: tx?.authCode ?? "",
+    last4: last4FromAccountNumber(tx?.accountNumber),
+    raw: data,
+  };
+}
+
+function rejectSimulatedOpaqueDataInLiveMode(opaqueData: OpaqueData) {
+  if (!isTherapyPaymentTestMode() && opaqueData.dataValue?.startsWith("TESTCARD:")) {
+    throw new Error("Invalid payment token. Use a real card in live checkout.");
+  }
+}
 
 async function authorizeNetRequest(payload: Record<string, unknown>): Promise<AuthNetJson> {
   const response = await fetch(endpoint(), {
@@ -304,21 +328,13 @@ export async function chargeCustomerProfile(input: {
     },
   });
 
-  const resultCode = data.messages?.resultCode;
-  const transId = data.transactionResponse?.transId;
-  if (resultCode !== "Ok" || !transId) {
-    const err =
-      data.transactionResponse?.errors?.[0]?.errorText ||
-      data.messages?.message?.[0]?.text ||
-      "Authorize.net declined the refill charge.";
-    throw new Error(err);
-  }
+  const approved = assertApprovedTransaction(data);
 
   return {
-    transId,
-    authCode: data.transactionResponse?.authCode ?? "",
+    transId: approved.transId,
+    authCode: approved.authCode,
     testMode: false as const,
-    last4: last4FromAccountNumber(data.transactionResponse?.accountNumber),
-    raw: data,
+    last4: approved.last4,
+    raw: approved.raw,
   };
 }

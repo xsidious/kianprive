@@ -70,9 +70,10 @@ export function PaymentCardPreview({ cardNumber, expMonth, expYear, cvv, flipped
         <div className="payment-card-face payment-card-back absolute inset-0 overflow-hidden rounded-2xl border border-[#c9a86a]/40 bg-gradient-to-br from-[#2f2720] to-[#15110e] shadow-[0_18px_40px_rgba(31,26,21,0.35)]">
           <div className="mt-6 h-10 w-full bg-[#0d0b09]" />
           <div className="px-5 pt-5">
-            <div className="flex items-center justify-end gap-3">
-              <div className="rounded-md bg-[#fffaf3] px-4 py-2 font-mono text-sm tracking-[0.3em] text-[#1f1a15]">
-                {cvv ? cvv.replace(/./g, "•") : "•••"}
+            <p className="text-[9px] uppercase tracking-[0.2em] text-white/40">Security code</p>
+            <div className="mt-2 flex items-center justify-end gap-3">
+              <div className="min-w-[72px] rounded-md bg-[#fffaf3] px-4 py-2.5 text-right font-mono text-base tracking-[0.35em] text-[#1f1a15]">
+                {cvv || "•••"}
               </div>
             </div>
             <p className="mt-6 text-[10px] leading-relaxed text-white/40">

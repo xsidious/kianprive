@@ -163,12 +163,13 @@ div[class*="rounded-sm border"] {
 }
 
 .payment-card-scene {
-  perspective: 1200px;
+  perspective: 1400px;
 }
 
 .payment-card-inner {
   transform-style: preserve-3d;
-  transition: transform 0.65s cubic-bezier(0.4, 0.2, 0.2, 1);
+  transition: transform 0.75s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform;
 }
 
 .payment-card-scene:not(:has(.is-flipped)) .payment-card-inner {
@@ -178,16 +179,16 @@ div[class*="rounded-sm border"] {
 @keyframes card-float {
   0%,
   100% {
-    transform: translateY(0);
+    transform: translateY(0) rotateX(0deg);
   }
   50% {
-    transform: translateY(-6px);
+    transform: translateY(-6px) rotateX(1deg);
   }
 }
 
 .payment-card-inner.is-flipped {
   animation: none;
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) translateY(0);
 }
 
 .payment-card-face {

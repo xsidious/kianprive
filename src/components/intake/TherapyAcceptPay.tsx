@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Lock, ShieldCheck } from "lucide-react";
 import { PaymentCardPreview } from "@/components/commerce/PaymentCardPreview";
 import { PaymentReceipt, type PaymentReceiptData } from "@/components/commerce/PaymentReceipt";
@@ -10,6 +10,10 @@ import {
   detectCardBrand,
   digitsOnly,
   formatCardNumber,
+  formatExpiryField,
+  maxCardDigits,
+  maxCvvDigits,
+  parseExpiryField,
 } from "@/components/commerce/payment-card-utils";
 
 declare global {
@@ -54,7 +58,7 @@ type Props = {
   initialReceipt?: PaymentReceiptData | null;
 };
 
-type FocusField = "number" | "expMonth" | "expYear" | "cvv" | "zip" | null;
+type FocusField = "number" | "expiry" | "cvv" | "zip" | null;
 
 function fieldClass(active: boolean) {
   return `rounded-xl border bg-white px-3.5 py-3 text-sm text-[#1f1a15] outline-none transition-all duration-200 ${
@@ -62,6 +66,34 @@ function fieldClass(active: boolean) {
       ? "border-[#b78d4b] ring-2 ring-[#b78d4b33] shadow-[0_0_0_4px_rgba(183,141,75,0.08)]"
       : "border-[#e7dcc8] hover:border-[#d4c2a0]"
   }`;
+}
+
+function focusInput(ref: React.RefObject<HTMLInputElement | null>) {
+  requestAnimationFrame(() => {
+    ref.current?.focus();
+    ref.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  });
+}
+
+function useFieldFocus(
+  setFocusField: React.Dispatch<React.SetStateAction<FocusField>>,
+  blurTimerRef: React.RefObject<number | null>,
+) {
+  return {
+    onFocus(field: FocusField, afterFocus?: () => void) {
+      if (blurTimerRef.current) {
+        window.clearTimeout(blurTimerRef.current);
+        blurTimerRef.current = null;
+      }
+      setFocusField(field);
+      afterFocus?.();
+    },
+    onBlur(field: FocusField) {
+      blurTimerRef.current = window.setTimeout(() => {
+        setFocusField((current) => (current === field ? null : current));
+      }, 120);
+    },
+  };
 }
 
 export function TherapyAcceptPay({
@@ -77,8 +109,7 @@ export function TherapyAcceptPay({
   const [ready, setReady] = useState(false);
   const [config, setConfig] = useState<AuthConfig | null>(null);
   const [cardNumber, setCardNumber] = useState("");
-  const [expMonth, setExpMonth] = useState("");
-  const [expYear, setExpYear] = useState("");
+  const [expiry, setExpiry] = useState("");
   const [cvv, setCvv] = useState("");
   const [zip, setZip] = useState("");
   const [focusField, setFocusField] = useState<FocusField>(null);
@@ -86,8 +117,17 @@ export function TherapyAcceptPay({
   const [busy, setBusy] = useState(false);
   const [receipt, setReceipt] = useState<PaymentReceiptData | null>(initialReceipt ?? null);
 
+  const cardRef = useRef<HTMLInputElement>(null);
+  const expiryRef = useRef<HTMLInputElement>(null);
+  const cvvRef = useRef<HTMLInputElement>(null);
+  const zipRef = useRef<HTMLInputElement>(null);
+  const cardPreviewRef = useRef<HTMLDivElement>(null);
+  const blurTimerRef = useRef<number | null>(null);
+
+  const { month: expMonth, year: expYear } = parseExpiryField(expiry);
   const flipped = focusField === "cvv";
   const brand = useMemo(() => detectCardBrand(cardNumber), [cardNumber]);
+  const fieldFocus = useFieldFocus(setFocusField, blurTimerRef);
 
   useEffect(() => {
     void (async () => {
@@ -114,11 +154,46 @@ export function TherapyAcceptPay({
   function fillTestCard() {
     if (!config?.testCard) return;
     setCardNumber(formatCardNumber(config.testCard.number));
-    setExpMonth(config.testCard.expMonth);
-    setExpYear(config.testCard.expYear);
+    setExpiry(formatExpiryField(`${config.testCard.expMonth}${config.testCard.expYear.slice(-2)}`));
     setCvv(config.testCard.cvv);
     setZip(config.testCard.zip);
     setError("");
+  }
+
+  function handleCardNumberChange(raw: string) {
+    const digits = digitsOnly(raw);
+    const max = maxCardDigits(detectCardBrand(digits));
+    const next = formatCardNumber(digits.slice(0, max));
+    setCardNumber(next);
+    if (digitsOnly(next).length >= max) {
+      focusInput(expiryRef);
+    }
+  }
+
+  function handleExpiryChange(raw: string) {
+    const digits = digitsOnly(raw).slice(0, 4);
+    setExpiry(formatExpiryField(digits));
+    if (digits.length >= 4) {
+      focusInput(cvvRef);
+    }
+  }
+
+  function handleCvvChange(raw: string) {
+    const digits = digitsOnly(raw).slice(0, maxCvvDigits(brand));
+    setCvv(digits);
+    if (digits.length >= maxCvvDigits(brand)) {
+      focusInput(zipRef);
+    }
+  }
+
+  function handleFieldKeyDown(
+    e: React.KeyboardEvent<HTMLInputElement>,
+    value: string,
+    previous?: React.RefObject<HTMLInputElement | null>,
+  ) {
+    if (e.key !== "Backspace" || value.length > 0) return;
+    e.preventDefault();
+    if (previous) focusInput(previous);
   }
 
   async function pay() {
@@ -246,14 +321,16 @@ export function TherapyAcceptPay({
       </div>
 
       <div className="space-y-6 px-5 py-6 sm:px-6">
-        <PaymentCardPreview
-          cardNumber={cardNumber}
-          expMonth={expMonth}
-          expYear={expYear}
-          cvv={cvv}
-          flipped={flipped}
-          holderName={patientName ?? undefined}
-        />
+        <div ref={cardPreviewRef} className="transition-transform duration-300">
+          <PaymentCardPreview
+            cardNumber={cardNumber}
+            expMonth={expMonth}
+            expYear={expYear}
+            cvv={cvv}
+            flipped={flipped}
+            holderName={patientName ?? undefined}
+          />
+        </div>
 
         {config?.testMode ? (
           <div className="rounded-xl border border-[#d4b87a]/60 bg-[#fff8e8] px-4 py-3 text-xs text-[#6f5230]">
@@ -273,67 +350,68 @@ export function TherapyAcceptPay({
           <label className="block">
             <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Card number</span>
             <input
+              ref={cardRef}
               className={`${fieldClass(focusField === "number")} w-full font-mono tracking-wider`}
               placeholder="1234 5678 9012 3456"
               value={cardNumber}
-              onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
-              onFocus={() => setFocusField("number")}
-              onBlur={() => setFocusField(null)}
+              onChange={(e) => handleCardNumberChange(e.target.value)}
+              onFocus={() => fieldFocus.onFocus("number")}
+              onBlur={() => fieldFocus.onBlur("number")}
+              onKeyDown={(e) => handleFieldKeyDown(e, cardNumber)}
               inputMode="numeric"
               autoComplete="cc-number"
               maxLength={19}
             />
           </label>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <label className="block">
-              <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Month</span>
+          <div className="grid grid-cols-3 gap-3">
+            <label className="col-span-1 block sm:col-span-1">
+              <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Expires</span>
               <input
-                className={fieldClass(focusField === "expMonth")}
-                placeholder="MM"
-                value={expMonth}
-                onChange={(e) => setExpMonth(digitsOnly(e.target.value).slice(0, 2))}
-                onFocus={() => setFocusField("expMonth")}
-                onBlur={() => setFocusField(null)}
+                ref={expiryRef}
+                className={`${fieldClass(focusField === "expiry")} w-full font-mono tracking-widest`}
+                placeholder="MM / YY"
+                value={expiry}
+                onChange={(e) => handleExpiryChange(e.target.value)}
+                onFocus={() => fieldFocus.onFocus("expiry")}
+                onBlur={() => fieldFocus.onBlur("expiry")}
+                onKeyDown={(e) => handleFieldKeyDown(e, expiry, cardRef)}
                 inputMode="numeric"
-                autoComplete="cc-exp-month"
-              />
-            </label>
-            <label className="block">
-              <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Year</span>
-              <input
-                className={fieldClass(focusField === "expYear")}
-                placeholder="YYYY"
-                value={expYear}
-                onChange={(e) => setExpYear(digitsOnly(e.target.value).slice(0, 4))}
-                onFocus={() => setFocusField("expYear")}
-                onBlur={() => setFocusField(null)}
-                inputMode="numeric"
-                autoComplete="cc-exp-year"
+                autoComplete="cc-exp"
+                maxLength={7}
               />
             </label>
             <label className="block">
               <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">CVV</span>
               <input
-                className={fieldClass(focusField === "cvv")}
+                ref={cvvRef}
+                className={`${fieldClass(focusField === "cvv")} w-full font-mono tracking-widest`}
                 placeholder="•••"
                 value={cvv}
-                onChange={(e) => setCvv(digitsOnly(e.target.value).slice(0, brand === "amex" ? 4 : 3))}
-                onFocus={() => setFocusField("cvv")}
-                onBlur={() => setFocusField(null)}
+                onChange={(e) => handleCvvChange(e.target.value)}
+                onFocus={() =>
+                  fieldFocus.onFocus("cvv", () => {
+                    cardPreviewRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+                  })
+                }
+                onBlur={() => fieldFocus.onBlur("cvv")}
+                onKeyDown={(e) => handleFieldKeyDown(e, cvv, expiryRef)}
                 inputMode="numeric"
                 autoComplete="cc-csc"
+                maxLength={brand === "amex" ? 4 : 3}
               />
             </label>
             <label className="block">
               <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">ZIP</span>
               <input
-                className={fieldClass(focusField === "zip")}
+                ref={zipRef}
+                className={`${fieldClass(focusField === "zip")} w-full`}
                 placeholder="33160"
                 value={zip}
                 onChange={(e) => setZip(e.target.value.slice(0, 10))}
-                onFocus={() => setFocusField("zip")}
-                onBlur={() => setFocusField(null)}
+                onFocus={() => fieldFocus.onFocus("zip")}
+                onBlur={() => fieldFocus.onBlur("zip")}
+                onKeyDown={(e) => handleFieldKeyDown(e, zip, cvvRef)}
                 autoComplete="postal-code"
               />
             </label>
