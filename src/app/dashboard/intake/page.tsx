@@ -257,6 +257,8 @@ export default function MemberIntakePage() {
                 hint="Reply when your clinical team asks for labs, documents, or clarifications."
                 placeholder="Type your reply…"
                 submitLabel="Send reply"
+                selfAuthorRole="PATIENT"
+                selfAuthorLabel="You"
                 reloadKey={row.id}
                 loadMessages={async () => {
                   const res = await fetch(

@@ -1,4 +1,4 @@
-import type { IntakeMessage, IntakeMessageAuthor } from "@prisma/client";
+import type { IntakeMessage, IntakeMessageAuthor, IntakeSubmissionStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { sendTransactionalEmail } from "@/lib/email";
 import { buildIntakeUpdateEmail, buildSimpleEmail } from "@/lib/email-templates";
@@ -94,67 +94,90 @@ export async function createIntakeMessage(opts: {
     },
   });
 
-  if (submission) {
-    const referenceCode = submission.publicTrackingToken || submission.id;
-    const track = intakeTrackUrl({ referenceCode, email: submission.email });
+  // Return the message immediately; notify in the background so the UI can update right away.
+  void notifyIntakeMessageParties({
+    submission,
+    body,
+    authorRole: opts.authorRole,
+    notifyPatient: Boolean(opts.notifyPatient),
+    paymentUrl: opts.paymentUrl,
+  });
 
-    if (opts.notifyPatient && opts.authorRole === "PROVIDER" && submission.email) {
-      try {
-        const content = buildIntakeUpdateEmail({
-          fullName: submission.fullName,
-          body,
-          statusLabel: patientFacingIntakeStatus(submission.status),
-          referenceCode,
-          trackUrl: track,
-          paymentUrl: opts.paymentUrl,
-        });
-        await sendTransactionalEmail({
-          to: submission.email,
-          subject: `KIAN Privé — ${content.subject}`,
-          text: content.text,
-          html: content.html,
-        });
-      } catch (err) {
-        console.error("[intake/messages] patient notify failed:", err);
-      }
-    }
+  return serializeIntakeMessage(message);
+}
 
-    if (opts.authorRole === "PATIENT") {
-      const staffTo = getWellnessHubReportRecipients();
-      if (staffTo.length) {
-        try {
-          await sendTransactionalEmail({
-            to: staffTo,
-            subject: `[Intake reply] ${submission.fullName} (${referenceCode})`,
-            text: [
-              `Patient reply on intake ${referenceCode}`,
-              `Patient: ${submission.fullName} <${submission.email}>`,
-              "",
-              body,
-              "",
-              `Open in portal: ${process.env.NEXTAUTH_URL || "https://www.kianprive.com"}/provider/intake/${submission.id}`,
-            ].join("\n"),
-            html: buildSimpleEmail({
-              title: "Patient intake reply",
-              preheader: `${submission.fullName} replied on ${referenceCode}`,
-              paragraphs: [
-                `Patient reply on intake ${referenceCode}.`,
-                `${submission.fullName} <${submission.email}>`,
-                body,
-              ],
-              button: {
-                href: `${process.env.NEXTAUTH_URL || "https://www.kianprive.com"}/provider/intake/${submission.id}`,
-                label: "Open in portal",
-              },
-            }),
-            replyTo: submission.email,
-          });
-        } catch (err) {
-          console.error("[intake/messages] staff notify failed:", err);
-        }
-      }
+async function notifyIntakeMessageParties(opts: {
+  submission: {
+    id: string;
+    email: string;
+    fullName: string;
+    status: IntakeSubmissionStatus;
+    publicTrackingToken: string | null;
+  } | null;
+  body: string;
+  authorRole: IntakeMessageAuthor;
+  notifyPatient: boolean;
+  paymentUrl?: string | null;
+}) {
+  const submission = opts.submission;
+  if (!submission) return;
+
+  const referenceCode = submission.publicTrackingToken || submission.id;
+  const track = intakeTrackUrl({ referenceCode, email: submission.email });
+
+  if (opts.notifyPatient && opts.authorRole === "PROVIDER" && submission.email) {
+    try {
+      const content = buildIntakeUpdateEmail({
+        fullName: submission.fullName,
+        body: opts.body,
+        statusLabel: patientFacingIntakeStatus(submission.status),
+        referenceCode,
+        trackUrl: track,
+        paymentUrl: opts.paymentUrl,
+      });
+      await sendTransactionalEmail({
+        to: submission.email,
+        subject: `KIAN Privé — ${content.subject}`,
+        text: content.text,
+        html: content.html,
+      });
+    } catch (err) {
+      console.error("[intake/messages] patient notify failed:", err);
     }
   }
 
-  return serializeIntakeMessage(message);
+  if (opts.authorRole === "PATIENT") {
+    const staffTo = getWellnessHubReportRecipients();
+    if (!staffTo.length) return;
+    try {
+      await sendTransactionalEmail({
+        to: staffTo,
+        subject: `[Intake reply] ${submission.fullName} (${referenceCode})`,
+        text: [
+          `Patient reply on intake ${referenceCode}`,
+          `Patient: ${submission.fullName} <${submission.email}>`,
+          "",
+          opts.body,
+          "",
+          `Open in portal: ${process.env.NEXTAUTH_URL || "https://www.kianprive.com"}/provider/intake/${submission.id}`,
+        ].join("\n"),
+        html: buildSimpleEmail({
+          title: "Patient intake reply",
+          preheader: `${submission.fullName} replied on ${referenceCode}`,
+          paragraphs: [
+            `Patient reply on intake ${referenceCode}.`,
+            `${submission.fullName} <${submission.email}>`,
+            opts.body,
+          ],
+          button: {
+            href: `${process.env.NEXTAUTH_URL || "https://www.kianprive.com"}/provider/intake/${submission.id}`,
+            label: "Open in portal",
+          },
+        }),
+        replyTo: submission.email,
+      });
+    } catch (err) {
+      console.error("[intake/messages] staff notify failed:", err);
+    }
+  }
 }

@@ -15,6 +15,9 @@ type Props = {
   hint?: string;
   placeholder?: string;
   submitLabel?: string;
+  /** Who is composing in this thread — used for optimistic insert. */
+  selfAuthorRole?: "PROVIDER" | "PATIENT";
+  selfAuthorLabel?: string;
   loadMessages: () => Promise<ThreadMessage[]>;
   sendMessage: (body: string) => Promise<ThreadMessage>;
   initialMessages?: ThreadMessage[];
@@ -40,11 +43,18 @@ function mergeById(prev: ThreadMessage[], next: ThreadMessage[]) {
   );
 }
 
+function replaceOptimistic(prev: ThreadMessage[], tempId: string, created: ThreadMessage) {
+  const withoutTemp = prev.filter((row) => row.id !== tempId);
+  return mergeById(withoutTemp, [created]);
+}
+
 export function IntakeMessageThread({
   title = "Messages",
   hint = "Ask for labs, documents, or clarifications. The patient can reply here.",
   placeholder = "What else do they need to send or do?",
   submitLabel = "Send message",
+  selfAuthorRole = "PROVIDER",
+  selfAuthorLabel,
   loadMessages,
   sendMessage,
   initialMessages,
@@ -54,6 +64,7 @@ export function IntakeMessageThread({
   const [messages, setMessages] = useState<ThreadMessage[]>(() => normalizeList(initialMessages));
   const [body, setBody] = useState("");
   const [busy, setBusy] = useState(false);
+  const [justSent, setJustSent] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [live, setLive] = useState(false);
@@ -63,6 +74,7 @@ export function IntakeMessageThread({
   const loadRef = useRef(loadMessages);
   const stickBottom = useRef(true);
   const mounted = useRef(true);
+  const sentTimer = useRef<number | null>(null);
 
   loadRef.current = loadMessages;
 
@@ -70,6 +82,14 @@ export function IntakeMessageThread({
     const el = listRef.current;
     if (!el) return;
     el.scrollTo({ top: el.scrollHeight, behavior: smooth ? "smooth" : "auto" });
+  }
+
+  function flashSent() {
+    setJustSent(true);
+    if (sentTimer.current) window.clearTimeout(sentTimer.current);
+    sentTimer.current = window.setTimeout(() => {
+      if (mounted.current) setJustSent(false);
+    }, 2200);
   }
 
   async function refresh(opts?: { silent?: boolean }) {
@@ -81,7 +101,11 @@ export function IntakeMessageThread({
     try {
       const rows = normalizeList(await loadRef.current());
       if (!mounted.current) return;
-      setMessages((prev) => mergeById(prev, rows));
+      setMessages((prev) => {
+        // Keep in-flight optimistic rows until the real message arrives
+        const optimistic = prev.filter((row) => row.id.startsWith("temp-"));
+        return mergeById(rows, optimistic);
+      });
       setLive(true);
       setLastSyncedAt(new Date());
       setError("");
@@ -103,9 +127,11 @@ export function IntakeMessageThread({
   useEffect(() => {
     mounted.current = true;
     setMessages(normalizeList(initialMessages));
+    setJustSent(false);
     void refresh({ silent: false });
     return () => {
       mounted.current = false;
+      if (sentTimer.current) window.clearTimeout(sentTimer.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only remount/reload when intake key changes
   }, [reloadKey]);
@@ -140,28 +166,46 @@ export function IntakeMessageThread({
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!body.trim()) return;
+    const text = body.trim();
+    if (!text || busy) return;
+
+    const tempId = `temp-${Date.now()}`;
+    const optimistic: ThreadMessage = {
+      id: tempId,
+      authorRole: selfAuthorRole,
+      authorLabel: selfAuthorLabel || (selfAuthorRole === "PATIENT" ? "You" : "Clinical team"),
+      body: text,
+      createdAt: new Date().toISOString(),
+    };
+
     setBusy(true);
     setError("");
+    setBody("");
+    setMessages((prev) => mergeById(prev, [optimistic]));
+    stickBottom.current = true;
+    requestAnimationFrame(() => scrollToBottom(true));
+
     try {
-      const created = await sendMessage(body.trim());
-      const normalized = normalizeList([created]);
-      if (!normalized.length) {
+      const created = await sendMessage(text);
+      const normalized = normalizeList([created])[0];
+      if (!normalized) {
         throw new Error("Message sent but response was empty. Refreshing…");
       }
-      setMessages((prev) => mergeById(prev, normalized));
-      setBody("");
-      stickBottom.current = true;
+      setMessages((prev) => replaceOptimistic(prev, tempId, normalized));
+      flashSent();
       requestAnimationFrame(() => scrollToBottom(true));
-      // Confirm from server without wiping local state
-      window.setTimeout(() => void refresh({ silent: true }), 500);
+      window.setTimeout(() => void refresh({ silent: true }), 400);
     } catch (err) {
+      setMessages((prev) => prev.filter((row) => row.id !== tempId));
+      setBody(text);
       setError(err instanceof Error ? err.message : "Could not send message.");
       void refresh({ silent: true });
     } finally {
-      setBusy(false);
+      if (mounted.current) setBusy(false);
     }
   }
+
+  const buttonLabel = justSent ? "Sent" : busy ? "Sending…" : submitLabel;
 
   return (
     <section className="space-y-4 rounded-2xl border border-[#e7dcc8] bg-[#fcfaf6] p-5">
@@ -197,17 +241,18 @@ export function IntakeMessageThread({
         ) : null}
         {messages.map((msg) => {
           const fromPatient = msg.authorRole === "PATIENT";
+          const pending = msg.id.startsWith("temp-");
           return (
             <article
               key={msg.id}
               className={`rounded-lg px-3 py-2 text-sm ${
                 fromPatient ? "ml-6 bg-[#f3f0ea] text-[#1f1a15]" : "mr-6 bg-[#f7f1e6] text-[#1f1a15]"
-              }`}
+              } ${pending ? "opacity-80" : ""}`}
             >
               <p className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">
                 {msg.authorLabel}
                 <span className="ml-2 normal-case tracking-normal text-[#8a7d6c]">
-                  {new Date(msg.createdAt).toLocaleString()}
+                  {pending ? "Sending…" : new Date(msg.createdAt).toLocaleString()}
                 </span>
               </p>
               <p className="mt-1 whitespace-pre-wrap leading-relaxed">{msg.body}</p>
@@ -224,17 +269,22 @@ export function IntakeMessageThread({
             onChange={(e) => setBody(e.target.value)}
             rows={3}
             maxLength={4000}
-            required
-            className="mt-1.5 w-full rounded-lg border border-[#e0d4c0] bg-white px-3 py-2 text-sm text-[#1f1a15]"
+            required={!busy && !justSent}
+            disabled={busy}
+            className="mt-1.5 w-full rounded-lg border border-[#e0d4c0] bg-white px-3 py-2 text-sm text-[#1f1a15] disabled:opacity-70"
             placeholder={placeholder}
           />
         </label>
         <button
           type="submit"
-          disabled={busy || !body.trim()}
-          className="rounded-full border border-[#8f6f3e] bg-[#8f6f3e] px-5 py-2.5 text-sm text-white disabled:opacity-60"
+          disabled={busy || (!body.trim() && !justSent)}
+          className={`rounded-full border px-5 py-2.5 text-sm text-white transition disabled:opacity-60 ${
+            justSent
+              ? "border-[#2f6b3a] bg-[#2f6b3a]"
+              : "border-[#8f6f3e] bg-[#8f6f3e]"
+          }`}
         >
-          {busy ? "Sending…" : submitLabel}
+          {buttonLabel}
         </button>
       </form>
       {error ? <p className="text-sm text-red-700">{error}</p> : null}

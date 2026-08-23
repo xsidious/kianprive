@@ -163,6 +163,8 @@ export default function ProviderIntakeDetailPage() {
         hint="Tell the patient what else they need to deliver (labs, documents, clarifications). They can reply on this same request."
         placeholder="e.g. Please send fasting labs from the last 90 days, and confirm current medications…"
         submitLabel="Send to patient"
+        selfAuthorRole="PROVIDER"
+        selfAuthorLabel="Clinical team"
         reloadKey={id}
         loadMessages={async () => {
           const res = await fetch(`/api/provider/intake/${id}/messages`);

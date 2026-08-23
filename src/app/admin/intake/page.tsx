@@ -289,6 +289,8 @@ export default function AdminIntakePage() {
               hint="Ask for labs, documents, or clarifications. Patient replies appear here and on their track page."
               placeholder="e.g. Please send fasting labs from the last 90 days…"
               submitLabel="Send to patient"
+              selfAuthorRole="PROVIDER"
+              selfAuthorLabel="Clinical team"
               reloadKey={selected.id}
               loadMessages={async () => {
                 const res = await fetch(`/api/admin/intake/${selected.id}/messages`);
@@ -306,7 +308,8 @@ export default function AdminIntakePage() {
                 if (!res.ok) throw new Error(data.error || "Could not send message.");
                 if (!data.message) throw new Error("Message was not returned from the server.");
                 setMessage("Message sent. Patient can see it on their track page.");
-                void loadSubmissions();
+                // Refresh list counts in background — do not block the thread UI
+                window.setTimeout(() => void loadSubmissions(), 800);
                 return data.message;
               }}
             />

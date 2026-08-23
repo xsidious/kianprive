@@ -356,6 +356,8 @@ function TrackIntakeForm() {
             hint="Your clinical team can ask for labs or documents here. Reply on this same request."
             placeholder="Type your reply for the clinical team…"
             submitLabel="Send reply"
+            selfAuthorRole="PATIENT"
+            selfAuthorLabel="You"
             initialMessages={result.messages ?? []}
             reloadKey={result.referenceId}
             loadMessages={async () => {
