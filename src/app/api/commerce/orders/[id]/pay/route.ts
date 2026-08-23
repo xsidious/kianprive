@@ -4,17 +4,18 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { canAccessAdmin } from "@/lib/rbac";
 import { processOrderCardPayment } from "@/lib/commerce/process-order-payment";
+import { billToSchema } from "@/lib/commerce/billing-address";
 
 const paySchema = z.object({
   opaqueData: z.object({
     dataDescriptor: z.string().min(1),
     dataValue: z.string().min(1),
   }),
-  billTo: z
+  billTo: billToSchema,
+  payerAuthentication: z
     .object({
-      firstName: z.string().optional(),
-      lastName: z.string().optional(),
-      zip: z.string().optional(),
+      cavv: z.string().optional(),
+      eciFlag: z.string().optional(),
     })
     .optional(),
   testCardNumber: z.string().optional(),
@@ -57,6 +58,7 @@ export async function POST(req: Request, { params }: Params) {
       orderId: order.id,
       opaqueData: parsed.data.opaqueData,
       billTo: parsed.data.billTo,
+      payerAuthentication: parsed.data.payerAuthentication,
       testCardNumber: parsed.data.testCardNumber,
       payerUserId: session.user.id,
       payerEmail: session.user.email,

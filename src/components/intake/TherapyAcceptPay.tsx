@@ -15,6 +15,8 @@ import {
   maxCvvDigits,
   parseExpiryField,
 } from "@/components/commerce/payment-card-utils";
+import { type BillTo, splitFullName, US_STATES, validateBillTo } from "@/lib/commerce/billing-address";
+import { useCardinalPayerAuth } from "@/components/commerce/use-cardinal-payer-auth";
 
 declare global {
   interface Window {
@@ -36,6 +38,8 @@ type AuthConfig = {
   env: string;
   configured: boolean;
   testMode: boolean;
+  payerAuthEnabled?: boolean;
+  songbirdUrl?: string | null;
   testCard: {
     number: string;
     expMonth: string;
@@ -111,6 +115,11 @@ export function TherapyAcceptPay({
   const [cardNumber, setCardNumber] = useState("");
   const [expiry, setExpiry] = useState("");
   const [cvv, setCvv] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("FL");
   const [zip, setZip] = useState("");
   const [focusField, setFocusField] = useState<FocusField>(null);
   const [error, setError] = useState("");
@@ -120,6 +129,7 @@ export function TherapyAcceptPay({
   const cardRef = useRef<HTMLInputElement>(null);
   const expiryRef = useRef<HTMLInputElement>(null);
   const cvvRef = useRef<HTMLInputElement>(null);
+  const addressRef = useRef<HTMLInputElement>(null);
   const zipRef = useRef<HTMLInputElement>(null);
   const cardPreviewRef = useRef<HTMLDivElement>(null);
   const blurTimerRef = useRef<number | null>(null);
@@ -128,6 +138,21 @@ export function TherapyAcceptPay({
   const flipped = focusField === "cvv";
   const brand = useMemo(() => detectCardBrand(cardNumber), [cardNumber]);
   const fieldFocus = useFieldFocus(setFocusField, blurTimerRef);
+  const holderName = [firstName, lastName].filter(Boolean).join(" ") || patientName || undefined;
+  const payerAuth = useCardinalPayerAuth(Boolean(config?.payerAuthEnabled), config?.songbirdUrl ?? null);
+
+  useEffect(() => {
+    const split = splitFullName(patientName);
+    setFirstName((current) => current || split.firstName);
+    setLastName((current) => current || split.lastName);
+  }, [patientName]);
+
+  useEffect(() => {
+    if (!config?.payerAuthEnabled || !payerAuth.ready) return;
+    void payerAuth.initSession(orderNumber).catch(() => {
+      /* 3DS optional — checkout still works without it */
+    });
+  }, [config?.payerAuthEnabled, orderNumber, payerAuth.ready, payerAuth.initSession]);
 
   useEffect(() => {
     void (async () => {
@@ -157,6 +182,9 @@ export function TherapyAcceptPay({
     setExpiry(formatExpiryField(`${config.testCard.expMonth}${config.testCard.expYear.slice(-2)}`));
     setCvv(config.testCard.cvv);
     setZip(config.testCard.zip);
+    setAddress("123 Main Street");
+    setCity("Miami");
+    setState("FL");
     setError("");
   }
 
@@ -182,7 +210,7 @@ export function TherapyAcceptPay({
     const digits = digitsOnly(raw).slice(0, maxCvvDigits(brand));
     setCvv(digits);
     if (digits.length >= maxCvvDigits(brand)) {
-      focusInput(zipRef);
+      focusInput(addressRef);
     }
   }
 
@@ -217,13 +245,24 @@ export function TherapyAcceptPay({
       return;
     }
 
-    const submit = async (opaqueData: { dataDescriptor: string; dataValue: string }) => {
+    const billing = validateBillTo({ firstName, lastName, address, city, state, zip, country: "US" });
+    if (!billing.ok) {
+      setBusy(false);
+      setError(billing.error);
+      return;
+    }
+
+    const submit = async (
+      opaqueData: { dataDescriptor: string; dataValue: string },
+      payerAuthentication?: { cavv?: string; eciFlag?: string },
+    ) => {
       const res = await fetch(endpoint ?? `/api/commerce/orders/${orderId}/pay`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           opaqueData,
-          billTo: { zip },
+          billTo: billing.value,
+          payerAuthentication,
           testCardNumber: config?.testMode ? digits : undefined,
         }),
       });
@@ -253,49 +292,83 @@ export function TherapyAcceptPay({
       onPaid?.();
     };
 
-    if (config?.testMode) {
-      await submit({
-        dataDescriptor: "COMMON.ACCEPT.INAPP.PAYMENT",
-        dataValue: `TESTCARD:${digits}`,
-      });
-      return;
-    }
+    const runAcceptJs = async (payerAuthentication?: { cavv?: string; eciFlag?: string }) => {
+      if (config?.testMode) {
+        await submit(
+          {
+            dataDescriptor: "COMMON.ACCEPT.INAPP.PAYMENT",
+            dataValue: `TESTCARD:${digits}`,
+          },
+          payerAuthentication,
+        );
+        return;
+      }
 
-    if (!config?.configured) {
-      setBusy(false);
-      setError("Live payments are not configured yet. Contact concierge.");
-      return;
-    }
+      if (!config?.configured) {
+        setBusy(false);
+        setError("Live payments are not configured yet. Contact concierge.");
+        return;
+      }
 
-    if (!ready || !window.Accept) {
-      setBusy(false);
-      setError("Secure payment is still loading. Please wait a moment.");
-      return;
-    }
+      if (!ready || !window.Accept) {
+        setBusy(false);
+        setError("Secure payment is still loading. Please wait a moment.");
+        return;
+      }
 
-    window.Accept.dispatchData(
-      {
-        authData: {
-          clientKey: config.clientKey,
-          apiLoginID: config.apiLoginId,
+      window.Accept.dispatchData(
+        {
+          authData: {
+            clientKey: config.clientKey,
+            apiLoginID: config.apiLoginId,
+          },
+          cardData: {
+            cardNumber: digits,
+            month: expMonth,
+            year: expYear,
+            cardCode: cvv,
+            fullName: `${billing.value.firstName} ${billing.value.lastName}`.trim(),
+            address: billing.value.address,
+            city: billing.value.city,
+            state: billing.value.state,
+            zip: billing.value.zip,
+            country: "US",
+          },
         },
-        cardData: {
-          cardNumber: digits,
-          month: expMonth,
-          year: expYear,
-          cardCode: cvv,
-          zip,
+        (response) => {
+          if (response.messages?.resultCode === "Error" || !response.opaqueData) {
+            setBusy(false);
+            setError(response.messages?.message?.[0]?.text || "Card validation failed.");
+            return;
+          }
+          void submit(response.opaqueData, payerAuthentication);
         },
-      },
-      (response) => {
-        if (response.messages?.resultCode === "Error" || !response.opaqueData) {
-          setBusy(false);
-          setError(response.messages?.message?.[0]?.text || "Card validation failed.");
-          return;
-        }
-        void submit(response.opaqueData);
-      },
-    );
+      );
+    };
+
+    try {
+      if (config?.payerAuthEnabled && payerAuth.ready) {
+        setError("");
+        const authResult = await payerAuth.startAuthentication({
+          orderNumber,
+          amount: total,
+          cardNumber,
+          expiry,
+          billTo: billing.value,
+        });
+        await runAcceptJs(
+          authResult?.cavv && authResult?.eciFlag
+            ? { cavv: authResult.cavv, eciFlag: authResult.eciFlag }
+            : undefined,
+        );
+        return;
+      }
+
+      await runAcceptJs();
+    } catch (authError) {
+      setBusy(false);
+      setError(authError instanceof Error ? authError.message : "Bank verification failed.");
+    }
   }
 
   if (receipt) {
@@ -328,9 +401,16 @@ export function TherapyAcceptPay({
             expYear={expYear}
             cvv={cvv}
             flipped={flipped}
-            holderName={patientName ?? undefined}
+            holderName={holderName}
           />
         </div>
+
+        {config?.payerAuthEnabled ? (
+          <p className="rounded-xl border border-[#dbe8f2] bg-[#f5faff] px-4 py-3 text-xs leading-relaxed text-[#4a6278]">
+            Bank verification (3D Secure) is enabled. If your card issuer requires it, you may see a confirmation
+            code or approval step from your bank during checkout.
+          </p>
+        ) : null}
 
         {config?.testMode ? (
           <div className="rounded-xl border border-[#d4b87a]/60 bg-[#fff8e8] px-4 py-3 text-xs text-[#6f5230]">
@@ -381,7 +461,7 @@ export function TherapyAcceptPay({
                 maxLength={7}
               />
             </label>
-            <label className="block">
+            <label className="col-span-2 block">
               <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">CVV</span>
               <input
                 ref={cvvRef}
@@ -401,20 +481,87 @@ export function TherapyAcceptPay({
                 maxLength={brand === "amex" ? 4 : 3}
               />
             </label>
-            <label className="block">
-              <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">ZIP</span>
+          </div>
+
+          <div className="rounded-xl border border-[#efe4d4] bg-[#fffcf7] p-4">
+            <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Billing address</p>
+            <p className="mt-1 text-[11px] leading-relaxed text-[#8a7d6c]">
+              Must match the address on your card statement. This helps your bank approve the charge.
+            </p>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <label className="block">
+                <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">First name</span>
+                <input
+                  className={`${fieldClass(false)} w-full`}
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  autoComplete="billing given-name"
+                />
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Last name</span>
+                <input
+                  className={`${fieldClass(false)} w-full`}
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  autoComplete="billing family-name"
+                />
+              </label>
+            </div>
+
+            <label className="mt-3 block">
+              <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Street address</span>
               <input
-                ref={zipRef}
-                className={`${fieldClass(focusField === "zip")} w-full`}
-                placeholder="33160"
-                value={zip}
-                onChange={(e) => setZip(e.target.value.slice(0, 10))}
-                onFocus={() => fieldFocus.onFocus("zip")}
-                onBlur={() => fieldFocus.onBlur("zip")}
-                onKeyDown={(e) => handleFieldKeyDown(e, zip, cvvRef)}
-                autoComplete="postal-code"
+                ref={addressRef}
+                className={`${fieldClass(false)} w-full`}
+                placeholder="123 Ocean Drive"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                autoComplete="billing address-line1"
               />
             </label>
+
+            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              <label className="block sm:col-span-1">
+                <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">City</span>
+                <input
+                  className={`${fieldClass(false)} w-full`}
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  autoComplete="billing address-level2"
+                />
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">State</span>
+                <select
+                  className={`${fieldClass(false)} w-full`}
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                  autoComplete="billing address-level1"
+                >
+                  {US_STATES.map((code) => (
+                    <option key={code} value={code}>
+                      {code}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">ZIP</span>
+                <input
+                  ref={zipRef}
+                  className={`${fieldClass(focusField === "zip")} w-full`}
+                  placeholder="33160"
+                  value={zip}
+                  onChange={(e) => setZip(e.target.value.replace(/[^\d-]/g, "").slice(0, 10))}
+                  onFocus={() => fieldFocus.onFocus("zip")}
+                  onBlur={() => fieldFocus.onBlur("zip")}
+                  autoComplete="billing postal-code"
+                  inputMode="numeric"
+                />
+              </label>
+            </div>
           </div>
         </div>
 

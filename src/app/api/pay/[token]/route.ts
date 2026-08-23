@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { isPaymentTokenValid } from "@/lib/commerce/payment-link";
 import { processOrderCardPayment } from "@/lib/commerce/process-order-payment";
+import { billToSchema } from "@/lib/commerce/billing-address";
 
 type Params = { params: Promise<{ token: string }> };
 
@@ -57,11 +58,11 @@ const paySchema = z.object({
     dataDescriptor: z.string().min(1),
     dataValue: z.string().min(1),
   }),
-  billTo: z
+  billTo: billToSchema,
+  payerAuthentication: z
     .object({
-      firstName: z.string().optional(),
-      lastName: z.string().optional(),
-      zip: z.string().optional(),
+      cavv: z.string().optional(),
+      eciFlag: z.string().optional(),
     })
     .optional(),
   testCardNumber: z.string().optional(),
@@ -98,6 +99,7 @@ export async function POST(req: Request, { params }: Params) {
       orderId: order.id,
       opaqueData: parsed.data.opaqueData,
       billTo: parsed.data.billTo,
+      payerAuthentication: parsed.data.payerAuthentication,
       testCardNumber: parsed.data.testCardNumber,
       payerEmail: order.email,
     });

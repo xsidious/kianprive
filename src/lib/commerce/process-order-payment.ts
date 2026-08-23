@@ -13,7 +13,19 @@ type OpaqueData = { dataDescriptor: string; dataValue: string };
 export async function processOrderCardPayment(input: {
   orderId: string;
   opaqueData: OpaqueData;
-  billTo?: { firstName?: string; lastName?: string; zip?: string };
+  billTo?: {
+    firstName?: string;
+    lastName?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    zip?: string;
+    country?: string;
+  };
+  payerAuthentication?: {
+    cavv?: string;
+    eciFlag?: string;
+  };
   testCardNumber?: string;
   payerUserId?: string | null;
   payerEmail?: string | null;
@@ -48,6 +60,13 @@ export async function processOrderCardPayment(input: {
     opaqueData: input.opaqueData,
     email: order.email ?? order.intakeSubmission?.email ?? input.payerEmail ?? undefined,
     billTo: input.billTo,
+    cardholderAuthentication:
+      input.payerAuthentication?.cavv && input.payerAuthentication?.eciFlag
+        ? {
+            authenticationIndicator: input.payerAuthentication.eciFlag,
+            cardholderAuthenticationValue: input.payerAuthentication.cavv,
+          }
+        : undefined,
     testCardNumber: input.testCardNumber,
   });
 

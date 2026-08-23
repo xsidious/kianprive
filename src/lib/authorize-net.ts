@@ -10,6 +10,8 @@
  *  NEXT_PUBLIC_AUTHORIZE_NET_API_LOGIN_ID
  */
 
+import { cardinalPayerAuthConfigured, cardinalSongbirdUrl } from "@/lib/cardinal-payer-auth";
+
 type OpaqueData = { dataDescriptor: string; dataValue: string };
 
 type ChargeInput = {
@@ -17,7 +19,19 @@ type ChargeInput = {
   orderNumber: string;
   opaqueData: OpaqueData;
   email?: string;
-  billTo?: { firstName?: string; lastName?: string; zip?: string };
+  billTo?: {
+    firstName?: string;
+    lastName?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    zip?: string;
+    country?: string;
+  };
+  cardholderAuthentication?: {
+    authenticationIndicator: string;
+    cardholderAuthenticationValue: string;
+  };
   /** Present in test mode when the member typed a card in the form */
   testCardNumber?: string;
 };
@@ -58,6 +72,7 @@ export function isTherapyPaymentTestMode() {
 
 export function authorizeNetPublicConfig() {
   const testMode = isTherapyPaymentTestMode();
+  const payerAuthEnabled = !testMode && cardinalPayerAuthConfigured();
   return {
     configured: Boolean(
       process.env.NEXT_PUBLIC_AUTHORIZE_NET_API_LOGIN_ID && process.env.NEXT_PUBLIC_AUTHORIZE_NET_CLIENT_KEY,
@@ -66,6 +81,8 @@ export function authorizeNetPublicConfig() {
     clientKey: process.env.NEXT_PUBLIC_AUTHORIZE_NET_CLIENT_KEY || "",
     env: (process.env.AUTHORIZE_NET_ENV || "sandbox").toLowerCase(),
     testMode,
+    payerAuthEnabled,
+    songbirdUrl: payerAuthEnabled ? cardinalSongbirdUrl() : null,
     testCard: testMode
       ? {
           number: THERAPY_TEST_CARD.number,
@@ -147,7 +164,17 @@ export async function chargeAuthorizeNetCard(input: ChargeInput) {
           ? {
               firstName: input.billTo.firstName,
               lastName: input.billTo.lastName,
+              address: input.billTo.address,
+              city: input.billTo.city,
+              state: input.billTo.state,
               zip: input.billTo.zip,
+              country: input.billTo.country ?? "US",
+            }
+          : undefined,
+        cardholderAuthentication: input.cardholderAuthentication
+          ? {
+              authenticationIndicator: input.cardholderAuthentication.authenticationIndicator,
+              cardholderAuthenticationValue: input.cardholderAuthentication.cardholderAuthenticationValue,
             }
           : undefined,
       },
