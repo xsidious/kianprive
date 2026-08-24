@@ -40,7 +40,7 @@ export default function Home() {
 
       <TrustBadges />
 
-      <EditorialSection>
+      <EditorialSection className="!bg-[#faf6ef]">
         <div className="animate-fade-up">
           <HomePhilosophy />
         </div>
