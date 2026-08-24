@@ -4,6 +4,7 @@ import { requirePartnerProfile } from "@/lib/partner-guard";
 import { prisma } from "@/lib/prisma";
 import { writeAuditLog } from "@/lib/partners";
 import { createServiceCommissionForBooking, markServiceCommissionEligible } from "@/lib/commissions";
+import { notifyBookingCompleted } from "@/lib/booking-aftercare-notify";
 
 export async function GET(req: Request) {
   const access = await requirePartnerProfile();
@@ -66,6 +67,14 @@ export async function PATCH(req: Request) {
   }
   if (parsed.data.status === "COMPLETED") {
     await markServiceCommissionEligible(booking.id);
+  }
+
+  if (existing.status !== "COMPLETED" && booking.status === "COMPLETED") {
+    void notifyBookingCompleted({
+      email: booking.email,
+      fullName: booking.fullName,
+      serviceTitles: booking.serviceTitles,
+    });
   }
 
   await writeAuditLog({

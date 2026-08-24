@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminAccess } from "@/lib/admin-guard";
 import { writeAuditLog } from "@/lib/ops/audit";
 import { createServiceCommissionForBooking, markServiceCommissionEligible } from "@/lib/commissions";
+import { notifyBookingCompleted } from "@/lib/booking-aftercare-notify";
 
 type Params = {
   params: Promise<{ id: string }>;
@@ -14,6 +15,11 @@ export async function PATCH(req: Request, { params }: Params) {
   if (!guard.ok) return guard.response;
   const { id } = await params;
   const body = await req.json();
+
+  const previous = await prisma.bookingRequest.findUnique({
+    where: { id },
+    select: { status: true, email: true, fullName: true, serviceTitles: true },
+  });
 
   const booking = await prisma.bookingRequest.update({
     where: { id },
@@ -31,6 +37,14 @@ export async function PATCH(req: Request, { params }: Params) {
   }
   if (booking.status === "COMPLETED") {
     await markServiceCommissionEligible(booking.id);
+  }
+
+  if (previous && previous.status !== "COMPLETED" && booking.status === "COMPLETED") {
+    void notifyBookingCompleted({
+      email: booking.email,
+      fullName: booking.fullName,
+      serviceTitles: booking.serviceTitles,
+    });
   }
 
   await writeAuditLog({

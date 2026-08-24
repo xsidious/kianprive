@@ -48,6 +48,7 @@ import { buildSeoMetadata } from "@/lib/seo/metadata";
 import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
 import { getServiceBySlug } from "@/lib/services/catalog";
 import { icoonePrimaryImage } from "@/lib/media/icoone";
+import { APPOINTMENT_AFTERCARE } from "@/lib/booking-aftercare";
 
 export async function generateMetadata(): Promise<Metadata> {
   const cms = await getCmsPageContent("services");
@@ -62,20 +63,10 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-const aftercareColumns = [
-  {
-    label: "AFTERCARE · IMMEDIATE",
-    text: "A profound sense of lightness. Increased elimination, gentle warmth, deep relaxation.",
-  },
-  {
-    label: "AFTERCARE · SHORT-TERM",
-    text: "Visible reduction in puffiness, swelling and water retention. Skin appears toned and radiant.",
-  },
-  {
-    label: "AFTERCARE · CUMULATIVE",
-    text: "Measurable contour reduction, firmer skin, lasting improvements in detox and recovery.",
-  },
-];
+const aftercareColumns = APPOINTMENT_AFTERCARE.map((item) => ({
+  label: item.label.toUpperCase(),
+  text: item.text,
+}));
 
 const essentialProtocol = [
   "2 Icoone® Laser sessions",

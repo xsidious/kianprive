@@ -11,6 +11,7 @@ import {
   editorialCtaSecondary,
   editorialPanel,
 } from "@/components/ui/editorial-primitives";
+import { AppointmentAftercare } from "@/components/bookings/AppointmentAftercare";
 
 function buildChatMailto(booking: {
   id: string;
@@ -125,6 +126,12 @@ export default async function DashboardServicesPage() {
                 </div>
 
                 {booking.notes ? <p className="mt-4 text-sm text-[#6f6251]">{booking.notes}</p> : null}
+
+                {booking.status === "COMPLETED" ? (
+                  <div className="mt-5">
+                    <AppointmentAftercare serviceTitles={booking.serviceTitles} />
+                  </div>
+                ) : null}
 
                 <div className="mt-5 flex flex-wrap gap-2">
                   <a href={buildChatMailto(booking)} className={editorialCtaPrimary}>

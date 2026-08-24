@@ -518,3 +518,65 @@ export function buildSimpleEmail(input: {
     buttons: input.button ? [input.button] : undefined,
   });
 }
+
+export function buildAppointmentAftercareEmail(input: {
+  fullName?: string | null;
+  serviceTitles: string[];
+  dashboardUrl: string;
+}) {
+  const greeting = input.fullName?.trim() ? `Dear ${input.fullName.trim()},` : "Dear guest,";
+  const services = input.serviceTitles.filter(Boolean).join(", ") || "your recent visit";
+  const aftercare = [
+    {
+      label: "AFTERCARE · IMMEDIATE",
+      text: "A profound sense of lightness. Increased elimination, gentle warmth, deep relaxation.",
+    },
+    {
+      label: "AFTERCARE · SHORT-TERM",
+      text: "Visible reduction in puffiness, swelling and water retention. Skin appears toned and radiant.",
+    },
+    {
+      label: "AFTERCARE · CUMULATIVE",
+      text: "Measurable contour reduction, firmer skin, lasting improvements in detox and recovery.",
+    },
+  ];
+
+  const blocksHtml = aftercare
+    .map(
+      (item) => `
+      <tr>
+        <td style="padding:0 0 22px;">
+          <p style="margin:0 0 8px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:${BRAND.gold};">${escapeHtml(item.label)}</p>
+          <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:18px;line-height:1.45;color:${BRAND.ink};">${escapeHtml(item.text)}</p>
+        </td>
+      </tr>`,
+    )
+    .join("");
+
+  const html = emailLayout({
+    preheader: "Your visit is complete — here is your aftercare guidance.",
+    title: "Your visit is complete",
+    bodyHtml: `
+      <p style="margin:0 0 14px;">${escapeHtml(greeting)}</p>
+      <p style="margin:0 0 18px;">Thank you for trusting KIAN Privé with <strong>${escapeHtml(services)}</strong>. Below is your aftercare guidance as your body continues to respond.</p>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 0;">${blocksHtml}</table>
+    `,
+    buttons: [{ href: input.dashboardUrl, label: "View in my services" }],
+    footerNote: "Questions about recovery? Reply to this email or WhatsApp our concierge team.",
+  });
+
+  const text = [
+    greeting,
+    "",
+    `Thank you for trusting KIAN Privé with ${services}.`,
+    "",
+    ...aftercare.flatMap((item) => [item.label, item.text, ""]),
+    `View in my services: ${input.dashboardUrl}`,
+  ].join("\n");
+
+  return {
+    subject: "Aftercare guidance from your KIAN Privé visit",
+    text,
+    html,
+  };
+}
