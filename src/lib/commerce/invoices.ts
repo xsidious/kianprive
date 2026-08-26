@@ -103,6 +103,9 @@ export async function sendInvoiceEmail(input: {
   paymentUrl: string;
   notes?: string | null;
   recurringLabel?: string | null;
+  subtotal?: number;
+  shippingTotal?: number;
+  lineItems?: Array<{ title: string; quantity: number; lineTotal: number }>;
 }) {
   const content = buildInvoiceEmail(input);
   await sendTransactionalEmail({

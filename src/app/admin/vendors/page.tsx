@@ -115,9 +115,12 @@ export default function AdminVendorsPage() {
         <p className={adminEyebrow}>Fulfillment</p>
         <h1 className={adminTitle}>Vendors</h1>
         <p className={adminMuted}>
-          Store pharmacy and supply-vendor payment details here. When a patient invoice is paid, a vendor bill is
-          created from wholesale cost. Email the PO from this page, then record the ACH, wire, or check you sent —
-          Authorize.net collects patient payments; outbound vendor payment is recorded against the stored bank details.
+          Patient pays KIAN in full via Authorize.net. On payment we calculate each product&apos;s wholesale cost,
+          create a vendor bill for that cost (default partner: Wellness Tech when configured), and email them a
+          purchase order. ACH/wire the vendor bill amount, keep the rest as margin, then click{" "}
+          <strong>Record vendor paid</strong>. Set{" "}
+          <code className="text-[11px]">WELLNESS_TECH_VENDOR_EMAIL</code> in env and wholesale costs on products so
+          this runs automatically.
         </p>
       </div>
 

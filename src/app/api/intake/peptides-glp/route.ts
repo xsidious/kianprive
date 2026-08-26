@@ -42,7 +42,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       {
-        error: "Please complete the intake and pay the $55 physician review fee before submitting.",
+        error: "Please complete the intake and pay the $75 medical review fee before submitting.",
         fieldErrors: parsed.error.flatten().fieldErrors,
       },
       { status: 400 },

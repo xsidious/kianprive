@@ -100,21 +100,31 @@ export async function POST(req: Request) {
   const body = await req.json();
   const parsed = createSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid provider payload.", details: parsed.error.flatten() }, { status: 400 });
+    return NextResponse.json(
+      {
+        error: "Check all fields: name, email, password (min 8 characters), and display name are required.",
+        details: parsed.error.flatten(),
+      },
+      { status: 400 },
+    );
   }
 
   const existing = await prisma.user.findUnique({ where: { email: parsed.data.email.toLowerCase() } });
   if (existing) {
-    return NextResponse.json({ error: "Email already in use." }, { status: 409 });
+    return NextResponse.json(
+      { error: `Email already in use (${existing.email}). Use a different login email or update the existing user.` },
+      { status: 409 },
+    );
   }
 
-  const passwordHash = await bcrypt.hash(parsed.data.password, 10);
-  let partnerCode = generatePartnerCode(parsed.data.displayName);
-  while (await prisma.partnerProfile.findUnique({ where: { partnerCode } })) {
-    partnerCode = generatePartnerCode(parsed.data.displayName);
-  }
+  try {
+    const passwordHash = await bcrypt.hash(parsed.data.password, 10);
+    let partnerCode = generatePartnerCode(parsed.data.displayName);
+    while (await prisma.partnerProfile.findUnique({ where: { partnerCode } })) {
+      partnerCode = generatePartnerCode(parsed.data.displayName);
+    }
 
-  const provider = await prisma.$transaction(async (tx) => {
+    const provider = await prisma.$transaction(async (tx) => {
     const user = await tx.user.create({
       data: {
         name: parsed.data.name,
@@ -157,23 +167,37 @@ export async function POST(req: Request) {
         serviceAssignments: true,
       },
     });
-  });
+    });
 
-  await writeAuditLog({
-    userId: access.userId,
-    action: "provider.create",
-    entityType: "PartnerProfile",
-    entityId: provider.id,
-    metadata: { email: provider.user.email, partnerCode: provider.partnerCode },
-  });
+    await writeAuditLog({
+      userId: access.userId,
+      action: "provider.create",
+      entityType: "PartnerProfile",
+      entityId: provider.id,
+      metadata: { email: provider.user.email, partnerCode: provider.partnerCode },
+    });
 
-  return NextResponse.json(
-    {
-      provider: {
-        ...provider,
-        links: providerBookingLinks(provider.partnerCode),
+    return NextResponse.json(
+      {
+        provider: {
+          ...provider,
+          links: providerBookingLinks(provider.partnerCode),
+        },
       },
-    },
-    { status: 201 },
-  );
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error("[admin/providers] create failed:", error);
+    const message = error instanceof Error ? error.message : "Could not create practitioner.";
+    if (/invalid input value for enum/i.test(message)) {
+      return NextResponse.json(
+        {
+          error:
+            'Database is missing the PROVIDER role. In Neon SQL Editor run: ALTER TYPE "Role" ADD VALUE IF NOT EXISTS \'PROVIDER\'; ALTER TYPE "PartnerType" ADD VALUE IF NOT EXISTS \'PROVIDER\';',
+        },
+        { status: 503 },
+      );
+    }
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }

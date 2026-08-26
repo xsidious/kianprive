@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BrandedQrCard } from "@/components/ambassador/BrandedQrCard";
 import { CommissionOverrideInput } from "@/components/admin/CommissionOverrideInput";
 import {
@@ -49,7 +49,10 @@ export default function AdminAmbassadorsPage() {
   const [defaultProductPct, setDefaultProductPct] = useState("10");
   const [productRates, setProductRates] = useState<Record<string, string>>({});
   const [message, setMessage] = useState("");
+  const [messageIsError, setMessageIsError] = useState(false);
+  const [creating, setCreating] = useState(false);
   const [copied, setCopied] = useState("");
+  const detailRef = useRef<HTMLElement>(null);
 
   function applySelection(ambassador: AmbassadorRow, switchId = true) {
     if (switchId) setSelectedId(ambassador.id);
@@ -90,8 +93,17 @@ export default function AdminAmbassadorsPage() {
     void load();
   }, []);
 
+  function selectAmbassador(ambassador: AmbassadorRow) {
+    applySelection(ambassador);
+    requestAnimationFrame(() => {
+      detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
   async function createAmbassador(formData: FormData) {
     setMessage("");
+    setMessageIsError(false);
+    setCreating(true);
     const body = {
       name: String(formData.get("name") || ""),
       email: String(formData.get("email") || ""),
@@ -106,12 +118,21 @@ export default function AdminAmbassadorsPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
-    setMessage(res.ok ? "Ambassador created." : "Failed to create ambassador.");
+    const payload = (await res.json().catch(() => ({}))) as { error?: string; ambassador?: AmbassadorRow };
+    setCreating(false);
     if (res.ok) {
-      const payload = (await res.json()) as { ambassador: AmbassadorRow };
-      await load();
-      applySelection(payload.ambassador);
+      setMessage("Ambassador created.");
+      setMessageIsError(false);
+      if (payload.ambassador) {
+        await load();
+        selectAmbassador(payload.ambassador);
+      } else {
+        await load();
+      }
+      return;
     }
+    setMessage(payload.error ?? "Failed to create ambassador.");
+    setMessageIsError(true);
   }
 
   async function setStatus(id: string, status: string) {
@@ -195,7 +216,15 @@ export default function AdminAmbassadorsPage() {
         </p>
       </div>
 
-      {message ? <p className="text-sm text-[#1b6568]">{message}</p> : null}
+      {message ? (
+        <p className={`text-sm ${messageIsError ? "text-red-700" : "text-[#1b6568]"}`}>{message}</p>
+      ) : null}
+
+      {selected ? (
+        <p className="text-xs text-[#8f6f3e] lg:hidden">
+          Viewing <strong>{selected.displayName}</strong> — scroll down for profile, totals, and commission settings.
+        </p>
+      ) : null}
 
       <div className="grid gap-3 sm:grid-cols-3">
         <div className={adminStat}>
@@ -213,10 +242,16 @@ export default function AdminAmbassadorsPage() {
         </div>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+      <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
         <section className={`${adminPanel} p-5`}>
           <h2 className="font-serif text-xl text-[#1f1a15]">Invite ambassador</h2>
-          <form action={createAmbassador} className="mt-4 grid gap-3">
+          <form
+            className="mt-4 grid gap-3"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void createAmbassador(new FormData(event.currentTarget));
+            }}
+          >
             <input name="name" placeholder="Full name" required className={adminInput} />
             <input name="displayName" placeholder="Display name" required className={adminInput} />
             <input name="email" type="email" placeholder="Login email" required className={adminInput} />
@@ -231,8 +266,8 @@ export default function AdminAmbassadorsPage() {
               </select>
             </div>
             <p className="text-xs text-[#6f6251]">Default product commission % · status</p>
-            <button type="submit" className={adminBtnPrimary}>
-              Create ambassador
+            <button type="submit" className={adminBtnPrimary} disabled={creating}>
+              {creating ? "Creating…" : "Create ambassador"}
             </button>
           </form>
 
@@ -242,7 +277,7 @@ export default function AdminAmbassadorsPage() {
               <button
                 key={ambassador.id}
                 type="button"
-                onClick={() => applySelection(ambassador)}
+                onClick={() => selectAmbassador(ambassador)}
                 className={`w-full rounded-sm border px-3 py-3 text-left transition ${
                   selectedId === ambassador.id
                     ? "border-[#8a682e] bg-[#fff8ef]"
@@ -265,7 +300,7 @@ export default function AdminAmbassadorsPage() {
           </div>
         </section>
 
-        <section className={`${adminPanel} p-5`}>
+        <section ref={detailRef} className={`${adminPanel} scroll-mt-6 p-5`}>
           {selected ? (
             <div className="space-y-5">
               <div className="flex flex-wrap items-start justify-between gap-3">

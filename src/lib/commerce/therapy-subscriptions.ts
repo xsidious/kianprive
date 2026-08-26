@@ -9,7 +9,10 @@ import { createProductCommissionsForOrder } from "@/lib/commissions";
 import { createIntakeMessage } from "@/lib/intake/messages";
 import { sendTransactionalEmail } from "@/lib/email";
 import { buildTherapyRefillEmail, buildSimpleEmail } from "@/lib/email-templates";
-import { createVendorPayablesForOrder } from "@/lib/commerce/vendor-payables";
+import {
+  formatVendorSettlementText,
+  settleVendorCostsAfterPayment,
+} from "@/lib/commerce/vendor-payables";
 import { issueOrderPaymentToken } from "@/lib/commerce/payment-link";
 import { sendInvoiceEmail } from "@/lib/commerce/invoices";
 import { addUtcDays, intervalLabel, resolveIntervalDays } from "@/lib/commerce/therapy-billing";
@@ -341,7 +344,7 @@ export async function chargeTherapySubscription(
     ]);
 
     await createProductCommissionsForOrder(order.id);
-    const payables = await createVendorPayablesForOrder(order.id);
+    const settlement = await settleVendorCostsAfterPayment(order.id);
 
     await createIntakeMessage({
       intakeSubmissionId: subscription.intakeSubmissionId,
@@ -382,7 +385,9 @@ export async function chargeTherapySubscription(
         text: [
           `Refill ${order.orderNumber} paid ($${amountDue.toFixed(2)}).`,
           `Patient: ${subscription.intakeSubmission.fullName} <${email ?? ""}>`,
-          `Vendor bills: ${payables.length}`,
+          "",
+          "Settlement split:",
+          formatVendorSettlementText(settlement),
         ].join("\n"),
       });
     }

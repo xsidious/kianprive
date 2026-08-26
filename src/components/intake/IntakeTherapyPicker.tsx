@@ -38,8 +38,21 @@ function productLanded(product: ClinicalProduct) {
   return product.wholesalePrice != null && product.wholesalePrice > 0 ? product.wholesalePrice : 0;
 }
 
-function suggestedUnitPrice(product: ClinicalProduct, shippingTotal: number, lineCount: number, quantity: number) {
+/** Markup-only unit price — shipping is billed separately on the order. */
+function suggestedProductUnitPrice(product: ClinicalProduct) {
   if (product.suggestedPrice != null && product.suggestedPrice > 0) return product.suggestedPrice;
+  const cost = productLanded(product);
+  if (cost > 0) return Math.round(Math.max(0, cost) * 2 * 100) / 100;
+  return product.price && product.price > 0 ? product.price : 0;
+}
+
+/** All-in reference (markup + shipping share) for comparison with products + shipping total. */
+function suggestedAllInUnitPrice(
+  product: ClinicalProduct,
+  shippingTotal: number,
+  lineCount: number,
+  quantity: number,
+) {
   const cost = productLanded(product);
   if (cost > 0) {
     return suggestedTherapyUnitPrice({
@@ -49,7 +62,7 @@ function suggestedUnitPrice(product: ClinicalProduct, shippingTotal: number, lin
       quantity,
     });
   }
-  return product.price && product.price > 0 ? product.price : 0;
+  return suggestedProductUnitPrice(product);
 }
 
 export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, onSaved }: Props) {
@@ -93,12 +106,16 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
             status?: string;
             billingInterval?: string;
             intervalDays?: number;
+            shippingTotal?: number;
           } | null;
         };
         if (data.proposal) {
           setNotes(data.proposal.notes ?? "");
           setBillingInterval(data.proposal.billingInterval ?? "ONE_TIME");
           if (data.proposal.intervalDays) setCustomDays(String(data.proposal.intervalDays));
+          if (allowPricing && data.proposal.shippingTotal != null) {
+            setShipping(String(data.proposal.shippingTotal));
+          }
           const byId = new Map(catalog.map((p) => [p.id, p]));
           const lines: TherapyLine[] = [];
           const touched: Record<string, boolean> = {};
@@ -140,8 +157,11 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
   const activeProduct = activeId ? products.find((p) => p.id === activeId) ?? null : null;
   const shippingTotal = Math.max(0, Number(shipping) || 0);
   const planTotal = therapy.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0);
+  const patientTotal = planTotal + shippingTotal;
   const suggestedTotal = therapy.reduce(
-    (sum, line) => sum + suggestedUnitPrice(line.product, shippingTotal, therapy.length, line.quantity) * line.quantity,
+    (sum, line) =>
+      sum +
+      suggestedAllInUnitPrice(line.product, shippingTotal, therapy.length, line.quantity) * line.quantity,
     0,
   );
 
@@ -151,7 +171,7 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
       let changed = false;
       const next = prev.map((line) => {
         if (priceTouched[line.product.id]) return line;
-        const suggested = suggestedUnitPrice(line.product, shippingTotal, prev.length, line.quantity);
+        const suggested = suggestedProductUnitPrice(line.product);
         if (suggested == null || suggested === line.unitPrice) return line;
         changed = true;
         return { ...line, unitPrice: suggested };
@@ -164,8 +184,7 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
     setActiveId(product.id);
     const existing = therapy.find((l) => l.product.id === product.id);
     setPickQty(existing?.quantity ?? 1);
-    const count = existing ? therapy.length : therapy.length + 1;
-    const suggested = suggestedUnitPrice(product, shippingTotal, count, existing?.quantity ?? 1);
+    const suggested = suggestedProductUnitPrice(product);
     setPickPrice(
       existing
         ? String(existing.unitPrice || "")
@@ -181,8 +200,7 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
   function addToTherapy() {
     if (!activeProduct) return;
     const qty = Math.max(1, Math.min(50, pickQty));
-    const nextCount = therapyIds.has(activeProduct.id) ? therapy.length : therapy.length + 1;
-    const suggested = suggestedUnitPrice(activeProduct, shippingTotal, nextCount, qty);
+    const suggested = suggestedProductUnitPrice(activeProduct);
     const typed = Number(pickPrice || 0);
     const price = allowPricing ? (Number.isFinite(typed) ? typed : suggested) : activeProduct.price ?? 0;
     if (allowPricing && Math.abs(price - suggested) > 0.009) {
@@ -225,7 +243,7 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
           ? line
           : {
               ...line,
-              unitPrice: suggestedUnitPrice(line.product, shippingTotal, merged.length, line.quantity),
+              unitPrice: suggestedProductUnitPrice(line.product),
             },
       );
     });
@@ -237,10 +255,10 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
     setTherapy((prev) =>
       prev.map((line) => ({
         ...line,
-        unitPrice: suggestedUnitPrice(line.product, shippingTotal, prev.length, line.quantity),
+        unitPrice: suggestedProductUnitPrice(line.product),
       })),
     );
-    setStatus("Applied system suggested prices from vendor cost + margin.");
+    setStatus("Applied suggested product prices (2× cost). Shipping is added separately.");
   }
 
   function updateTherapyQty(productId: string, quantity: number) {
@@ -285,6 +303,7 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
         send,
         billingInterval,
         intervalDays: billingInterval === "CUSTOM" ? Number(customDays) : undefined,
+        shippingTotal: allowPricing ? shippingTotal : 0,
       }),
     });
     const data = await res.json();
@@ -320,7 +339,9 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
         </div>
         <p className="rounded-full bg-white px-3 py-1 text-sm text-[#8f6f3e]">
           {therapy.length} in therapy
-          {allowPricing && planTotal > 0 ? ` · $${planTotal.toFixed(2)}` : ""}
+          {allowPricing && patientTotal > 0
+            ? ` · $${patientTotal.toFixed(2)}${shippingTotal > 0 ? " incl. shipping" : ""}`
+            : ""}
         </p>
       </div>
 
@@ -404,12 +425,7 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
                         {allowPricing ? (
                           <p className="text-[11px] text-[#8f6f3e]">
                             {productLanded(product) > 0
-                              ? `${product.bestVendor ? `${product.bestVendor.vendorName} · ` : ""}cost $${productLanded(product).toFixed(2)} · suggest $${suggestedUnitPrice(
-                                  product,
-                                  shippingTotal,
-                                  therapyIds.has(product.id) ? therapy.length : therapy.length + 1,
-                                  1,
-                                ).toFixed(2)}`
+                              ? `${product.bestVendor ? `${product.bestVendor.vendorName} · ` : ""}cost $${productLanded(product).toFixed(2)} · suggest $${suggestedProductUnitPrice(product).toFixed(2)}`
                               : product.price && product.price > 0
                                 ? `$${product.price.toFixed(2)} · add vendor quotes`
                                 : "Add vendor quotes"}
@@ -546,7 +562,7 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
                               ? ` (${line.product.bestVendor.vendorName})`
                               : ""}
                             {" · suggest $"}
-                            {suggestedUnitPrice(line.product, shippingTotal, therapy.length, line.quantity).toFixed(2)}
+                            {suggestedProductUnitPrice(line.product).toFixed(2)}
                           </p>
                         ) : null}
                         <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -596,9 +612,24 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
             )}
 
             {allowPricing && therapy.length ? (
-              <div className="mt-3 space-y-1 text-right">
-                <p className="text-xs text-[#8f6f3e]">Suggested total ${suggestedTotal.toFixed(2)}</p>
-                <p className="font-serif text-xl text-[#1f1a15]">${planTotal.toFixed(2)}</p>
+              <div className="mt-3 space-y-1 rounded-lg border border-[#efe4d4] bg-[#fffaf3] p-3 text-sm">
+                <div className="flex items-center justify-between text-[#6f6251]">
+                  <span>Products subtotal</span>
+                  <span>${planTotal.toFixed(2)}</span>
+                </div>
+                <div className="flex items-center justify-between text-[#6f6251]">
+                  <span>Shipping</span>
+                  <span>${shippingTotal.toFixed(2)}</span>
+                </div>
+                <div className="flex items-center justify-between border-t border-[#efe4d4] pt-2 font-serif text-xl text-[#1f1a15]">
+                  <span>Patient pays</span>
+                  <span>${patientTotal.toFixed(2)}</span>
+                </div>
+                {Math.abs(suggestedTotal - patientTotal) > 0.009 ? (
+                  <p className="pt-1 text-right text-xs text-[#8f6f3e]">
+                    Suggested all-in total ${suggestedTotal.toFixed(2)}
+                  </p>
+                ) : null}
               </div>
             ) : null}
 

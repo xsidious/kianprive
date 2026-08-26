@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useEffect, useState } from "react";
 import { IntakeMessageThread } from "@/components/intake/IntakeMessageThread";
+import { TherapyOrderSummary } from "@/components/commerce/TherapyOrderSummary";
 
 type TrackMessage = {
   id: string;
@@ -35,9 +36,17 @@ type TrackResult = {
     status: string;
     providerName: string;
     notes: string | null;
-    items: Array<{ title: string; quantity: number }>;
+    items: Array<{ title: string; quantity: number; lineTotal?: number }>;
     billing?: { status: string; label: string; nextChargeLabel: string | null } | null;
-    order: { orderNumber: string; total?: number; paymentStatus: string; paymentUrl?: string | null } | null;
+    order: {
+      orderNumber: string;
+      total?: number;
+      subtotal?: number;
+      shippingTotal?: number;
+      paymentStatus: string;
+      paymentUrl?: string | null;
+      items?: Array<{ title: string; quantity: number; lineTotal: number }>;
+    } | null;
   } | null;
 };
 
@@ -281,8 +290,13 @@ function TrackIntakeForm() {
               ) : null}
               <ul className="mt-3 space-y-1 text-sm text-[#1f1a15]">
                 {result.therapy.items.map((item, idx) => (
-                  <li key={`${item.title}-${idx}`}>
-                    {item.title} × {item.quantity}
+                  <li key={`${item.title}-${idx}`} className="flex justify-between gap-3">
+                    <span>
+                      {item.title} × {item.quantity}
+                    </span>
+                    {typeof item.lineTotal === "number" ? (
+                      <span className="shrink-0 font-medium">${item.lineTotal.toFixed(2)}</span>
+                    ) : null}
                   </li>
                 ))}
               </ul>
@@ -297,7 +311,23 @@ function TrackIntakeForm() {
               {result.therapy.order && result.therapy.order.paymentStatus !== "PAID" ? (
                 <div className="mt-4 space-y-3">
                   {typeof result.therapy.order.total === "number" ? (
-                    <p className="font-serif text-2xl text-[#1f1a15]">${result.therapy.order.total.toFixed(2)} due</p>
+                    <TherapyOrderSummary
+                      className="border-[#efe4d4] bg-white"
+                      items={
+                        result.therapy.order.items?.length
+                          ? result.therapy.order.items
+                          : result.therapy.items
+                              .filter((item) => typeof item.lineTotal === "number")
+                              .map((item) => ({
+                                title: item.title,
+                                quantity: item.quantity,
+                                lineTotal: item.lineTotal as number,
+                              }))
+                      }
+                      subtotal={result.therapy.order.subtotal}
+                      shippingTotal={result.therapy.order.shippingTotal}
+                      total={result.therapy.order.total}
+                    />
                   ) : null}
                   {result.therapy.order.paymentUrl ? (
                     <a

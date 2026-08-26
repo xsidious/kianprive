@@ -134,9 +134,9 @@ export function PeptidesGlpIntakeForm() {
         <p className="text-xs tracking-[0.2em] text-[#1b6568]">INTAKE RECEIVED</p>
         <h2 className="mt-3 text-3xl text-[#1f1a15]">Thank you</h2>
         <p className="mx-auto mt-4 max-w-2xl text-[#28585a]">
-          Your Comprehensive Therapeutics Intake has been securely submitted with the $55 physician review
-          fee. A KIAN Privé clinician will review your information and contact you regarding approval and next
-          steps.
+          Your Comprehensive Therapeutics Intake has been securely submitted with the $
+          {INTAKE_REVIEW_FEE_USD} medical review fee. A KIAN Privé clinician will review your information and contact
+          you regarding approval and next steps.
         </p>
         <p className="mt-4 text-sm text-[#1b6568]">
           Reference ID: <strong>{referenceId}</strong>

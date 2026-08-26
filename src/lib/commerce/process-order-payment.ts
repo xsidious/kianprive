@@ -4,7 +4,10 @@ import { createProductCommissionsForOrder } from "@/lib/commissions";
 import { createIntakeMessage } from "@/lib/intake/messages";
 import { sendTransactionalEmail } from "@/lib/email";
 import { buildPaymentConfirmationEmail, buildSimpleEmail } from "@/lib/email-templates";
-import { createVendorPayablesForOrder } from "@/lib/commerce/vendor-payables";
+import {
+  formatVendorSettlementText,
+  settleVendorCostsAfterPayment,
+} from "@/lib/commerce/vendor-payables";
 import { activateTherapySubscriptionFromPayment } from "@/lib/commerce/therapy-subscriptions";
 import { formatChargeDate, intervalLabel } from "@/lib/commerce/therapy-billing";
 
@@ -173,7 +176,7 @@ export async function processOrderCardPayment(input: {
   });
 
   await createProductCommissionsForOrder(order.id);
-  const payables = await createVendorPayablesForOrder(order.id);
+  const settlement = await settleVendorCostsAfterPayment(order.id);
 
   const proposalId = order.therapyProposal?.id ?? order.therapySubscription?.proposalId;
   const activated = proposalId
@@ -221,25 +224,19 @@ export async function processOrderCardPayment(input: {
     const itemLines =
       updated?.items?.map((i) => `- ${i.title} × ${i.quantity} @ $${Number(i.unitPrice).toFixed(2)}`).join("\n") ||
       "(no items)";
-    const vendorLines = payables.length
-      ? payables.map((p) => `- ${p.reference} · $${Number(p.amount).toFixed(2)}`).join("\n")
-      : "No vendor assigned on these products yet.";
     await sendTransactionalEmail({
       to: adminTo,
       subject: `${testMode ? "[TEST] " : ""}Order paid — ${order.orderNumber}`,
       text: [
         `Order ${order.orderNumber} paid.`,
         `Payment ID: ${charge.transId}`,
-        `Amount: $${Number(order.total).toFixed(2)}`,
         `Patient: ${order.intakeSubmission?.fullName ?? "—"} <${order.email ?? order.intakeSubmission?.email ?? ""}>`,
         "",
-        "Products:",
+        "Products (patient prices):",
         itemLines,
         "",
-        "Vendor bills created:",
-        vendorLines,
-        "",
-        "Pay vendors in Admin → Vendors. Mark fulfilled in Admin → Orders after shipping.",
+        "Settlement split:",
+        formatVendorSettlementText(settlement),
       ].join("\n"),
     });
   }

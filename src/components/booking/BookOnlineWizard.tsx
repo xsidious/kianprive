@@ -17,7 +17,12 @@ import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { bookingServiceOptions, getBookingOptionById } from "@/lib/services/booking-options";
+import { bookingIncludesLabWork } from "@/lib/bookings/lab-services";
+import { bookingIncludesAftercare } from "@/lib/bookings/aftercare-services";
 import { formatUsd } from "@/lib/services/pricing-menus";
+import { MEDICAL_REVIEW_FEE_USD } from "@/lib/intake/review-fee";
+import { AuthorizeNetPayForm } from "@/components/commerce/AuthorizeNetPayForm";
+import { AppointmentAftercare } from "@/components/bookings/AppointmentAftercare";
 import { DEFAULT_TIMEZONE } from "@/lib/scheduling/config";
 import { capturePartnerReferralFromUrl, readPartnerReferralClient } from "@/lib/partner-referral";
 
@@ -154,6 +159,7 @@ export function BookOnlineWizard() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [patientDateOfBirth, setPatientDateOfBirth] = useState("");
   const [preferredLocation, setPreferredLocation] = useState("In-Clinic");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -165,6 +171,8 @@ export function BookOnlineWizard() {
     [selectedServices],
   );
   const needsProviderStep = selectedServices.includes("facial-aesthetics");
+  const needsLabDemographics = bookingIncludesLabWork(selectedServices);
+  const showAftercarePreview = bookingIncludesAftercare(selectedServices);
 
   const primaryServiceId = selectedServices[0] ?? "";
   const bookingDurationMinutes = useMemo(() => {
@@ -371,11 +379,11 @@ export function BookOnlineWizard() {
     }
     else if (step === "provider" && selectedProvider) setStep("schedule");
     else if (step === "schedule" && selectedSlotId) setStep("details");
-    else if (step === "details") void submitBooking();
+    else if (step === "details" && !needsLabDemographics) void submitBooking();
   }
 
   const showContinueButton =
-    step === "details" ||
+    (step === "details" && !needsLabDemographics) ||
     step === "provider" ||
     (step === "services" &&
       (serviceInterest === "many" || (serviceInterest === "two" && selectedServices.length < 2)));
@@ -387,8 +395,16 @@ export function BookOnlineWizard() {
     if (idx > 0) setStep(order[idx - 1]);
   }
 
-  async function submitBooking() {
+  async function submitBooking(payment?: {
+    opaqueData: { dataDescriptor: string; dataValue: string };
+    billTo: { zip?: string };
+    testCardNumber?: string;
+  }) {
     if (submitting || !selectedServices.length || !selectedSlotId) return;
+    if (needsLabDemographics && !payment) {
+      setSubmitError(`Pay the ${formatUsd(MEDICAL_REVIEW_FEE_USD)} medical review fee to confirm your lab order.`);
+      return;
+    }
     setSubmitError("");
     setSubmitting(true);
     try {
@@ -402,10 +418,14 @@ export function BookOnlineWizard() {
           phone,
           preferredLocation,
           notes: selectedProvider ? `Preferred provider: ${selectedProvider}` : undefined,
+          patientDateOfBirth: needsLabDemographics ? patientDateOfBirth : undefined,
           serviceIds: selectedServices,
           scheduledSlotId: selectedSlotId,
           timezone: DEFAULT_TIMEZONE,
           partnerCode,
+          opaqueData: payment?.opaqueData,
+          billTo: payment?.billTo,
+          testCardNumber: payment?.testCardNumber,
         }),
       });
       if (!res.ok) {
@@ -419,24 +439,36 @@ export function BookOnlineWizard() {
       const names = selectedRows.map((s) => s.title).join(", ");
       setConfirmedSummary(`${names} · ${when} · ${preferredLocation}`);
       setStep("complete");
+      return { message: "Appointment confirmed." };
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Something went wrong.");
+      const message = error instanceof Error ? error.message : "Something went wrong.";
+      setSubmitError(message);
+      throw error instanceof Error ? error : new Error(message);
     } finally {
       setSubmitting(false);
     }
   }
 
+  const detailsReady =
+    Boolean(fullName.trim()) &&
+    Boolean(email.trim()) &&
+    Boolean(phone.trim()) &&
+    (!needsLabDemographics || Boolean(patientDateOfBirth.trim()));
+
   const canContinue =
     (step === "services" && servicesValid()) ||
     (step === "provider" && Boolean(selectedProvider)) ||
-    (step === "details" && Boolean(fullName.trim() && email.trim() && phone.trim()));
+    (step === "schedule" && Boolean(selectedSlotId)) ||
+    (step === "details" && !needsLabDemographics && detailsReady);
 
   const continueLabel =
     step === "details"
       ? submitting
         ? "Booking your visit…"
         : "Confirm my appointment"
-      : "Continue";
+      : step === "schedule"
+        ? "Continue to details"
+        : "Continue";
 
   return (
     <div className="relative min-h-[80vh] overflow-hidden pb-32">
@@ -780,6 +812,24 @@ export function BookOnlineWizard() {
                     />
                   </label>
                 ))}
+                {needsLabDemographics ? (
+                  <label className="block">
+                    <span className="mb-2 block text-sm font-medium tracking-wide text-[#8f6f3e]">
+                      Date of birth (required for lab order)
+                    </span>
+                    <input
+                      value={patientDateOfBirth}
+                      onChange={(e) => setPatientDateOfBirth(e.target.value)}
+                      type="date"
+                      autoComplete="bday"
+                      required
+                      className="w-full rounded-sm border-2 border-[#e8dcc8] bg-[#fffdf9] px-4 py-4 text-lg text-[#1f1a15] outline-none transition focus:border-[#b78d4b] focus:ring-4 focus:ring-[#b78d4b18]"
+                    />
+                    <p className="mt-2 text-sm text-[#6f6251]">
+                      Your physician will issue a lab prescription to the draw site using this information.
+                    </p>
+                  </label>
+                ) : null}
               </div>
 
               <p className="mt-8 mb-3 font-medium text-[#3b3024]">Visit location</p>
@@ -803,6 +853,28 @@ export function BookOnlineWizard() {
 
               {submitError ? (
                 <p className="mt-4 rounded-sm bg-red-50 p-3 text-center text-red-700">{submitError}</p>
+              ) : null}
+
+              {needsLabDemographics && detailsReady ? (
+                <div className="mt-8 rounded-sm border border-[#b78d4b33] bg-[#fffaf2] p-5 text-left">
+                  <h3 className="text-lg font-medium text-[#1f1a15]">
+                    Medical review fee — {formatUsd(MEDICAL_REVIEW_FEE_USD)}
+                  </h3>
+                  <p className="mt-2 text-sm text-[#6f6251]">
+                    Your physician must review your information before issuing the lab prescription. This fee is
+                    credited toward your prescription cost after approval and therapy is prescribed.
+                  </p>
+                  <div className="mt-5">
+                    <AuthorizeNetPayForm
+                      amountLabel={formatUsd(MEDICAL_REVIEW_FEE_USD)}
+                      submitLabel={submitting ? "Processing…" : "Pay & confirm appointment"}
+                      onCharge={async (input) => {
+                        await submitBooking(input);
+                        return { message: "Payment received. Your appointment is confirmed." };
+                      }}
+                    />
+                  </div>
+                </div>
               ) : null}
             </WizardCard>
           ) : null}
@@ -828,6 +900,14 @@ export function BookOnlineWizard() {
                 <p className="mx-auto mt-3 max-w-md text-sm text-[#8f6f3e]">
                   Our concierge will coordinate timing for all {selectedServices.length} services.
                 </p>
+              ) : null}
+              {showAftercarePreview ? (
+                <div className="mx-auto mt-8 max-w-2xl text-left">
+                  <AppointmentAftercare
+                    variant="post-booking"
+                    serviceTitles={selectedRows.map((s) => s.title)}
+                  />
+                </div>
               ) : null}
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
                 <Link

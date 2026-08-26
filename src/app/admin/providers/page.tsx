@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BrandedQrCard } from "@/components/ambassador/BrandedQrCard";
 import { CommissionOverrideInput } from "@/components/admin/CommissionOverrideInput";
 import {
@@ -55,6 +55,9 @@ export default function AdminProvidersPage() {
   const [defaultServicePct, setDefaultServicePct] = useState("20");
   const [defaultProductPct, setDefaultProductPct] = useState("10");
   const [message, setMessage] = useState("");
+  const [messageIsError, setMessageIsError] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const detailRef = useRef<HTMLElement>(null);
 
   async function load() {
     const [providersRes, productsRes] = await Promise.all([
@@ -109,10 +112,15 @@ export default function AdminProvidersPage() {
 
   function selectProvider(provider: ProviderRow) {
     applySelection(provider);
+    requestAnimationFrame(() => {
+      detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   }
 
   async function createProvider(formData: FormData) {
     setMessage("");
+    setMessageIsError(false);
+    setCreating(true);
     const body = {
       name: String(formData.get("name") || ""),
       email: String(formData.get("email") || ""),
@@ -134,12 +142,21 @@ export default function AdminProvidersPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
-    setMessage(res.ok ? "Provider created." : "Failed to create provider.");
+    const payload = (await res.json().catch(() => ({}))) as { error?: string; provider?: ProviderRow };
+    setCreating(false);
     if (res.ok) {
-      const payload = (await res.json()) as { provider: ProviderRow };
-      await load();
-      selectProvider(payload.provider);
+      setMessage("Practitioner created.");
+      setMessageIsError(false);
+      if (payload.provider) {
+        await load();
+        selectProvider(payload.provider);
+      } else {
+        await load();
+      }
+      return;
     }
+    setMessage(payload.error ?? "Failed to create practitioner.");
+    setMessageIsError(true);
   }
 
   async function saveCommissions() {
@@ -222,7 +239,15 @@ export default function AdminProvidersPage() {
         </p>
       </div>
 
-      {message ? <p className="text-sm text-[#1b6568]">{message}</p> : null}
+      {message ? (
+        <p className={`text-sm ${messageIsError ? "text-red-700" : "text-[#1b6568]"}`}>{message}</p>
+      ) : null}
+
+      {selected ? (
+        <p className="text-xs text-[#8f6f3e] lg:hidden">
+          Viewing <strong>{selected.displayName}</strong> — scroll down for profile, totals, and commission settings.
+        </p>
+      ) : null}
 
       <div className="grid gap-3 sm:grid-cols-3">
         <div className={adminStat}>
@@ -240,10 +265,16 @@ export default function AdminProvidersPage() {
         </div>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+      <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
         <section className={`${adminPanel} p-5`}>
           <h2 className="font-serif text-xl text-[#1f1a15]">Invite practitioner</h2>
-          <form action={createProvider} className="mt-4 grid gap-3">
+          <form
+            className="mt-4 grid gap-3"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void createProvider(new FormData(event.currentTarget));
+            }}
+          >
             <input name="name" placeholder="Full name" required className={adminInput} />
             <input name="displayName" placeholder="Display name (shown to clients)" required className={adminInput} />
             <input name="email" type="email" placeholder="Login email" required className={adminInput} />
@@ -279,8 +310,8 @@ export default function AdminProvidersPage() {
                 ))}
               </div>
             </div>
-            <button type="submit" className={adminBtnPrimary}>
-              Create practitioner
+            <button type="submit" className={adminBtnPrimary} disabled={creating}>
+              {creating ? "Creating…" : "Create practitioner"}
             </button>
           </form>
 
@@ -312,7 +343,7 @@ export default function AdminProvidersPage() {
           </div>
         </section>
 
-        <section className={`${adminPanel} p-5`}>
+        <section ref={detailRef} className={`${adminPanel} scroll-mt-6 p-5`}>
           {selected ? (
             <div className="space-y-5">
               <div className="flex flex-wrap items-start justify-between gap-3">

@@ -5,13 +5,14 @@ import { useCallback, useEffect, useState } from "react";
 import { PortalSignOut } from "@/components/auth/PortalSignOut";
 import { IntakeMessageThread } from "@/components/intake/IntakeMessageThread";
 import { TherapyAcceptPay } from "@/components/intake/TherapyAcceptPay";
+import { TherapyOrderSummary } from "@/components/commerce/TherapyOrderSummary";
 import { PaymentReceipt } from "@/components/commerce/PaymentReceipt";
 
 type TherapyInfo = {
   status: string;
   providerName: string;
   notes: string | null;
-  items: Array<{ title: string; quantity: number }>;
+  items: Array<{ title: string; quantity: number; unitPrice?: number; lineTotal?: number }>;
   billing?: {
     status: string;
     label: string;
@@ -24,6 +25,9 @@ type TherapyInfo = {
     id: string;
     orderNumber: string;
     total?: number;
+    subtotal?: number;
+    shippingTotal?: number;
+    items?: Array<{ title: string; quantity: number; lineTotal: number }>;
     paymentStatus: string;
     transId?: string | null;
     paidAt?: string | null;
@@ -112,12 +116,18 @@ export default function MemberIntakePage() {
             team asks for more.
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/intake/celexo"
+            className="rounded-full border border-[#d8cbb5] px-4 py-2 text-sm text-[#6f6251]"
+          >
+            Celexo intake
+          </Link>
           <Link
             href="/intake/peptides-glp"
             className="rounded-full border border-[#d8cbb5] px-4 py-2 text-sm text-[#6f6251]"
           >
-            Start intake
+            Peptide intake
           </Link>
           <Link href="/dashboard" className="rounded-full border border-[#d8cbb5] px-4 py-2 text-sm text-[#6f6251]">
             Dashboard
@@ -201,8 +211,13 @@ export default function MemberIntakePage() {
                 ) : null}
                 <ul className="mt-3 space-y-1 text-sm text-[#1f1a15]">
                   {row.therapy.items.map((item, idx) => (
-                    <li key={`${item.title}-${idx}`}>
-                      {item.title} × {item.quantity}
+                    <li key={`${item.title}-${idx}`} className="flex justify-between gap-3">
+                      <span>
+                        {item.title} × {item.quantity}
+                      </span>
+                      {typeof item.lineTotal === "number" ? (
+                        <span className="shrink-0 text-[#6f6251]">${item.lineTotal.toFixed(2)}</span>
+                      ) : null}
                     </li>
                   ))}
                 </ul>
@@ -222,7 +237,23 @@ export default function MemberIntakePage() {
                 {row.therapy.order &&
                 row.therapy.order.paymentStatus !== "PAID" &&
                 typeof row.therapy.order.total === "number" ? (
-                  <div className="mt-4">
+                  <div className="mt-4 space-y-4">
+                    <TherapyOrderSummary
+                      items={
+                        row.therapy.order.items?.length
+                          ? row.therapy.order.items
+                          : row.therapy.items
+                              .filter((item) => typeof item.lineTotal === "number")
+                              .map((item) => ({
+                                title: item.title,
+                                quantity: item.quantity,
+                                lineTotal: item.lineTotal as number,
+                              }))
+                      }
+                      subtotal={row.therapy.order.subtotal}
+                      shippingTotal={row.therapy.order.shippingTotal}
+                      total={row.therapy.order.total}
+                    />
                     <TherapyAcceptPay
                       orderId={row.therapy.order.id}
                       total={row.therapy.order.total}

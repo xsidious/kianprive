@@ -31,7 +31,7 @@ export const serviceCatalog: ServiceDetail[] = [
       ...pricedMenuLines(providerVisitMenu.inPerson),
       "Physician visits — telemedicine",
       ...pricedMenuLines(providerVisitMenu.telemedicine),
-      "Asynchronous consult: $50",
+      "Physician review: $50",
       "Nurse visits",
       ...pricedMenuLines(providerVisitMenu.nurse),
     ],

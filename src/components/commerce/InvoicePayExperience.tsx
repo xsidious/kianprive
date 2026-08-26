@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { TherapyOrderSummary } from "@/components/commerce/TherapyOrderSummary";
 import { TherapyAcceptPay } from "@/components/intake/TherapyAcceptPay";
 import type { PaymentReceiptData } from "@/components/commerce/PaymentReceipt";
 
@@ -15,6 +16,8 @@ type Props = {
   token: string;
   orderNumber: string;
   total: number;
+  subtotal?: number;
+  shippingTotal?: number;
   notes?: string | null;
   patientName?: string | null;
   items: LineItem[];
@@ -27,6 +30,8 @@ export function InvoicePayExperience({
   token,
   orderNumber,
   total,
+  subtotal,
+  shippingTotal,
   notes,
   patientName,
   items,
@@ -51,26 +56,20 @@ export function InvoicePayExperience({
       </div>
 
       {!paid && !expired ? (
-        <section className="animate-fade-up mb-6 rounded-2xl border border-[#e7dcc8] bg-white/80 p-5 shadow-sm backdrop-blur-sm">
-          <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Order summary</p>
-          <ul className="mt-3 space-y-2.5">
-            {items.map((item) => (
-              <li key={item.id} className="flex justify-between gap-3 text-sm">
-                <span className="text-[#2b2218]">
-                  {item.title} <span className="text-[#8f6f3e]">× {item.quantity}</span>
-                </span>
-                <span className="shrink-0 font-medium text-[#1f1a15]">${item.lineTotal.toFixed(2)}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-4 flex items-center justify-between border-t border-[#efe4d4] pt-4">
-            <span className="font-serif text-lg text-[#1f1a15]">Total due</span>
-            <span className="font-serif text-2xl text-[#1f1a15]">${total.toFixed(2)}</span>
-          </div>
+        <>
+          <TherapyOrderSummary
+            className="animate-fade-up mb-6"
+            items={items}
+            subtotal={subtotal}
+            shippingTotal={shippingTotal}
+            total={total}
+          />
           {notes ? (
-            <p className="mt-4 rounded-xl bg-[#fffaf3] px-3 py-2.5 text-sm leading-relaxed text-[#6f6251]">{notes}</p>
+            <p className="animate-fade-up mb-6 rounded-xl bg-[#fffaf3] px-3 py-2.5 text-sm leading-relaxed text-[#6f6251]">
+              {notes}
+            </p>
           ) : null}
-        </section>
+        </>
       ) : null}
 
       {expired ? (

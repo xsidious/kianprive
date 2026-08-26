@@ -82,6 +82,7 @@ export default async function ServiceDetailPage({
   const isNutrition = slug === NUTRITION_SERVICE_SLUG;
   const heroImage = isNutrition ? service.promoImage ?? nutritionPromoImage : service.image;
   const isPeptides = slug === "glp1-peptides";
+  const isCelexo = slug === "microneedling-with-exosomes";
   const bookingHref = service.externalBookingUrl
     ? service.externalBookingUrl
     : service.slug === "glp1-peptides"
@@ -198,6 +199,27 @@ export default async function ServiceDetailPage({
               </a>
               <Link href="/shop" className={editorialCtaSecondary}>
                 SHOP SUPPLIES
+              </Link>
+            </div>
+          </div>
+        </EditorialSection>
+      ) : null}
+
+      {isCelexo ? (
+        <EditorialSection className="!py-8 sm:!py-10">
+          <div className={`${editorialPanel} p-5`}>
+            <p className="text-xs tracking-[0.18em] text-[#8a682e]">BEFORE YOUR VISIT</p>
+            <h2 className="mt-2 font-serif text-2xl text-[#1f1a15]">Korean Exosome Therapy intake</h2>
+            <p className="mt-3 max-w-3xl text-sm text-[#5f5344]">
+              Complete the Celexo intake so our team can confirm protocol (plant-based or Black Label), delivery method,
+              treatment areas, and aftercare before your microneedling or topical session.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Link href="/intake/celexo" className={editorialCtaPrimary}>
+                START CELEXO INTAKE
+              </Link>
+              <Link href="/book-online?service=microneedling-with-exosomes" className={editorialCtaSecondary}>
+                BOOK APPOINTMENT
               </Link>
             </div>
           </div>

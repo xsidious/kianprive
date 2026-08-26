@@ -46,6 +46,7 @@ export async function getProposalForIntake(intakeSubmissionId: string) {
           id: true,
           orderNumber: true,
           total: true,
+          shippingTotal: true,
           paymentStatus: true,
           status: true,
           fulfillments: {
@@ -82,12 +83,14 @@ export function serializeProposal(
     };
   });
   const unpriced = items.filter((i) => !i.priced).length;
-  const computedTotal = proposal.items.reduce((sum, item) => {
+  const computedSubtotal = proposal.items.reduce((sum, item) => {
     const unit = item.unitPrice != null ? Number(item.unitPrice) : Number(item.product.price);
     return sum + unit * item.quantity;
   }, 0);
+  const orderShipping =
+    proposal.order?.shippingTotal != null ? Number(proposal.order.shippingTotal) : 0;
   const orderTotal =
-    proposal.order?.total != null ? Number(proposal.order.total) : computedTotal;
+    proposal.order?.total != null ? Number(proposal.order.total) : computedSubtotal + orderShipping;
 
   const showPayTotal =
     includePayTotal &&
@@ -133,6 +136,8 @@ export function serializeProposal(
     items,
     unpricedCount: unpriced,
     readyToPay: unpriced === 0 && items.length > 0 && proposal.status === "SENT",
+    subtotal: includePrices ? computedSubtotal : undefined,
+    shippingTotal: includePrices ? orderShipping : undefined,
     total: includePrices ? orderTotal : showPayTotal ? orderTotal : undefined,
   };
 }
@@ -143,6 +148,7 @@ export async function upsertTherapyProposal(input: {
   notes?: string | null;
   items: Array<{ productId: string; quantity: number; unitPrice?: number | null }>;
   send?: boolean;
+  shippingTotal?: number;
   persistCatalogPrices?: boolean;
   billingInterval?: TherapyBillingInterval;
   intervalDays?: number | null;
@@ -251,6 +257,8 @@ export async function upsertTherapyProposal(input: {
         };
       });
       const subtotal = lineItems.reduce((s, i) => s + i.lineTotal, 0);
+      const shippingTotal = Math.max(0, Number(input.shippingTotal) || 0);
+      const total = subtotal + shippingTotal;
 
       if (orderId) {
         await tx.orderItem.deleteMany({ where: { orderId } });
@@ -265,7 +273,8 @@ export async function upsertTherapyProposal(input: {
             status: "PENDING",
             paymentStatus: "UNPAID",
             subtotal,
-            total: subtotal,
+            shippingTotal,
+            total,
             notes: input.notes ?? `Therapy proposal for ${intake?.fullName ?? "patient"}`,
             items: { create: lineItems },
           },
@@ -283,7 +292,8 @@ export async function upsertTherapyProposal(input: {
             paymentStatus: "UNPAID",
             fulfillmentStatus: "UNFULFILLED",
             subtotal,
-            total: subtotal,
+            shippingTotal,
+            total,
             notes: input.notes ?? `Therapy proposal for ${intake?.fullName ?? "patient"}`,
             items: { create: lineItems },
           },
@@ -327,21 +337,19 @@ export async function upsertTherapyProposal(input: {
     });
     const recurringLabel =
       billingInterval === "ONE_TIME" ? null : intervalLabel(billingInterval, intervalDays ?? 0);
-    const orderTotal = proposal.orderId
-      ? Number(
-          (
-            await prisma.order.findUnique({
-              where: { id: proposal.orderId },
-              select: { total: true },
-            })
-          )?.total ?? 0,
-        )
-      : 0;
+    const orderForNotify = proposal.orderId
+      ? await prisma.order.findUnique({
+          where: { id: proposal.orderId },
+          select: { orderNumber: true, total: true, subtotal: true, shippingTotal: true, items: { select: { title: true, quantity: true, lineTotal: true } } },
+        })
+      : null;
+    const orderTotal = Number(orderForNotify?.total ?? 0);
+    const orderSubtotal = Number(orderForNotify?.subtotal ?? 0);
     await syncTherapySubscriptionForProposal({
       proposalId: proposal.id,
       intakeSubmissionId: input.intakeSubmissionId,
       email: intake?.email,
-      amount: orderTotal,
+      amount: orderSubtotal > 0 ? orderSubtotal : orderTotal,
       billingInterval,
       intervalDays,
       orderId: proposal.orderId,
@@ -368,16 +376,19 @@ export async function upsertTherapyProposal(input: {
       paymentUrl,
     });
 
-    if (intake?.email && paymentUrl) {
-      const order = await prisma.order.findUnique({
-        where: { id: proposal.orderId! },
-        select: { orderNumber: true, total: true },
-      });
+    if (intake?.email && paymentUrl && orderForNotify) {
       await sendInvoiceEmail({
         to: intake.email,
         fullName: intake.fullName,
-        orderNumber: order?.orderNumber ?? "therapy invoice",
-        total: Number(order?.total ?? 0),
+        orderNumber: orderForNotify.orderNumber,
+        total: orderTotal,
+        subtotal: orderSubtotal,
+        shippingTotal: Number(orderForNotify.shippingTotal ?? 0),
+        lineItems: orderForNotify.items.map((item) => ({
+          title: item.title,
+          quantity: item.quantity,
+          lineTotal: Number(item.lineTotal),
+        })),
         paymentUrl,
         notes: input.notes,
         recurringLabel,

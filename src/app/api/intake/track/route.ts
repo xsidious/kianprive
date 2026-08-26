@@ -78,16 +78,20 @@ export async function POST(req: Request) {
           items: {
             select: {
               quantity: true,
+              unitPrice: true,
               titleSnapshot: true,
-              product: { select: { title: true } },
+              product: { select: { title: true, price: true } },
             },
           },
           order: {
             select: {
               orderNumber: true,
               total: true,
+              subtotal: true,
+              shippingTotal: true,
               paymentStatus: true,
               paymentToken: true,
+              items: { select: { title: true, quantity: true, lineTotal: true } },
             },
           },
           providerPartner: { select: { displayName: true } },
@@ -143,10 +147,17 @@ export async function POST(req: Request) {
               status: proposal.status,
               providerName: proposal.providerPartner.displayName,
               notes: proposal.notes,
-              items: proposal.items.map((item) => ({
-                title: item.titleSnapshot || item.product.title,
-                quantity: item.quantity,
-              })),
+              items: proposal.items.map((item) => {
+                const unit =
+                  item.unitPrice != null
+                    ? Number(item.unitPrice)
+                    : Number(item.product.price);
+                return {
+                  title: item.titleSnapshot || item.product.title,
+                  quantity: item.quantity,
+                  lineTotal: unit * item.quantity,
+                };
+              }),
               billing:
                 proposal.subscription && proposal.subscription.interval !== "ONE_TIME"
                   ? {
@@ -170,6 +181,13 @@ export async function POST(req: Request) {
                     paymentStatus: proposal.order.paymentStatus,
                     total:
                       proposal.order.paymentStatus === "UNPAID" ? Number(proposal.order.total) : undefined,
+                    subtotal: Number(proposal.order.subtotal),
+                    shippingTotal: Number(proposal.order.shippingTotal ?? 0),
+                    items: proposal.order.items.map((item) => ({
+                      title: item.title,
+                      quantity: item.quantity,
+                      lineTotal: Number(item.lineTotal),
+                    })),
                     paymentUrl:
                       proposal.order.paymentStatus === "UNPAID" && proposal.order.paymentToken
                         ? orderPaymentUrl(proposal.order.paymentToken)

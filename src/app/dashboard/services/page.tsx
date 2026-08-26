@@ -12,6 +12,7 @@ import {
   editorialPanel,
 } from "@/components/ui/editorial-primitives";
 import { AppointmentAftercare } from "@/components/bookings/AppointmentAftercare";
+import { bookingIncludesAftercare } from "@/lib/bookings/aftercare-services";
 
 function buildChatMailto(booking: {
   id: string;
@@ -127,9 +128,12 @@ export default async function DashboardServicesPage() {
 
                 {booking.notes ? <p className="mt-4 text-sm text-[#6f6251]">{booking.notes}</p> : null}
 
-                {booking.status === "COMPLETED" ? (
+                {booking.status === "COMPLETED" || bookingIncludesAftercare(booking.serviceIds) ? (
                   <div className="mt-5">
-                    <AppointmentAftercare serviceTitles={booking.serviceTitles} />
+                    <AppointmentAftercare
+                      variant={booking.status === "COMPLETED" ? "post-visit" : "post-booking"}
+                      serviceTitles={booking.serviceTitles}
+                    />
                   </div>
                 ) : null}
 

@@ -8,6 +8,7 @@ import {
   formatMoney,
   parseAcuityAppointmentId,
 } from "@/lib/admin/booking-display";
+import { bookingIncludesLabWork } from "@/lib/bookings/lab-services";
 
 type Booking = {
   id: string;
@@ -24,6 +25,11 @@ type Booking = {
   notes: string | null;
   guestTotal: string;
   memberTotal: string;
+  patientDateOfBirth?: string | null;
+  labPrescriptionSentAt?: string | null;
+  medicalReviewPaidAt?: string | null;
+  medicalReviewTransId?: string | null;
+  medicalReviewAmount?: string | null;
   status: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELED";
   createdAt: string;
 };
@@ -99,6 +105,19 @@ export default function AdminBookingsPage() {
     if (!window.confirm("Delete this booking record? This does not cancel the Acuity appointment.")) return;
     const response = await fetch(`/api/admin/bookings/${id}`, { method: "DELETE" });
     setStatusMessage(response.ok ? "Booking deleted." : "Failed to delete booking.");
+    if (response.ok) await loadBookings();
+  }
+
+  async function sendLabPrescription(id: string) {
+    const response = await fetch(`/api/admin/bookings/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "sendLabPrescription" }),
+    });
+    const data = (await response.json()) as { error?: string };
+    setStatusMessage(
+      response.ok ? "Lab requisition emailed to the lab partner." : data.error || "Could not send lab requisition.",
+    );
     if (response.ok) await loadBookings();
   }
 
@@ -219,6 +238,36 @@ export default function AdminBookingsPage() {
                     ))}
                   </ul>
                 </div>
+
+                {bookingIncludesLabWork(booking.serviceIds) ? (
+                  <div className="mt-4 rounded-sm border border-[#d7e8f5] bg-[#f5fbff] p-4">
+                    <p className="text-xs tracking-[0.14em] text-[#1b6568]">LAB PRESCRIPTION</p>
+                    <p className="mt-2 text-sm text-[#28585a]">
+                      {booking.medicalReviewPaidAt
+                        ? `Medical review paid ${formatMoney(booking.medicalReviewAmount ?? "75")}${booking.medicalReviewTransId ? ` · AuthNet ${booking.medicalReviewTransId}` : ""}`
+                        : "Medical review fee not paid — lab prescription should not be sent until payment is collected."}
+                      {booking.labPrescriptionSentAt
+                        ? ` · Requisition emailed ${formatBookingDateTime(booking.labPrescriptionSentAt, tz)}`
+                        : booking.medicalReviewPaidAt
+                          ? " · Requisition not emailed yet — check LAB_PRESCRIPTION_EMAIL in env."
+                          : null}
+                      {booking.patientDateOfBirth ? (
+                        <>
+                          {" "}
+                          · DOB {booking.patientDateOfBirth}
+                        </>
+                      ) : null}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => void sendLabPrescription(booking.id)}
+                      disabled={!booking.medicalReviewPaidAt}
+                      className="mt-3 rounded-sm border border-[#1b6568] px-3 py-2 text-xs tracking-[0.12em] text-[#1b6568] disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {booking.labPrescriptionSentAt ? "Resend lab requisition" : "Email lab requisition"}
+                    </button>
+                  </div>
+                ) : null}
 
                 {acuityId ? (
                   <p className="mt-3 text-sm text-[#6f6251]">

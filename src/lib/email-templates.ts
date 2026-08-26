@@ -1,4 +1,6 @@
 import { publicAppBaseUrl } from "@/lib/intake/tracking";
+import { INTAKE_REVIEW_FEE_USD } from "@/lib/intake/review-fee";
+import { APPOINTMENT_AFTERCARE } from "@/lib/booking-aftercare";
 
 /** KIAN Privé brand palette for email clients. */
 const BRAND = {
@@ -194,10 +196,41 @@ export function buildInvoiceEmail(input: {
   paymentUrl: string;
   notes?: string | null;
   recurringLabel?: string | null;
+  subtotal?: number;
+  shippingTotal?: number;
+  lineItems?: Array<{ title: string; quantity: number; lineTotal: number }>;
 }) {
   const recurring = input.recurringLabel
-    ? `After this payment, your therapy will be billed ${input.recurringLabel} on the card you use.`
+    ? `After this payment, your therapy will be billed ${input.recurringLabel} on the card you use (products only — shipping is included on the first order).`
     : null;
+
+  const lineItems = input.lineItems ?? [];
+  const subtotal =
+    input.subtotal ??
+    lineItems.reduce((sum, item) => sum + item.lineTotal, 0);
+  const shippingTotal =
+    input.shippingTotal ??
+    (input.total > subtotal + 0.009 ? input.total - subtotal : 0);
+
+  const linesHtml =
+    lineItems.length > 0
+      ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0 0;">
+          ${lineItems
+            .map(
+              (item) => `<tr>
+                <td style="padding:0 0 10px;font-size:14px;color:${BRAND.body};">${escapeHtml(item.title)} × ${item.quantity}</td>
+                <td style="padding:0 0 10px;font-size:14px;color:${BRAND.ink};text-align:right;white-space:nowrap;">$${item.lineTotal.toFixed(2)}</td>
+              </tr>`,
+            )
+            .join("")}
+          <tr><td style="padding:8px 0 4px;font-size:13px;color:${BRAND.muted};">Products subtotal</td><td style="padding:8px 0 4px;font-size:13px;color:${BRAND.muted};text-align:right;">$${subtotal.toFixed(2)}</td></tr>
+          ${
+            shippingTotal > 0.009
+              ? `<tr><td style="padding:0 0 4px;font-size:13px;color:${BRAND.muted};">Shipping</td><td style="padding:0 0 4px;font-size:13px;color:${BRAND.muted};text-align:right;">$${shippingTotal.toFixed(2)}</td></tr>`
+              : ""
+          }
+        </table>`
+      : "";
 
   const bodyHtml = [
     `<p style="margin:0 0 16px;">Hello ${escapeHtml(input.fullName)},</p>`,
@@ -206,6 +239,7 @@ export function buildInvoiceEmail(input: {
       { label: "Invoice", value: input.orderNumber },
       { label: "Status", value: "Payment due" },
     ]),
+    linesHtml,
     emailAmountDue(input.total),
     recurring ? `<p style="margin:0 0 12px;font-size:14px;color:${BRAND.muted};">${escapeHtml(recurring)}</p>` : "",
     input.notes ? emailQuoteBlock(`Note from your care team:\n${input.notes}`) : "",
@@ -219,6 +253,15 @@ export function buildInvoiceEmail(input: {
       "",
       `Your KIAN Privé invoice ${input.orderNumber} is ready.`,
       `Amount due: $${input.total.toFixed(2)}`,
+      lineItems.length
+        ? [
+            "",
+            ...lineItems.flatMap((item) => [`${item.title} × ${item.quantity}: $${item.lineTotal.toFixed(2)}`]),
+            `Products subtotal: $${subtotal.toFixed(2)}`,
+            ...(shippingTotal > 0.009 ? [`Shipping: $${shippingTotal.toFixed(2)}`] : []),
+            `Total due: $${input.total.toFixed(2)}`,
+          ].join("\n")
+        : "",
       recurring,
       "",
       "Pay securely (no account required):",
@@ -305,7 +348,7 @@ export function buildIntakeConfirmationEmail(input: {
     `<p style="margin:0 0 12px;">Thank you for submitting your <strong>Comprehensive Therapeutics Intake</strong>. We received your physician review fee and your form is now in queue for clinical review.</p>`,
     emailDetailCard([
       { label: "Reference", value: input.referenceId, highlight: true },
-      { label: "Review fee", value: "$55.00 paid" },
+      { label: "Review fee", value: `$${INTAKE_REVIEW_FEE_USD.toFixed(2)} paid` },
       { label: "Next step", value: "Physician review" },
     ]),
     emailSuccessBanner("This confirms receipt only — not medical approval or a prescription."),
@@ -320,7 +363,7 @@ export function buildIntakeConfirmationEmail(input: {
       "Thank you for submitting your KIAN Privé Comprehensive Therapeutics Intake Form.",
       "",
       `Reference ID: ${input.referenceId}`,
-      "We received your $55 physician review fee. A KIAN Privé clinician will review your information and contact you regarding next steps.",
+      `We received your $${INTAKE_REVIEW_FEE_USD} medical review fee. A KIAN Privé clinician will review your information and contact you regarding next steps.`,
       "",
       "This message confirms receipt only and does not constitute medical approval or a prescription.",
       trackUrl ? `\nTrack your request: ${trackUrl}` : "",
@@ -519,6 +562,75 @@ export function buildSimpleEmail(input: {
   });
 }
 
+function aftercareBlocksHtml() {
+  return APPOINTMENT_AFTERCARE.map(
+    (item) => `
+      <tr>
+        <td style="padding:0 0 22px;">
+          <p style="margin:0 0 8px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:${BRAND.gold};">${escapeHtml(item.label.toUpperCase())}</p>
+          <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:18px;line-height:1.45;color:${BRAND.ink};">${escapeHtml(item.text)}</p>
+        </td>
+      </tr>`,
+  ).join("");
+}
+
+export function buildBookingConfirmationEmail(input: {
+  fullName?: string | null;
+  serviceTitles: string[];
+  scheduledLabel: string;
+  location: string;
+  includeAftercare?: boolean;
+  dashboardUrl: string;
+}) {
+  const greeting = input.fullName?.trim() ? `Dear ${input.fullName.trim()},` : "Dear guest,";
+  const services = input.serviceTitles.filter(Boolean).join(", ") || "your appointment";
+  const aftercareNote = input.includeAftercare
+    ? `<p style="margin:18px 0 0;font-size:14px;color:${BRAND.muted};">Save this email — below is what to expect after your Icoone® session.</p>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0 0;">${aftercareBlocksHtml()}</table>`
+    : "";
+
+  const html = emailLayout({
+    preheader: `Your KIAN Privé appointment is confirmed — ${services}`,
+    title: "Appointment confirmed",
+    bodyHtml: `
+      <p style="margin:0 0 14px;">${escapeHtml(greeting)}</p>
+      <p style="margin:0 0 18px;">Thank you for booking with KIAN Privé. We look forward to seeing you.</p>
+      ${emailDetailCard([
+        { label: "Services", value: services },
+        { label: "When", value: input.scheduledLabel, highlight: true },
+        { label: "Location", value: input.location },
+      ])}
+      ${aftercareNote}
+    `,
+    buttons: [{ href: input.dashboardUrl, label: "View my bookings" }],
+    footerNote: "Need to adjust your visit? Reply to this email or WhatsApp our concierge team.",
+  });
+
+  const textLines = [
+    greeting,
+    "",
+    "Your KIAN Privé appointment is confirmed.",
+    "",
+    `Services: ${services}`,
+    `When: ${input.scheduledLabel}`,
+    `Location: ${input.location}`,
+    "",
+  ];
+  if (input.includeAftercare) {
+    textLines.push("What to expect after your session:", "");
+    for (const item of APPOINTMENT_AFTERCARE) {
+      textLines.push(item.label.toUpperCase(), item.text, "");
+    }
+  }
+  textLines.push(`View my bookings: ${input.dashboardUrl}`);
+
+  return {
+    subject: "Your KIAN Privé appointment is confirmed",
+    html,
+    text: textLines.join("\n"),
+  };
+}
+
 export function buildAppointmentAftercareEmail(input: {
   fullName?: string | null;
   serviceTitles: string[];
@@ -526,32 +638,6 @@ export function buildAppointmentAftercareEmail(input: {
 }) {
   const greeting = input.fullName?.trim() ? `Dear ${input.fullName.trim()},` : "Dear guest,";
   const services = input.serviceTitles.filter(Boolean).join(", ") || "your recent visit";
-  const aftercare = [
-    {
-      label: "AFTERCARE · IMMEDIATE",
-      text: "A profound sense of lightness. Increased elimination, gentle warmth, deep relaxation.",
-    },
-    {
-      label: "AFTERCARE · SHORT-TERM",
-      text: "Visible reduction in puffiness, swelling and water retention. Skin appears toned and radiant.",
-    },
-    {
-      label: "AFTERCARE · CUMULATIVE",
-      text: "Measurable contour reduction, firmer skin, lasting improvements in detox and recovery.",
-    },
-  ];
-
-  const blocksHtml = aftercare
-    .map(
-      (item) => `
-      <tr>
-        <td style="padding:0 0 22px;">
-          <p style="margin:0 0 8px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:${BRAND.gold};">${escapeHtml(item.label)}</p>
-          <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:18px;line-height:1.45;color:${BRAND.ink};">${escapeHtml(item.text)}</p>
-        </td>
-      </tr>`,
-    )
-    .join("");
 
   const html = emailLayout({
     preheader: "Your visit is complete — here is your aftercare guidance.",
@@ -559,7 +645,7 @@ export function buildAppointmentAftercareEmail(input: {
     bodyHtml: `
       <p style="margin:0 0 14px;">${escapeHtml(greeting)}</p>
       <p style="margin:0 0 18px;">Thank you for trusting KIAN Privé with <strong>${escapeHtml(services)}</strong>. Below is your aftercare guidance as your body continues to respond.</p>
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 0;">${blocksHtml}</table>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 0;">${aftercareBlocksHtml()}</table>
     `,
     buttons: [{ href: input.dashboardUrl, label: "View in my services" }],
     footerNote: "Questions about recovery? Reply to this email or WhatsApp our concierge team.",
@@ -570,7 +656,7 @@ export function buildAppointmentAftercareEmail(input: {
     "",
     `Thank you for trusting KIAN Privé with ${services}.`,
     "",
-    ...aftercare.flatMap((item) => [item.label, item.text, ""]),
+    ...APPOINTMENT_AFTERCARE.flatMap((item) => [item.label.toUpperCase(), item.text, ""]),
     `View in my services: ${input.dashboardUrl}`,
   ].join("\n");
 

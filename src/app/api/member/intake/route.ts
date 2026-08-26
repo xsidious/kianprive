@@ -57,8 +57,9 @@ export async function GET() {
           items: {
             select: {
               quantity: true,
+              unitPrice: true,
               titleSnapshot: true,
-              product: { select: { title: true } },
+              product: { select: { title: true, price: true } },
             },
           },
           order: {
@@ -66,11 +67,20 @@ export async function GET() {
               id: true,
               orderNumber: true,
               total: true,
+              subtotal: true,
+              shippingTotal: true,
               status: true,
               paymentStatus: true,
               fulfillmentStatus: true,
               authorizeNetTransId: true,
               updatedAt: true,
+              items: {
+                select: {
+                  title: true,
+                  quantity: true,
+                  lineTotal: true,
+                },
+              },
             },
           },
           providerPartner: { select: { displayName: true } },
@@ -130,10 +140,18 @@ export async function GET() {
               status: proposal.status,
               providerName: proposal.providerPartner.displayName,
               notes: proposal.notes,
-              items: proposal.items.map((item) => ({
-                title: item.titleSnapshot || item.product.title,
-                quantity: item.quantity,
-              })),
+              items: proposal.items.map((item) => {
+                const unit =
+                  item.unitPrice != null
+                    ? Number(item.unitPrice)
+                    : Number(item.product.price);
+                return {
+                  title: item.titleSnapshot || item.product.title,
+                  quantity: item.quantity,
+                  unitPrice: unit,
+                  lineTotal: unit * item.quantity,
+                };
+              }),
               billing:
                 proposal.subscription && proposal.subscription.interval !== "ONE_TIME"
                   ? {
@@ -151,7 +169,9 @@ export async function GET() {
                     ? {
                         status: "PENDING",
                         label: intervalLabel(proposal.billingInterval, proposal.intervalDays ?? 0),
-                        amount: proposal.order ? Number(proposal.order.total) : 0,
+                        amount: proposal.order
+                          ? Number(proposal.order.subtotal) || Number(proposal.order.total)
+                          : 0,
                         nextChargeAt: null,
                         nextChargeLabel: null,
                         cardLast4: null,
@@ -166,11 +186,14 @@ export async function GET() {
                     progress: patientOrderProgress(proposal.order),
                     transId: proposal.order.authorizeNetTransId,
                     paidAt: proposal.order.updatedAt.toISOString(),
-                    // Total only while unpaid so Accept & Pay can charge; hidden after paid
-                    total:
-                      proposal.order.paymentStatus === "UNPAID"
-                        ? Number(proposal.order.total)
-                        : Number(proposal.order.total),
+                    subtotal: Number(proposal.order.subtotal),
+                    shippingTotal: Number(proposal.order.shippingTotal ?? 0),
+                    items: proposal.order.items.map((item) => ({
+                      title: item.title,
+                      quantity: item.quantity,
+                      lineTotal: Number(item.lineTotal),
+                    })),
+                    total: Number(proposal.order.total),
                   }
                 : null,
             }

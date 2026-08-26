@@ -5,6 +5,8 @@ import { requireAdminAccess } from "@/lib/admin-guard";
 import { writeAuditLog } from "@/lib/ops/audit";
 import { createServiceCommissionForBooking, markServiceCommissionEligible } from "@/lib/commissions";
 import { notifyBookingCompleted } from "@/lib/booking-aftercare-notify";
+import { bookingIncludesLabWork } from "@/lib/bookings/lab-services";
+import { sendLabPrescriptionEmails } from "@/lib/bookings/lab-prescription-notify";
 
 type Params = {
   params: Promise<{ id: string }>;
@@ -15,6 +17,55 @@ export async function PATCH(req: Request, { params }: Params) {
   if (!guard.ok) return guard.response;
   const { id } = await params;
   const body = await req.json();
+
+  if (body.action === "sendLabPrescription") {
+    const booking = await prisma.bookingRequest.findUnique({ where: { id } });
+    if (!booking) return NextResponse.json({ error: "Booking not found." }, { status: 404 });
+    if (!bookingIncludesLabWork(booking.serviceIds)) {
+      return NextResponse.json({ error: "This booking is not a lab / blood work order." }, { status: 400 });
+    }
+    if (!booking.medicalReviewPaidAt) {
+      return NextResponse.json(
+        { error: "Medical review fee has not been paid for this booking." },
+        { status: 402 },
+      );
+    }
+
+    const result = await sendLabPrescriptionEmails({
+      id: booking.id,
+      fullName: booking.fullName,
+      email: booking.email,
+      phone: booking.phone,
+      patientDateOfBirth: booking.patientDateOfBirth,
+      preferredLocation: booking.preferredLocation,
+      scheduledStart: booking.scheduledStart,
+      timezone: booking.timezone,
+      serviceIds: booking.serviceIds,
+      serviceTitles: booking.serviceTitles,
+      notes: booking.notes,
+    });
+
+    if (!result.sent) {
+      return NextResponse.json(
+        { error: "LAB_PRESCRIPTION_EMAIL is not configured in environment variables." },
+        { status: 400 },
+      );
+    }
+
+    const updated = await prisma.bookingRequest.update({
+      where: { id },
+      data: { labPrescriptionSentAt: new Date() },
+    });
+
+    await writeAuditLog({
+      userId: guard.userId,
+      action: "booking.lab_prescription.send",
+      entityType: "BookingRequest",
+      entityId: id,
+    });
+
+    return NextResponse.json({ booking: updated, ok: true });
+  }
 
   const previous = await prisma.bookingRequest.findUnique({
     where: { id },

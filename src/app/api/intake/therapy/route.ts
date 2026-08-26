@@ -28,6 +28,7 @@ const bodySchema = z.object({
     .optional()
     .default("ONE_TIME"),
   intervalDays: z.number().int().min(1).max(365).optional().nullable(),
+  shippingTotal: z.number().min(0).optional().default(0),
   items: z
     .array(
       z.object({
@@ -134,6 +135,7 @@ export async function POST(req: Request) {
       notes: parsed.data.notes,
       items: parsed.data.items,
       send: parsed.data.send,
+      shippingTotal: parsed.data.shippingTotal,
       persistCatalogPrices: false,
       billingInterval: parsed.data.billingInterval as TherapyBillingInterval,
       intervalDays: parsed.data.intervalDays,

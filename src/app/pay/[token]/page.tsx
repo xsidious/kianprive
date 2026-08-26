@@ -25,6 +25,8 @@ export default async function PayInvoicePage({ params }: Props) {
     select: {
       orderNumber: true,
       notes: true,
+      subtotal: true,
+      shippingTotal: true,
       total: true,
       paymentStatus: true,
       paymentTokenExpiresAt: true,
@@ -62,6 +64,8 @@ export default async function PayInvoicePage({ params }: Props) {
       token={token}
       orderNumber={order.orderNumber}
       total={Number(order.total)}
+      subtotal={Number(order.subtotal)}
+      shippingTotal={Number(order.shippingTotal)}
       notes={order.notes}
       patientName={order.intakeSubmission?.fullName}
       items={order.items.map((item) => ({

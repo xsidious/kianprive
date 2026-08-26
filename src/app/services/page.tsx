@@ -48,7 +48,6 @@ import { buildSeoMetadata } from "@/lib/seo/metadata";
 import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
 import { getServiceBySlug } from "@/lib/services/catalog";
 import { icoonePrimaryImage } from "@/lib/media/icoone";
-import { APPOINTMENT_AFTERCARE } from "@/lib/booking-aftercare";
 
 export async function generateMetadata(): Promise<Metadata> {
   const cms = await getCmsPageContent("services");
@@ -62,11 +61,6 @@ export async function generateMetadata(): Promise<Metadata> {
     noIndex: Boolean(cms.noIndex),
   });
 }
-
-const aftercareColumns = APPOINTMENT_AFTERCARE.map((item) => ({
-  label: item.label.toUpperCase(),
-  text: item.text,
-}));
 
 const essentialProtocol = [
   "2 Icoone® Laser sessions",
@@ -232,17 +226,6 @@ export default async function ServicesPage() {
         />
       </EditorialSection>
 
-      <section className="bg-[#1a1612] px-4 py-14 sm:px-6 sm:py-16">
-        <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-3 md:gap-8">
-          {aftercareColumns.map((column) => (
-            <article key={column.label}>
-              <p className="text-[11px] tracking-[0.22em] text-[#c9a86a]">{column.label}</p>
-              <p className="mt-4 font-serif text-xl leading-snug text-[#f7f1e8] sm:text-[1.35rem]">{column.text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
       <EditorialSection id="recovery">
         <SectionHeader
           eyebrow="PAIN RELIEF & SURGICAL RECOVERY"
@@ -400,7 +383,7 @@ export default async function ServicesPage() {
             items={providerVisitMenu.telemedicine}
             bookHref="/book-online?service=telemedicine"
           />
-          <PricedMenuTable title="Asynchronous" items={providerVisitMenu.async} bookHref="/book-online?service=telemedicine" />
+          <PricedMenuTable title="Physician Review" items={providerVisitMenu.async} bookHref="/book-online?service=telemedicine" />
           <PricedMenuTable title="Nurse visits" items={providerVisitMenu.nurse} bookHref="/book-online?service=comprehensive-bloodwork" />
           <PricedMenuTable
             title="Peptide optimization"

@@ -39,8 +39,12 @@ export const metadata: Metadata = {
     image: "/images/og-default.jpg",
   }),
   icons: {
-    icon: "/images/kian-prive-logo.png",
-    apple: "/images/kian-prive-logo.png",
+    icon: [
+      { url: "/images/kian-prive-icon.png", sizes: "256x256", type: "image/png" },
+      { url: "/images/favicon-32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: "/images/apple-touch-icon.png",
+    shortcut: "/favicon.png",
   },
   applicationName: "KIAN Privé",
   category: "health",

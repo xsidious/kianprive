@@ -56,6 +56,11 @@ model BookingRequest {
   timezone          String?       @default("America/New_York")
   notes             String?
   partnerNotes      String?
+  patientDateOfBirth String?
+  labPrescriptionSentAt DateTime?
+  medicalReviewPaidAt DateTime?
+  medicalReviewTransId String?
+  medicalReviewAmount Decimal? @db.Decimal(10, 2)
   serviceIds        String[]
   serviceTitles     String[]
   guestTotal        Decimal       @default(0) @db.Decimal(10, 2)

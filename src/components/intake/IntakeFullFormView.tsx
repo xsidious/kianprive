@@ -1,5 +1,7 @@
 "use client";
 
+import { CELEXO_SCREENING_QUESTIONS } from "@/lib/intake/celexo-options";
+
 type Section = {
   title: string;
   rows: Array<{ label: string; value: string }>;
@@ -53,10 +55,127 @@ function rowsFromPairs(
   }));
 }
 
+function isCelexoPayload(payload: Record<string, unknown> | null | undefined) {
+  return Boolean(payload && payload.source === "celexo-exosome");
+}
+
 function isPeptidesPayload(payload: Record<string, unknown> | null | undefined) {
   if (!payload) return false;
-  if (payload.source === "wellness-hub") return false;
+  if (payload.source === "wellness-hub" || payload.source === "celexo-exosome") return false;
   return Boolean(payload.patient || payload.programs || payload.medicalHistory || payload.goals);
+}
+
+function buildCelexoSections(payload: Record<string, unknown>): Section[] {
+  const screening = (payload.allergies as { screening?: Record<string, { answer?: string; details?: string }> } | undefined)
+    ?.screening;
+  const screeningRows = CELEXO_SCREENING_QUESTIONS.map((q) => {
+    const row = screening?.[q.key];
+    return {
+      label: q.label,
+      value: displayValue(
+        row?.details?.trim() ? `${row.answer ?? "—"} (${row.details})` : (row?.answer ?? "—"),
+      ),
+    };
+  });
+
+  return [
+    {
+      title: "01 Patient information",
+      rows: rowsFromPairs(payload, [
+        ["Full name", "patient.fullName"],
+        ["Date of birth", "patient.dateOfBirth"],
+        ["Gender", "patient.gender"],
+        ["Preferred pronouns", "patient.preferredPronouns"],
+        ["Phone", "patient.phone"],
+        ["Email", "patient.email"],
+        ["Address", "patient.address"],
+        ["City / State / ZIP", "patient.cityStateZip"],
+        ["Referring provider", "patient.referringProvider"],
+        ["Preferred visit date", "patient.visitDate"],
+      ]),
+    },
+    {
+      title: "02 Protocol & treatment",
+      rows: rowsFromPairs(payload, [
+        ["Protocol", "selection.protocol"],
+        ["Delivery method", "selection.deliveryMethod"],
+        ["Treatment areas", "selection.treatmentAreas"],
+        ["Other treatment area", "selection.otherTreatmentArea"],
+        ["Primary goals", "selection.primaryGoals"],
+        ["Other goal", "selection.otherGoal"],
+      ]),
+    },
+    {
+      title: "03 Skin profile",
+      rows: rowsFromPairs(payload, [
+        ["Skin type", "skin.skinType"],
+        ["Fitzpatrick", "skin.fitzpatrick"],
+        ["Primary concern", "skin.primaryConcern"],
+        ["Current regimen", "skin.currentRegimen"],
+        ["Active conditions", "skin.activeConditions"],
+        ["Recent treatments", "skin.recentTreatments"],
+        ["Recent treatment details", "skin.recentTreatmentDetails"],
+      ]),
+    },
+    {
+      title: "04 Medical history",
+      rows: rowsFromPairs(payload, [
+        ["Conditions", "medical.conditions"],
+        ["Other conditions", "medical.otherConditions"],
+        ["Medications", "medical.medications"],
+      ]),
+    },
+    {
+      title: "05 Allergies & screening",
+      rows: [
+        ...rowsFromPairs(payload, [
+          ["Known allergies", "allergies.items"],
+          ["Specify allergens", "allergies.specify"],
+        ]),
+        ...screeningRows,
+      ],
+    },
+    {
+      title: "06 Lifestyle",
+      rows: rowsFromPairs(payload, [
+        ["Sun exposure", "lifestyle.sunExposure"],
+        ["SPF use", "lifestyle.spfUse"],
+        ["Diet", "lifestyle.diet"],
+        ["Water intake", "lifestyle.waterIntake"],
+        ["Stress level", "lifestyle.stressLevel"],
+        ["Sleep quality", "lifestyle.sleepQuality"],
+        ["Exercise", "lifestyle.exercise"],
+        ["Smoking / vaping", "lifestyle.smoking"],
+        ["Alcohol", "lifestyle.alcohol"],
+        ["Supplements / actives", "lifestyle.supplementsActives"],
+      ]),
+    },
+    {
+      title: "07 Consent",
+      rows: rowsFromPairs(payload, [
+        ["Acknowledgments", "consent.acknowledgments"],
+        ["Printed name", "consent.printedName"],
+        ["Signature date", "consent.signatureDate"],
+        ["Guardian name", "consent.guardianName"],
+        ["Guardian relationship", "consent.guardianRelationship"],
+      ]),
+    },
+  ].map((section) =>
+    section.title === "07 Consent"
+      ? {
+          ...section,
+          rows: [
+            ...section.rows,
+            {
+              label: "Signature",
+              value: String(pick(payload, "consent.signatureDataUrl") || "").startsWith("data:")
+                ? "On file"
+                : "—",
+            },
+          ],
+        }
+      : section,
+  );
 }
 
 function buildWellnessSections(
@@ -274,33 +393,38 @@ type Props = {
 
 export function IntakeFullFormView({ submission, payload, className }: Props) {
   const record = submission as Record<string, unknown>;
-  const sections = isPeptidesPayload(payload)
-    ? buildPeptidesSections(payload!)
-    : payload || record
-      ? [
-          ...buildWellnessSections(record, payload ?? null),
-          // If wellness sections are all empty but payload has nested keys, also show fallback
-        ]
-      : [];
+  const sections = isCelexoPayload(payload)
+    ? buildCelexoSections(payload!)
+    : isPeptidesPayload(payload)
+      ? buildPeptidesSections(payload!)
+      : payload || record
+        ? [...buildWellnessSections(record, payload ?? null)]
+        : [];
 
   const wellnessEmpty =
+    !isCelexoPayload(payload) &&
     !isPeptidesPayload(payload) &&
     sections.every((section) => section.rows.every((row) => row.value === "—"));
 
   const finalSections =
-    isPeptidesPayload(payload)
+    isCelexoPayload(payload) || isPeptidesPayload(payload)
       ? sections
       : wellnessEmpty
         ? buildFallbackSections(payload ?? null)
         : sections;
+
+  const packetLabel = isCelexoPayload(payload)
+    ? " (Celexo / Korean Exosome intake)."
+    : isPeptidesPayload(payload)
+      ? " (site peptides / GLP intake)."
+      : " (Wellness Hub / flat intake).";
 
   return (
     <div className={className ?? "space-y-4"}>
       <div className="rounded-2xl border border-[#efe4d4] bg-[#fffaf3] p-4">
         <h3 className="font-serif text-lg text-[#1f1a15]">Full intake form</h3>
         <p className="mt-1 text-sm text-[#6f6251]">
-          Complete submission packet for clinical review
-          {isPeptidesPayload(payload) ? " (site peptides / GLP intake)." : " (Wellness Hub / flat intake)."}
+          Complete submission packet for clinical review{packetLabel}
         </p>
       </div>
 

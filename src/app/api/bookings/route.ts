@@ -13,6 +13,10 @@ import { computeSlotEnd, isSlotAvailable, parseSlotId } from "@/lib/scheduling/s
 import { sendTransactionalEmail } from "@/lib/email";
 import { resolvePartnerIdForServices } from "@/lib/partners";
 import { createServiceCommissionForBooking } from "@/lib/commissions";
+import { bookingIncludesLabWork } from "@/lib/bookings/lab-services";
+import { sendLabPrescriptionEmails } from "@/lib/bookings/lab-prescription-notify";
+import { chargeAuthorizeNetCard } from "@/lib/authorize-net";
+import { MEDICAL_REVIEW_FEE_LABEL, MEDICAL_REVIEW_FEE_USD } from "@/lib/intake/review-fee";
 
 const createBookingSchema = z.object({
   fullName: z.string().min(2),
@@ -25,6 +29,21 @@ const createBookingSchema = z.object({
   timezone: z.string().optional(),
   memberPricingActive: z.boolean().optional(),
   partnerCode: z.string().optional(),
+  patientDateOfBirth: z.string().max(20).optional(),
+  opaqueData: z
+    .object({
+      dataDescriptor: z.string().min(1),
+      dataValue: z.string().min(1),
+    })
+    .optional(),
+  billTo: z
+    .object({
+      firstName: z.string().optional(),
+      lastName: z.string().optional(),
+      zip: z.string().optional(),
+    })
+    .optional(),
+  testCardNumber: z.string().optional(),
 });
 
 const PARTNER_BOOKING_IDS = new Set(["beauty-hair-nails", "mindtap"]);
@@ -56,6 +75,39 @@ export async function POST(req: Request) {
   }
 
   const timezone = parsed.data.timezone ?? DEFAULT_TIMEZONE;
+  const includesLabWork = bookingIncludesLabWork(parsed.data.serviceIds);
+
+  if (includesLabWork) {
+    if (!parsed.data.patientDateOfBirth?.trim()) {
+      return NextResponse.json({ error: "Date of birth is required for lab orders." }, { status: 400 });
+    }
+    if (!parsed.data.opaqueData) {
+      return NextResponse.json(
+        {
+          error: `Pay the $${MEDICAL_REVIEW_FEE_USD} medical review fee before your lab prescription can be submitted.`,
+        },
+        { status: 402 },
+      );
+    }
+  }
+
+  let medicalReviewCharge: Awaited<ReturnType<typeof chargeAuthorizeNetCard>> | null = null;
+  if (includesLabWork && parsed.data.opaqueData) {
+    const invoiceNumber = `KP-LAB-REVIEW-${Date.now()}`;
+    try {
+      medicalReviewCharge = await chargeAuthorizeNetCard({
+        amount: MEDICAL_REVIEW_FEE_USD,
+        orderNumber: invoiceNumber,
+        opaqueData: parsed.data.opaqueData,
+        email: parsed.data.email,
+        billTo: parsed.data.billTo,
+        testCardNumber: parsed.data.testCardNumber,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Payment failed.";
+      return NextResponse.json({ error: message }, { status: 402 });
+    }
+  }
 
   const useAcuity = isAcuitySchedulingEnabled();
 
@@ -181,6 +233,10 @@ export async function POST(req: Request) {
         ]
           .filter(Boolean)
           .join("\n\n") || null,
+        patientDateOfBirth: parsed.data.patientDateOfBirth?.trim() || null,
+        medicalReviewPaidAt: medicalReviewCharge ? new Date() : null,
+        medicalReviewTransId: medicalReviewCharge?.transId ?? null,
+        medicalReviewAmount: medicalReviewCharge ? MEDICAL_REVIEW_FEE_USD : null,
         serviceIds: parsed.data.serviceIds,
         serviceTitles,
         guestTotal,
@@ -233,13 +289,67 @@ export async function POST(req: Request) {
               `Timezone: ${timezone}`,
               `Acuity appointment: ${acuityAppointmentId ?? "Not created"}`,
               `Booking id: ${booking?.id ?? "Not saved"}`,
-            ].join("\n"),
+              includesLabWork && medicalReviewCharge
+                ? `Medical review fee: $${MEDICAL_REVIEW_FEE_USD.toFixed(2)} (AuthNet ${medicalReviewCharge.transId})`
+                : null,
+            ]
+              .filter(Boolean)
+              .join("\n"),
           }),
         ),
       );
     }
   } catch (emailError) {
     console.error("[bookings] Could not send booking report email:", emailError);
+  }
+
+  if (booking && includesLabWork && medicalReviewCharge) {
+    try {
+      const labResult = await sendLabPrescriptionEmails({
+        id: booking.id,
+        fullName: parsed.data.fullName,
+        email: parsed.data.email,
+        phone: parsed.data.phone,
+        patientDateOfBirth: parsed.data.patientDateOfBirth,
+        preferredLocation: parsed.data.preferredLocation,
+        scheduledStart: booking.scheduledStart,
+        timezone,
+        serviceIds: parsed.data.serviceIds,
+        serviceTitles,
+        notes: [
+          parsed.data.notes,
+          acuityAppointmentId ? `Acuity appointment #${acuityAppointmentId}` : null,
+        ]
+          .filter(Boolean)
+          .join("\n\n") || null,
+      });
+      if (labResult.sent) {
+        await prisma.bookingRequest.update({
+          where: { id: booking.id },
+          data: { labPrescriptionSentAt: new Date() },
+        });
+      }
+    } catch (labError) {
+      console.error("[bookings] Lab prescription email failed:", labError);
+    }
+  }
+
+  if (booking) {
+    try {
+      const { notifyBookingConfirmed } = await import("@/lib/booking-aftercare-notify");
+      await notifyBookingConfirmed({
+        email: parsed.data.email,
+        fullName: parsed.data.fullName,
+        serviceIds: parsed.data.serviceIds,
+        serviceTitles,
+        scheduledStart: booking.scheduledStart,
+        preferredDate: scheduledStart,
+        timezone,
+        preferredLocation: parsed.data.preferredLocation,
+      });
+    } catch (confirmError) {
+      console.error("[bookings] Patient confirmation email failed:", confirmError);
+    }
   }
 
   return NextResponse.json({

@@ -63,6 +63,7 @@ const statuses = [
 
 function sourceLabel(submission: IntakeSubmission) {
   if (submission.payload?.source === "wellness-hub") return "Wellness Hub";
+  if (submission.payload?.source === "celexo-exosome") return "Celexo / Exosome";
   return "Site intake";
 }
 
