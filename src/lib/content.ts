@@ -20,6 +20,23 @@ export type BlogPost = {
 
 export const blogPostsData: BlogPost[] = [
   {
+    slug: "electrolyte-water-recipes",
+    title: "Nature's Hydration — Electrolyte Water Recipes",
+    excerpt:
+      "Six fruit-infused electrolyte waters your body was designed to absorb — no packets, no additives, no compromise.",
+    publishedAt: "2026-08-26",
+    category: "Nutrition",
+    readTime: "10 min read",
+    image: "/images/nutrition.avif",
+    content: [
+      "Your body needs sodium, potassium, magnesium, and calcium to stay hydrated and function. Fruit gives you all four — plus antioxidants, enzymes, and fiber that no electrolyte packet can replicate.",
+      "This guide includes six whole-food infusion recipes, an electrolyte mineral primer, and practical tips for maximum mineral absorption.",
+    ],
+    seoTitle: "Nature's Hydration: 6 Electrolyte Water Recipes",
+    seoDescription:
+      "Six natural fruit-infused electrolyte water recipes with whole-food minerals — lemon cucumber mint, coconut orange, blueberry basil, and more.",
+  },
+  {
     slug: "what-is-the-lymphatic-system-and-why-it-is-important",
     title: "What Is the Lymphatic System and Why Is It So Important?",
     excerpt:

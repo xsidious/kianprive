@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { getBlogPostBySlug, getBlogPosts } from "@/lib/content";
+import { getCustomBlogArticleComponent } from "@/lib/blog/custom-articles";
 import { buildSeoMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/seo/json-ld";
@@ -48,6 +49,38 @@ export default async function BlogPostPage({
   const post = await getBlogPostBySlug(slug);
 
   if (!post) notFound();
+
+  const CustomArticle = getCustomBlogArticleComponent(slug);
+
+  if (CustomArticle) {
+    return (
+      <div>
+        <JsonLd
+          data={[
+            articleJsonLd({
+              title: post.seoTitle || post.title,
+              description: post.seoDescription || post.excerpt,
+              slug: post.slug,
+              image: post.seoImage || post.image,
+              datePublished: post.publishedAt,
+              dateModified: post.updatedAt ?? post.publishedAt,
+            }),
+            breadcrumbJsonLd([
+              { name: "Home", path: "/" },
+              { name: "Blog", path: "/blog" },
+              { name: post.title, path: `/blog/${post.slug}` },
+            ]),
+          ]}
+        />
+        <SectionWrapper className="pt-18 pb-0">
+          <Link href="/blog" className="text-sm text-[#7a5c32] hover:underline">
+            ← Back to Blog
+          </Link>
+        </SectionWrapper>
+        <CustomArticle />
+      </div>
+    );
+  }
 
   return (
     <div>

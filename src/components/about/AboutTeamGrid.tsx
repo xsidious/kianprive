@@ -88,7 +88,11 @@ export function AboutTeamGrid() {
               </div>
             ) : null}
             {selected.bio ? (
-              <p className="mt-5 text-sm leading-relaxed text-[#5f5344] sm:text-base">{selected.bio}</p>
+              <div className="mt-5 space-y-4 text-sm leading-relaxed text-[#5f5344] sm:text-base">
+                {(Array.isArray(selected.bio) ? selected.bio : [selected.bio]).map((paragraph) => (
+                  <p key={paragraph.slice(0, 48)}>{paragraph}</p>
+                ))}
+              </div>
             ) : null}
           </div>
         </div>

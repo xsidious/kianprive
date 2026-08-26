@@ -10,13 +10,31 @@ function slugify(input) {
     .replace(/^-+|-+$/g, "");
 }
 
-function estimateReadTime(content) {
+function estimateReadTime(content, fallback) {
+  if (fallback) return fallback;
   const words = content.join(" ").trim().split(/\s+/).filter(Boolean).length;
   const minutes = Math.max(4, Math.ceil(words / 180));
   return `${minutes} min read`;
 }
 
 const posts = [
+  {
+    slug: "electrolyte-water-recipes",
+    title: "Nature's Hydration — Electrolyte Water Recipes",
+    excerpt:
+      "Six fruit-infused electrolyte waters your body was designed to absorb — no packets, no additives, no compromise.",
+    publishedAt: "2026-08-26",
+    category: "Nutrition",
+    readTime: "10 min read",
+    image: "/images/nutrition.avif",
+    seoTitle: "Nature's Hydration: 6 Electrolyte Water Recipes",
+    seoDescription:
+      "Six natural fruit-infused electrolyte water recipes with whole-food minerals — lemon cucumber mint, coconut orange, blueberry basil, and more.",
+    content: [
+      "Your body needs sodium, potassium, magnesium, and calcium to stay hydrated and function. Fruit gives you all four — plus antioxidants, enzymes, and fiber that no electrolyte packet can replicate.",
+      "This guide includes six whole-food infusion recipes, an electrolyte mineral primer, and practical tips for maximum mineral absorption.",
+    ],
+  },
   {
     slug: "what-is-the-lymphatic-system-and-why-it-is-important",
     title: "What Is the Lymphatic System and Why Is It So Important?",
@@ -185,7 +203,7 @@ async function main() {
       create: { slug: categorySlug, name: post.category },
     });
 
-    const readTime = estimateReadTime(post.content);
+    const readTime = estimateReadTime(post.content, post.readTime);
 
     await prisma.blogPost.upsert({
       where: { slug: post.slug },
@@ -197,6 +215,8 @@ async function main() {
         categoryId: category.id,
         readTime,
         featuredImage: post.image,
+        seoTitle: post.seoTitle ?? null,
+        seoDescription: post.seoDescription ?? null,
         publishedAt: new Date(post.publishedAt),
       },
       create: {
@@ -208,6 +228,8 @@ async function main() {
         categoryId: category.id,
         readTime,
         featuredImage: post.image,
+        seoTitle: post.seoTitle ?? null,
+        seoDescription: post.seoDescription ?? null,
         publishedAt: new Date(post.publishedAt),
       },
     });

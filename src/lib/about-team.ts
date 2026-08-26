@@ -3,7 +3,7 @@ export type AboutTeamMember = {
   title: string;
   subtitle: string;
   image?: string;
-  bio?: string;
+  bio?: string | string[];
 };
 
 export const aboutTeam: AboutTeamMember[] = [
@@ -39,6 +39,17 @@ export const aboutTeam: AboutTeamMember[] = [
     subtitle: "Family & Sports Medicine",
     image: "/images/JohnMaarouf.jpeg",
     bio: "Dr. Maarouf is a dual board certified physician in Family and Sports Medicine who specializes in non surgical orthopedics and orthobiologics to remedy common injuries for every level of athlete like knee pain, meniscus injuries, rotator cuff tears, tennis/golfers elbow, plantar fasciitis and more. With a calm presence, sharp diagnostics, and an eye for detail, Dr. Maarouf guides personalized care that gets results.",
+  },
+  {
+    name: "Dr. Lynn Lafferty",
+    title: "Integrative Medicine & Clinical Nutrition",
+    subtitle: "Pharm.D., N.D., MBA, DACBN, MH",
+    image: "/images/LynnLafferty.png",
+    bio: [
+      "Lynn Lafferty, Pharm.D., N.D., MBA, DACBN, MH is a Doctor of Pharmacy and licensed pharmacist, naturopathic doctor, Master Herbalist, Diplomate in Clinical Nutrition, Licensed Nutritionist, and chef who is committed to finding the safest and most effective means to promote health and wellness over disease and illness.",
+      "She is an Endowed Professor at Nova Southeastern University and Assistant Clinical Professor in the College of Pharmacy. She serves on the Board of the American Clinical Board of Nutrition and served five years on the Board of the Academy of Environmental Medicine. She uses mostly herbal remedies and diets to put the body back into balance.",
+      "She offers online courses in herbal medicine and kitchen medicine for the public at drlynnlafferty.com, and courses for medical and other healthcare professionals at integrativehealtheducation.com, where she is bringing back Clinical Pearls.",
+    ],
   },
   {
     name: "Dr. Karl Ryan, DDS",
