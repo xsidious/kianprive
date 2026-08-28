@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/components/providers/cart-provider";
+import { useCanViewServicePrices } from "@/hooks/use-can-view-service-prices";
+import { MEMBER_PRICING_LABEL } from "@/lib/member-pricing-access";
 import {
   editorialCtaPrimary,
   editorialCtaSecondary,
@@ -16,6 +18,7 @@ type Props = {
 
 export function ShopProductPurchase({ product }: Props) {
   const { addItem, openCart } = useCart();
+  const { canViewPrices } = useCanViewServicePrices();
   const options = product.options ?? [];
   const [selectedId, setSelectedId] = useState(options[0]?.id ?? product.id);
 
@@ -46,7 +49,9 @@ export function ShopProductPurchase({ product }: Props) {
                   }`}
                 >
                   <span className="block text-sm text-[#1f1a15]">{option.label}</span>
-                  <span className="mt-1 block text-lg text-[#1f1a15]">${option.price}</span>
+                  {canViewPrices ? (
+                    <span className="mt-1 block text-lg text-[#1f1a15]">${option.price}</span>
+                  ) : null}
                 </button>
               );
             })}
@@ -54,8 +59,10 @@ export function ShopProductPurchase({ product }: Props) {
         </div>
       ) : null}
 
-      {canPurchase ? (
+      {canPurchase && canViewPrices ? (
         <p className="text-3xl text-[#1f1a15]">${price.toFixed(2)}</p>
+      ) : canPurchase ? (
+        <p className="text-sm tracking-[0.08em] text-[#8f6f3e]">{MEMBER_PRICING_LABEL}</p>
       ) : (
         <p className="text-sm tracking-[0.08em] text-[#8f6f3e]">COMING SOON</p>
       )}
@@ -65,7 +72,7 @@ export function ShopProductPurchase({ product }: Props) {
           <a href={product.redirectUrl} target="_blank" rel="noreferrer" className={editorialCtaPrimary}>
             GO TO PRODUCT
           </a>
-        ) : canPurchase ? (
+        ) : canPurchase && canViewPrices ? (
           <button
             type="button"
             className={editorialCtaPrimary}
@@ -82,6 +89,10 @@ export function ShopProductPurchase({ product }: Props) {
           >
             ADD TO CART
           </button>
+        ) : canPurchase ? (
+          <Link href="/login?callbackUrl=/shop" className={editorialCtaPrimary}>
+            SIGN IN TO PURCHASE
+          </Link>
         ) : null}
         <Link href="/shop#products" className={editorialCtaSecondary}>
           BACK TO CATALOG

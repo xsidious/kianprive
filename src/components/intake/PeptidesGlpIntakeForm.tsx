@@ -39,8 +39,11 @@ import {
 } from "@/lib/intake/peptides-glp-schema";
 import { AuthorizeNetPayForm } from "@/components/commerce/AuthorizeNetPayForm";
 import { INTAKE_REVIEW_FEE_USD } from "@/lib/intake/review-fee";
+import { useCanViewServicePrices } from "@/hooks/use-can-view-service-prices";
+import { MEMBER_PRICING_LABEL } from "@/lib/member-pricing-access";
 
 export function PeptidesGlpIntakeForm() {
+  const { canViewPrices } = useCanViewServicePrices();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<PeptidesGlpIntakeFormData>(defaultPeptidesGlpIntake);
   const [error, setError] = useState("");
@@ -134,9 +137,8 @@ export function PeptidesGlpIntakeForm() {
         <p className="text-xs tracking-[0.2em] text-[#1b6568]">INTAKE RECEIVED</p>
         <h2 className="mt-3 text-3xl text-[#1f1a15]">Thank you</h2>
         <p className="mx-auto mt-4 max-w-2xl text-[#28585a]">
-          Your Comprehensive Therapeutics Intake has been securely submitted with the $
-          {INTAKE_REVIEW_FEE_USD} medical review fee. A KIAN Privé clinician will review your information and contact
-          you regarding approval and next steps.
+          Your Comprehensive Therapeutics Intake has been securely submitted with the medical review fee. A KIAN Privé
+          clinician will review your information and contact you regarding approval and next steps.
         </p>
         <p className="mt-4 text-sm text-[#1b6568]">
           Reference ID: <strong>{referenceId}</strong>
@@ -164,8 +166,10 @@ export function PeptidesGlpIntakeForm() {
         <h1 className="mt-2 text-3xl text-[#1f1a15] md:text-4xl">Comprehensive Therapeutics Intake</h1>
         <p className="mt-3 max-w-3xl text-sm text-[#6f6251]">
           Peptide Therapy • GLP-1 / GLP-2 / GLP-3 Receptor Agonist Therapy. This form is strictly confidential and
-          protected under HIPAA guidelines. A ${INTAKE_REVIEW_FEE_USD} physician review fee is required before your
-          intake is sent to the doctor.
+          protected under HIPAA guidelines.
+          {canViewPrices
+            ? ` A $${INTAKE_REVIEW_FEE_USD} physician review fee is required before your intake is sent to the doctor.`
+            : ` ${MEMBER_PRICING_LABEL}. Sign in after approval to view the physician review fee.`}
         </p>
         <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#f1e7d7]">
           <div className="h-full rounded-sm bg-[#b78d4b] transition-all" style={{ width: `${progress}%` }} />
@@ -450,18 +454,21 @@ export function PeptidesGlpIntakeForm() {
           <div className="rounded-sm border border-[#efe4d4] bg-[#fffaf3] p-4 sm:p-5">
             <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Physician review fee</p>
             <p className="mt-2 text-sm leading-relaxed text-[#4f4335]">
-              A ${INTAKE_REVIEW_FEE_USD} payment is required before this intake is submitted to the doctor. Your form
-              is not sent for clinical review until this fee is paid.
+              {canViewPrices
+                ? `A $${INTAKE_REVIEW_FEE_USD} payment is required before this intake is submitted to the doctor. Your form is not sent for clinical review until this fee is paid.`
+                : `${MEMBER_PRICING_LABEL}. Sign in after membership approval to view the review fee and submit this intake to the doctor.`}
             </p>
-            <div className="mt-4">
-              <AuthorizeNetPayForm
-                amountLabel={`$${INTAKE_REVIEW_FEE_USD.toFixed(2)}`}
-                submitLabel={`Pay $${INTAKE_REVIEW_FEE_USD} and submit to physician`}
-                testSubmitLabel={`Pay $${INTAKE_REVIEW_FEE_USD} (test) and submit`}
-                onCharge={submitWithPayment}
-                onSuccess={() => undefined}
-              />
-            </div>
+            {canViewPrices ? (
+              <div className="mt-4">
+                <AuthorizeNetPayForm
+                  amountLabel={`$${INTAKE_REVIEW_FEE_USD.toFixed(2)}`}
+                  submitLabel={`Pay $${INTAKE_REVIEW_FEE_USD} and submit to physician`}
+                  testSubmitLabel={`Pay $${INTAKE_REVIEW_FEE_USD} (test) and submit`}
+                  onCharge={submitWithPayment}
+                  onSuccess={() => undefined}
+                />
+              </div>
+            ) : null}
           </div>
         </div>
       ) : null}
@@ -480,7 +487,11 @@ export function PeptidesGlpIntakeForm() {
             Continue
           </button>
         ) : (
-          <p className="text-sm text-[#6f6251]">Pay the ${INTAKE_REVIEW_FEE_USD} review fee above to send this intake to the doctor.</p>
+          <p className="text-sm text-[#6f6251]">
+            {canViewPrices
+              ? `Pay the $${INTAKE_REVIEW_FEE_USD} review fee above to send this intake to the doctor.`
+              : "Sign in after membership approval to view pricing and submit this intake to the doctor."}
+          </p>
         )}
       </div>
     </div>

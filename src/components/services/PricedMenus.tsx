@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { PricedMenuItem, IvDripItem, LabPanelMenuItem } from "@/lib/services/pricing-menus";
 import { formatUsd } from "@/lib/services/pricing-menus";
+import { MEMBER_PRICING_LABEL } from "@/lib/member-pricing-access";
 
 const primaryCta =
   "inline-flex min-h-[44px] items-center justify-center rounded-sm bg-[#b78d4b] px-5 text-[11px] tracking-[0.16em] text-white transition hover:bg-[#a67d42]";
@@ -61,28 +62,34 @@ export function PricedMenuTable({
   items,
   footnote,
   bookHref,
+  canViewPrices = false,
 }: {
   title: string;
   items: PricedMenuItem[];
   footnote?: string;
   bookHref?: string;
+  canViewPrices?: boolean;
 }) {
   return (
     <div className="flex h-full flex-col rounded-sm border border-[#e4d9c8] bg-[#fffcf7] p-5 sm:p-6">
       <h3 className="font-serif text-2xl text-[#1f1a15] sm:text-[1.65rem]">{title}</h3>
-      <ul className="mt-5 flex-1 divide-y divide-[#e8dfd0] border-y border-[#e8dfd0]">
-        {items.map((item) => (
-          <li key={item.name} className="flex items-start justify-between gap-4 py-3.5">
-            <div className="min-w-0">
-              <p className="font-serif text-[15px] text-[#2b2218]">{item.name}</p>
-              {item.note ? <p className="mt-1 text-xs text-[#8a7a66]">{item.note}</p> : null}
-            </div>
-            <div className="shrink-0 text-right">
-              <p className="text-sm font-medium text-[#1f1a15]">{formatUsd(item.guest)}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {canViewPrices ? (
+        <ul className="mt-5 flex-1 divide-y divide-[#e8dfd0] border-y border-[#e8dfd0]">
+          {items.map((item) => (
+            <li key={item.name} className="flex items-start justify-between gap-4 py-3.5">
+              <div className="min-w-0">
+                <p className="font-serif text-[15px] text-[#2b2218]">{item.name}</p>
+                {item.note ? <p className="mt-1 text-xs text-[#8a7a66]">{item.note}</p> : null}
+              </div>
+              <div className="shrink-0 text-right">
+                <p className="text-sm font-medium text-[#1f1a15]">{formatUsd(item.guest)}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-5 flex-1 text-sm leading-relaxed text-[#8f6f3e]">{MEMBER_PRICING_LABEL}</p>
+      )}
       {footnote ? <p className="mt-3 text-xs leading-relaxed text-[#8a7a66]">{footnote}</p> : null}
       {bookHref ? (
         <Link href={bookHref} className={`${primaryCta} mt-5 w-full`}>
@@ -96,21 +103,27 @@ export function PricedMenuTable({
 export function IvPricingTable({
   title,
   items,
+  canViewPrices = false,
 }: {
   title: string;
   items: IvDripItem[];
+  canViewPrices?: boolean;
 }) {
   return (
     <div className="rounded-sm border border-[#e4d9c8] bg-[#fffcf7] p-5 sm:p-6">
       <h3 className="font-serif text-2xl text-[#1f1a15] sm:text-[1.65rem]">{title}</h3>
-      <ul className="mt-5 divide-y divide-[#e8dfd0] border-y border-[#e8dfd0]">
-        {items.map((item) => (
-          <li key={item.name} className="flex flex-col gap-2 py-3.5 sm:flex-row sm:items-center sm:justify-between">
-            <p className="font-serif text-[15px] text-[#2b2218]">{item.name}</p>
-            <p className="font-medium text-[#1f1a15]">{formatUsd(item.retail)}</p>
-          </li>
-        ))}
-      </ul>
+      {canViewPrices ? (
+        <ul className="mt-5 divide-y divide-[#e8dfd0] border-y border-[#e8dfd0]">
+          {items.map((item) => (
+            <li key={item.name} className="flex flex-col gap-2 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+              <p className="font-serif text-[15px] text-[#2b2218]">{item.name}</p>
+              <p className="font-medium text-[#1f1a15]">{formatUsd(item.retail)}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-5 text-sm leading-relaxed text-[#8f6f3e]">{MEMBER_PRICING_LABEL}</p>
+      )}
     </div>
   );
 }
@@ -118,9 +131,11 @@ export function IvPricingTable({
 export function LabPanelCards({
   panels,
   eyebrow,
+  canViewPrices = false,
 }: {
   panels: LabPanelMenuItem[];
   eyebrow: string;
+  canViewPrices?: boolean;
 }) {
   return (
     <div className="grid gap-5 md:grid-cols-2">
@@ -133,7 +148,11 @@ export function LabPanelCards({
           {panel.note ? <p className="mt-3 text-xs italic text-[#8a7a66]">{panel.note}</p> : null}
           <div className="mt-5 flex flex-col gap-4 border-t border-[#e8dfd0] pt-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-lg font-medium text-[#1f1a15]">{formatUsd(panel.guest)}</p>
+              {canViewPrices ? (
+                <p className="text-lg font-medium text-[#1f1a15]">{formatUsd(panel.guest)}</p>
+              ) : (
+                <p className="text-sm text-[#8f6f3e]">{MEMBER_PRICING_LABEL}</p>
+              )}
             </div>
             <div className="flex gap-2">
               <Link href={`/services/${panel.slug}`} className={secondaryCta}>
@@ -168,6 +187,7 @@ export function ServicePriceCtaCard({
   bookHref,
   bookLabel = "Book now",
   image,
+  canViewPrices = false,
 }: {
   eyebrow: string;
   title: string;
@@ -178,6 +198,7 @@ export function ServicePriceCtaCard({
   bookHref: string;
   bookLabel?: string;
   image?: string;
+  canViewPrices?: boolean;
 }) {
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-sm border border-[#e4d9c8] bg-[#fffcf7]">
@@ -196,12 +217,14 @@ export function ServicePriceCtaCard({
         <p className="text-[11px] tracking-[0.22em] text-[#b78d4b]">{eyebrow}</p>
         <h3 className="mt-3 font-serif text-2xl text-[#1f1a15] sm:text-[1.75rem]">{title}</h3>
         <p className="mt-3 flex-1 text-sm leading-relaxed text-[#6f6251]">{description}</p>
-        {guestPrice != null ? (
+        {canViewPrices && guestPrice != null ? (
           <p className="mt-4 text-lg text-[#1f1a15]">{formatUsd(guestPrice)}</p>
+        ) : !canViewPrices ? (
+          <p className="mt-4 text-sm text-[#8f6f3e]">{MEMBER_PRICING_LABEL}</p>
         ) : (
           <p className="mt-4 text-sm text-[#8f6f3e]">Physician consult required</p>
         )}
-        {items?.length ? (
+        {canViewPrices && items?.length ? (
           <ul className="mt-4 space-y-2 border-t border-[#e8dfd0] pt-4">
             {items.map((item) => (
               <li key={item} className="text-sm text-[#3b3024]">

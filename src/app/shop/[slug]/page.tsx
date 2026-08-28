@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { MemberPriceNotice } from "@/components/pricing/MemberPriceNotice";
 import { ShopProductPurchase } from "@/components/shop/ShopProductPurchase";
+import { auth } from "@/lib/auth";
+import { canViewServicePrices, MEMBER_PRICING_LABEL, redactPricesFromText } from "@/lib/member-pricing-access";
 import {
   catalogProducts,
   getCatalogDisplayPrice,
@@ -59,6 +62,9 @@ export default async function ShopProductPage({ params }: Props) {
   const { slug } = await params;
   if (slug === "exosomes") redirect("/shop/korean-skincare");
 
+  const session = await auth();
+  const canViewPrices = canViewServicePrices(session?.user);
+
   const retail = await getShopCatalogProduct(slug);
   if (!retail || retail.slug !== slug) {
     const clinical = await getClinicalShopProductBySlug(slug);
@@ -71,10 +77,12 @@ export default async function ShopProductPage({ params }: Props) {
 
   const fromPrice = getCatalogDisplayPrice(retail);
   const comingSoon = isCatalogProductComingSoon(retail);
-  const paragraphs = (retail.description ?? retail.summary ?? "")
+  const rawDescription = retail.description ?? retail.summary ?? "";
+  const paragraphs = rawDescription
     .split(/\n\n+/)
     .map((part) => part.trim())
-    .filter(Boolean);
+    .filter(Boolean)
+    .map((part) => (canViewPrices ? part : redactPricesFromText(part)));
 
   return (
     <EditorialSection className="pt-24">
@@ -111,11 +119,14 @@ export default async function ShopProductPage({ params }: Props) {
             <p className="mt-4 text-[#5f5344]">Product details and options for {retail.name.toLowerCase()}.</p>
           )}
 
-          {retail.options?.length && fromPrice > 0 ? (
+          {retail.options?.length ? (
             <p className="mt-4 text-sm text-[#8f6f3e]">
-              Available in {retail.options.map((o) => o.label).join(", ")}. From ${fromPrice}.
+              Available in {retail.options.map((o) => o.label).join(", ")}.
+              {canViewPrices && fromPrice > 0 ? ` From $${fromPrice}.` : !canViewPrices ? ` ${MEMBER_PRICING_LABEL}.` : null}
             </p>
           ) : null}
+
+          {!canViewPrices ? <MemberPriceNotice compact className="mt-4" /> : null}
 
           {retail.redirectUrl ? (
             <div className="mt-8 flex flex-wrap gap-3">

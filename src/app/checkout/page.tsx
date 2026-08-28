@@ -7,11 +7,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { AuthorizeNetPayForm } from "@/components/commerce/AuthorizeNetPayForm";
 import { useCart } from "@/components/providers/cart-provider";
+import { useCanViewServicePrices } from "@/hooks/use-can-view-service-prices";
+import { MEMBER_PRICING_LABEL } from "@/lib/member-pricing-access";
+import { MemberPriceNotice } from "@/components/pricing/MemberPriceNotice";
 import { readPartnerReferralClient } from "@/lib/partner-referral";
 
 function CheckoutForm() {
   const router = useRouter();
   const { items, subtotal, shipping, total, clearCart } = useCart();
+  const { canViewPrices } = useCanViewServicePrices();
   const searchParams = useSearchParams();
   const canceled = searchParams.get("canceled");
   const [email, setEmail] = useState("");
@@ -106,6 +110,11 @@ function CheckoutForm() {
               Payment was canceled. Your cart is still saved.
             </p>
           ) : null}
+          {!canViewPrices ? (
+            <div className="mt-4">
+              <MemberPriceNotice />
+            </div>
+          ) : null}
         </div>
       </SectionWrapper>
 
@@ -169,7 +178,9 @@ function CheckoutForm() {
 
             <h2 className="mt-8 text-xl text-[#1f1a15]">Payment</h2>
 
-            {!pendingOrder ? (
+            {!canViewPrices ? (
+              <p className="mt-6 text-sm text-[#8f6f3e]">{MEMBER_PRICING_LABEL}</p>
+            ) : !pendingOrder ? (
               <>
                 <p className="mt-3 text-sm text-[#6f6251]">
                   Confirm your details, then enter your card. Charges are processed securely with Authorize.net.
@@ -250,24 +261,30 @@ function CheckoutForm() {
                     <p className="truncate text-sm text-[#2b2218]">{item.name}</p>
                     <p className="text-xs text-[#8f6f3e]">Qty {item.quantity}</p>
                   </div>
-                  <p className="text-sm text-[#3b3024]">${(item.price * item.quantity).toFixed(2)}</p>
+                  <p className="text-sm text-[#3b3024]">
+                    {canViewPrices ? `$${(item.price * item.quantity).toFixed(2)}` : "—"}
+                  </p>
                 </div>
               ))}
             </div>
-            <div className="mt-5 space-y-2 border-t border-[#b78d4b24] pt-4 text-sm text-[#5f5344]">
-              <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+            {canViewPrices ? (
+              <div className="mt-5 space-y-2 border-t border-[#b78d4b24] pt-4 text-sm text-[#5f5344]">
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>${subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Shipping</span>
+                  <span>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
+                </div>
+                <div className="flex justify-between text-base text-[#1f1a15]">
+                  <span>Total</span>
+                  <span>${(pendingOrder?.total ?? total).toFixed(2)}</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span>Shipping</span>
-                <span>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
-              </div>
-              <div className="flex justify-between text-base text-[#1f1a15]">
-                <span>Total</span>
-                <span>${(pendingOrder?.total ?? total).toFixed(2)}</span>
-              </div>
-            </div>
+            ) : (
+              <p className="mt-5 border-t border-[#b78d4b24] pt-4 text-sm text-[#8f6f3e]">{MEMBER_PRICING_LABEL}</p>
+            )}
           </aside>
         </div>
       </SectionWrapper>

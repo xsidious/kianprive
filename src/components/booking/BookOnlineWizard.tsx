@@ -20,6 +20,8 @@ import { bookingServiceOptions, getBookingOptionById } from "@/lib/services/book
 import { bookingIncludesLabWork } from "@/lib/bookings/lab-services";
 import { bookingIncludesAftercare } from "@/lib/bookings/aftercare-services";
 import { formatUsd } from "@/lib/services/pricing-menus";
+import { MEMBER_PRICING_LABEL } from "@/lib/member-pricing-access";
+import { useCanViewServicePrices } from "@/hooks/use-can-view-service-prices";
 import { MEDICAL_REVIEW_FEE_USD } from "@/lib/intake/review-fee";
 import { AuthorizeNetPayForm } from "@/components/commerce/AuthorizeNetPayForm";
 import { AppointmentAftercare } from "@/components/bookings/AppointmentAftercare";
@@ -144,6 +146,7 @@ export function BookOnlineWizard() {
   const preselectedService = searchParams.get("service");
   const { data: session, status: sessionStatus } = useSession();
   const isLoggedIn = Boolean(session?.user);
+  const { canViewPrices } = useCanViewServicePrices();
 
   const [step, setStep] = useState<WizardStep>("welcome");
   const [visitorType, setVisitorType] = useState<VisitorType>(null);
@@ -402,7 +405,11 @@ export function BookOnlineWizard() {
   }) {
     if (submitting || !selectedServices.length || !selectedSlotId) return;
     if (needsLabDemographics && !payment) {
-      setSubmitError(`Pay the ${formatUsd(MEDICAL_REVIEW_FEE_USD)} medical review fee to confirm your lab order.`);
+      setSubmitError(
+        canViewPrices
+          ? `Pay the ${formatUsd(MEDICAL_REVIEW_FEE_USD)} medical review fee to confirm your lab order.`
+          : "Pay the medical review fee to confirm your lab order.",
+      );
       return;
     }
     setSubmitError("");
@@ -675,9 +682,13 @@ export function BookOnlineWizard() {
                       </div>
                       <div className="bg-white p-4">
                         <p className="font-medium text-[#1f1a15]">{service.title}</p>
-                        <p className="mt-1 text-sm font-medium text-[#8f6f3e]">
-                          {formatUsd(service.guestPrice)}
-                        </p>
+                        {canViewPrices ? (
+                          <p className="mt-1 text-sm font-medium text-[#8f6f3e]">
+                            {formatUsd(service.guestPrice)}
+                          </p>
+                        ) : (
+                          <p className="mt-1 text-sm text-[#8f6f3e]">{MEMBER_PRICING_LABEL}</p>
+                        )}
                         <p className="mt-1 line-clamp-2 text-sm text-[#6f6251]">{service.description}</p>
                       </div>
                     </button>
@@ -858,7 +869,11 @@ export function BookOnlineWizard() {
               {needsLabDemographics && detailsReady ? (
                 <div className="mt-8 rounded-sm border border-[#b78d4b33] bg-[#fffaf2] p-5 text-left">
                   <h3 className="text-lg font-medium text-[#1f1a15]">
-                    Medical review fee — {formatUsd(MEDICAL_REVIEW_FEE_USD)}
+                    {canViewPrices ? (
+                      <>Medical review fee — {formatUsd(MEDICAL_REVIEW_FEE_USD)}</>
+                    ) : (
+                      <>Medical review fee — {MEMBER_PRICING_LABEL}</>
+                    )}
                   </h3>
                   <p className="mt-2 text-sm text-[#6f6251]">
                     Your physician must review your information before issuing the lab prescription. This fee is
@@ -866,7 +881,7 @@ export function BookOnlineWizard() {
                   </p>
                   <div className="mt-5">
                     <AuthorizeNetPayForm
-                      amountLabel={formatUsd(MEDICAL_REVIEW_FEE_USD)}
+                      amountLabel={canViewPrices ? formatUsd(MEDICAL_REVIEW_FEE_USD) : "Member pricing"}
                       submitLabel={submitting ? "Processing…" : "Pay & confirm appointment"}
                       onCharge={async (input) => {
                         await submitBooking(input);

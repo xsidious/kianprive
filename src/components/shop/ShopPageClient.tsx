@@ -5,6 +5,9 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ShieldCheck, Truck } from "lucide-react";
 import { useCart } from "@/components/providers/cart-provider";
+import { useCanViewServicePrices } from "@/hooks/use-can-view-service-prices";
+import { MEMBER_PRICING_LABEL } from "@/lib/member-pricing-access";
+import { MemberPriceNotice } from "@/components/pricing/MemberPriceNotice";
 import { CinematicHero } from "@/components/ui/CinematicHero";
 import { pageHeroes } from "@/lib/media/heroes";
 import {
@@ -29,6 +32,7 @@ export function ShopPageClient({ products }: { products: CatalogProduct[] }) {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("featured");
   const { itemCount, addItem, openCart, subtotal } = useCart();
+  const { canViewPrices } = useCanViewServicePrices();
   const categories = useMemo(() => shopCategoryList(products), [products]);
 
   const filteredProducts = useMemo(() => {
@@ -59,6 +63,11 @@ export function ShopPageClient({ products }: { products: CatalogProduct[] }) {
       />
 
       <EditorialSection id="products">
+        {!canViewPrices ? (
+          <div className="mb-6">
+            <MemberPriceNotice />
+          </div>
+        ) : null}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
             <EditorialEyebrow>CATALOG</EditorialEyebrow>
@@ -113,8 +122,12 @@ export function ShopPageClient({ products }: { products: CatalogProduct[] }) {
               <p className="text-sm text-[#3b3024]">Sort</p>
               <select value={sort} onChange={(e) => setSort(e.target.value)} className={`mt-2 ${editorialInput}`}>
                 <option value="featured">Featured</option>
-                <option value="price-asc">Price Low to High</option>
-                <option value="price-desc">Price High to Low</option>
+                {canViewPrices ? (
+                  <>
+                    <option value="price-asc">Price Low to High</option>
+                    <option value="price-desc">Price High to Low</option>
+                  </>
+                ) : null}
               </select>
             </div>
             <div className={`mt-5 ${editorialPanel} p-3 text-sm text-[#5f5344]`}>
@@ -128,7 +141,11 @@ export function ShopPageClient({ products }: { products: CatalogProduct[] }) {
             <div className={`mt-5 ${editorialPanel} p-3`}>
               <p className="text-sm text-[#5f5344]">Cart preview</p>
               <p className="mt-1 text-lg text-[#1f1a15]">{itemCount} items</p>
-              <p className="text-sm text-[#6f6251]">Subtotal ${subtotal.toFixed(2)}</p>
+              {canViewPrices ? (
+                <p className="text-sm text-[#6f6251]">Subtotal ${subtotal.toFixed(2)}</p>
+              ) : (
+                <p className="text-sm text-[#8f6f3e]">{MEMBER_PRICING_LABEL}</p>
+              )}
               <button type="button" onClick={openCart} className={`mt-3 w-full ${editorialCtaPrimary}`}>
                 OPEN SIDE CART
               </button>
@@ -178,10 +195,14 @@ export function ShopPageClient({ products }: { products: CatalogProduct[] }) {
                         <p className="mt-3 text-sm text-[#8f6f3e]">Coming soon</p>
                       ) : product.options?.length ? (
                         <p className="mt-3 text-sm text-[#6f6251]">
-                          From ${getCatalogDisplayPrice(product)} · choose size
+                          {canViewPrices
+                            ? `From $${getCatalogDisplayPrice(product)} · choose size`
+                            : MEMBER_PRICING_LABEL}
                         </p>
-                      ) : (
+                      ) : canViewPrices ? (
                         <p className="mt-3 text-2xl text-[#1f1a15]">${product.price}</p>
+                      ) : (
+                        <p className="mt-3 text-sm text-[#8f6f3e]">{MEMBER_PRICING_LABEL}</p>
                       )}
                       <div className="mt-4 flex flex-col gap-2">
                         <Link href={`/shop/${product.slug}`} className={editorialCtaSecondary}>
@@ -196,26 +217,38 @@ export function ShopPageClient({ products }: { products: CatalogProduct[] }) {
                             COMING SOON
                           </span>
                         ) : product.options?.length && isCatalogProductPriced(product) ? (
-                          <Link href={`/shop/${product.slug}`} className={editorialCtaPrimary}>
-                            SELECT SIZE
-                          </Link>
+                          canViewPrices ? (
+                            <Link href={`/shop/${product.slug}`} className={editorialCtaPrimary}>
+                              SELECT SIZE
+                            </Link>
+                          ) : (
+                            <Link href="/login?callbackUrl=/shop" className={editorialCtaPrimary}>
+                              SIGN IN TO SHOP
+                            </Link>
+                          )
                         ) : isCatalogProductPriced(product) ? (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              addItem({
-                                id: product.id,
-                                name: product.name,
-                                price: product.price,
-                                image: product.image,
-                                category: product.category,
-                              });
-                              openCart();
-                            }}
-                            className={editorialCtaPrimary}
-                          >
-                            ADD TO CART
-                          </button>
+                          canViewPrices ? (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                addItem({
+                                  id: product.id,
+                                  name: product.name,
+                                  price: product.price,
+                                  image: product.image,
+                                  category: product.category,
+                                });
+                                openCart();
+                              }}
+                              className={editorialCtaPrimary}
+                            >
+                              ADD TO CART
+                            </button>
+                          ) : (
+                            <Link href="/login?callbackUrl=/shop" className={editorialCtaPrimary}>
+                              SIGN IN TO SHOP
+                            </Link>
+                          )
                         ) : null}
                       </div>
                     </div>

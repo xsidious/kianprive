@@ -4,10 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Lock, Minus, Plus, RotateCcw, ShieldCheck, Truck, X } from "lucide-react";
 import { useCart } from "@/components/providers/cart-provider";
+import { useCanViewServicePrices } from "@/hooks/use-can-view-service-prices";
+import { MEMBER_PRICING_LABEL } from "@/lib/member-pricing-access";
 
 export function CartDrawer() {
   const { items, isOpen, itemCount, subtotal, closeCart, removeItem, updateQuantity, clearCart, shippingConfig } =
     useCart();
+  const { canViewPrices } = useCanViewServicePrices();
   const threshold = Math.max(shippingConfig.freeThreshold, 0.01);
   const amountToFreeShipping = shippingConfig.alwaysFree
     ? 0
@@ -60,7 +63,9 @@ export function CartDrawer() {
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm text-[#2b2218]">{item.name}</p>
                         <p className="text-xs text-[#8f6f3e]">{item.category}</p>
-                        <p className="mt-1 text-sm text-[#3b3024]">${item.price}</p>
+                        <p className="mt-1 text-sm text-[#3b3024]">
+                          {canViewPrices ? `$${item.price}` : MEMBER_PRICING_LABEL}
+                        </p>
                       </div>
                     </div>
                     <div className="mt-3 flex items-center justify-between">
@@ -93,27 +98,33 @@ export function CartDrawer() {
             )}
 
             <div className="mt-6 space-y-2 rounded-sm border border-[#e4d9c8] bg-[#fff8ef] p-4 text-sm text-[#4f4335]">
-              <p>
-                {shippingConfig.alwaysFree
-                  ? "Free shipping on all orders."
-                  : amountToFreeShipping > 0
-                    ? `Add $${amountToFreeShipping.toFixed(2)} more for free shipping.`
-                    : "Free shipping unlocked."}
-              </p>
-              {!shippingConfig.alwaysFree ? (
-                <div className="h-2 overflow-hidden rounded-sm bg-[#ead8bc]">
-                  <div
-                    className="h-full rounded-sm bg-[#b78d4b] transition-all duration-300"
-                    style={{ width: `${shippingProgress}%` }}
-                  />
-                </div>
-              ) : null}
-              <p className="inline-flex items-center gap-2">
-                <Truck size={15} className="text-[#8f6f3e]" />{" "}
-                {shippingConfig.alwaysFree
-                  ? "Free delivery on every order"
-                  : `Free delivery on orders over $${shippingConfig.freeThreshold}`}
-              </p>
+              {canViewPrices ? (
+                <>
+                  <p>
+                    {shippingConfig.alwaysFree
+                      ? "Free shipping on all orders."
+                      : amountToFreeShipping > 0
+                        ? `Add $${amountToFreeShipping.toFixed(2)} more for free shipping.`
+                        : "Free shipping unlocked."}
+                  </p>
+                  {!shippingConfig.alwaysFree ? (
+                    <div className="h-2 overflow-hidden rounded-sm bg-[#ead8bc]">
+                      <div
+                        className="h-full rounded-sm bg-[#b78d4b] transition-all duration-300"
+                        style={{ width: `${shippingProgress}%` }}
+                      />
+                    </div>
+                  ) : null}
+                  <p className="inline-flex items-center gap-2">
+                    <Truck size={15} className="text-[#8f6f3e]" />{" "}
+                    {shippingConfig.alwaysFree
+                      ? "Free delivery on every order"
+                      : `Free delivery on orders over $${shippingConfig.freeThreshold}`}
+                  </p>
+                </>
+              ) : (
+                <p>{MEMBER_PRICING_LABEL}</p>
+              )}
               <p className="inline-flex items-center gap-2"><RotateCcw size={15} className="text-[#8f6f3e]" /> 30-day return support</p>
               <p className="inline-flex items-center gap-2"><ShieldCheck size={15} className="text-[#8f6f3e]" /> Clinically curated quality assurance</p>
               <p className="inline-flex items-center gap-2"><Lock size={15} className="text-[#8f6f3e]" /> Secure encrypted checkout</p>
@@ -123,11 +134,19 @@ export function CartDrawer() {
           <div className="border-t border-[#e4d9c8] px-5 py-4">
             <div className="mb-3 flex items-center justify-between text-sm text-[#5f5344]">
               <span>Subtotal</span>
-              <span className="text-lg text-[#1f1a15]">${subtotal.toFixed(2)}</span>
+              <span className="text-lg text-[#1f1a15]">
+                {canViewPrices ? `$${subtotal.toFixed(2)}` : MEMBER_PRICING_LABEL}
+              </span>
             </div>
-            <Link href="/checkout" onClick={closeCart} className="block w-full rounded-sm bg-[#8a682e] px-5 py-3 text-center text-[11px] tracking-[0.16em] text-white">
-              PROCEED TO CHECKOUT
-            </Link>
+            {canViewPrices ? (
+              <Link href="/checkout" onClick={closeCart} className="block w-full rounded-sm bg-[#8a682e] px-5 py-3 text-center text-[11px] tracking-[0.16em] text-white">
+                PROCEED TO CHECKOUT
+              </Link>
+            ) : (
+              <Link href="/login?callbackUrl=/cart" onClick={closeCart} className="block w-full rounded-sm bg-[#8a682e] px-5 py-3 text-center text-[11px] tracking-[0.16em] text-white">
+                SIGN IN TO CHECKOUT
+              </Link>
+            )}
             <Link href="/cart" onClick={closeCart} className="mt-2 block w-full rounded-sm border border-[#b78d4b70] bg-[#fffaf2] px-5 py-2 text-center text-[11px] tracking-[0.16em] text-[#3b3024]">
               VIEW CART
             </Link>

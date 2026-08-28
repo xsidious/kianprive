@@ -6,10 +6,14 @@ import { useMemo } from "react";
 import { Minus, Plus, ShieldCheck, Truck } from "lucide-react";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { useCart } from "@/components/providers/cart-provider";
+import { useCanViewServicePrices } from "@/hooks/use-can-view-service-prices";
+import { MEMBER_PRICING_LABEL } from "@/lib/member-pricing-access";
+import { MemberPriceNotice } from "@/components/pricing/MemberPriceNotice";
 import { catalogProducts } from "@/lib/commerce/products";
 
 export default function CartPage() {
   const { items, subtotal, shipping, total, updateQuantity, removeItem, addItem, shippingConfig } = useCart();
+  const { canViewPrices } = useCanViewServicePrices();
   const threshold = Math.max(shippingConfig.freeThreshold, 0.01);
   const amountToFreeShipping = shippingConfig.alwaysFree
     ? 0
@@ -34,6 +38,11 @@ export default function CartPage() {
       </SectionWrapper>
 
       <SectionWrapper>
+        {!canViewPrices ? (
+          <div className="mb-6">
+            <MemberPriceNotice />
+          </div>
+        ) : null}
         <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
           <div className="space-y-4">
             {items.length === 0 ? (
@@ -58,7 +67,9 @@ export default function CartPage() {
                       </button>
                     </div>
                     <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end">
-                      <p className="text-lg text-[#1f1a15]">${(item.price * item.quantity).toFixed(2)}</p>
+                      <p className="text-lg text-[#1f1a15]">
+                        {canViewPrices ? `$${(item.price * item.quantity).toFixed(2)}` : MEMBER_PRICING_LABEL}
+                      </p>
                       <div className="inline-flex items-center gap-2 rounded-sm border border-[#b78d4b42] px-2 py-1">
                         <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-1 text-[#5f5344]">
                           <Minus size={14} />
@@ -77,42 +88,54 @@ export default function CartPage() {
 
           <aside className="h-fit rounded-sm border border-[#b78d4b2d] bg-white p-5 lg:sticky lg:top-24">
             <h2 className="text-xl text-[#1f1a15]">Order Summary</h2>
-            <div className="mt-4 rounded-sm border border-[#b78d4b2d] bg-[#fff8ef] p-3">
-              <p className="text-sm text-[#4f4335]">
-                {shippingConfig.alwaysFree
-                  ? "Free shipping on all orders."
-                  : amountToFreeShipping > 0
-                    ? `Add $${amountToFreeShipping.toFixed(2)} to unlock free shipping.`
-                    : "You unlocked free shipping!"}
-              </p>
-              {!shippingConfig.alwaysFree ? (
-                <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#ead8bc]">
-                  <div
-                    className="h-full rounded-sm bg-[#b78d4b] transition-all duration-300"
-                    style={{ width: `${shippingProgress}%` }}
-                  />
+            {canViewPrices ? (
+              <>
+                <div className="mt-4 rounded-sm border border-[#b78d4b2d] bg-[#fff8ef] p-3">
+                  <p className="text-sm text-[#4f4335]">
+                    {shippingConfig.alwaysFree
+                      ? "Free shipping on all orders."
+                      : amountToFreeShipping > 0
+                        ? `Add $${amountToFreeShipping.toFixed(2)} to unlock free shipping.`
+                        : "You unlocked free shipping!"}
+                  </p>
+                  {!shippingConfig.alwaysFree ? (
+                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#ead8bc]">
+                      <div
+                        className="h-full rounded-sm bg-[#b78d4b] transition-all duration-300"
+                        style={{ width: `${shippingProgress}%` }}
+                      />
+                    </div>
+                  ) : null}
                 </div>
-              ) : null}
-            </div>
-            <div className="mt-4 space-y-2 text-sm text-[#5f5344]">
-              <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Shipping</span>
-                <span>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
-              </div>
-            </div>
-            <div className="mt-4 border-t border-[#b78d4b24] pt-4">
-              <div className="flex justify-between text-[#1f1a15]">
-                <span>Total</span>
-                <span>${total.toFixed(2)}</span>
-              </div>
-            </div>
-            <Link href="/checkout" className="mt-5 block rounded-sm bg-[#b78d4b] px-5 py-3 text-center text-sm text-white">
-              Checkout
-            </Link>
+                <div className="mt-4 space-y-2 text-sm text-[#5f5344]">
+                  <div className="flex justify-between">
+                    <span>Subtotal</span>
+                    <span>${subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Shipping</span>
+                    <span>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
+                  </div>
+                </div>
+                <div className="mt-4 border-t border-[#b78d4b24] pt-4">
+                  <div className="flex justify-between text-[#1f1a15]">
+                    <span>Total</span>
+                    <span>${total.toFixed(2)}</span>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <p className="mt-4 text-sm text-[#8f6f3e]">{MEMBER_PRICING_LABEL}</p>
+            )}
+            {canViewPrices ? (
+              <Link href="/checkout" className="mt-5 block rounded-sm bg-[#b78d4b] px-5 py-3 text-center text-sm text-white">
+                Checkout
+              </Link>
+            ) : (
+              <Link href="/login?callbackUrl=/cart" className="mt-5 block rounded-sm bg-[#b78d4b] px-5 py-3 text-center text-sm text-white">
+                Sign in to checkout
+              </Link>
+            )}
             <p className="mt-3 text-center text-xs text-[#8f6f3e]">Most members complete checkout in under 60 seconds.</p>
             <div className="mt-5 space-y-2 text-xs text-[#6f6251]">
               <p className="inline-flex items-center gap-2"><Truck size={14} className="text-[#8f6f3e]" /> Fast delivery support</p>
@@ -138,22 +161,28 @@ export default function CartPage() {
                   <p className="mt-3 text-xs tracking-[0.14em] text-[#8f6f3e]">{product.category}</p>
                   <p className="mt-1 text-[#2b2218]">{product.name}</p>
                   <div className="mt-3 flex items-center justify-between">
-                    <p className="text-lg text-[#1f1a15]">${product.price}</p>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        addItem({
-                          id: product.id,
-                          name: product.name,
-                          price: product.price,
-                          image: product.image,
-                          category: product.category,
-                        })
-                      }
-                      className="rounded-sm bg-[#b78d4b] px-4 py-2 text-xs text-white"
-                    >
-                      Add
-                    </button>
+                    {canViewPrices ? (
+                      <>
+                        <p className="text-lg text-[#1f1a15]">${product.price}</p>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            addItem({
+                              id: product.id,
+                              name: product.name,
+                              price: product.price,
+                              image: product.image,
+                              category: product.category,
+                            })
+                          }
+                          className="rounded-sm bg-[#b78d4b] px-4 py-2 text-xs text-white"
+                        >
+                          Add
+                        </button>
+                      </>
+                    ) : (
+                      <p className="text-sm text-[#8f6f3e]">{MEMBER_PRICING_LABEL}</p>
+                    )}
                   </div>
                 </article>
               ))}

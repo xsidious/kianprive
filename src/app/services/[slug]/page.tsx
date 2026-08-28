@@ -19,6 +19,8 @@ import { nutritionPromoImage, NUTRITION_SERVICE_SLUG } from "@/lib/media/nutriti
 import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
 import { getServiceBySlug, serviceCatalog } from "@/lib/services/catalog";
 import { formatUsd } from "@/lib/services/pricing-menus";
+import { canViewServicePrices } from "@/lib/member-pricing-access";
+import { MemberPriceNotice } from "@/components/pricing/MemberPriceNotice";
 import { buildSeoMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, serviceJsonLd } from "@/lib/seo/json-ld";
@@ -78,6 +80,7 @@ export default async function ServiceDetailPage({
   if (service.requiresLogin && !session?.user?.id) {
     redirect("/login");
   }
+  const canViewPrices = canViewServicePrices(session?.user);
 
   const isNutrition = slug === NUTRITION_SERVICE_SLUG;
   const heroImage = isNutrition ? service.promoImage ?? nutritionPromoImage : service.image;
@@ -297,7 +300,7 @@ export default async function ServiceDetailPage({
         </EditorialSection>
       ) : null}
 
-      {service.pricing?.length || service.guestPrice != null ? (
+      {canViewPrices && (service.pricing?.length || service.guestPrice != null) ? (
         <EditorialSection>
           <EditorialEyebrow>PRICING</EditorialEyebrow>
           <h2 className="mt-4 font-serif text-2xl text-[#1f1a15] sm:text-3xl">
@@ -322,6 +325,14 @@ export default async function ServiceDetailPage({
               </Link>
             </div>
           </div>
+        </EditorialSection>
+      ) : !canViewPrices && (service.pricing?.length || service.guestPrice != null) ? (
+        <EditorialSection>
+          <EditorialEyebrow>PRICING</EditorialEyebrow>
+          <h2 className="mt-4 font-serif text-2xl text-[#1f1a15] sm:text-3xl">
+            {isNutrition ? "Consultation Pricing" : "Pricing"}
+          </h2>
+          <MemberPriceNotice />
         </EditorialSection>
       ) : null}
 

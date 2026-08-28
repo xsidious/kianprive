@@ -8,6 +8,8 @@ import { PeptidesInteractiveShowcase } from "@/components/services/PeptidesInter
 import { NUTRITION_SERVICE_SLUG } from "@/lib/media/nutrition";
 import type { ServiceListingItem } from "@/lib/services/types";
 import { formatUsd } from "@/lib/services/pricing-menus";
+import { MEMBER_PRICING_LABEL } from "@/lib/member-pricing-access";
+import { useCanViewServicePrices } from "@/hooks/use-can-view-service-prices";
 import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
 
 function isNutritionService(service: Pick<ServiceListingItem, "slug">) {
@@ -34,9 +36,17 @@ type ServiceCardsWithModalProps = {
   services: ServiceListingItem[];
   label: string;
   layout?: "list" | "grid";
+  canViewPrices?: boolean;
 };
 
-export function ServiceCardsWithModal({ services, label, layout = "list" }: ServiceCardsWithModalProps) {
+export function ServiceCardsWithModal({
+  services,
+  label,
+  layout = "list",
+  canViewPrices: canViewPricesProp,
+}: ServiceCardsWithModalProps) {
+  const { canViewPrices: canViewPricesHook } = useCanViewServicePrices();
+  const canViewPrices = canViewPricesProp ?? canViewPricesHook;
   const [selectedService, setSelectedService] = useState<ServiceListingItem | null>(null);
   const [sliderIndexByService, setSliderIndexByService] = useState<Record<string, number>>({});
   const isPriorityGroup = label === "ADD-ON" || label === "SAME-LOCATION";
@@ -117,10 +127,12 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-[#6f6251]">
                   {shortDescription(service.description)}
                 </p>
-                {service.guestPrice != null ? (
+                {canViewPrices && service.guestPrice != null ? (
                   <p className="mt-3 text-sm font-medium text-[#8f6f3e]">
                     From {formatUsd(service.guestPrice)}
                   </p>
+                ) : !canViewPrices && service.guestPrice != null ? (
+                  <p className="mt-3 text-sm text-[#8f6f3e]">{MEMBER_PRICING_LABEL}</p>
                 ) : null}
                 <div className="mt-5 flex flex-wrap gap-2">
                   {(() => {
@@ -368,7 +380,7 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                 ))}
               </div>
             ) : null}
-            {selectedService.pricing && selectedService.pricing.length > 0 ? (
+            {canViewPrices && selectedService.pricing && selectedService.pricing.length > 0 ? (
               <div className="mt-5 rounded-sm border border-[#e4d9c8] bg-white p-3">
                 <p className="text-xs tracking-[0.16em] text-[#b78d4b]">PRICING</p>
                 {selectedService.guestPrice != null ? (
@@ -383,6 +395,11 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                     </li>
                   ))}
                 </ul>
+              </div>
+            ) : !canViewPrices && (selectedService.pricing?.length || selectedService.guestPrice != null) ? (
+              <div className="mt-5 rounded-sm border border-[#e4d9c8] bg-white p-3">
+                <p className="text-xs tracking-[0.16em] text-[#b78d4b]">PRICING</p>
+                <p className="mt-2 text-sm text-[#8f6f3e]">{MEMBER_PRICING_LABEL}</p>
               </div>
             ) : null}
             {selectedService.availability && selectedService.availability.length > 0 ? (

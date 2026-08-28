@@ -48,6 +48,9 @@ import { buildSeoMetadata } from "@/lib/seo/metadata";
 import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
 import { getServiceBySlug } from "@/lib/services/catalog";
 import { icoonePrimaryImage } from "@/lib/media/icoone";
+import { auth } from "@/lib/auth";
+import { canViewServicePrices } from "@/lib/member-pricing-access";
+import { MemberPriceNotice } from "@/components/pricing/MemberPriceNotice";
 
 export async function generateMetadata(): Promise<Metadata> {
   const cms = await getCmsPageContent("services");
@@ -170,6 +173,8 @@ const jumpNav = [
 
 export default async function ServicesPage() {
   const cms = await getCmsPageContent("services");
+  const session = await auth();
+  const canViewPrices = canViewServicePrices(session?.user);
 
   return (
     <div className="-mt-[1px]">
@@ -181,6 +186,12 @@ export default async function ServicesPage() {
         imageAlt={pageHeroes.services.alt}
         priority={false}
       />
+
+      {!canViewPrices ? (
+        <EditorialSection className="!py-8">
+          <MemberPriceNotice />
+        </EditorialSection>
+      ) : null}
 
       <div id="all-services">
         <ServicesStickyNav items={jumpNav} />
@@ -206,17 +217,20 @@ export default async function ServicesPage() {
             title="40-minute packages"
             items={icoonePricedMenu.packages40}
             bookHref="/book-online?service=icoone-laser"
+            canViewPrices={canViewPrices}
           />
           <PricedMenuTable
             title="50-minute programs"
             items={icoonePricedMenu.packages50}
             footnote="Monthly packages require a one-month security deposit upon signing. 4 month minimum."
             bookHref="/book-online?service=icoone-laser"
+            canViewPrices={canViewPrices}
           />
           <PricedMenuTable
             title="80-minute programs"
             items={icoonePricedMenu.packages80}
             bookHref="/book-online?service=icoone-laser"
+            canViewPrices={canViewPrices}
           />
         </div>
         <SectionCtaBar
@@ -266,6 +280,7 @@ export default async function ServicesPage() {
             detailsHref="/services/korean-organic-skincare"
             bookHref="/book-online?service=korean-organic-skincare"
             image={getServiceBySlug("korean-organic-skincare")?.image}
+            canViewPrices={canViewPrices}
           />
           <ServicePriceCtaCard
             eyebrow="REGENERATIVE SKIN"
@@ -276,6 +291,7 @@ export default async function ServicesPage() {
             detailsHref="/services/microneedling-with-exosomes"
             bookHref="/book-online?service=microneedling-with-exosomes"
             image={getServiceBySlug("microneedling-with-exosomes")?.image}
+            canViewPrices={canViewPrices}
           />
           <ServicePriceCtaCard
             eyebrow="HAIR RESTORATION"
@@ -286,6 +302,7 @@ export default async function ServicesPage() {
             bookLabel="Book a consult"
             guestPrice={100}
             image={getServiceBySlug("hair-restoration")?.image}
+            canViewPrices={canViewPrices}
           />
           <ServicePriceCtaCard
             eyebrow="MEDICAL AESTHETICS"
@@ -295,6 +312,7 @@ export default async function ServicesPage() {
             detailsHref="/services/facial-aesthetics"
             bookHref="/book-online?service=facial-aesthetics"
             image={getServiceBySlug("facial-aesthetics")?.image}
+            canViewPrices={canViewPrices}
           />
           <ServicePriceCtaCard
             eyebrow="NUTRITION"
@@ -306,6 +324,7 @@ export default async function ServicesPage() {
             bookHref="/book-online?service=nutrition"
             bookLabel="Schedule consultation"
             image={getServiceBySlug("nutrition")?.image}
+            canViewPrices={canViewPrices}
           />
           <ServicePriceCtaCard
             eyebrow="BODY COMPOSITION"
@@ -315,6 +334,7 @@ export default async function ServicesPage() {
             detailsHref="/services/inbody-scan"
             bookHref="/book-online?service=inbody-scan"
             image={getServiceBySlug("inbody-scan")?.image}
+            canViewPrices={canViewPrices}
           />
         </div>
       </EditorialSection>
@@ -327,9 +347,9 @@ export default async function ServicesPage() {
         />
         <SectionPhoto src={getServiceBySlug("iv-therapy")?.image ?? "/images/heroes/iv-hero.jpg"} alt="IV therapy" />
         <div className="mt-10 grid gap-5">
-          <IvPricingTable title="IV drips" items={ivDripMenu} />
-          <IvPricingTable title="Injections" items={ivInjectionMenu} />
-          <IvPricingTable title="IV add-ons" items={ivAddOnMenu} />
+          <IvPricingTable title="IV drips" items={ivDripMenu} canViewPrices={canViewPrices} />
+          <IvPricingTable title="Injections" items={ivInjectionMenu} canViewPrices={canViewPrices} />
+          <IvPricingTable title="IV add-ons" items={ivAddOnMenu} canViewPrices={canViewPrices} />
         </div>
         <SectionCtaBar
           bookHref="/book-online?service=iv-therapy"
@@ -346,7 +366,7 @@ export default async function ServicesPage() {
         />
         <SectionPhoto src="/images/blood-work.webp" alt="Wellness lab panels" />
         <div className="mt-10">
-          <LabPanelCards panels={coreLabPanels} eyebrow="CORE PANEL" />
+          <LabPanelCards panels={coreLabPanels} eyebrow="CORE PANEL" canViewPrices={canViewPrices} />
         </div>
         <h3 className="mt-14 font-serif text-2xl text-[#1f1a15] sm:text-3xl">Optional add-on panels</h3>
         <p className="mt-3 max-w-3xl text-sm text-[#6f6251]">
@@ -354,7 +374,7 @@ export default async function ServicesPage() {
           similarly sized targeted panels.
         </p>
         <div className="mt-8">
-          <LabPanelCards panels={addOnLabPanels} eyebrow="ADD-ON PANEL" />
+          <LabPanelCards panels={addOnLabPanels} eyebrow="ADD-ON PANEL" canViewPrices={canViewPrices} />
         </div>
         <SectionCtaBar
           bookHref="/book-online?service=comprehensive-bloodwork"
@@ -377,18 +397,31 @@ export default async function ServicesPage() {
             title="Physician — in person"
             items={providerVisitMenu.inPerson}
             bookHref="/book-online?service=physician-visit"
+            canViewPrices={canViewPrices}
           />
           <PricedMenuTable
             title="Physician — telemedicine"
             items={providerVisitMenu.telemedicine}
             bookHref="/book-online?service=telemedicine"
+            canViewPrices={canViewPrices}
           />
-          <PricedMenuTable title="Physician Review" items={providerVisitMenu.async} bookHref="/book-online?service=telemedicine" />
-          <PricedMenuTable title="Nurse visits" items={providerVisitMenu.nurse} bookHref="/book-online?service=comprehensive-bloodwork" />
+          <PricedMenuTable
+            title="Physician Review"
+            items={providerVisitMenu.async}
+            bookHref="/book-online?service=telemedicine"
+            canViewPrices={canViewPrices}
+          />
+          <PricedMenuTable
+            title="Nurse visits"
+            items={providerVisitMenu.nurse}
+            bookHref="/book-online?service=comprehensive-bloodwork"
+            canViewPrices={canViewPrices}
+          />
           <PricedMenuTable
             title="Peptide optimization"
             items={providerVisitMenu.peptide}
             bookHref="/book-online?service=glp1-peptides"
+            canViewPrices={canViewPrices}
           />
         </div>
         <SectionCtaBar
@@ -423,7 +456,11 @@ export default async function ServicesPage() {
         <SectionHeader
           eyebrow="PHYSICIAN-LED PEPTIDE THERAPY"
           title="Over 100 peptides, precisely prescribed."
-          description="Board-certified physicians prescribe personalized protocols from a clinical formulary spanning longevity, recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. Browse the peptide catalog on Privé Therapeutics. These therapies are not sold in the KIAN shop—initial orders and refills require a physician prescription. Peptide optimization consult: $100."
+          description={
+            canViewPrices
+              ? "Board-certified physicians prescribe personalized protocols from a clinical formulary spanning longevity, recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. Browse the peptide catalog on Privé Therapeutics. These therapies are not sold in the KIAN shop—initial orders and refills require a physician prescription. Peptide optimization consult: $100."
+              : "Board-certified physicians prescribe personalized protocols from a clinical formulary spanning longevity, recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. Browse the peptide catalog on Privé Therapeutics. These therapies are not sold in the KIAN shop—initial orders and refills require a physician prescription."
+          }
         />
         <SectionPhoto
           src={getServiceBySlug("glp1-peptides")?.image ?? "/images/Peptidesandexosomes.jpeg"}
@@ -437,7 +474,7 @@ export default async function ServicesPage() {
         <SectionCtaBar
           bookHref="/book-online?service=glp1-peptides"
           detailsHref="/services/glp1-peptides"
-          bookLabel="Book consult · $100"
+          bookLabel={canViewPrices ? "Book consult · $100" : "Book consult"}
         />
         <div className="mt-4 flex flex-wrap gap-3">
           <a
@@ -465,7 +502,7 @@ export default async function ServicesPage() {
             description="MindTap, beauty partner services, Holistic Salt Therapy (salt, PEMF, infrared), and additional partner offerings coordinated by KIAN Privé concierge."
           />
           <div className="mt-10">
-            <ServiceCardsWithModal services={partnerAddOnServices} label="PARTNER" layout="grid" />
+            <ServiceCardsWithModal services={partnerAddOnServices} label="PARTNER" layout="grid" canViewPrices={canViewPrices} />
           </div>
           <SectionCtaBar bookHref="/contact" bookLabel="Coordinate a partner visit" />
           <div className="mt-8">
