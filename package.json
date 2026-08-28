@@ -21,6 +21,7 @@
     "seed:providers": "node scripts/seed-providers.mjs",
     "seed:all": "npm run demo:admin && npm run demo:user && npm run demo:seed && npm run seed:cms && npm run seed:blog && npm run seed:partners && npm run seed:peptides && npm run seed:ambassadors && npm run seed:providers",
     "smoke:backend": "node scripts/backend-smoke-check.mjs",
+    "db:repair": "node scripts/run-db-repair.mjs",
     "postinstall": "prisma generate"
   },
   "dependencies": {

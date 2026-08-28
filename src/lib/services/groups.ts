@@ -113,77 +113,11 @@ export const wellnessTechnologyServices: ServiceListingItem[] = [
 
 export const sameLocationAddOns: ServiceListingItem[] = [
   {
-    slug: "salt-therapy",
-    title: "Salt Therapy",
-    image: "/images/holistic-salt-therapy/photo-1.jpg",
-    gallery: [
-      {
-        src: "/images/holistic-salt-therapy/photo-3.jpg",
-        alt: "Holistic Salt Therapy Center kids halotherapy play room",
-      },
-      {
-        src: "/images/holistic-salt-therapy/photo-7.jpg",
-        alt: "Holistic Salt Therapy Center halotherapy wellness information",
-      },
-      {
-        src: "/images/holistic-salt-therapy/photo-2.jpg",
-        alt: "Holistic Salt Therapy Center reception and waiting area",
-      },
-    ],
-    partnerName: "Holistic Therapy Place",
+    ...bySlug("holistic-salt-therapy"),
+    partnerName: "Holistic Salt Therapy Center",
     partnerLogo: "/images/providers/holistic-salt-therapy-center.png",
     externalBookingUrl: "/contact",
     isPartnerService: true,
-    description:
-      "Partner add-on from Holistic Therapy Place for respiratory wellness, inflammation support, and holistic recovery.",
-    includes: ["Respiratory support", "Inflammation support", "Recovery protocol integration", "+15% partner discount (pending confirmation)"],
-    availability: ["Facility-based service (not offered in-home)."],
-  },
-  {
-    slug: "pemf",
-    title: "PEMF",
-    image: "/images/holistic-salt-therapy/photo-6.jpg",
-    gallery: [
-      {
-        src: "/images/holistic-salt-therapy/photo-4.jpg",
-        alt: "Holistic Salt Therapy Center infrared sauna and PEMF session room",
-      },
-      {
-        src: "/images/holistic-salt-therapy/photo-5.jpg",
-        alt: "Holistic Salt Therapy Center wellness facility interior",
-      },
-    ],
-    partnerName: "Holistic Therapy Place",
-    partnerLogo: "/images/providers/holistic-salt-therapy-center.png",
-    externalBookingUrl: "/contact",
-    isPartnerService: true,
-    description:
-      "Partner add-on from Holistic Therapy Place designed for cellular recharge, pain support, and performance recovery.",
-    includes: ["Cellular recharge", "Pain support", "Performance recovery", "+15% partner discount (pending confirmation)"],
-    availability: ["Same-location partner add-on."],
-  },
-  {
-    slug: "far-infrared",
-    title: "Far Infrared",
-    image: "/images/holistic-salt-therapy/photo-4.jpg",
-    gallery: [
-      {
-        src: "/images/holistic-salt-therapy/photo-6.jpg",
-        alt: "Holistic Salt Therapy Center far infrared sauna interior",
-      },
-      {
-        src: "/images/holistic-salt-therapy/photo-2.jpg",
-        alt: "Holistic Salt Therapy Center reception and waiting area",
-      },
-    ],
-    partnerName: "Holistic Therapy Place",
-    partnerLogo: "/images/providers/holistic-salt-therapy-center.png",
-    externalBookingUrl: "/contact",
-    isPartnerService: true,
-    description:
-      "Partner add-on from Holistic Therapy Place with infrared sessions to support circulation, detox support, and deep relaxation.",
-    includes: ["Detox support", "Deep tissue warmth", "Recovery and relaxation support", "+15% partner discount (pending confirmation)"],
-    availability: ["Same-location partner add-on."],
   },
 ];
 
@@ -195,8 +129,8 @@ export const partnerAddOnServices: ServiceListingItem[] = [
   { ...bySlug("mindtap"), partnerName: "MindTap", partnerLogo: "/images/providers/mindtap.png", externalBookingUrl: "/contact", isPartnerService: true },
   {
     ...bySlug("beauty-hair-nails"),
-    partnerName: "Beauty Partner",
-    partnerLogo: "/images/providers/facial-design-studio.png",
+    partnerName: "Coiffure and Coffee",
+    partnerLogo: "/images/providers/coiffure-and-coffee.png",
     externalBookingUrl: "/contact",
     isPartnerService: true,
   },
@@ -211,9 +145,7 @@ export const serviceAccessNotes = [
 ];
 
 export const preferredProviders = [
-  { name: "Salt", logo: "/images/providers/holistic-salt-therapy-center.png", href: "/contact" },
-  { name: "PEMF", logo: "/images/providers/omg-aesthetics.png", href: "/contact" },
-  { name: "Far Infrared", logo: "/images/providers/facial-design-studio.png", href: "/contact" },
+  { name: "Holistic Salt Therapy", logo: "/images/providers/holistic-salt-therapy-center.png", href: "/services/holistic-salt-therapy" },
   { name: "MindTap", logo: "/images/providers/mindtap.png", href: "/contact" },
 ];
 

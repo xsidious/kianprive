@@ -164,7 +164,7 @@ export const providerVisitMenu = {
     { name: "New Patient", guest: 300, member: memberFromGuest(300) },
     { name: "Follow-up", guest: 150, member: memberFromGuest(150) },
   ] satisfies PricedMenuItem[],
-  async: [{ name: "Physician Review", guest: 50, member: memberFromGuest(50) }] satisfies PricedMenuItem[],
+  async: [{ name: "Physician Review", guest: 75, member: memberFromGuest(75) }] satisfies PricedMenuItem[],
   nurse: [
     { name: "Blood Pressure, Vitals & Medication Review", guest: 100, member: memberFromGuest(100) },
     { name: "Lab Draw Only", guest: 50, member: memberFromGuest(50), note: "Plus lab processing and handling fee" },

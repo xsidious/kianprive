@@ -228,11 +228,6 @@ export function PeptidesGlpIntakeForm() {
           </div>
           <SectionIntro eyebrow="SECTION 02" title="Program of Interest" description="Select all programs you wish to explore with your KIAN Privé clinician." />
           <CheckboxGroup options={PROGRAM_OPTIONS} selected={form.programs} onChange={(programs) => update("programs", programs)} />
-        </div>
-      ) : null}
-
-      {step === 1 ? (
-        <div className="space-y-6">
           <SectionIntro eyebrow="SECTION 03" title="Treatment Goals & Aspirations" />
           <Field label="Primary goals for therapy *">
             <CheckboxGroup options={PRIMARY_GOAL_OPTIONS} selected={form.goals.primaryGoals} onChange={(primaryGoals) => update("goals", { ...form.goals, primaryGoals })} />
@@ -249,7 +244,7 @@ export function PeptidesGlpIntakeForm() {
         </div>
       ) : null}
 
-      {step === 2 ? (
+      {step === 1 ? (
         <div className="space-y-6">
           <SectionIntro eyebrow="SECTION 04" title="Weight & Metabolic History" />
           <div className="grid gap-4 md:grid-cols-3">
@@ -293,11 +288,6 @@ export function PeptidesGlpIntakeForm() {
           <Field label="Describe your experience with prior treatments *">
             <TextArea value={form.weightHistory.previousTherapyExperience} onChange={(v) => update("weightHistory", { ...form.weightHistory, previousTherapyExperience: v })} placeholder="Type None if this does not apply" />
           </Field>
-        </div>
-      ) : null}
-
-      {step === 3 ? (
-        <div className="space-y-6">
           <SectionIntro eyebrow="SECTION 05" title="Medical History" />
           <CheckboxGroup options={MEDICAL_CONDITION_OPTIONS} selected={form.medicalHistory.conditions} exclusiveOption="None of the above" onChange={(conditions) => update("medicalHistory", { ...form.medicalHistory, conditions })} />
           <Field label="Hormonal disorder details (if applicable)"><TextInput value={form.medicalHistory.hormonalDisorderDetail} onChange={(v) => update("medicalHistory", { ...form.medicalHistory, hormonalDisorderDetail: v })} /></Field>
@@ -310,11 +300,6 @@ export function PeptidesGlpIntakeForm() {
           <CheckboxGroup options={CONTRAINDICATION_OPTIONS} selected={form.contraindications.items} exclusiveOption="None of the above" onChange={(items) => update("contraindications", { ...form.contraindications, items })} />
           <YesNoField label="Allergic reaction to medication, supplement, or peptide?" value={form.contraindications.medicationAllergy} onChange={(medicationAllergy) => update("contraindications", { ...form.contraindications, medicationAllergy })} />
           {form.contraindications.medicationAllergy === "yes" ? <Field label="Substance and reaction"><TextArea value={form.contraindications.medicationAllergyDetail} onChange={(v) => update("contraindications", { ...form.contraindications, medicationAllergyDetail: v })} /></Field> : null}
-        </div>
-      ) : null}
-
-      {step === 4 ? (
-        <div className="space-y-6">
           <SectionIntro eyebrow="SECTION 07" title="Family History" />
           <CheckboxGroup options={FAMILY_HISTORY_OPTIONS} selected={form.familyHistory} exclusiveOption="None of the above" onChange={(familyHistory) => update("familyHistory", familyHistory)} />
           <SectionIntro eyebrow="SECTION 08" title="Current Medications, Supplements & Allergies" />
@@ -328,7 +313,7 @@ export function PeptidesGlpIntakeForm() {
         </div>
       ) : null}
 
-      {step === 5 ? (
+      {step === 2 ? (
         <div className="space-y-6">
           <SectionIntro eyebrow="SECTION 09" title="Lifestyle & Wellness Profile" />
           <Field label="Physical activity frequency *">
@@ -372,11 +357,6 @@ export function PeptidesGlpIntakeForm() {
             <Field label="Birth control method *"><TextInput value={form.womensHealth.birthControlMethod} onChange={(v) => update("womensHealth", { ...form.womensHealth, birthControlMethod: v })} placeholder="Type N/A if not applicable" /></Field>
           </div>
           <CheckboxGroup options={WOMENS_HEALTH_OPTIONS} selected={form.womensHealth.selections} exclusiveOption="None of the above" onChange={(selections) => update("womensHealth", { ...form.womensHealth, selections })} />
-        </div>
-      ) : null}
-
-      {step === 6 ? (
-        <div className="space-y-6">
           <SectionIntro eyebrow="SECTION 12" title="Laboratory History" description="KIAN Privé may order a baseline panel prior to initiating therapy." />
           <CheckboxGroup options={RECENT_LAB_OPTIONS} selected={form.labs.recentLabs} exclusiveOption="None on file" onChange={(recentLabs) => update("labs", { recentLabs })} />
           <SectionIntro eyebrow="SECTION 13" title="Symptoms Checklist" />
@@ -384,7 +364,7 @@ export function PeptidesGlpIntakeForm() {
         </div>
       ) : null}
 
-      {step === 7 ? (
+      {step === 3 ? (
         <div className="space-y-6">
           <SectionIntro eyebrow="SECTION 14" title="Patient Expectations & Acknowledgments" description="Initial each statement to confirm your understanding." />
           <div className="space-y-3">

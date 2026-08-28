@@ -3,6 +3,9 @@ export type AboutTeamMember = {
   title: string;
   subtitle: string;
   image?: string;
+  /** Tailwind classes for portrait framing when the default crop does not fit. */
+  imageClassName?: string;
+  imageBackground?: string;
   bio?: string | string[];
 };
 
@@ -37,7 +40,7 @@ export const aboutTeam: AboutTeamMember[] = [
     name: "Dr. John Maarouf, DO",
     title: "Concierge and Telemedicine",
     subtitle: "Family & Sports Medicine",
-    image: "/images/JohnMaarouf.jpeg",
+    image: "/images/JohnMaarouf.png",
     bio: "Dr. Maarouf is a dual board certified physician in Family and Sports Medicine who specializes in non surgical orthopedics and orthobiologics to remedy common injuries for every level of athlete like knee pain, meniscus injuries, rotator cuff tears, tennis/golfers elbow, plantar fasciitis and more. With a calm presence, sharp diagnostics, and an eye for detail, Dr. Maarouf guides personalized care that gets results.",
   },
   {
@@ -56,6 +59,8 @@ export const aboutTeam: AboutTeamMember[] = [
     title: "Aesthetic Injector",
     subtitle: "Provider",
     image: "/images/KarlRyan.png",
+    imageClassName: "object-contain object-center",
+    imageBackground: "#8a7f74",
   },
   {
     name: "Jacqueline Hayes",
@@ -64,8 +69,14 @@ export const aboutTeam: AboutTeamMember[] = [
     image: "/images/JacquelineHayes.png",
   },
   {
-    name: "Violetta",
-    title: "Sales Ambassador",
-    subtitle: "Member Concierge",
+    name: "Violetta Markelou",
+    title: "Health & Life Coach",
+    subtitle: "Certified Coach · Holistic Wellness",
+    image: "/images/ViolettaMarkelou.png",
+    bio: [
+      "Violetta Markelou is a certified Health and Life Coach with a holistic approach rooted in food-as-medicine, hormone balance, longevity, and intentional lifestyle design.",
+      "Her journey into health optimization began through the lymphatic system and a personal passion for understanding the body's natural ability to heal, detoxify, and restore balance. For over 15 years, Violetta has immersed herself in women's health, biohacking, hormone-supportive nutrition, nervous system regulation, and evidence-informed wellness strategies.",
+      "Through personalized coaching, she helps clients take agency over their health, build sustainable habits, and support energy, digestion, mood, hormone balance, and overall vitality.",
+    ],
   },
 ];

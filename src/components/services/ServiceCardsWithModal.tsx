@@ -108,9 +108,9 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
               <div className="flex flex-1 flex-col p-6">
                 <h3 className="font-serif text-2xl text-[#1f1a15]">{service.title}</h3>
                 {service.partnerLogo ? (
-                  <div className="mt-3 inline-flex items-center rounded-sm border border-[#e4d9c8] bg-white px-3 py-1.5">
-                    <div className="relative h-7 w-24">
-                      <Image src={service.partnerLogo} alt={`${service.partnerName ?? "Partner"} logo`} fill className="object-contain" />
+                  <div className="mt-3 inline-flex items-center rounded-sm border border-[#e4d9c8] bg-white px-3 py-2">
+                    <div className="relative h-12 w-32">
+                      <Image src={service.partnerLogo} alt={`${service.partnerName ?? "Partner"} logo`} fill className="object-contain object-left" />
                     </div>
                   </div>
                 ) : null}
@@ -188,9 +188,9 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
                 </p>
                 <h3 className="mt-2 text-2xl text-[#2b2218]">{service.title}</h3>
                 {service.partnerLogo ? (
-                  <div className="mt-2 inline-flex items-center rounded-sm border border-[#1f7a7a2e] bg-[#f8fcfc] px-3 py-1.5">
-                    <div className="relative h-7 w-24">
-                      <Image src={service.partnerLogo} alt={`${service.partnerName ?? "Partner"} logo`} fill className="object-contain" />
+                  <div className="mt-2 inline-flex items-center rounded-sm border border-[#1f7a7a2e] bg-[#f8fcfc] px-3 py-2">
+                    <div className="relative h-12 w-32">
+                      <Image src={service.partnerLogo} alt={`${service.partnerName ?? "Partner"} logo`} fill className="object-contain object-left" />
                     </div>
                   </div>
                 ) : null}
@@ -304,8 +304,8 @@ export function ServiceCardsWithModal({ services, label, layout = "list" }: Serv
             <p className="mt-5 leading-relaxed text-[#5f5344]">{selectedService.description}</p>
             {selectedService.partnerLogo ? (
               <div className="mt-4 inline-flex items-center rounded-sm border border-[#1f7a7a33] bg-white px-4 py-2">
-                <div className="relative h-10 w-28">
-                  <Image src={selectedService.partnerLogo} alt={`${selectedService.partnerName ?? "Partner"} logo`} fill className="object-contain" />
+                <div className="relative h-14 w-36">
+                  <Image src={selectedService.partnerLogo} alt={`${selectedService.partnerName ?? "Partner"} logo`} fill className="object-contain object-left" />
                 </div>
               </div>
             ) : null}

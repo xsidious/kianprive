@@ -222,12 +222,8 @@ export const REFERRAL_SOURCE_OPTIONS = [
 ] as const;
 
 export const INTAKE_STEPS = [
-  { id: "patient", title: "Patient Information", section: "01" },
-  { id: "program-goals", title: "Program & Goals", section: "02–03" },
-  { id: "weight-metabolic", title: "Weight & Metabolic History", section: "04" },
-  { id: "medical-safety", title: "Medical History & Safety", section: "05–06" },
-  { id: "family-meds", title: "Family & Medications", section: "07–08" },
-  { id: "lifestyle", title: "Lifestyle & Nutrition", section: "09–11" },
-  { id: "labs-symptoms", title: "Labs & Symptoms", section: "12–13" },
-  { id: "consent", title: "Consent & Signature", section: "14–15" },
+  { id: "about-you", title: "About You & Goals", section: "01–03" },
+  { id: "health-safety", title: "Health & Safety", section: "04–08" },
+  { id: "lifestyle-clinical", title: "Lifestyle & Clinical", section: "09–13" },
+  { id: "consent", title: "Consent & Payment", section: "14–15" },
 ] as const;

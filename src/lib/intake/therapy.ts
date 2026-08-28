@@ -45,6 +45,7 @@ export async function getProposalForIntake(intakeSubmissionId: string) {
         select: {
           id: true,
           orderNumber: true,
+          subtotal: true,
           total: true,
           shippingTotal: true,
           paymentStatus: true,
@@ -238,69 +239,70 @@ export async function upsertTherapyProposal(input: {
     });
 
     let orderId = base.orderId;
-    if (input.send) {
-      const intake = await tx.therapeuticsIntakeSubmission.findUnique({
-        where: { id: input.intakeSubmissionId },
-        select: { email: true, phone: true, userId: true, fullName: true },
-      });
-      const lineItems = pricedItems.map((item) => {
-        const product = byId.get(item.productId)!;
-        const qty = Math.max(1, item.quantity);
-        return {
-          productId: product.id,
+
+    const intake = await tx.therapeuticsIntakeSubmission.findUnique({
+      where: { id: input.intakeSubmissionId },
+      select: { email: true, phone: true, userId: true, fullName: true },
+    });
+    const lineItems = pricedItems.map((item) => {
+      const product = byId.get(item.productId)!;
+      const qty = Math.max(1, item.quantity);
+      return {
+        productId: product.id,
+        partnerId: input.providerPartnerId,
+        title: product.title,
+        sku: product.sku,
+        quantity: qty,
+        unitPrice: item.unit,
+        lineTotal: item.unit * qty,
+      };
+    });
+    const subtotal = lineItems.reduce((s, i) => s + i.lineTotal, 0);
+    const shippingTotal = Math.max(0, Number(input.shippingTotal) || 0);
+    const total = subtotal + shippingTotal;
+
+    if (orderId) {
+      await tx.orderItem.deleteMany({ where: { orderId } });
+      await tx.order.update({
+        where: { id: orderId },
+        data: {
           partnerId: input.providerPartnerId,
-          title: product.title,
-          sku: product.sku,
-          quantity: qty,
-          unitPrice: item.unit,
-          lineTotal: item.unit * qty,
-        };
+          intakeSubmissionId: input.intakeSubmissionId,
+          email: intake?.email,
+          phone: intake?.phone,
+          userId: intake?.userId ?? undefined,
+          status: "PENDING",
+          paymentStatus: "UNPAID",
+          subtotal,
+          shippingTotal,
+          total,
+          notes: input.notes ?? `Therapy proposal for ${intake?.fullName ?? "patient"}`,
+          items: { create: lineItems },
+        },
       });
-      const subtotal = lineItems.reduce((s, i) => s + i.lineTotal, 0);
-      const shippingTotal = Math.max(0, Number(input.shippingTotal) || 0);
-      const total = subtotal + shippingTotal;
+    } else {
+      const order = await tx.order.create({
+        data: {
+          orderNumber: `KP-THERAPY-${Date.now()}`,
+          partnerId: input.providerPartnerId,
+          intakeSubmissionId: input.intakeSubmissionId,
+          email: intake?.email,
+          phone: intake?.phone,
+          userId: intake?.userId ?? undefined,
+          status: "PENDING",
+          paymentStatus: "UNPAID",
+          fulfillmentStatus: "UNFULFILLED",
+          subtotal,
+          shippingTotal,
+          total,
+          notes: input.notes ?? `Therapy proposal for ${intake?.fullName ?? "patient"}`,
+          items: { create: lineItems },
+        },
+      });
+      orderId = order.id;
+    }
 
-      if (orderId) {
-        await tx.orderItem.deleteMany({ where: { orderId } });
-        await tx.order.update({
-          where: { id: orderId },
-          data: {
-            partnerId: input.providerPartnerId,
-            intakeSubmissionId: input.intakeSubmissionId,
-            email: intake?.email,
-            phone: intake?.phone,
-            userId: intake?.userId ?? undefined,
-            status: "PENDING",
-            paymentStatus: "UNPAID",
-            subtotal,
-            shippingTotal,
-            total,
-            notes: input.notes ?? `Therapy proposal for ${intake?.fullName ?? "patient"}`,
-            items: { create: lineItems },
-          },
-        });
-      } else {
-        const order = await tx.order.create({
-          data: {
-            orderNumber: `KP-THERAPY-${Date.now()}`,
-            partnerId: input.providerPartnerId,
-            intakeSubmissionId: input.intakeSubmissionId,
-            email: intake?.email,
-            phone: intake?.phone,
-            userId: intake?.userId ?? undefined,
-            status: "PENDING",
-            paymentStatus: "UNPAID",
-            fulfillmentStatus: "UNFULFILLED",
-            subtotal,
-            shippingTotal,
-            total,
-            notes: input.notes ?? `Therapy proposal for ${intake?.fullName ?? "patient"}`,
-            items: { create: lineItems },
-          },
-        });
-        orderId = order.id;
-      }
-
+    if (input.send) {
       return tx.intakeTherapyProposal.update({
         where: { id: base.id },
         data: {
@@ -321,6 +323,7 @@ export async function upsertTherapyProposal(input: {
         status: "DRAFT",
         notes: input.notes ?? null,
         providerPartnerId: input.providerPartnerId,
+        orderId,
         billingInterval,
         intervalDays,
       },

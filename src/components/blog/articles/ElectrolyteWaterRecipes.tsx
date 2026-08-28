@@ -221,9 +221,7 @@ export function ElectrolyteWaterRecipesArticle() {
     <article className={styles.article}>
       <section className={styles.hero}>
         <p className={styles.eyebrow}>Natural Hydration · Whole Food Electrolytes</p>
-        <h1 className={styles.heroTitle}>
-          Drink from <em>nature,</em> not a lab.
-        </h1>
+        <h1 className={styles.heroTitle}>Drink from nature.</h1>
         <p className={styles.heroSub}>
           Six fruit-infused electrolyte waters your body was designed to absorb — no packets, no additives, no
           compromise.

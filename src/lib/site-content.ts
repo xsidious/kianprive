@@ -5,10 +5,10 @@ export const practitionerTeam = [
   { name: "Cherie Johnson", role: "Certified Nutritionist", image: "/images/CherieJohnson.png" },
   { name: "Dr. Carmen Ramirez", role: "Physician", image: "/images/CarmenRamirez.png" },
   { name: "Chyle Beaird, M.D.", role: "Medical Director", image: "/images/ChyleBeaird.png" },
-  { name: "Dr. John Maarouf, DO", role: "Concierge and Telemedicine", image: "/images/JohnMaarouf.jpeg" },
+  { name: "Dr. John Maarouf, DO", role: "Concierge and Telemedicine", image: "/images/JohnMaarouf.png" },
   { name: "Dr. Karl Ryan, DDS", role: "Aesthetic Injector", image: "/images/KarlRyan.png" },
   { name: "Jacqueline Hayes", role: "Pharmacy Technician", image: "/images/JacquelineHayes.png" },
-  { name: "Violetta", role: "Sales Ambassador" },
+  { name: "Violetta Markelou", role: "Certified Health and Life Coach", image: "/images/ViolettaMarkelou.png" },
 ];
 
 export const homepageStats = [

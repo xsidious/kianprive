@@ -24,19 +24,19 @@ export default async function AdminPage() {
   }
 
   const [
-    users,
-    orderCount,
-    pageCount,
-    productCount,
-    bookingCount,
-    bookingRequests,
-    postsCount,
-    intakeCount,
-    pendingIntake,
-    recentOrders,
-    recentIntake,
-    partnerCount,
-  ] = await Promise.all([
+    usersResult,
+    orderCountResult,
+    pageCountResult,
+    productCountResult,
+    bookingCountResult,
+    bookingRequestsResult,
+    postsCountResult,
+    intakeCountResult,
+    pendingIntakeResult,
+    recentOrdersResult,
+    recentIntakeResult,
+    partnerCountResult,
+  ] = await Promise.allSettled([
     prisma.user.findMany({
       orderBy: { createdAt: "desc" },
       include: { subscription: true },
@@ -49,6 +49,15 @@ export default async function AdminPage() {
     prisma.bookingRequest.findMany({
       orderBy: { createdAt: "desc" },
       take: 6,
+      select: {
+        id: true,
+        fullName: true,
+        serviceTitles: true,
+        status: true,
+        scheduledStart: true,
+        preferredDate: true,
+        timezone: true,
+      },
     }),
     prisma.blogPost.count(),
     prisma.therapeuticsIntakeSubmission.count(),
@@ -58,7 +67,13 @@ export default async function AdminPage() {
     prisma.order.findMany({
       orderBy: { createdAt: "desc" },
       take: 6,
-      include: { items: { take: 2 }, partner: { select: { displayName: true, partnerCode: true, type: true } } },
+      select: {
+        orderNumber: true,
+        email: true,
+        total: true,
+        items: { take: 2, select: { title: true } },
+        partner: { select: { displayName: true, partnerCode: true, type: true } },
+      },
     }),
     prisma.therapeuticsIntakeSubmission.findMany({
       orderBy: { createdAt: "desc" },
@@ -68,12 +83,40 @@ export default async function AdminPage() {
     prisma.partnerProfile.count({ where: { type: { not: "AMBASSADOR" } } }),
   ]);
 
+  const users = usersResult.status === "fulfilled" ? usersResult.value : [];
+  const orderCount = orderCountResult.status === "fulfilled" ? orderCountResult.value : 0;
+  const pageCount = pageCountResult.status === "fulfilled" ? pageCountResult.value : 0;
+  const productCount = productCountResult.status === "fulfilled" ? productCountResult.value : 0;
+  const bookingCount = bookingCountResult.status === "fulfilled" ? bookingCountResult.value : 0;
+  const bookingRequests = bookingRequestsResult.status === "fulfilled" ? bookingRequestsResult.value : [];
+  const postsCount = postsCountResult.status === "fulfilled" ? postsCountResult.value : 0;
+  const intakeCount = intakeCountResult.status === "fulfilled" ? intakeCountResult.value : 0;
+  const pendingIntake = pendingIntakeResult.status === "fulfilled" ? pendingIntakeResult.value : 0;
+  const recentOrders = recentOrdersResult.status === "fulfilled" ? recentOrdersResult.value : [];
+  const recentIntake = recentIntakeResult.status === "fulfilled" ? recentIntakeResult.value : [];
+  const partnerCount = partnerCountResult.status === "fulfilled" ? partnerCountResult.value : 0;
+
   let ambassadorCount = 0;
   try {
     ambassadorCount = await prisma.partnerProfile.count({ where: { type: "AMBASSADOR" } });
   } catch {
     ambassadorCount = 0;
   }
+
+  const dataErrors = [
+    usersResult,
+    orderCountResult,
+    pageCountResult,
+    productCountResult,
+    bookingCountResult,
+    bookingRequestsResult,
+    postsCountResult,
+    intakeCountResult,
+    pendingIntakeResult,
+    recentOrdersResult,
+    recentIntakeResult,
+    partnerCountResult,
+  ].some((result) => result.status === "rejected");
 
   const stats = [
     { label: "Orders", value: orderCount, href: "/admin/orders" },
@@ -103,6 +146,12 @@ export default async function AdminPage() {
 
   return (
     <div className="space-y-8">
+      {dataErrors ? (
+        <div className="rounded-sm border border-amber-300/80 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+          Some dashboard data could not be loaded. Run <code className="text-xs">npm run db:repair</code> or sync the
+          database schema, then reload.
+        </div>
+      ) : null}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className={adminEyebrow}>Operations</p>

@@ -31,7 +31,7 @@ export const serviceCatalog: ServiceDetail[] = [
       ...pricedMenuLines(providerVisitMenu.inPerson),
       "Physician visits — telemedicine",
       ...pricedMenuLines(providerVisitMenu.telemedicine),
-      "Physician review: $50",
+      ...pricedMenuLines(providerVisitMenu.async),
       "Nurse visits",
       ...pricedMenuLines(providerVisitMenu.nurse),
     ],
@@ -532,6 +532,61 @@ export const serviceCatalog: ServiceDetail[] = [
     guestPrice: 25,
     memberPrice: 0,
     availability: ["Facility-based; available with membership and select protocols."],
+  },
+  {
+    slug: "holistic-salt-therapy",
+    title: "Holistic Salt Therapy",
+    image: "/images/holistic-salt-therapy/photo-1.jpg",
+    gallery: [
+      {
+        src: "/images/holistic-salt-therapy/photo-1.jpg",
+        alt: "Holistic Salt Therapy Center halotherapy salt room",
+      },
+      {
+        src: "/images/holistic-salt-therapy/photo-2.jpg",
+        alt: "Holistic Salt Therapy Center reception and waiting area",
+      },
+      {
+        src: "/images/holistic-salt-therapy/photo-3.jpg",
+        alt: "Holistic Salt Therapy Center kids halotherapy play room",
+      },
+      {
+        src: "/images/holistic-salt-therapy/photo-4.jpg",
+        alt: "Holistic Salt Therapy Center far infrared sauna session room",
+      },
+      {
+        src: "/images/holistic-salt-therapy/photo-5.jpg",
+        alt: "Holistic Salt Therapy Center wellness facility interior",
+      },
+      {
+        src: "/images/holistic-salt-therapy/photo-6.jpg",
+        alt: "Holistic Salt Therapy Center PEMF therapy bed and infrared sauna",
+      },
+      {
+        src: "/images/holistic-salt-therapy/photo-7.jpg",
+        alt: "Holistic Salt Therapy Center halotherapy wellness information",
+      },
+      {
+        src: "/images/holistic-salt-therapy/photo-8.jpg",
+        alt: "Holistic Salt Therapy Center treatment and recovery space",
+      },
+    ],
+    description:
+      "Facility partner offering salt therapy (halotherapy), PEMF therapy bed sessions, and far infrared sauna — respiratory support, cellular recovery, circulation, and deep relaxation coordinated with your KIAN Privé care plan.",
+    details: [
+      "All sessions are delivered at Holistic Salt Therapy Center, our same-location wellness partner.",
+      "Salt therapy supports respiratory wellness, inflammation balance, and holistic recovery.",
+      "PEMF sessions are designed for cellular recharge, pain support, and performance recovery.",
+      "Far infrared sauna supports circulation, detox pathways, and deep relaxation.",
+    ],
+    includes: [
+      "Salt therapy (halotherapy)",
+      "PEMF therapy bed",
+      "Far infrared sauna",
+      "Recovery protocol integration",
+      "+15% partner discount (pending confirmation)",
+    ],
+    availability: ["Facility-based partner services (not offered in-home)."],
   },
   {
     slug: "physician-visit",

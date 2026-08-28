@@ -27,14 +27,17 @@ export function AboutTeamGrid() {
       <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {aboutTeam.map((member) => (
           <article key={member.name} className={`${editorialPanel} p-4`}>
-            <div className="relative aspect-[3/4] overflow-hidden rounded-sm border border-[#e4d9c8] bg-[#f7efe3]">
+            <div
+              className="relative aspect-[3/4] overflow-hidden rounded-sm border border-[#e4d9c8]"
+              style={{ backgroundColor: member.imageBackground ?? "#f7efe3" }}
+            >
               {member.image ? (
                 <Image
                   src={member.image}
                   alt={member.name}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover object-top"
+                  className={member.imageClassName ?? "object-cover object-top"}
                 />
               ) : (
                 <div className="flex h-full items-center justify-center">
@@ -83,8 +86,17 @@ export function AboutTeamGrid() {
               </button>
             </div>
             {selected.image ? (
-              <div className="relative mx-auto mt-5 aspect-[3/4] max-w-[220px] overflow-hidden rounded-sm border border-[#e4d9c8] bg-[#f7efe3]">
-                <Image src={selected.image} alt={selected.name} fill sizes="220px" className="object-cover object-top" />
+              <div
+                className="relative mx-auto mt-5 aspect-[3/4] max-w-[220px] overflow-hidden rounded-sm border border-[#e4d9c8]"
+                style={{ backgroundColor: selected.imageBackground ?? "#f7efe3" }}
+              >
+                <Image
+                  src={selected.image}
+                  alt={selected.name}
+                  fill
+                  sizes="220px"
+                  className={selected.imageClassName ?? "object-cover object-top"}
+                />
               </div>
             ) : null}
             {selected.bio ? (

@@ -186,13 +186,21 @@ export const peptidesGlpIntakeSchema = z.object({
 export type PeptidesGlpIntakeFormData = z.infer<typeof peptidesGlpIntakeSchema>;
 
 export const peptidesGlpStepValidators = [
-  peptidesGlpIntakeSchema.pick({ patient: true, programs: true }),
-  peptidesGlpIntakeSchema.pick({ goals: true }),
-  peptidesGlpIntakeSchema.pick({ weightHistory: true }),
-  peptidesGlpIntakeSchema.pick({ medicalHistory: true, contraindications: true }),
-  peptidesGlpIntakeSchema.pick({ familyHistory: true, medications: true }),
-  peptidesGlpIntakeSchema.pick({ lifestyle: true, nutrition: true, womensHealth: true }),
-  peptidesGlpIntakeSchema.pick({ labs: true, symptoms: true }),
+  peptidesGlpIntakeSchema.pick({ patient: true, programs: true, goals: true }),
+  peptidesGlpIntakeSchema.pick({
+    weightHistory: true,
+    medicalHistory: true,
+    contraindications: true,
+    familyHistory: true,
+    medications: true,
+  }),
+  peptidesGlpIntakeSchema.pick({
+    lifestyle: true,
+    nutrition: true,
+    womensHealth: true,
+    labs: true,
+    symptoms: true,
+  }),
   peptidesGlpIntakeSchema.pick({ acknowledgments: true, consent: true }),
 ] as const;
 

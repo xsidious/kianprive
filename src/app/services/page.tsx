@@ -462,7 +462,7 @@ export default async function ServicesPage() {
           <SectionHeader
             eyebrow="PARTNER ENHANCEMENTS"
             title="Add-ons & partner services"
-            description="MindTap, beauty partner services, salt therapy, PEMF, infrared, and additional partner offerings coordinated by KIAN Privé concierge."
+            description="MindTap, beauty partner services, Holistic Salt Therapy (salt, PEMF, infrared), and additional partner offerings coordinated by KIAN Privé concierge."
           />
           <div className="mt-10">
             <ServiceCardsWithModal services={partnerAddOnServices} label="PARTNER" layout="grid" />
