@@ -47,9 +47,9 @@ export const PREVIOUS_WEIGHT_LOSS_OPTIONS = [
 ] as const;
 
 export const PREVIOUS_THERAPY_OPTIONS = [
-  "Semaglutide",
-  "Tirzepatide",
-  "Retatrutide",
+  "GLP 1",
+  "GLP 2",
+  "GLP 3",
   "Liraglutide",
   "Dulaglutide",
   "Exenatide",

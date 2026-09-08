@@ -319,8 +319,8 @@ export const PEPTIDE_GUIDELINES: PeptideGuideline[] = [
   },
   {
     id: "retatrutide",
-    name: "Retatrutide",
-    action: "GLP-1 / GIP / Glucagon, Weight Loss",
+    name: "GLP 3",
+    action: "Triple agonist, Weight Loss",
     category: "Metabolic",
     dosing: "1mg–12mg",
     microdose: "250mcg–500mcg",
@@ -355,8 +355,8 @@ export const PEPTIDE_GUIDELINES: PeptideGuideline[] = [
   },
   {
     id: "semaglutide",
-    name: "Semaglutide",
-    action: "GLP-1, Weight Loss",
+    name: "GLP 1",
+    action: "Metabolic agonist, Weight Loss",
     category: "Metabolic",
     dosing: ".25mg–2.4mg",
     microdose: "50–125mcg",
@@ -415,8 +415,8 @@ export const PEPTIDE_GUIDELINES: PeptideGuideline[] = [
   },
   {
     id: "tirzepatide",
-    name: "Tirzepatide",
-    action: "GLP-1 / GIP, Weight Loss",
+    name: "GLP 2",
+    action: "Dual agonist, Weight Loss",
     category: "Metabolic",
     dosing: "2.5mg–15mg",
     microdose: ".5mg–1.75mg",

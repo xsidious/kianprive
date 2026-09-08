@@ -440,9 +440,9 @@ export const serviceCatalog: ServiceDetail[] = [
     availability: ["Physician-supervised protocols; route and dose selected after evaluation."],
     contentSections: [
       {
-        title: "GLP-1 & Metabolic Agents",
+        title: "Weight Loss and Metabolic Agents",
         paragraphs: [
-          "Semaglutide and tirzepatide pathways are structured with physician supervision, dose titration, and periodic progress review.",
+          "GLP 1 and GLP 2 pathways are structured with physician supervision, dose titration, and periodic progress review.",
         ],
       },
       {
