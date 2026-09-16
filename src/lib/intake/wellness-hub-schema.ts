@@ -39,6 +39,13 @@ export const wellnessHubIntakeSchema = z.object({
   attestationName: z.string().min(1).max(120),
   attestationDate: z.string().min(1).max(40),
   clientSignatureDataUrl: z.string().min(40).max(900_000),
+  photoVideoConsentAccepted: z.boolean().refine((value) => value === true, {
+    message: "Photo/video HIPAA media authorization is required.",
+  }),
+  photoVideoConsentSignedAt: z.string().min(1).max(40),
+  photoVideoConsentPrintedName: z.string().trim().min(2).max(120),
+  photoVideoGuardianName: z.string().max(120).optional().default(""),
+  photoVideoGuardianRelationship: z.string().max(120).optional().default(""),
   requestedDate: z.string().max(80).optional().default("To be scheduled"),
   requestedTime: z.string().max(40).optional().default("TBD"),
   schedulingNotes: z.string().max(1000).optional(),
@@ -114,6 +121,13 @@ export function formatWellnessHubIntakeEmail(data: WellnessHubIntakeData, refere
     line("Date", data.attestationDate),
     line("Client handwritten signature", data.clientSignatureDataUrl ? "Captured on form" : "Missing"),
     "",
+    "08 PHOTO / VIDEO / TESTIMONIAL HIPAA AUTHORIZATION",
+    line("Media consent accepted", data.photoVideoConsentAccepted ? "YES" : "NO"),
+    line("Printed name", data.photoVideoConsentPrintedName),
+    line("Date signed", data.photoVideoConsentSignedAt),
+    line("Guardian name", data.photoVideoGuardianName ?? ""),
+    line("Guardian relationship", data.photoVideoGuardianRelationship ?? ""),
+    "",
     "This information is confidential and protected under HIPAA guidelines.",
   ].join("\n");
 
@@ -140,6 +154,7 @@ export function formatWellnessHubPatientConfirmation(
     `Hi ${data.fullName},`,
     "",
     "Thank you for submitting your Provider Connect intake through KIAN Privé Wellness Hub.",
+    "Your $75 provider review deposit has been received. Your chart is now with the assigned physician.",
     `Your request code is ${referenceId}.`,
     "",
     trackLine,
@@ -147,7 +162,7 @@ export function formatWellnessHubPatientConfirmation(
     "Create your member account with this email + request code to follow progress online,",
     "or check status anytime without an account.",
     "",
-    "Dr. Carmen Ramirez and our clinical team will review your information and follow up with next steps.",
+    `${data.assignedProvider?.trim() || "Your assigned physician"} will review your signed intake in Wellness Tech and follow up with labs or a treatment plan.`,
     "",
     "— KIAN Privé Concierge",
   ].join("\n");
@@ -157,7 +172,7 @@ export function formatWellnessHubPatientConfirmation(
     text,
     html: `<p>Hi ${data.fullName},</p><p>Thank you for submitting your Provider Connect intake through KIAN Privé Wellness Hub.</p><p>Your request code is <strong style="letter-spacing:0.06em">${referenceId}</strong>.</p><p>${
       trackUrl ? `<a href="${trackUrl}">Track your request</a>` : "Track your request at kianprive.com/track-intake"
-    }</p><p>Create your member account with this email + request code to follow progress online.</p><p>Dr. Carmen Ramirez and our clinical team will review your information and follow up with next steps.</p><p>— KIAN Privé Concierge</p>`,
+    }</p><p>Your $75 provider review deposit has been received. Your chart is now with the assigned physician.</p><p>Create your member account with this email + request code to follow progress online.</p><p>${data.assignedProvider?.trim() || "Your assigned physician"} will review your signed intake in Wellness Tech and follow up with labs or a treatment plan.</p><p>— KIAN Privé Concierge</p>`,
   };
 }
 
