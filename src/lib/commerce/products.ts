@@ -21,8 +21,9 @@ export type CatalogProduct = {
 };
 
 export const shopCategories = [
-  "All",
+  "Peptide Therapy",
   "Korean Skincare",
+  "All",
   "Skincare",
   "Hair Care",
   "Body Care",
@@ -31,6 +32,9 @@ export const shopCategories = [
   "Supplies",
   "Professional",
 ] as const;
+
+/** Shop category that is not sold here — opens the therapeutics catalog. */
+export const PEPTIDE_THERAPY_CATEGORY = "Peptide Therapy";
 
 /** Client catalog — `id` and `slug` match seeded Prisma product slugs for reliable cart sync. */
 export const catalogProducts: CatalogProduct[] = [

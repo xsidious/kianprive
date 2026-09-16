@@ -7,6 +7,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/providers/cart-provider";
 import { getPortalHomeForRole, getPortalLabelForRole } from "@/lib/auth-redirect";
+import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
 
 const LOGO_SRC = "/images/kian-prive-logo.png";
 
@@ -18,6 +19,7 @@ const links = [
 ];
 
 const whatWeDoLinks = [
+  { href: PRIVETHERAPEUTICS_URL, label: "Peptide Therapy", external: true },
   { href: "/services", label: "Privé Services" },
   { href: "/client-testimonials", label: "Client Testimonials" },
   { href: "/about", label: "About" },
@@ -91,11 +93,23 @@ export function Navbar() {
               <ChevronDown size={12} aria-hidden />
             </button>
             <div className="invisible absolute left-0 top-full z-50 mt-2 w-72 rounded-sm border border-[#e4d9c8] bg-white p-2 opacity-0 shadow-sm transition-all group-hover:visible group-hover:opacity-100">
-              {whatWeDoLinks.map((link) => (
-                <Link key={link.href} href={link.href} className={dropdownLinkClass}>
-                  {link.label}
-                </Link>
-              ))}
+              {whatWeDoLinks.map((link) =>
+                "external" in link && link.external ? (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={dropdownLinkClass}
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link key={link.href} href={link.href} className={dropdownLinkClass}>
+                    {link.label}
+                  </Link>
+                ),
+              )}
               <div className="group/icoone relative">
                 <button
                   type="button"
@@ -268,16 +282,28 @@ export function Navbar() {
               Home
             </Link>
             <p className="px-3 pt-2 font-serif text-[10px] uppercase tracking-[0.22em] text-[#8a682e]">What We Do</p>
-            {whatWeDoLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className={mobileNavLinkClass}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {whatWeDoLinks.map((link) =>
+              "external" in link && link.external ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={mobileNavLinkClass}
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={mobileNavLinkClass}
+                >
+                  {link.label}
+                </Link>
+              ),
+            )}
             <div className="my-2 rounded-sm border border-[#d8cbb5] p-2">
               <p className="px-2 font-serif text-[10px] uppercase tracking-[0.22em] text-[#8a682e]">Icoone</p>
               <div className="mt-1 grid gap-1">

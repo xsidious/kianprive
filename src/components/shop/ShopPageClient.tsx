@@ -23,6 +23,7 @@ import {
   getCatalogDisplayPrice,
   isCatalogProductComingSoon,
   isCatalogProductPriced,
+  PEPTIDE_THERAPY_CATEGORY,
   shopCategoryList,
 } from "@/lib/commerce/products";
 import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
@@ -102,20 +103,37 @@ export function ShopPageClient({ products }: { products: CatalogProduct[] }) {
             <div className="mt-4">
               <p className="text-sm text-[#3b3024]">Category</p>
               <div className="mt-2 grid max-h-80 gap-2 overflow-y-auto pr-1">
-                {categories.map((value) => (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => setCategory(value)}
-                    className={`rounded-sm border px-3 py-2 text-left text-sm ${
-                      category === value
-                        ? "border-[#b78d4b] bg-[#fff6e8] text-[#8f6f3e]"
-                        : "border-[#e4d9c8] bg-white text-[#4f4335]"
-                    }`}
-                  >
-                    {value}
-                  </button>
-                ))}
+                {categories.map((value) => {
+                  const itemClass =
+                    "rounded-sm border px-3 py-2 text-left text-sm border-[#e4d9c8] bg-white text-[#4f4335]";
+                  if (value === PEPTIDE_THERAPY_CATEGORY) {
+                    return (
+                      <a
+                        key={value}
+                        href={PRIVETHERAPEUTICS_URL}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={itemClass}
+                      >
+                        {value}
+                      </a>
+                    );
+                  }
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setCategory(value)}
+                      className={`rounded-sm border px-3 py-2 text-left text-sm ${
+                        category === value
+                          ? "border-[#b78d4b] bg-[#fff6e8] text-[#8f6f3e]"
+                          : "border-[#e4d9c8] bg-white text-[#4f4335]"
+                      }`}
+                    >
+                      {value}
+                    </button>
+                  );
+                })}
               </div>
             </div>
             <div className="mt-4">
