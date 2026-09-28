@@ -232,7 +232,7 @@ export default async function ServicesPage() {
             bookHref="/book-online?service=icoone-laser"
             canViewPrices={canViewPrices}
           />
-        </div>
+    </div>
         <SectionCtaBar
           bookHref="/book-online?service=icoone-laser"
           detailsHref="/services/icoone-laser"
@@ -262,7 +262,7 @@ export default async function ServicesPage() {
             bookHref="/book-online?service=icoone-laser"
             bookLabel="Start Advanced"
           />
-        </div>
+            </div>
       </EditorialSection>
 
       <EditorialSection id="face-body-wellness">
@@ -336,7 +336,7 @@ export default async function ServicesPage() {
             image={getServiceBySlug("inbody-scan")?.image}
             canViewPrices={canViewPrices}
           />
-        </div>
+          </div>
       </EditorialSection>
 
       <EditorialSection id="iv-therapy">
@@ -350,7 +350,7 @@ export default async function ServicesPage() {
           <IvPricingTable title="IV drips" items={ivDripMenu} canViewPrices={canViewPrices} />
           <IvPricingTable title="Injections" items={ivInjectionMenu} canViewPrices={canViewPrices} />
           <IvPricingTable title="IV add-ons" items={ivAddOnMenu} canViewPrices={canViewPrices} />
-        </div>
+          </div>
         <SectionCtaBar
           bookHref="/book-online?service=iv-therapy"
           detailsHref="/services/iv-therapy"
@@ -541,17 +541,17 @@ export default async function ServicesPage() {
             <div>
               <h3 className="font-serif text-xl text-[#c9a86a]">Gratuity</h3>
               <p className="mt-2 text-sm leading-relaxed text-[#e8dccb]">{gratuityPolicy}</p>
-            </div>
+        </div>
             <div>
               <h3 className="font-serif text-xl text-[#c9a86a]">Financing &amp; Insurance</h3>
               <ul className="mt-2 space-y-2">
                 {financingAndInsurancePolicies.map((item) => (
                   <li key={item} className="text-sm leading-relaxed text-[#e8dccb]">
                     {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+              </li>
+            ))}
+          </ul>
+        </div>
             <div>
               <h3 className="font-serif text-xl text-[#c9a86a]">Accepted Payments</h3>
               <ul className="mt-2 space-y-2">
@@ -561,9 +561,9 @@ export default async function ServicesPage() {
                   </li>
                 ))}
               </ul>
-            </div>
-          </div>
-        </div>
+                    </div>
+                </div>
+              </div>
         <div className="mt-10 max-w-4xl space-y-2 text-xs leading-relaxed text-[#a89884]">
           {medicalDisclaimerParagraphs.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>

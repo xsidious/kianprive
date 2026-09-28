@@ -21,7 +21,7 @@ const PEPTIDE_PRODUCT_PCT = 10;
 function isPeptideProduct(product) {
   if (product.isPrescription) return true;
   const haystack = `${product.slug} ${product.title} ${product.category ?? ""}`.toLowerCase();
-  return /peptide|glp|semaglutide|tirzepatide|compound/.test(haystack);
+  return /peptide|glp|compound/.test(haystack);
 }
 
 async function upsertServiceAssignment(partnerId, serviceSlug, commissionPct) {

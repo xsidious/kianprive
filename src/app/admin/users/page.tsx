@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 type UserRecord = {
   id: string;
@@ -14,38 +14,95 @@ const roles = ["GUEST", "MEMBER", "EDITOR", "OPERATIONS", "ADMIN", "PARTNER", "A
 const tiers = ["BASIC", "PREMIUM"] as const;
 const subStatuses = ["INACTIVE", "ACTIVE", "PAST_DUE", "CANCELED"] as const;
 
+const emptyCreateForm = {
+  name: "",
+  email: "",
+  password: "",
+  role: "MEMBER",
+  subscriptionTier: "BASIC",
+  subscriptionStatus: "ACTIVE",
+};
+
+const fieldClass = "rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3";
+
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<UserRecord[]>([]);
   const [status, setStatus] = useState("");
+  const [query, setQuery] = useState("");
+  const [roleFilter, setRoleFilter] = useState("ALL");
+  const [createOpen, setCreateOpen] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [createMessage, setCreateMessage] = useState("");
+  const [createForm, setCreateForm] = useState(emptyCreateForm);
 
-  async function loadUsers() {
-    const res = await fetch("/api/admin/users");
+  async function loadUsers(search = query, role = roleFilter) {
+    const params = new URLSearchParams();
+    if (search.trim()) params.set("q", search.trim());
+    if (role !== "ALL") params.set("role", role);
+    const res = await fetch(`/api/admin/users?${params.toString()}`);
     if (!res.ok) return;
     const payload = (await res.json()) as { users: UserRecord[] };
     setUsers(payload.users);
   }
 
   useEffect(() => {
-    void loadUsers();
-  }, []);
+    const handle = window.setTimeout(() => {
+      void loadUsers(query, roleFilter);
+    }, 250);
+    return () => window.clearTimeout(handle);
+  }, [query, roleFilter]);
 
-  async function createUser(formData: FormData) {
-    setStatus("");
-    const body = {
-      name: String(formData.get("name") || ""),
-      email: String(formData.get("email") || ""),
-      password: String(formData.get("password") || ""),
-      role: String(formData.get("role") || "MEMBER"),
-      subscriptionTier: String(formData.get("subscriptionTier") || "BASIC"),
-      subscriptionStatus: String(formData.get("subscriptionStatus") || "ACTIVE"),
+  useEffect(() => {
+    if (!createOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !creating) setCreateOpen(false);
     };
+    document.addEventListener("keydown", onKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [createOpen, creating]);
+
+  function openCreate() {
+    setCreateForm(emptyCreateForm);
+    setCreateMessage("");
+    setCreateOpen(true);
+  }
+
+  function closeCreate() {
+    if (creating) return;
+    setCreateOpen(false);
+    setCreateForm(emptyCreateForm);
+    setCreateMessage("");
+  }
+
+  async function createUser(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setCreating(true);
+    setCreateMessage("");
     const response = await fetch("/api/admin/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify(createForm),
     });
-    setStatus(response.ok ? "User created." : "Failed to create user.");
-    if (response.ok) await loadUsers();
+    if (!response.ok) {
+      const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+      setCreateMessage(payload?.error || "Failed to create user.");
+      setCreating(false);
+      return;
+    }
+    setCreating(false);
+    setCreateMessage("User created.");
+    setStatus("User created.");
+    setCreateForm(emptyCreateForm);
+    await loadUsers();
+    window.setTimeout(() => {
+      setCreateOpen(false);
+      setCreateMessage("");
+    }, 900);
   }
 
   async function updateUser(user: UserRecord) {
@@ -72,35 +129,38 @@ export default function AdminUsersPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl text-[#1f1a15]">Users</h1>
-        <p className="mt-2 text-[#6f6251]">Create, edit, and remove customer/admin accounts with subscriptions.</p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl text-[#1f1a15]">Users</h1>
+          <p className="mt-2 text-[#6f6251]">Search members, then add, edit, or remove accounts.</p>
+        </div>
+        <button
+          type="button"
+          onClick={openCreate}
+          className="rounded-sm bg-[#b78d4b] px-5 py-2.5 text-sm text-white"
+        >
+          Add user
+        </button>
       </div>
 
-      <section className="rounded-sm border border-[#b78d4b2d] bg-white p-5">
-        <h2 className="text-xl text-[#1f1a15]">Create User</h2>
-        <form
-          className="mt-4 grid gap-3 md:grid-cols-3"
-          onSubmit={(event) => {
-            event.preventDefault();
-            void createUser(new FormData(event.currentTarget));
-          }}
+      <div className="flex flex-wrap gap-3">
+        <input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Search members by name or email"
+          className={`${fieldClass} min-w-[240px] flex-1`}
+        />
+        <select
+          value={roleFilter}
+          onChange={(event) => setRoleFilter(event.target.value)}
+          className={fieldClass}
         >
-          <input name="name" placeholder="Name" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" />
-          <input name="email" type="email" placeholder="Email" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" required />
-          <input name="password" placeholder="Password" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" required />
-          <select name="role" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3">
-            {roles.map((role) => <option key={role} value={role}>{role}</option>)}
-          </select>
-          <select name="subscriptionTier" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3">
-            {tiers.map((tier) => <option key={tier} value={tier}>{tier}</option>)}
-          </select>
-          <select name="subscriptionStatus" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3">
-            {subStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
-          </select>
-          <button className="rounded-sm bg-[#b78d4b] px-5 py-2 text-sm text-white md:col-span-3">Create User</button>
-        </form>
-      </section>
+          <option value="ALL">All roles</option>
+          {roles.map((role) => (
+            <option key={role} value={role}>{role}</option>
+          ))}
+        </select>
+      </div>
 
       <section className="overflow-hidden rounded-sm border border-[#d7b67666] bg-white">
         <table className="w-full text-left text-sm text-[#3b3024]">
@@ -114,6 +174,13 @@ export default function AdminUsersPage() {
             </tr>
           </thead>
           <tbody>
+            {users.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="p-6 text-[#6f6251]">
+                  No members match that search.
+                </td>
+              </tr>
+            ) : null}
             {users.map((user) => (
               <tr key={user.id} className="border-t border-[#d7b67633] align-top">
                 <td className="p-3">
@@ -170,6 +237,89 @@ export default function AdminUsersPage() {
       </section>
 
       {status ? <p className="text-sm text-[#8f6f3e]">{status}</p> : null}
+
+      {createOpen ? (
+        <div
+          className="fixed inset-0 z-[80] flex items-center justify-center bg-[#14100bb3] p-4"
+          onClick={closeCreate}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="create-user-title"
+            className="w-full max-w-lg rounded-sm border border-[#e4d9c8] bg-[#fffcf7] p-5 shadow-xl sm:p-6"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 id="create-user-title" className="font-serif text-2xl text-[#1f1a15]">Add user</h2>
+                <p className="mt-1 text-sm text-[#6f6251]">The form clears after the account is created.</p>
+              </div>
+              <button
+                type="button"
+                onClick={closeCreate}
+                className="rounded-sm border border-[#b78d4b80] px-3 py-1 text-xs tracking-[0.14em] text-[#3b3024]"
+              >
+                CLOSE
+              </button>
+            </div>
+            <form className="mt-5 grid gap-3" onSubmit={(event) => void createUser(event)}>
+              <input
+                value={createForm.name}
+                onChange={(event) => setCreateForm((form) => ({ ...form, name: event.target.value }))}
+                placeholder="Name"
+                className={fieldClass}
+              />
+              <input
+                value={createForm.email}
+                onChange={(event) => setCreateForm((form) => ({ ...form, email: event.target.value }))}
+                type="email"
+                placeholder="Email"
+                required
+                className={fieldClass}
+              />
+              <input
+                value={createForm.password}
+                onChange={(event) => setCreateForm((form) => ({ ...form, password: event.target.value }))}
+                type="password"
+                placeholder="Password"
+                autoComplete="new-password"
+                required
+                className={fieldClass}
+              />
+              <select
+                value={createForm.role}
+                onChange={(event) => setCreateForm((form) => ({ ...form, role: event.target.value }))}
+                className={fieldClass}
+              >
+                {roles.map((role) => <option key={role} value={role}>{role}</option>)}
+              </select>
+              <select
+                value={createForm.subscriptionTier}
+                onChange={(event) => setCreateForm((form) => ({ ...form, subscriptionTier: event.target.value }))}
+                className={fieldClass}
+              >
+                {tiers.map((tier) => <option key={tier} value={tier}>{tier}</option>)}
+              </select>
+              <select
+                value={createForm.subscriptionStatus}
+                onChange={(event) => setCreateForm((form) => ({ ...form, subscriptionStatus: event.target.value }))}
+                className={fieldClass}
+              >
+                {subStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+              {createMessage ? <p className="text-sm text-[#8f6f3e]">{createMessage}</p> : null}
+              <button
+                type="submit"
+                disabled={creating || createMessage === "User created."}
+                className="rounded-sm bg-[#b78d4b] px-5 py-2.5 text-sm text-white disabled:opacity-60"
+              >
+                {creating ? "Creating…" : "Create user"}
+              </button>
+            </form>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -13,6 +13,7 @@ import {
 import { peptidesGlpIntakeSchema } from "@/lib/intake/peptides-glp-schema";
 import { INTAKE_REVIEW_FEE_LABEL, INTAKE_REVIEW_FEE_USD } from "@/lib/intake/review-fee";
 import { generateIntakeTrackingToken } from "@/lib/intake/tracking";
+import { ehrPayloadStamp, resolveEhrAssignment, withPhysicianEmails } from "@/lib/ehr/route-intake";
 
 const bodySchema = z.object({
   intake: peptidesGlpIntakeSchema,
@@ -70,6 +71,11 @@ export async function POST(req: Request) {
   }
 
   const trackingToken = generateIntakeTrackingToken();
+  const assignment = await resolveEhrAssignment(prisma, {
+    site: "kian",
+    source: "peptides-glp",
+    assignedProvider: "Dr. Carmen Ramirez",
+  });
 
   let submission: { id: string; createdAt: Date; publicTrackingToken: string | null };
   try {
@@ -84,7 +90,8 @@ export async function POST(req: Request) {
           programs: data.programs,
           publicTrackingToken: trackingToken,
           status: "PENDING_REVIEW",
-          payload: {
+          assignedPartnerId: assignment.assignedPartnerId,
+          payload: ehrPayloadStamp(assignment, {
             ...data,
             reviewFee: {
               amount: INTAKE_REVIEW_FEE_USD,
@@ -92,7 +99,7 @@ export async function POST(req: Request) {
               paidAt: new Date().toISOString(),
               testMode: testMode || Boolean(charge.testMode),
             },
-          },
+          }),
         },
         select: { id: true, createdAt: true, publicTrackingToken: true },
       });
@@ -151,7 +158,7 @@ export async function POST(req: Request) {
     const recipients = getPeptideIntakeReportRecipients();
     if (recipients.length) {
       await sendTransactionalEmail({
-        to: recipients,
+        to: withPhysicianEmails(recipients, assignment.physicianEmails),
         subject: report.subject,
         text: `${report.text}\n\nReview fee paid: $${INTAKE_REVIEW_FEE_USD.toFixed(2)} (AuthNet ${charge.transId})`,
         html: report.html,

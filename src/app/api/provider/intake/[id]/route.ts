@@ -4,23 +4,22 @@ import { requirePartnerProfile } from "@/lib/partner-guard";
 import { prisma } from "@/lib/prisma";
 import { buildIntakePdf } from "@/lib/intake/intake-pdf";
 import { sendTransactionalEmail } from "@/lib/email";
+import { accessForPartner } from "@/lib/ehr/locations";
+import { intakeVisibleWhere } from "@/lib/ehr/route-intake";
 
 type Params = { params: Promise<{ id: string }> };
 
-async function loadOwnedSubmission(partnerId: string, id: string) {
+function chartFor(access: { partner: { displayName: string; partnerCode: string }; session: { user?: { email?: string | null } } | null }) {
+  return accessForPartner({
+    displayName: access.partner.displayName,
+    partnerCode: access.partner.partnerCode,
+    email: access.session?.user?.email,
+  });
+}
+
+async function loadOwnedSubmission(partnerId: string, locationIds: string[], id: string) {
   return prisma.therapeuticsIntakeSubmission.findFirst({
-    where: {
-      id,
-      OR: [
-        { assignedPartnerId: partnerId },
-        {
-          AND: [
-            { assignedPartnerId: null },
-            { payload: { path: ["source"], equals: "wellness-hub" } },
-          ],
-        },
-      ],
-    },
+    where: { id, ...intakeVisibleWhere(partnerId, locationIds) },
   });
 }
 
@@ -31,19 +30,20 @@ export async function GET(_req: Request, { params }: Params) {
     return NextResponse.json({ error: "Provider access required." }, { status: 403 });
   }
 
+  const chart = chartFor(access);
   const { id } = await params;
-  const submission = await loadOwnedSubmission(access.partner.id, id);
+  const submission = await loadOwnedSubmission(access.partner.id, chart.locationIds, id);
   if (!submission) return NextResponse.json({ error: "Not found." }, { status: 404 });
 
-  // Claim unassigned wellness-hub rows for this practitioner when opened.
-  if (!submission.assignedPartnerId) {
+  // Only a prescriber claims an unassigned chart so an administrator cannot take the case.
+  if (!submission.assignedPartnerId && chart.canPrescribe) {
     await prisma.therapeuticsIntakeSubmission.update({
       where: { id },
       data: { assignedPartnerId: access.partner.id },
     });
   }
 
-  return NextResponse.json({ submission });
+  return NextResponse.json({ submission, canPrescribe: chart.canPrescribe });
 }
 
 const patchSchema = z.object({
@@ -69,13 +69,21 @@ export async function PATCH(req: Request, { params }: Params) {
     return NextResponse.json({ error: "Provider access required." }, { status: 403 });
   }
 
+  const chart = chartFor(access);
+  if (!chart.canPrescribe) {
+    return NextResponse.json(
+      { error: "Only a medical director or supervising physician can sign or prescribe." },
+      { status: 403 },
+    );
+  }
+
   const { id } = await params;
   const parsed = patchSchema.safeParse(await req.json());
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid payload." }, { status: 400 });
   }
 
-  const submission = await loadOwnedSubmission(access.partner.id, id);
+  const submission = await loadOwnedSubmission(access.partner.id, chart.locationIds, id);
   if (!submission) return NextResponse.json({ error: "Not found." }, { status: 404 });
 
   if (parsed.data.action === "sign") {
@@ -85,7 +93,7 @@ export async function PATCH(req: Request, { params }: Params) {
     const updated = await prisma.therapeuticsIntakeSubmission.update({
       where: { id },
       data: {
-        assignedPartnerId: access.partner.id,
+        assignedPartnerId: submission.assignedPartnerId ?? access.partner.id,
         providerSignatureDataUrl: parsed.data.providerSignatureDataUrl,
         providerSignedName: parsed.data.providerSignedName || access.partner.displayName,
         providerSignedAt: new Date(),

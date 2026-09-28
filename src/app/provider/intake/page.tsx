@@ -40,7 +40,7 @@ export default function ProviderIntakeListPage() {
         <p className={adminEyebrow}>Clinical intake</p>
         <h1 className={adminTitle}>Wellness Hub submissions</h1>
         <p className={adminMuted}>
-          Review client intakes, add your provider signature, download the dual-signed PDF, and email it to the client.
+          Charts copied into Wellness Tech from each location. Review the signed forms, then order labs or approve therapy. Only a medical director or supervising physician can prescribe.
         </p>
       </div>
 
@@ -90,6 +90,7 @@ export default function ProviderIntakeListPage() {
                   {row.email} · {row.phone}
                 </p>
                 <p className="mt-1 text-sm text-[#6f6251]">
+                  {typeof row.payload?.ehrLocationLabel === "string" ? `${row.payload.ehrLocationLabel} · ` : ""}
                   Submitted {new Date(row.createdAt).toLocaleString()}
                   {row.referredBy ? ` · Referred by ${row.referredBy}` : ""}
                 </p>

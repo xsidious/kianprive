@@ -13,6 +13,8 @@ import {
 } from "@/lib/intake/tracking";
 import { createIntakeMessage } from "@/lib/intake/messages";
 import type { IntakeSubmissionStatus } from "@prisma/client";
+import { accessForPartner } from "@/lib/ehr/locations";
+import { intakeVisibleWhere, PRESCRIBING_STATUSES } from "@/lib/ehr/route-intake";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -35,6 +37,8 @@ export async function POST(req: Request, { params }: Params) {
   const isAdmin = Boolean(session?.user?.id && canAccessAdmin(session.user.role));
 
   let partnerId: string | null = null;
+  let locationIds: string[] = [];
+  let canPrescribe = isAdmin;
   if (!isAdmin) {
     const access = await requirePartnerProfile();
     if (!access.ok) return access.response;
@@ -42,6 +46,13 @@ export async function POST(req: Request, { params }: Params) {
       return NextResponse.json({ error: "Provider access required." }, { status: 403 });
     }
     partnerId = access.partner.id;
+    const chart = accessForPartner({
+      displayName: access.partner.displayName,
+      partnerCode: access.partner.partnerCode,
+      email: access.session?.user?.email,
+    });
+    locationIds = chart.locationIds;
+    canPrescribe = chart.canPrescribe;
   }
 
   const { id } = await params;
@@ -51,20 +62,7 @@ export async function POST(req: Request, { params }: Params) {
   }
 
   const submission = await prisma.therapeuticsIntakeSubmission.findFirst({
-    where: isAdmin
-      ? { id }
-      : {
-          id,
-          OR: [
-            { assignedPartnerId: partnerId! },
-            {
-              AND: [
-                { assignedPartnerId: null },
-                { payload: { path: ["source"], equals: "wellness-hub" } },
-              ],
-            },
-          ],
-        },
+    where: isAdmin ? { id } : { id, ...intakeVisibleWhere(partnerId!, locationIds) },
   });
 
   if (!submission) {
@@ -72,6 +70,15 @@ export async function POST(req: Request, { params }: Params) {
   }
 
   const status = parsed.data.status as IntakeSubmissionStatus;
+  if (
+    !canPrescribe &&
+    PRESCRIBING_STATUSES.includes(status as (typeof PRESCRIBING_STATUSES)[number])
+  ) {
+    return NextResponse.json(
+      { error: "Only a medical director or supervising physician can order labs or approve therapy." },
+      { status: 403 },
+    );
+  }
   if (!INTAKE_STATUS_OPTIONS.includes(status)) {
     return NextResponse.json({ error: "Unknown status." }, { status: 400 });
   }

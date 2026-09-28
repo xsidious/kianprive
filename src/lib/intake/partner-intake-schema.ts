@@ -3,9 +3,12 @@ import { z } from "zod";
 export const PARTNER_SITES = ["facial-design", "4everglow"] as const;
 export type PartnerSite = (typeof PARTNER_SITES)[number];
 
+/** Distinct intake channels from partner clinics — each maps to a different clinical workflow. */
 export const PARTNER_INTAKE_TYPES = [
   "booking",
   "peptide_intake",
+  "skin_peptide_intake",
+  "wellness_intake",
   "partner_application",
   "pro_pricing",
 ] as const;
@@ -14,6 +17,15 @@ export type PartnerIntakeType = (typeof PARTNER_INTAKE_TYPES)[number];
 export const SITE_LABELS: Record<PartnerSite, string> = {
   "facial-design": "Facial Design Studio",
   "4everglow": "4everglow Wellness",
+};
+
+export const TYPE_LABELS: Record<PartnerIntakeType, string> = {
+  booking: "Booking / consultation",
+  peptide_intake: "Clinical peptide / GLP intake",
+  skin_peptide_intake: "Skin peptide intake",
+  wellness_intake: "Wellness peptide intake",
+  partner_application: "Partner application",
+  pro_pricing: "Pro / wholesale pricing",
 };
 
 export const partnerIntakeEnvelopeSchema = z.object({
@@ -58,8 +70,17 @@ export function resolvePartnerContact(data: PartnerIntakeEnvelope) {
   return { email, fullName, phone, dateOfBirth };
 }
 
-export function partnerProgramLabels(site: PartnerSite, type: PartnerIntakeType) {
-  return [`Partner · ${SITE_LABELS[site]}`, type.replace(/_/g, " ")];
+export function partnerProgramLabels(
+  site: PartnerSite,
+  type: PartnerIntakeType,
+  payload: Record<string, unknown> = {},
+) {
+  const labels = [`Partner · ${SITE_LABELS[site]}`, TYPE_LABELS[type]];
+  const purpose = asString(payload.purpose || payload.intakePurpose || payload.kianProgram);
+  if (purpose) labels.push(purpose);
+  const service = asString(payload.serviceInterest || payload.service || payload.primaryService);
+  if (service && !labels.includes(service)) labels.push(service);
+  return labels;
 }
 
 export function formatPartnerIntakeStaffEmail(input: {
@@ -72,6 +93,7 @@ export function formatPartnerIntakeStaffEmail(input: {
   payload: Record<string, unknown>;
 }) {
   const siteLabel = SITE_LABELS[input.site];
+  const typeLabel = TYPE_LABELS[input.type];
   const lines = Object.entries(input.payload).map(([key, value]) => {
     const rendered =
       value == null
@@ -82,10 +104,10 @@ export function formatPartnerIntakeStaffEmail(input: {
     return `${key}: ${rendered}`;
   });
 
-  const subject = `[${siteLabel}] ${input.type.replace(/_/g, " ")} — ${input.contact.fullName} (${input.referenceCode})`;
+  const subject = `[${siteLabel}] ${typeLabel} — ${input.contact.fullName} (${input.referenceCode})`;
   const text = [
     `Partner site: ${siteLabel}`,
-    `Type: ${input.type}`,
+    `Type: ${typeLabel} (${input.type})`,
     `Reference: ${input.referenceCode}`,
     input.externalRef ? `External ref: ${input.externalRef}` : null,
     input.referralCode ? `Referral code: ${input.referralCode}` : null,

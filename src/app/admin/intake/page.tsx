@@ -62,9 +62,16 @@ const statuses = [
 ] as const;
 
 function sourceLabel(submission: IntakeSubmission) {
-  if (submission.payload?.source === "wellness-hub") return "Wellness Hub";
-  if (submission.payload?.source === "celexo-exosome") return "Celexo / Exosome";
-  return "Site intake";
+  const source = submission.payload?.source;
+  if (source === "wellness-hub") return "Wellness Hub";
+  if (source === "celexo-exosome") return "Celexo / Exosome";
+  if (source === "facial-design") return "Facial Design Studio";
+  if (source === "4everglow") return "4everglow Wellness";
+  const siteLabel = submission.payload?.siteLabel;
+  const location = submission.payload?.ehrLocationLabel;
+  if (typeof location === "string" && location) return `Wellness Tech · ${location}`;
+  if (typeof siteLabel === "string" && siteLabel) return siteLabel;
+  return "Wellness Tech EHR";
 }
 
 function payloadText(value: unknown) {

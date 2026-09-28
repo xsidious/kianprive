@@ -11,6 +11,7 @@ import {
 } from "@/lib/intake/celexo-email";
 import { celexoIntakeSchema } from "@/lib/intake/celexo-schema";
 import { generateIntakeTrackingToken } from "@/lib/intake/tracking";
+import { ehrPayloadStamp, resolveEhrAssignment, withPhysicianEmails } from "@/lib/ehr/route-intake";
 
 const bodySchema = z.object({
   intake: celexoIntakeSchema,
@@ -38,6 +39,11 @@ export async function POST(req: Request) {
   const session = await auth();
   const data = parsed.data.intake;
   const trackingToken = generateIntakeTrackingToken();
+  const assignment = await resolveEhrAssignment(prisma, {
+    site: "kian",
+    source: "celexo",
+    assignedProvider: "Dr. Carmen Ramirez",
+  });
 
   let submission: { id: string; createdAt: Date; publicTrackingToken: string | null };
   try {
@@ -52,7 +58,8 @@ export async function POST(req: Request) {
         clientSignatureDataUrl: data.consent.signatureDataUrl,
         publicTrackingToken: trackingToken,
         status: "PENDING_REVIEW",
-        payload: data as unknown as Prisma.InputJsonValue,
+        assignedPartnerId: assignment.assignedPartnerId,
+        payload: ehrPayloadStamp(assignment, data as unknown as Record<string, unknown>) as Prisma.InputJsonValue,
       },
       select: { id: true, createdAt: true, publicTrackingToken: true },
     });
@@ -72,7 +79,7 @@ export async function POST(req: Request) {
     const recipients = getCelexoIntakeReportRecipients();
     if (recipients.length) {
       await sendTransactionalEmail({
-        to: recipients,
+        to: withPhysicianEmails(recipients, assignment.physicianEmails),
         subject: report.subject,
         text: report.text,
         html: report.html,

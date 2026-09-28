@@ -108,6 +108,13 @@ export const celexoIntakeSchema = z.object({
       signatureDate: requiredText,
       guardianName: optionalText,
       guardianRelationship: optionalText,
+      photoVideoConsentAccepted: z.boolean().refine((value) => value === true, {
+        message: "Photo/video HIPAA media authorization is required.",
+      }),
+      photoVideoConsentSignedAt: z.string().min(1, "Media consent date is required."),
+      photoVideoConsentPrintedName: z.string().trim().min(2, "Printed name is required for media consent."),
+      photoVideoGuardianName: optionalText,
+      photoVideoGuardianRelationship: optionalText,
     })
     .superRefine((value, ctx) => {
       for (const statement of CELEXO_CONSENT_STATEMENTS) {
@@ -189,6 +196,11 @@ export const defaultCelexoIntake = {
     signatureDate: new Date().toISOString().slice(0, 10),
     guardianName: "",
     guardianRelationship: "",
+    photoVideoConsentAccepted: false,
+    photoVideoConsentSignedAt: "",
+    photoVideoConsentPrintedName: "",
+    photoVideoGuardianName: "",
+    photoVideoGuardianRelationship: "",
   },
 };
 

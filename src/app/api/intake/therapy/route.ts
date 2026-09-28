@@ -4,6 +4,7 @@ import type { Role, TherapyBillingInterval } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { canAccessAdmin } from "@/lib/rbac";
+import { accessForPartner } from "@/lib/ehr/locations";
 import {
   getProposalForIntake,
   serializeProposal,
@@ -126,6 +127,24 @@ export async function POST(req: Request) {
 
   if (!providerPartnerId) {
     return NextResponse.json({ error: "Only practitioners or admins can set therapy." }, { status: 403 });
+  }
+
+  if (!isAdmin) {
+    const partner = await prisma.partnerProfile.findUnique({
+      where: { id: providerPartnerId },
+      select: { displayName: true, partnerCode: true, user: { select: { email: true } } },
+    });
+    const chart = accessForPartner({
+      displayName: partner?.displayName,
+      partnerCode: partner?.partnerCode,
+      email: partner?.user.email,
+    });
+    if (!chart.canPrescribe) {
+      return NextResponse.json(
+        { error: "Only a medical director or supervising physician can order peptides or medication." },
+        { status: 403 },
+      );
+    }
   }
 
   try {

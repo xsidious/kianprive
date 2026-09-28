@@ -26,15 +26,25 @@ export const aboutTeam: AboutTeamMember[] = [
   },
   {
     name: "Dr. Carmen Ramirez",
-    title: "Physician",
-    subtitle: "Clinical Care",
+    title: "Chief Medical Officer",
+    subtitle: "Neurology · TBI & Stroke",
     image: "/images/CarmenRamirez.png",
+    bio: [
+      "Carmen Teresa Ramirez, M.D., M.Sc., M.B.A. is a board-certified neurologist and Chief Medical Officer, with more than two decades of clinical leadership across neurology, stroke care, and brain health. She earned her Bachelor of Science in Microbiology and Immunology from the University of Miami, her Master of Science in Pharmacology and Doctor of Medicine from the University of Ottawa, and an MBA from the University of Texas at Dallas.",
+      "Dr. Ramirez has served as Stroke Program Director at multiple institutions across Florida and Texas, including South Florida Baptist Hospital, Brandon Regional Hospital, and Baylor Health Care System / Irving Medical Center. She has held faculty and academic appointments at Texas A&M University, where she served as Assistant Professor of Clinical Neurology and Director of Neurology and Stroke at College Station Medical Center.",
+      "Her expertise spans neurohospitalist medicine, traumatic brain injury consultation, tele-neurology, and intraoperative neuromonitoring. She is board certified by the American Board of Psychiatry and Neurology, holds active medical licensure in more than a dozen states, and is a member of the American Academy of Neurology and the American Medical Association. She also serves on the board of Women in Distress of Broward County and as Vice Chair of Blanket Dreams.",
+    ],
   },
   {
     name: "Chyle Beaird, M.D.",
     title: "Medical Director",
-    subtitle: "Physician",
+    subtitle: "Family Physician",
     image: "/images/ChyleBeaird.png",
+    bio: [
+      "Dr. Chyle E. Beaird, M.D. is a board-certified family physician and the Medical Director of KIAN Privé, bringing more than three decades of clinical experience to the physician-led luxury wellness concierge practice.",
+      "A graduate of the University of California, Irvine College of Medicine, Dr. Beaird completed his surgical training at Howard University Hospital in Washington, D.C., and holds medical licensure in California and Florida. His career spans primary care, aesthetic medicine, dermatology, emergency medicine, and hospital-based care.",
+      "He is a member of the American Academy of Family Physicians and the California Medical Association.",
+    ],
   },
   {
     name: "Dr. John Maarouf, DO",
@@ -55,18 +65,20 @@ export const aboutTeam: AboutTeamMember[] = [
     ],
   },
   {
-    name: "Dr. Karl Ryan, DDS",
+    name: "Dr. Karl Rayan, DDS",
     title: "Aesthetic Injector",
-    subtitle: "Provider",
+    subtitle: "Facial Aesthetics",
     image: "/images/KarlRyan.png",
     imageClassName: "object-contain object-center",
     imageBackground: "#8a7f74",
+    bio: "Dr. Karl Rayan, DDS provides facial aesthetic treatments at KIAN Privé as part of the physician-led concierge team.",
   },
   {
     name: "Jacqueline Hayes",
     title: "Pharmacy Technician",
     subtitle: "Clinical Support",
     image: "/images/JacquelineHayes.png",
+    bio: "Jacqueline Hayes supports the KIAN Privé clinical team as a pharmacy technician.",
   },
   {
     name: "Violetta Markelou",

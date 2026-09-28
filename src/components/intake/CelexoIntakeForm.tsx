@@ -9,6 +9,7 @@ import {
   TextArea,
   TextInput,
 } from "@/components/intake/intake-field-kit";
+import { PhotoVideoConsentBlock } from "@/components/intake/PhotoVideoConsentBlock";
 import { SignaturePad } from "@/components/intake/SignaturePad";
 import {
   CELEXO_ACTIVE_CONDITIONS,
@@ -608,6 +609,28 @@ export function CelexoIntakeForm() {
               options={CELEXO_CONSENT_STATEMENTS}
               selected={form.consent.acknowledgments}
               onChange={(acknowledgments) => setForm((p) => ({ ...p, consent: { ...p.consent, acknowledgments } }))}
+            />
+            <PhotoVideoConsentBlock
+              value={{
+                photoVideoConsentAccepted: form.consent.photoVideoConsentAccepted,
+                photoVideoConsentSignedAt: form.consent.photoVideoConsentSignedAt,
+                photoVideoConsentPrintedName: form.consent.photoVideoConsentPrintedName,
+                photoVideoGuardianName: form.consent.photoVideoGuardianName,
+                photoVideoGuardianRelationship: form.consent.photoVideoGuardianRelationship,
+              }}
+              onChange={(next) =>
+                setForm((p) => ({
+                  ...p,
+                  consent: {
+                    ...p.consent,
+                    photoVideoConsentAccepted: next.photoVideoConsentAccepted,
+                    photoVideoConsentSignedAt: next.photoVideoConsentSignedAt,
+                    photoVideoConsentPrintedName: next.photoVideoConsentPrintedName,
+                    photoVideoGuardianName: next.photoVideoGuardianName ?? "",
+                    photoVideoGuardianRelationship: next.photoVideoGuardianRelationship ?? "",
+                  },
+                }))
+              }
             />
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Printed full name">

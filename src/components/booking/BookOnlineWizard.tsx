@@ -24,9 +24,15 @@ import { MEMBER_PRICING_LABEL } from "@/lib/member-pricing-access";
 import { useCanViewServicePrices } from "@/hooks/use-can-view-service-prices";
 import { MEDICAL_REVIEW_FEE_USD } from "@/lib/intake/review-fee";
 import { AuthorizeNetPayForm } from "@/components/commerce/AuthorizeNetPayForm";
+import { PhotoVideoConsentBlock } from "@/components/intake/PhotoVideoConsentBlock";
 import { AppointmentAftercare } from "@/components/bookings/AppointmentAftercare";
 import { DEFAULT_TIMEZONE } from "@/lib/scheduling/config";
 import { capturePartnerReferralFromUrl, readPartnerReferralClient } from "@/lib/partner-referral";
+import {
+  bookingRequiresPhotoVideoConsent,
+  defaultPhotoVideoConsentFields,
+  type PhotoVideoConsentFields,
+} from "@/lib/intake/photo-video-consent";
 
 type WizardStep = "welcome" | "count" | "services" | "provider" | "schedule" | "details" | "complete";
 type VisitorType = "member" | "guest" | null;
@@ -74,7 +80,7 @@ const COUNT_OPTIONS = [
 ];
 
 const FALLBACK_AESTHETICS_PROVIDERS = [
-  { id: "dr-karl-ryan", label: "Dr. Karl Ryan, DDS" },
+  { id: "dr-karl-rayan", label: "Dr. Karl Rayan, DDS" },
   { id: "dr-john-maarouf", label: "Dr. John Maarouf, DO" },
 ];
 
@@ -164,6 +170,7 @@ export function BookOnlineWizard() {
   const [phone, setPhone] = useState("");
   const [patientDateOfBirth, setPatientDateOfBirth] = useState("");
   const [preferredLocation, setPreferredLocation] = useState("In-Clinic");
+  const [mediaConsent, setMediaConsent] = useState<PhotoVideoConsentFields>(defaultPhotoVideoConsentFields);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [confirmedSummary, setConfirmedSummary] = useState("");
@@ -175,6 +182,7 @@ export function BookOnlineWizard() {
   );
   const needsProviderStep = selectedServices.includes("facial-aesthetics");
   const needsLabDemographics = bookingIncludesLabWork(selectedServices);
+  const needsMediaConsent = bookingRequiresPhotoVideoConsent(selectedServices);
   const showAftercarePreview = bookingIncludesAftercare(selectedServices);
 
   const primaryServiceId = selectedServices[0] ?? "";
@@ -430,6 +438,7 @@ export function BookOnlineWizard() {
           scheduledSlotId: selectedSlotId,
           timezone: DEFAULT_TIMEZONE,
           partnerCode,
+          photoVideoConsent: needsMediaConsent ? mediaConsent : undefined,
           opaqueData: payment?.opaqueData,
           billTo: payment?.billTo,
           testCardNumber: payment?.testCardNumber,
@@ -456,11 +465,18 @@ export function BookOnlineWizard() {
     }
   }
 
+  const mediaConsentReady =
+    !needsMediaConsent ||
+    (mediaConsent.photoVideoConsentAccepted &&
+      mediaConsent.photoVideoConsentPrintedName.trim().length >= 2 &&
+      Boolean(mediaConsent.photoVideoConsentSignedAt));
+
   const detailsReady =
     Boolean(fullName.trim()) &&
     Boolean(email.trim()) &&
     Boolean(phone.trim()) &&
-    (!needsLabDemographics || Boolean(patientDateOfBirth.trim()));
+    (!needsLabDemographics || Boolean(patientDateOfBirth.trim())) &&
+    mediaConsentReady;
 
   const canContinue =
     (step === "services" && servicesValid()) ||
@@ -842,6 +858,24 @@ export function BookOnlineWizard() {
                   </label>
                 ) : null}
               </div>
+
+              {needsMediaConsent ? (
+                <div className="mt-8 text-left">
+                  <PhotoVideoConsentBlock
+                    compact
+                    value={mediaConsent}
+                    onChange={(next) =>
+                      setMediaConsent({
+                        photoVideoConsentAccepted: next.photoVideoConsentAccepted,
+                        photoVideoConsentSignedAt: next.photoVideoConsentSignedAt,
+                        photoVideoConsentPrintedName: next.photoVideoConsentPrintedName,
+                        photoVideoGuardianName: next.photoVideoGuardianName ?? "",
+                        photoVideoGuardianRelationship: next.photoVideoGuardianRelationship ?? "",
+                      })
+                    }
+                  />
+                </div>
+              ) : null}
 
               <p className="mt-8 mb-3 font-medium text-[#3b3024]">Visit location</p>
               <div className="grid gap-2 sm:grid-cols-3">

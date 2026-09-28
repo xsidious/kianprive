@@ -56,6 +56,8 @@ export default function ProviderIntakeDetailPage() {
   const [busy, setBusy] = useState(false);
   const [statusNote, setStatusNote] = useState("");
   const [createOrderDraft, setCreateOrderDraft] = useState(true);
+  const [canPrescribe, setCanPrescribe] = useState(true);
+  const [signerName, setSignerName] = useState("Assigned physician");
 
   async function load() {
     const res = await fetch(`/api/provider/intake/${id}`);
@@ -63,14 +65,22 @@ export default function ProviderIntakeDetailPage() {
       setMessage("Could not load submission.");
       return;
     }
-    const payload = (await res.json()) as { submission: Submission };
+    const payload = (await res.json()) as { submission: Submission; canPrescribe?: boolean };
     setSubmission(payload.submission);
+    setCanPrescribe(payload.canPrescribe !== false);
     setSignature(payload.submission.providerSignatureDataUrl);
     setStatusNote(payload.submission.statusNote || "");
   }
 
   useEffect(() => {
     void load();
+    void fetch("/api/partner/me")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        const name = data?.partner?.displayName;
+        if (typeof name === "string" && name.trim()) setSignerName(name.trim());
+      })
+      .catch(() => undefined);
   }, [id]);
 
   async function saveSignature() {
@@ -86,7 +96,7 @@ export default function ProviderIntakeDetailPage() {
       body: JSON.stringify({
         action: "sign",
         providerSignatureDataUrl: signature,
-        providerSignedName: "Dr. Carmen Ramirez",
+        providerSignedName: signerName,
       }),
     });
     setBusy(false);
@@ -156,7 +166,28 @@ export default function ProviderIntakeDetailPage() {
 
       {message ? <p className="text-sm text-[#1b6568]">{message}</p> : null}
 
-      <IntakeTherapyPicker intakeSubmissionId={id} onSaved={() => void load()} />
+      <section className={`${adminPanel} space-y-2 p-5 text-sm text-[#5f5344]`}>
+        <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Wellness Tech EHR</p>
+        <p>
+          This chart is copied into the central Wellness Tech record
+          {field(payload, "ehrLocationLabel") !== "—" ? ` from ${field(payload, "ehrLocationLabel")}` : ""}. Assigned
+          physician: {field(payload, "assignedProvider")}.
+        </p>
+        <ol className="list-decimal space-y-1 pl-5">
+          <li>Patient completes the forms and checks the medical disclaimer.</li>
+          <li>The chart is stored here and sent to the assigned physician. Only a medical director or supervising physician can prescribe peptides or order labs.</li>
+          <li>The physician reviews the signed attestation that the information is true and correct.</li>
+          <li>Request labs, or approve, build the therapy, and order peptides or medication.</li>
+        </ol>
+      </section>
+
+      {canPrescribe ? (
+        <IntakeTherapyPicker intakeSubmissionId={id} onSaved={() => void load()} />
+      ) : (
+        <section className={`${adminPanel} p-5 text-sm text-[#6f6251]`}>
+          You can review this chart. Ordering labs, approving therapy, and prescribing peptides is limited to the medical director or supervising physician.
+        </section>
+      )}
 
       <IntakeMessageThread
         title="Request messages"
@@ -216,7 +247,7 @@ export default function ProviderIntakeDetailPage() {
           Create unpaid order draft when approving (links intake → database order)
         </label>
         <div className="flex flex-wrap gap-2">
-          {STATUS_ACTIONS.map((action) => (
+          {STATUS_ACTIONS.filter((action) => canPrescribe || (action.value !== "NEEDS_LABS" && action.value !== "APPROVED")).map((action) => (
             <button
               key={action.value}
               type="button"
@@ -268,7 +299,7 @@ export default function ProviderIntakeDetailPage() {
           Sign below to complete the clinical intake. You can then download or email the dual-signed PDF.
         </p>
         <div className="mt-4">
-          <SignaturePad value={signature} onChange={setSignature} label="Dr. Carmen Ramirez signature" />
+          <SignaturePad value={signature} onChange={setSignature} label={`${signerName} signature`} />
         </div>
         {submission.providerSignedAt ? (
           <p className="mt-2 text-xs text-[#6f6251]">
@@ -277,7 +308,7 @@ export default function ProviderIntakeDetailPage() {
           </p>
         ) : null}
         <div className="mt-4 flex flex-wrap gap-2">
-          <button type="button" disabled={busy} onClick={() => void saveSignature()} className={adminBtnPrimary}>
+          <button type="button" disabled={busy || !canPrescribe} onClick={() => void saveSignature()} className={adminBtnPrimary}>
             Save signature
           </button>
           <a href={`/api/provider/intake/${id}/pdf`} className={adminBtnGhost}>

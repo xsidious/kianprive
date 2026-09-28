@@ -19,7 +19,7 @@ export default async function AdminLayout({
 
   return (
     <div className={`${adminShell} lg:grid lg:grid-cols-[272px_1fr]`}>
-      <aside className="border-b border-[#e5d7c2]/80 bg-white/80 backdrop-blur-md lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r">
+      <aside className="border-b border-[#e5d7c2]/80 bg-white/75 backdrop-blur-md lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r">
         <div className="border-b border-[#e5d7c2]/80 px-5 py-6">
           <p className="text-[10px] tracking-[0.22em] text-[#8f6f3e]">KIAN PRIVÉ</p>
           <p className="mt-1 font-serif text-3xl text-[#1f1a15]">Admin</p>

@@ -580,6 +580,31 @@ export async function buildIntakePdf(input: IntakePdfInput) {
   });
   advance(68);
 
+  const mediaAccepted = str(input.payload.photoVideoConsentAccepted).toLowerCase();
+  if (mediaAccepted === "true" || mediaAccepted === "yes") {
+    drawSectionTitle("Photo / Video / Testimonial HIPAA Authorization", "08");
+    drawFieldRow([
+      {
+        label: "Media consent",
+        value: "Accepted",
+      },
+      {
+        label: "Date signed",
+        value: input.payload.photoVideoConsentSignedAt,
+      },
+    ]);
+    drawFieldRow([
+      {
+        label: "Printed name",
+        value: input.payload.photoVideoConsentPrintedName || input.attestationName || input.fullName,
+      },
+      {
+        label: "Guardian (if any)",
+        value: input.payload.photoVideoGuardianName || "—",
+      },
+    ]);
+  }
+
   drawSignatureBlock({
     title: "Client signature",
     nameLabel: "Printed name",

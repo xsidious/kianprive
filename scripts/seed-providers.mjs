@@ -9,9 +9,9 @@ const prisma = new PrismaClient();
  */
 const providers = [
   {
-    name: "Dr. Karl Ryan",
+    name: "Dr. Karl Rayan",
     email: "karl.ryan@kianprive.com",
-    displayName: "Dr. Karl Ryan, DDS",
+    displayName: "Dr. Karl Rayan, DDS",
     specialty: "Medical Aesthetics",
     code: "KARLRYAN",
     servicePct: 25,
@@ -58,7 +58,7 @@ const providers = [
     name: "Dr. Carmen Ramirez",
     email: "carmen.ramirez@kianprive.com",
     displayName: "Dr. Carmen Ramirez",
-    specialty: "Clinical Care",
+    specialty: "Chief Medical Officer",
     code: "CARMENRAM",
     servicePct: 25,
     productPct: 10,
@@ -75,7 +75,7 @@ const providers = [
       "korean-organic-skincare",
       "glp1-peptides",
     ],
-    password: "CarmenRamirez#Kp5wL!",
+    password: "Cadasil8@$",
   },
   {
     name: "Dr. Chyle Beaird",
@@ -100,6 +100,24 @@ const providers = [
     ],
     password: "ChyleBeaird#Kp7nM!",
   },
+  {
+    name: "Tamecha Jean",
+    email: "mechaj12@gmail.com",
+    displayName: "Tamecha Jean, Esthetician",
+    specialty: "Esthetician",
+    code: "TAMECHAJEAN",
+    servicePct: 25,
+    productPct: 10,
+    services: [
+      "icoone-laser",
+      "facial-aesthetics",
+      "beauty-hair-nails",
+      "inbody-scan",
+      "microneedling-with-exosomes",
+      "korean-organic-skincare",
+    ],
+    password: "TamechaJean#Kp9mR!",
+  },
 ];
 
 async function main() {
@@ -112,12 +130,16 @@ async function main() {
         name: row.name,
         passwordHash,
         role: Role.PROVIDER,
+        mustSetPassword: false,
+        memberOnboardingComplete: true,
       },
       create: {
         name: row.name,
         email: row.email.toLowerCase(),
         passwordHash,
         role: Role.PROVIDER,
+        mustSetPassword: false,
+        memberOnboardingComplete: true,
       },
     });
 

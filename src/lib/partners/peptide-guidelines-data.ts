@@ -21,7 +21,7 @@ export type PeptideGuideline = {
 };
 
 export const PEPTIDE_LIBRARY_TITLE = "Peptide Usage Clinical Guidelines";
-export const PEPTIDE_LIBRARY_VERSION = "2026.1";
+export const PEPTIDE_LIBRARY_VERSION = "2026.2";
 
 export const PEPTIDE_LIBRARY_INTRO =
   "Reference protocols summarizing primary action, dosing range, microdose, frequency, cycle, contraindications, and side effects. For clinician use — not medical advice.";
@@ -318,7 +318,7 @@ export const PEPTIDE_GUIDELINES: PeptideGuideline[] = [
     sideEffects: ["Fatigue", "Injection site reaction", "Transient inflammation"],
   },
   {
-    id: "retatrutide",
+    id: "glp-3",
     name: "GLP 3",
     action: "Triple agonist, Weight Loss",
     category: "Metabolic",
@@ -354,7 +354,7 @@ export const PEPTIDE_GUIDELINES: PeptideGuideline[] = [
     sideEffects: ["Overstimulation", "Insomnia (if dosed late)", "Mild irritability"],
   },
   {
-    id: "semaglutide",
+    id: "glp-1",
     name: "GLP 1",
     action: "Metabolic agonist, Weight Loss",
     category: "Metabolic",
@@ -414,7 +414,7 @@ export const PEPTIDE_GUIDELINES: PeptideGuideline[] = [
     sideEffects: ["Injection site reaction", "Transient flu-like symptoms"],
   },
   {
-    id: "tirzepatide",
+    id: "glp-2",
     name: "GLP 2",
     action: "Dual agonist, Weight Loss",
     category: "Metabolic",

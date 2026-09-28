@@ -10,6 +10,7 @@ import {
   TextInput,
   YesNoField,
 } from "@/components/intake/intake-field-kit";
+import { PhotoVideoConsentBlock } from "@/components/intake/PhotoVideoConsentBlock";
 import {
   ACKNOWLEDGMENT_STATEMENTS,
   ACTIVITY_FREQUENCY_OPTIONS,
@@ -421,6 +422,25 @@ export function PeptidesGlpIntakeForm() {
               information solely to personalize my care plan. *
             </span>
           </label>
+          <PhotoVideoConsentBlock
+            value={{
+              photoVideoConsentAccepted: form.consent.photoVideoConsentAccepted,
+              photoVideoConsentSignedAt: form.consent.photoVideoConsentSignedAt,
+              photoVideoConsentPrintedName: form.consent.photoVideoConsentPrintedName,
+              photoVideoGuardianName: form.consent.photoVideoGuardianName,
+              photoVideoGuardianRelationship: form.consent.photoVideoGuardianRelationship,
+            }}
+            onChange={(next) =>
+              update("consent", {
+                ...form.consent,
+                photoVideoConsentAccepted: next.photoVideoConsentAccepted ? true : (false as never),
+                photoVideoConsentSignedAt: next.photoVideoConsentSignedAt,
+                photoVideoConsentPrintedName: next.photoVideoConsentPrintedName,
+                photoVideoGuardianName: next.photoVideoGuardianName ?? "",
+                photoVideoGuardianRelationship: next.photoVideoGuardianRelationship ?? "",
+              })
+            }
+          />
           <Field label="How did you hear about KIAN Privé? *">
             <select value={form.consent.referralSource} onChange={(e) => update("consent", { ...form.consent, referralSource: e.target.value })} className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2.5 text-sm">
               <option value="">Select one</option>

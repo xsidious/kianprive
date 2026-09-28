@@ -42,11 +42,12 @@ export default async function PartnerLayout({ children }: { children: React.Reac
   );
 
   return (
-    <div className="min-h-screen bg-[#fffdf9] lg:grid lg:grid-cols-[240px_1fr]">
-      <aside className="border-b border-[#e4d9c8] bg-[#fffcf7] lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r">
-        <div className="border-b border-[#e4d9c8] px-5 py-5">
-          <p className="text-[10px] tracking-[0.22em] text-[#b78d4b]">PARTNER PORTAL</p>
-          <p className="mt-2 truncate font-serif text-xl text-[#1f1a15]">{partnerName}</p>
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,#fff9f0_0%,#f4ebe0_45%,#ebe1d4_100%)] lg:grid lg:grid-cols-[260px_1fr]">
+      <aside className="border-b border-[#e5d7c2]/80 bg-white/75 backdrop-blur-md lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r">
+        <div className="border-b border-[#e5d7c2]/80 px-5 py-6">
+          <p className="text-[10px] tracking-[0.22em] text-[#8f6f3e]">KIAN PRIVÉ</p>
+          <p className="mt-1 font-serif text-3xl text-[#1f1a15]">Partner</p>
+          <p className="mt-2 truncate text-sm text-[#1f1a15]">{partnerName}</p>
           {partnerCode ? (
             <p className="mt-1 text-[11px] tracking-[0.12em] text-[#8f6f3e]">CODE {partnerCode}</p>
           ) : null}

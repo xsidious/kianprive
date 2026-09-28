@@ -17,6 +17,11 @@ import { bookingIncludesLabWork } from "@/lib/bookings/lab-services";
 import { sendLabPrescriptionEmails } from "@/lib/bookings/lab-prescription-notify";
 import { chargeAuthorizeNetCard } from "@/lib/authorize-net";
 import { MEDICAL_REVIEW_FEE_LABEL, MEDICAL_REVIEW_FEE_USD } from "@/lib/intake/review-fee";
+import {
+  bookingRequiresPhotoVideoConsent,
+  formatPhotoVideoConsentForNotes,
+  photoVideoConsentFieldsSchema,
+} from "@/lib/intake/photo-video-consent";
 
 const createBookingSchema = z.object({
   fullName: z.string().min(2),
@@ -30,6 +35,15 @@ const createBookingSchema = z.object({
   memberPricingActive: z.boolean().optional(),
   partnerCode: z.string().optional(),
   patientDateOfBirth: z.string().max(20).optional(),
+  photoVideoConsent: z
+    .object({
+      photoVideoConsentAccepted: z.boolean(),
+      photoVideoConsentSignedAt: z.string().max(40),
+      photoVideoConsentPrintedName: z.string().max(120),
+      photoVideoGuardianName: z.string().max(120).optional(),
+      photoVideoGuardianRelationship: z.string().max(120).optional(),
+    })
+    .optional(),
   opaqueData: z
     .object({
       dataDescriptor: z.string().min(1),
@@ -76,6 +90,20 @@ export async function POST(req: Request) {
 
   const timezone = parsed.data.timezone ?? DEFAULT_TIMEZONE;
   const includesLabWork = bookingIncludesLabWork(parsed.data.serviceIds);
+  const requiresMediaConsent = bookingRequiresPhotoVideoConsent(parsed.data.serviceIds);
+
+  if (requiresMediaConsent) {
+    const consentParsed = photoVideoConsentFieldsSchema.safeParse(parsed.data.photoVideoConsent);
+    if (!consentParsed.success) {
+      return NextResponse.json(
+        {
+          error:
+            "The HIPAA authorization is required before a medical treatment can be booked.",
+        },
+        { status: 400 },
+      );
+    }
+  }
 
   if (includesLabWork) {
     if (!parsed.data.patientDateOfBirth?.trim()) {
@@ -229,6 +257,16 @@ export async function POST(req: Request) {
         timezone,
         notes: [
           parsed.data.notes,
+          requiresMediaConsent && parsed.data.photoVideoConsent
+            ? formatPhotoVideoConsentForNotes({
+                photoVideoConsentAccepted: parsed.data.photoVideoConsent.photoVideoConsentAccepted,
+                photoVideoConsentSignedAt: parsed.data.photoVideoConsent.photoVideoConsentSignedAt,
+                photoVideoConsentPrintedName: parsed.data.photoVideoConsent.photoVideoConsentPrintedName,
+                photoVideoGuardianName: parsed.data.photoVideoConsent.photoVideoGuardianName ?? "",
+                photoVideoGuardianRelationship:
+                  parsed.data.photoVideoConsent.photoVideoGuardianRelationship ?? "",
+              })
+            : null,
           acuityAppointmentId ? `Acuity appointment #${acuityAppointmentId}` : null,
         ]
           .filter(Boolean)

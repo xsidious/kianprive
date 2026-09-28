@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { getPortalHomeForRole } from "@/lib/auth-redirect";
+import { MemberPortalNav } from "@/components/portal/MemberPortalNav";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -16,5 +17,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
     redirect("/onboarding");
   }
 
-  return children;
+  return (
+    <>
+      <MemberPortalNav name={session.user.name} />
+      {children}
+    </>
+  );
 }

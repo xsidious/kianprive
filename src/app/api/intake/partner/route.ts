@@ -11,6 +11,7 @@ import {
   resolvePartnerContact,
   SITE_LABELS,
 } from "@/lib/intake/partner-intake-schema";
+import { ehrPayloadStamp, resolveEhrAssignment, withPhysicianEmails } from "@/lib/ehr/route-intake";
 
 /**
  * Receives booking / peptide / partner-application / pro-pricing submissions
@@ -49,7 +50,7 @@ export async function POST(req: Request) {
   }
 
   const trackingToken = generateIntakeTrackingToken();
-  const programs = partnerProgramLabels(data.site, data.type);
+  const programs = partnerProgramLabels(data.site, data.type, data.payload);
 
   const existingMember = await prisma.user.findFirst({
     where: {
@@ -59,15 +60,19 @@ export async function POST(req: Request) {
     select: { id: true },
   });
 
-  let partnerId: string | null = null;
-  if (data.referralCode?.trim()) {
-    const code = data.referralCode.trim().toUpperCase();
-    const partner = await prisma.partnerProfile.findFirst({
-      where: { partnerCode: { equals: code, mode: "insensitive" }, status: "ACTIVE" },
-      select: { id: true },
-    });
-    partnerId = partner?.id ?? null;
-  }
+  const payloadProvider =
+    typeof data.payload.assignedProvider === "string"
+      ? data.payload.assignedProvider
+      : typeof data.payload.provider === "string"
+        ? data.payload.provider
+        : null;
+  const payloadLocation = typeof data.payload.location === "string" ? data.payload.location : null;
+  const assignment = await resolveEhrAssignment(prisma, {
+    site: data.site,
+    source: data.site,
+    location: payloadLocation,
+    assignedProvider: payloadProvider,
+  });
 
   let submission: { id: string; createdAt: Date; publicTrackingToken: string | null };
   try {
@@ -79,11 +84,11 @@ export async function POST(req: Request) {
         dateOfBirth: contact.dateOfBirth,
         programs,
         referredBy: data.referralCode?.trim() || null,
-        assignedPartnerId: partnerId,
+        assignedPartnerId: assignment.assignedPartnerId,
         userId: existingMember?.id ?? null,
         publicTrackingToken: trackingToken,
         status: "PENDING_REVIEW",
-        payload: {
+        payload: ehrPayloadStamp(assignment, {
           source: data.site,
           site: data.site,
           siteLabel: SITE_LABELS[data.site],
@@ -91,7 +96,7 @@ export async function POST(req: Request) {
           externalRef: data.externalRef ?? null,
           referralCode: data.referralCode ?? null,
           ...data.payload,
-        },
+        }),
       },
       select: { id: true, createdAt: true, publicTrackingToken: true },
     });
@@ -122,7 +127,7 @@ export async function POST(req: Request) {
       .flatMap((value) => String(value).split(",").map((part) => part.trim()).filter(Boolean));
 
     await sendTransactionalEmail({
-      to: [...new Set(staffTo)],
+      to: withPhysicianEmails(staffTo, assignment.physicianEmails),
       subject: report.subject,
       text: `${report.text}\n\nInternal submission id: ${submission.id}\nTrack: ${trackUrl}`,
       html: report.html,
