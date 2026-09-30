@@ -13,6 +13,7 @@ import {
 import { generateIntakeTrackingToken, intakeTrackUrl } from "@/lib/intake/tracking";
 import { ehrPayloadStamp, resolveEhrAssignment, withPhysicianEmails } from "@/lib/ehr/route-intake";
 import { INTAKE_REVIEW_FEE_LABEL, INTAKE_REVIEW_FEE_USD } from "@/lib/intake/review-fee";
+import { physicianReviewForConditions } from "@/lib/intake/medical-review";
 
 function authorizeWellnessHub(req: Request) {
   const expected = process.env.WELLNESS_HUB_INTAKE_SECRET?.trim();
@@ -105,6 +106,8 @@ export async function POST(req: Request) {
   });
   const assignedProvider = assignment.assignedProviderName;
 
+  const clinicalReview = physicianReviewForConditions(data);
+
   const existingMember = await prisma.user.findFirst({
     where: {
       email: { equals: data.email.trim().toLowerCase(), mode: "insensitive" },
@@ -128,7 +131,8 @@ export async function POST(req: Request) {
           assignedPartnerId: assignment.assignedPartnerId,
           userId: existingMember?.id ?? null,
           publicTrackingToken: trackingToken,
-          status: "PENDING_REVIEW",
+          status: clinicalReview.status,
+          statusNote: clinicalReview.statusNote,
           payload: ehrPayloadStamp(assignment, {
             source: "wellness-hub",
             site: "privetherapeutics.solutions",
@@ -212,7 +216,7 @@ export async function POST(req: Request) {
     await sendTransactionalEmail({
       to: staffTo,
       subject: report.subject,
-      text: `${report.text}\n\nProvider review deposit: $${INTAKE_REVIEW_FEE_USD.toFixed(2)} paid (AuthNet ${charge.transId})\nInternal submission id: ${submission.id}`,
+      text: `${report.text}\n\nProvider review deposit: $${INTAKE_REVIEW_FEE_USD.toFixed(2)} paid (AuthNet ${charge.transId})\n${clinicalReview.statusNote ? `${clinicalReview.statusNote}\n` : ""}Internal submission id: ${submission.id}`,
       html: report.html,
       replyTo: data.email,
     });

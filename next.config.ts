@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
   async headers() {
-    return [
+    const rules: Awaited<ReturnType<NonNullable<NextConfig["headers"]>>> = [
       {
         source: "/images/:path*",
         headers: [
@@ -30,13 +30,18 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
-      {
+    ];
+    // Hashed files can be cached forever in production. The same header in
+    // `next dev` pins a broken chunk in the browser for a year.
+    if (process.env.NODE_ENV === "production") {
+      rules.push({
         source: "/_next/static/:path*",
         headers: [
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
-      },
-    ];
+      });
+    }
+    return rules;
   },
   async redirects() {
     return [

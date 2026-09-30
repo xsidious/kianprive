@@ -36,6 +36,7 @@ const navGroups = [
   {
     label: "Account",
     links: [
+      { href: "/partner/intake-link", label: "Clinical intake" },
       { href: "/partner/profile", label: "Profile" },
       { href: "/partner/support", label: "Support" },
     ],

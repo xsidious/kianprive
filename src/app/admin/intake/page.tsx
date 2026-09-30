@@ -7,6 +7,7 @@ import { AdminModal } from "@/components/admin/AdminModal";
 import { IntakeMessageThread } from "@/components/intake/IntakeMessageThread";
 import { IntakeTherapyPicker } from "@/components/intake/IntakeTherapyPicker";
 import { IntakeFullFormView } from "@/components/intake/IntakeFullFormView";
+import { ClinicalIntakeShare } from "@/components/account/ClinicalIntakeQr";
 import {
   adminBtnGhost,
   adminBtnPrimary,
@@ -19,6 +20,7 @@ import {
   adminTitle,
   statusTone,
 } from "@/components/admin/ui";
+import { INTAKE_QUEUES, intakeQueue, type IntakeQueue } from "@/lib/intake/tracking";
 
 type IntakeSubmission = {
   id: string;
@@ -85,7 +87,7 @@ export default function AdminIntakePage() {
   const [submissions, setSubmissions] = useState<IntakeSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
-  const [filter, setFilter] = useState<"ALL" | (typeof statuses)[number]>("ALL");
+  const [filter, setFilter] = useState<"ALL" | IntakeQueue>("ALL");
   const [modalId, setModalId] = useState<string | null>(null);
 
   async function loadSubmissions() {
@@ -136,17 +138,28 @@ export default function AdminIntakePage() {
     await loadSubmissions();
   }
 
-  const filtered = useMemo(() => {
-    if (filter === "ALL") return submissions;
-    return submissions.filter((s) => s.status === filter);
-  }, [filter, submissions]);
+  const grouped = useMemo(() => {
+    const buckets: Record<IntakeQueue, IntakeSubmission[]> = {
+      IN_REVIEW: [],
+      APPROVED: [],
+      OTHER: [],
+    };
+    for (const submission of submissions) {
+      buckets[intakeQueue(submission.status)].push(submission);
+    }
+    return buckets;
+  }, [submissions]);
+
+  const visibleQueues = filter === "ALL" ? INTAKE_QUEUES : INTAKE_QUEUES.filter((item) => item.id === filter);
 
   const selected = submissions.find((s) => s.id === modalId) ?? null;
 
   const counts = useMemo(() => {
-    const map: Record<string, number> = { ALL: submissions.length };
-    for (const status of statuses) map[status] = 0;
-    for (const item of submissions) map[item.status] = (map[item.status] ?? 0) + 1;
+    const map: Record<string, number> = { ALL: submissions.length, IN_REVIEW: 0, APPROVED: 0, OTHER: 0 };
+    for (const item of submissions) {
+      const queue = intakeQueue(item.status);
+      map[queue] = (map[queue] ?? 0) + 1;
+    }
     return map;
   }, [submissions]);
 
@@ -167,33 +180,40 @@ export default function AdminIntakePage() {
 
       {message ? <p className="text-sm text-[#1b6568]">{message}</p> : null}
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {[
-          ["All", "ALL"],
-          ["Pending review", "PENDING_REVIEW"],
-          ["Physician review", "UNDER_PHYSICIAN_REVIEW"],
-          ["Needs labs", "NEEDS_LABS"],
-          ["Needs follow-up", "NEEDS_FOLLOW_UP"],
-        ].map(([label, key]) => (
+      <ClinicalIntakeShare title="Send a customer to clinical intake" />
+
+      <div className="grid gap-3 sm:grid-cols-3">
+        {INTAKE_QUEUES.map((item) => (
           <button
-            key={key}
+            key={item.id}
             type="button"
-            onClick={() => setFilter(key as typeof filter)}
-            className={`${adminStat} text-left transition ${filter === key ? "border-[#8a682e] ring-1 ring-[#8a682e33]" : "hover:border-[#b78d4b80]"}`}
+            onClick={() => setFilter((current) => (current === item.id ? "ALL" : item.id))}
+            className={`${adminStat} text-left transition ${filter === item.id ? "border-[#8a682e] ring-1 ring-[#8a682e33]" : "hover:border-[#b78d4b80]"}`}
           >
-            <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">{label}</p>
-            <p className="mt-2 font-serif text-3xl text-[#1f1a15]">{counts[key] ?? 0}</p>
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">{item.label}</p>
+            <p className="mt-2 font-serif text-3xl text-[#1f1a15]">{counts[item.id] ?? 0}</p>
+            <p className="mt-1 text-xs text-[#6f6251]">{item.hint}</p>
           </button>
         ))}
       </div>
 
       {loading ? (
         <p className="text-sm text-[#6f6251]">Loading submissions…</p>
-      ) : filtered.length === 0 ? (
-        <div className={`${adminPanel} p-8 text-sm text-[#6f6251]`}>No intake submissions in this view yet.</div>
       ) : (
-        <div className="grid gap-3">
-          {filtered.map((submission) => (
+        <div className="space-y-8">
+          {visibleQueues.map((queue) => {
+            const rows = grouped[queue.id];
+            return (
+              <section key={queue.id} className="space-y-3">
+                <div>
+                  <h2 className="font-serif text-2xl text-[#1f1a15]">{queue.label}</h2>
+                  <p className="text-sm text-[#6f6251]">{queue.hint}</p>
+                </div>
+                {rows.length === 0 ? (
+                  <div className={`${adminPanel} p-6 text-sm text-[#6f6251]`}>Nothing in {queue.label.toLowerCase()}.</div>
+                ) : (
+                  <div className="grid gap-3">
+                    {rows.map((submission) => (
             <article key={submission.id} className={`${adminPanel} p-5`}>
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
@@ -230,6 +250,9 @@ export default function AdminIntakePage() {
                   </span>
                 ))}
               </div>
+              {submission.statusNote ? (
+                <p className="mt-3 text-sm text-[#8f6f3e]">{submission.statusNote}</p>
+              ) : null}
               {submission.latestMessage ? (
                 <p className="mt-3 line-clamp-2 rounded-lg bg-[#fcfaf6] px-3 py-2 text-sm text-[#2b2218]">
                   <span className="text-[#8f6f3e]">{submission.latestMessage.authorLabel}:</span>{" "}
@@ -269,7 +292,12 @@ export default function AdminIntakePage() {
                 </button>
               </div>
             </article>
-          ))}
+                    ))}
+                  </div>
+                )}
+              </section>
+            );
+          })}
         </div>
       )}
 

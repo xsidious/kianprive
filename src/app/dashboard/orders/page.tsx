@@ -4,6 +4,7 @@ import { PackageCheck } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { getPortalHomeForRole } from "@/lib/auth-redirect";
 import { prisma } from "@/lib/prisma";
+import { orderIncludesPeptides } from "@/lib/commerce/peptide-orders";
 import { patientOrderProgress } from "@/lib/orders/progress";
 import {
   EditorialEyebrow,
@@ -19,7 +20,11 @@ function progressTone(tone: string) {
   return "bg-[#f3f0ea] text-[#6f6251]";
 }
 
-export default async function MemberOrdersPage() {
+export default async function MemberOrdersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ kind?: string }>;
+}) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
@@ -28,6 +33,8 @@ export default async function MemberOrdersPage() {
     redirect(roleHome);
   }
 
+  const { kind } = await searchParams;
+  const peptidesOnly = kind === "peptides";
   const email = session.user.email?.trim();
   const orders = await prisma.order.findMany({
     where: {
@@ -38,7 +45,7 @@ export default async function MemberOrdersPage() {
     },
     orderBy: { createdAt: "desc" },
     include: {
-      items: { select: { quantity: true, title: true } },
+      items: { select: { quantity: true, title: true, product: { select: { category: true } } } },
       _count: { select: { messages: true } },
     },
   });
@@ -51,7 +58,8 @@ export default async function MemberOrdersPage() {
           <div>
             <h1 className="font-serif text-4xl text-[#1f1a15]">Orders &amp; progress</h1>
             <p className="mt-3 max-w-xl text-[#6f6251]">
-              Track fulfillment, view shipping updates, and message our team about any order.
+              Track shop and peptide orders, shipping updates, and messages with the team. Peptide orders appear after
+              your physician sends the plan and you pay.
             </p>
           </div>
           <Link href="/dashboard" className={editorialCtaSecondary}>
@@ -59,14 +67,40 @@ export default async function MemberOrdersPage() {
           </Link>
         </div>
 
-        <div className="mt-10 space-y-4">
-          {orders.length === 0 ? (
+        <div className="mt-8 flex flex-wrap gap-2">
+          <Link
+            href="/dashboard/orders"
+            className={`rounded-full px-4 py-2 text-xs uppercase tracking-[0.14em] ${
+              peptidesOnly ? "border border-[#e4d9c8] bg-white text-[#4f4335]" : "bg-[#1f1a15] text-white"
+            }`}
+          >
+            All
+          </Link>
+          <Link
+            href="/dashboard/orders?kind=peptides"
+            className={`rounded-full px-4 py-2 text-xs uppercase tracking-[0.14em] ${
+              peptidesOnly ? "bg-[#1f1a15] text-white" : "border border-[#e4d9c8] bg-white text-[#4f4335]"
+            }`}
+          >
+            Peptides
+          </Link>
+        </div>
+
+        <div className="mt-6 space-y-4">
+          {(() => {
+            const visible = orders.filter((order) => !peptidesOnly || orderIncludesPeptides(order.items));
+            if (visible.length === 0) {
+              return (
             <div className={`${editorialPanel} p-8 text-sm text-[#6f6251]`}>
-              No orders yet. Therapy orders appear here after you accept and pay.
+              {peptidesOnly
+                ? "No peptide orders yet. They appear here after your physician sends a plan and you pay."
+                : "No orders yet. Therapy orders appear here after you accept and pay."}
             </div>
-          ) : (
-            orders.map((order) => {
+              );
+            }
+            return visible.map((order) => {
               const progress = patientOrderProgress(order);
+              const peptideOrder = orderIncludesPeptides(order.items);
               const itemCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
               return (
                 <Link
@@ -78,6 +112,11 @@ export default async function MemberOrdersPage() {
                     <div>
                       <p className="inline-flex items-center gap-2 text-xs tracking-[0.14em] text-[#8f6f3e]">
                         <PackageCheck size={14} /> {order.orderNumber}
+                        {peptideOrder ? (
+                          <span className="rounded-full bg-[#fff6e8] px-2 py-0.5 text-[10px] uppercase tracking-[0.12em]">
+                            Peptides
+                          </span>
+                        ) : null}
                       </p>
                       <p className="mt-2 font-serif text-2xl text-[#1f1a15]">{progress.label}</p>
                       <p className="mt-1 text-sm text-[#6f6251]">{progress.detail}</p>
@@ -97,8 +136,8 @@ export default async function MemberOrdersPage() {
                   </div>
                 </Link>
               );
-            })
-          )}
+            });
+          })()}
         </div>
       </EditorialSection>
     </div>

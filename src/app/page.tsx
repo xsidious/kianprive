@@ -31,7 +31,7 @@ export default function Home() {
         lineTwo="Uncompromising care."
         lineThree="Exclusively yours."
         description="Delivering uninterrupted, personalized care at your location or ours. No busy waiting rooms. No rush. Just elite professionals, precision protocols, and luxury-level results."
-        primaryCta={{ label: "Book Consultation", href: "/book-online" }}
+        primaryCta={{ label: "Book Online", href: "/book-online" }}
         secondaryCta={{ label: "Explore Services", href: "/services" }}
         imageSrc={pageHeroes.home.src}
         imageAlt={pageHeroes.home.alt}
@@ -100,11 +100,11 @@ export default function Home() {
           Join KIAN Privé for concierge wellness care and premium practitioner education designed for measurable, long-term results.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="/services" className="inline-flex min-h-[44px] items-center rounded-sm bg-[#8a682e] px-6 text-[11px] tracking-[0.18em] text-white">
-            GET STARTED NOW
-          </Link>
-          <Link href="/book-online" className="inline-flex min-h-[44px] items-center rounded-sm border border-white/80 px-6 text-[11px] tracking-[0.18em] text-white">
+          <Link href="/book-online" className="inline-flex min-h-[44px] items-center rounded-sm bg-[#8a682e] px-6 text-[11px] tracking-[0.18em] text-white">
             BOOK ONLINE
+          </Link>
+          <Link href="/services" className="inline-flex min-h-[44px] items-center rounded-sm border border-white/80 px-6 text-[11px] tracking-[0.18em] text-white">
+            VIEW SERVICES
           </Link>
           <Link href="/contact" className="inline-flex min-h-[44px] items-center rounded-sm border border-white/80 px-6 text-[11px] tracking-[0.18em] text-white">
             SCHEDULE CONSULTATION

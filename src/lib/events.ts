@@ -7,6 +7,7 @@ export type RetreatEvent = {
   when: string;
   image: string;
   flyerImage?: string;
+  flyerPdf?: string;
   host?: string;
   ticketUrl?: string;
   ticketPrice?: string;
@@ -15,6 +16,22 @@ export type RetreatEvent = {
 };
 
 export const retreatEvents: RetreatEvent[] = [
+  {
+    slug: "kian-prive-seoul",
+    title: "KIAN Privé Seoul",
+    subtitle: "November 13–27, 2027 · Seoul, South Korea",
+    description:
+      "A luxury wellness escape in Seoul with physician-supervised programs, K-beauty treatments, and bespoke packages. Supervised by KIAN Physician Dr. Carmen Ramirez.",
+    location: "Seoul, South Korea",
+    when: "November 13–27, 2027",
+    image: "/images/kian-prive-seoul-flyer.jpg",
+    flyerImage: "/images/kian-prive-seoul-flyer.jpg",
+    highlights: [
+      "5-, 7-, and 10-day escapes",
+      "Premium bespoke packages starting at $4,999",
+      "Physician-supervised programs and continued aftercare",
+    ],
+  },
   {
     slug: "corporate-health-wellness-day",
     title: "Corporate Health & Wellness Day — Coming Soon",

@@ -9,6 +9,7 @@ import {
   settleVendorCostsAfterPayment,
 } from "@/lib/commerce/vendor-payables";
 import { activateTherapySubscriptionFromPayment } from "@/lib/commerce/therapy-subscriptions";
+import { forwardPaidOrderToWellnessTech } from "@/lib/commerce/forward-distribution-order";
 import { formatChargeDate, intervalLabel } from "@/lib/commerce/therapy-billing";
 
 type OpaqueData = { dataDescriptor: string; dataValue: string };
@@ -177,6 +178,7 @@ export async function processOrderCardPayment(input: {
 
   await createProductCommissionsForOrder(order.id);
   const settlement = await settleVendorCostsAfterPayment(order.id);
+  await forwardPaidOrderToWellnessTech(order.id);
 
   const proposalId = order.therapyProposal?.id ?? order.therapySubscription?.proposalId;
   const activated = proposalId

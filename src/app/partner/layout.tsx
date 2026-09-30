@@ -60,6 +60,7 @@ export default async function PartnerLayout({ children }: { children: React.Reac
               { href: "/partner/bookings", label: "Bookings" },
               { href: "/partner/guidelines", label: "Guidelines" },
               { href: "/partner/earnings", label: "Earnings" },
+              { href: "/partner/intake-link", label: "Clinical intake" },
               { href: "/partner/profile", label: "Profile" },
               { href: "/partner/support", label: "Support" },
             ].map((link) => (

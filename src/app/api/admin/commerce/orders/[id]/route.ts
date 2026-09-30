@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminAccess } from "@/lib/admin-guard";
 import { writeAuditLog } from "@/lib/ops/audit";
 import { orderStatusFromFulfillment } from "@/lib/orders/sync-status";
+import { forwardPaidOrderToWellnessTech } from "@/lib/commerce/forward-distribution-order";
 
 type Params = {
   params: Promise<{ id: string }>;
@@ -44,6 +45,10 @@ export async function PATCH(req: Request, { params }: Params) {
     entityId: id,
     metadata: { orderNumber: order.orderNumber, status: order.status },
   });
+
+  if (order.paymentStatus === "PAID") {
+    await forwardPaidOrderToWellnessTech(order.id);
+  }
 
   return NextResponse.json({ order });
 }

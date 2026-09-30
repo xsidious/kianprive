@@ -12,6 +12,7 @@ import {
   SITE_LABELS,
 } from "@/lib/intake/partner-intake-schema";
 import { ehrPayloadStamp, resolveEhrAssignment, withPhysicianEmails } from "@/lib/ehr/route-intake";
+import { physicianReviewForConditions } from "@/lib/intake/medical-review";
 
 /**
  * Receives booking / peptide / partner-application / pro-pricing submissions
@@ -49,6 +50,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "patientEmail or payload.email is required." }, { status: 400 });
   }
 
+  const clinicalReview = physicianReviewForConditions(data.payload);
   const trackingToken = generateIntakeTrackingToken();
   const programs = partnerProgramLabels(data.site, data.type, data.payload);
 
@@ -87,7 +89,8 @@ export async function POST(req: Request) {
         assignedPartnerId: assignment.assignedPartnerId,
         userId: existingMember?.id ?? null,
         publicTrackingToken: trackingToken,
-        status: "PENDING_REVIEW",
+        status: clinicalReview.status,
+        statusNote: clinicalReview.statusNote,
         payload: ehrPayloadStamp(assignment, {
           source: data.site,
           site: data.site,

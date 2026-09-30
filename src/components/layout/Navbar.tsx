@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/providers/cart-provider";
 import { getPortalHomeForRole, getPortalLabelForRole } from "@/lib/auth-redirect";
 import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
+import { TherapeuticsAnchor } from "@/components/site/TherapeuticsAnchor";
 
 const LOGO_SRC = "/images/kian-prive-logo.png";
 
@@ -83,6 +84,9 @@ export function Navbar() {
           <Link href="/" className={navLinkClass}>
             Home
           </Link>
+          <Link href="/book-online" className={navLinkClass}>
+            Book Online
+          </Link>
           <div className="group relative">
             <button
               type="button"
@@ -95,15 +99,9 @@ export function Navbar() {
             <div className="invisible absolute left-0 top-full z-50 mt-2 w-72 rounded-sm border border-[#e4d9c8] bg-white p-2 opacity-0 shadow-sm transition-all group-hover:visible group-hover:opacity-100">
               {whatWeDoLinks.map((link) =>
                 "external" in link && link.external ? (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={dropdownLinkClass}
-                  >
+                  <TherapeuticsAnchor key={link.href} href={link.href} className={dropdownLinkClass}>
                     {link.label}
-                  </a>
+                  </TherapeuticsAnchor>
                 ) : (
                   <Link key={link.href} href={link.href} className={dropdownLinkClass}>
                     {link.label}
@@ -150,20 +148,20 @@ export function Navbar() {
               </span>
             ) : null}
           </button>
+          <Link
+            href="/book-online"
+            className="rounded-sm bg-[#8a682e] px-4 py-2 font-serif text-[11px] uppercase tracking-[0.16em] text-white transition hover:bg-[#735624]"
+          >
+            Book Online
+          </Link>
           {data?.user ? (
             <Link
               href={portalHome}
-              className="rounded-sm bg-[#8a682e] px-4 py-2 font-serif text-[11px] uppercase tracking-[0.16em] text-white transition hover:bg-[#735624]"
+              className="rounded-sm border border-[#8a682e] px-4 py-2 font-serif text-[11px] uppercase tracking-[0.16em] text-[#3b3024] transition hover:bg-[#faf6f0] hover:text-[#8a682e]"
             >
               {portalLabel}
             </Link>
           ) : null}
-          <Link
-            href="/book-online"
-            className="rounded-sm border border-[#8a682e] px-4 py-2 font-serif text-[11px] uppercase tracking-[0.16em] text-[#3b3024] transition hover:bg-[#faf6f0] hover:text-[#8a682e]"
-          >
-            Book Online
-          </Link>
           {data?.user ? (
             <div className="relative" ref={userMenuRef}>
               <button
@@ -275,6 +273,13 @@ export function Navbar() {
         <div className="border-t border-[#e8dfd0] bg-white px-4 py-4 sm:hidden">
           <div className="grid gap-1">
             <Link
+              href="/book-online"
+              onClick={() => setMobileOpen(false)}
+              className="rounded-sm bg-[#8a682e] px-4 py-3 text-center font-serif text-[11px] uppercase tracking-[0.16em] text-white"
+            >
+              Book Online
+            </Link>
+            <Link
               href="/"
               onClick={() => setMobileOpen(false)}
               className={mobileNavLinkClass}
@@ -284,15 +289,9 @@ export function Navbar() {
             <p className="px-3 pt-2 font-serif text-[10px] uppercase tracking-[0.22em] text-[#8a682e]">What We Do</p>
             {whatWeDoLinks.map((link) =>
               "external" in link && link.external ? (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={mobileNavLinkClass}
-                >
+                <TherapeuticsAnchor key={link.href} href={link.href} className={mobileNavLinkClass}>
                   {link.label}
-                </a>
+                </TherapeuticsAnchor>
               ) : (
                 <Link
                   key={link.href}

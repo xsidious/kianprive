@@ -18,10 +18,13 @@ export type CatalogProduct = {
   redirectUrl?: string;
   /** Size / kit options — cart uses each option `id` as the product id. */
   options?: CatalogProductOption[];
+  /** Physician-ordered peptides. Visible to approved members, not added to the retail cart. */
+  membershipOnly?: boolean;
 };
 
 export const shopCategories = [
   "Peptide Therapy",
+  "Peptides",
   "Korean Skincare",
   "All",
   "Skincare",

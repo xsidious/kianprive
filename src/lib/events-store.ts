@@ -27,6 +27,7 @@ function parseRetreatEvent(item: Record<string, unknown>): RetreatEvent | null {
   };
 
   if (typeof item.flyerImage === "string") event.flyerImage = item.flyerImage;
+  if (typeof item.flyerPdf === "string") event.flyerPdf = item.flyerPdf;
   if (typeof item.host === "string") event.host = item.host;
   if (typeof item.ticketUrl === "string") event.ticketUrl = item.ticketUrl;
   if (typeof item.ticketPrice === "string") event.ticketPrice = item.ticketPrice;
@@ -47,7 +48,10 @@ function normalizeRetreatEvents(input: unknown): RetreatEvent[] {
     })
     .filter((value): value is RetreatEvent => Boolean(value));
 
-  return parsed.length > 0 ? parsed : retreatEvents;
+  if (parsed.length === 0) return retreatEvents;
+  const storedSlugs = new Set(parsed.map((event) => event.slug));
+  const missing = retreatEvents.filter((event) => !storedSlugs.has(event.slug));
+  return [...missing, ...parsed];
 }
 
 export async function getRetreatEventsFromStore() {

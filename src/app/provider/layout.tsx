@@ -9,6 +9,7 @@ import { PortalNavList } from "@/components/portal/PortalNav";
 
 const links = [
   { href: "/provider", label: "Overview" },
+  { href: "/provider/patients", label: "Patients" },
   { href: "/provider/intake", label: "Intake" },
   { href: "/provider/therapeutics", label: "Therapeutics" },
   { href: "/provider/bookings", label: "Consultations" },

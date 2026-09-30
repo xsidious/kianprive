@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { hashSetupToken } from "@/lib/auth/setup-token";
+import { publicMemberProfile } from "@/lib/account/member-profile";
 
 export async function GET(req: Request) {
   const token = new URL(req.url).searchParams.get("token")?.trim() ?? "";
@@ -19,15 +20,7 @@ export async function GET(req: Request) {
   }
 
   return NextResponse.json({
-    email: user.email,
-    name: user.name ?? "",
-    phone: user.profile?.phone ?? "",
-    dateOfBirth: user.profile?.dateOfBirth ?? "",
-    medicalConditions: user.profile?.medicalConditions ?? "",
-    allergies: user.profile?.allergies ?? "",
-    medications: user.profile?.medications ?? "",
-    emergencyContact: user.profile?.emergencyContact ?? "",
-    emergencyPhone: user.profile?.emergencyPhone ?? "",
+    ...publicMemberProfile(user),
     importedNotes: user.profile?.importedNotes ?? "",
   });
 }

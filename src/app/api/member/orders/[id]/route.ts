@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { orderIncludesPeptides } from "@/lib/commerce/peptide-orders";
 import { patientOrderProgress } from "@/lib/orders/progress";
 
 type Params = { params: Promise<{ id: string }> };
@@ -21,7 +22,7 @@ async function findOwnedOrder(userId: string, email: string | null | undefined, 
           title: true,
           quantity: true,
           sku: true,
-          product: { select: { featuredImage: true, slug: true } },
+          product: { select: { featuredImage: true, slug: true, category: true } },
         },
       },
       fulfillments: {
@@ -78,6 +79,7 @@ export async function GET(_: Request, { params }: Params) {
       orderNumber: order.orderNumber,
       createdAt: order.createdAt.toISOString(),
       notes: order.notes,
+      isPeptide: orderIncludesPeptides(order.items),
       progress,
       items: order.items,
       fulfillments: order.fulfillments,

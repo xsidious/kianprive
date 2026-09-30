@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PortalSignOut } from "@/components/auth/PortalSignOut";
-import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
+import { CLINICAL_INTAKE_URL } from "@/lib/privetherapeutics";
+import { TherapeuticsAnchor } from "@/components/site/TherapeuticsAnchor";
 
 export default function MemberTherapeuticsPage() {
   return (
@@ -30,14 +31,12 @@ export default function MemberTherapeuticsPage() {
           plan—not as a retail checkout item.
         </p>
         <div className="flex flex-wrap gap-3 pt-2">
-          <a
-            href={PRIVETHERAPEUTICS_URL}
-            target="_blank"
-            rel="noreferrer"
+          <TherapeuticsAnchor
+            href={CLINICAL_INTAKE_URL}
             className="inline-flex min-h-[44px] items-center rounded-sm bg-[#b78d4b] px-5 text-[11px] tracking-[0.16em] text-white"
           >
             START INTAKE
-          </a>
+          </TherapeuticsAnchor>
           <Link
             href="/shop"
             className="inline-flex min-h-[44px] items-center rounded-sm border border-[#b78d4b80] px-5 text-[11px] tracking-[0.16em] text-[#3b3024]"

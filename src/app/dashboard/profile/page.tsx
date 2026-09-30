@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { CircleUserRound, MessageCircleMore, Phone, Sparkles } from "lucide-react";
+import { CircleUserRound, MessageCircleMore, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
+import { MemberProfileFields } from "@/components/account/MemberProfileFields";
+import { emptyMemberProfile, memberProfileFromRecord, type MemberProfileDraft } from "@/lib/account/member-profile";
 import { buildWhatsAppUrl } from "@/lib/contact";
 import {
   EditorialEyebrow,
@@ -14,16 +16,8 @@ import {
 } from "@/components/ui/editorial-primitives";
 
 export default function DashboardProfilePage() {
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [company, setCompany] = useState("");
+  const [profile, setProfile] = useState<MemberProfileDraft>(emptyMemberProfile());
   const [email, setEmail] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
-  const [medicalConditions, setMedicalConditions] = useState("");
-  const [allergies, setAllergies] = useState("");
-  const [medications, setMedications] = useState("");
-  const [emergencyContact, setEmergencyContact] = useState("");
-  const [emergencyPhone, setEmergencyPhone] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -38,30 +32,9 @@ export default function DashboardProfilePage() {
         setLoading(false);
         return;
       }
-      const payload = (await res.json()) as {
-        profile: {
-          name: string;
-          phone: string;
-          company: string;
-          email: string;
-          dateOfBirth: string;
-          medicalConditions: string;
-          allergies: string;
-          medications: string;
-          emergencyContact: string;
-          emergencyPhone: string;
-        };
-      };
-      setName(payload.profile.name ?? "");
-      setPhone(payload.profile.phone ?? "");
-      setCompany(payload.profile.company ?? "");
+      const payload = (await res.json()) as { profile: MemberProfileDraft & { email?: string } };
+      setProfile(memberProfileFromRecord(payload.profile));
       setEmail(payload.profile.email ?? "");
-      setDateOfBirth(payload.profile.dateOfBirth ?? "");
-      setMedicalConditions(payload.profile.medicalConditions ?? "");
-      setAllergies(payload.profile.allergies ?? "");
-      setMedications(payload.profile.medications ?? "");
-      setEmergencyContact(payload.profile.emergencyContact ?? "");
-      setEmergencyPhone(payload.profile.emergencyPhone ?? "");
       setLoading(false);
     }
     void loadProfile();
@@ -73,17 +46,7 @@ export default function DashboardProfilePage() {
     const res = await fetch("/api/profile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name,
-        phone,
-        company,
-        dateOfBirth,
-        medicalConditions,
-        allergies,
-        medications,
-        emergencyContact,
-        emergencyPhone,
-      }),
+      body: JSON.stringify(profile),
     });
     if (res.ok) setSaved(true);
   }
@@ -121,58 +84,7 @@ export default function DashboardProfilePage() {
             <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">EMAIL</p>
             <p>{email || "Loading..."}</p>
           </div>
-          <input className={editorialInput} placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-          <div className="relative">
-            <Phone size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#8f6f3e]" />
-            <input
-              className={`${editorialInput} pl-9`}
-              placeholder="Phone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-          </div>
-          <input
-            className={editorialInput}
-            placeholder="Company"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
-          />
-          <input
-            className={editorialInput}
-            placeholder="Date of birth"
-            value={dateOfBirth}
-            onChange={(e) => setDateOfBirth(e.target.value)}
-          />
-          <textarea
-            className={`${editorialInput} min-h-24`}
-            placeholder="Medical conditions"
-            value={medicalConditions}
-            onChange={(e) => setMedicalConditions(e.target.value)}
-          />
-          <textarea
-            className={`${editorialInput} min-h-20`}
-            placeholder="Allergies"
-            value={allergies}
-            onChange={(e) => setAllergies(e.target.value)}
-          />
-          <textarea
-            className={`${editorialInput} min-h-20`}
-            placeholder="Medications"
-            value={medications}
-            onChange={(e) => setMedications(e.target.value)}
-          />
-          <input
-            className={editorialInput}
-            placeholder="Emergency contact name"
-            value={emergencyContact}
-            onChange={(e) => setEmergencyContact(e.target.value)}
-          />
-          <input
-            className={editorialInput}
-            placeholder="Emergency contact phone"
-            value={emergencyPhone}
-            onChange={(e) => setEmergencyPhone(e.target.value)}
-          />
+          <MemberProfileFields value={profile} onChange={setProfile} />
           <button disabled={loading} className={`${editorialCtaPrimary} disabled:cursor-not-allowed disabled:opacity-70`}>
             SAVE PROFILE
           </button>

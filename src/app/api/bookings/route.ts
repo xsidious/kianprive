@@ -18,6 +18,11 @@ import { sendLabPrescriptionEmails } from "@/lib/bookings/lab-prescription-notif
 import { chargeAuthorizeNetCard } from "@/lib/authorize-net";
 import { MEDICAL_REVIEW_FEE_LABEL, MEDICAL_REVIEW_FEE_USD } from "@/lib/intake/review-fee";
 import {
+  bookingRequiresNurseConsent,
+  formatNurseConsentForNotes,
+  nurseConsentFieldsSchema,
+} from "@/lib/intake/nurse-consent";
+import {
   bookingRequiresPhotoVideoConsent,
   formatPhotoVideoConsentForNotes,
   photoVideoConsentFieldsSchema,
@@ -42,6 +47,15 @@ const createBookingSchema = z.object({
       photoVideoConsentPrintedName: z.string().max(120),
       photoVideoGuardianName: z.string().max(120).optional(),
       photoVideoGuardianRelationship: z.string().max(120).optional(),
+    })
+    .optional(),
+  nurseConsent: z
+    .object({
+      nurseConsentAccepted: z.boolean(),
+      nurseConsentSignedAt: z.string().max(40),
+      nurseConsentPrintedName: z.string().max(120),
+      nurseConsentGuardianName: z.string().max(120).optional(),
+      nurseConsentGuardianRelationship: z.string().max(120).optional(),
     })
     .optional(),
   opaqueData: z
@@ -91,6 +105,7 @@ export async function POST(req: Request) {
   const timezone = parsed.data.timezone ?? DEFAULT_TIMEZONE;
   const includesLabWork = bookingIncludesLabWork(parsed.data.serviceIds);
   const requiresMediaConsent = bookingRequiresPhotoVideoConsent(parsed.data.serviceIds);
+  const requiresNurseConsent = bookingRequiresNurseConsent(parsed.data.serviceIds);
 
   if (requiresMediaConsent) {
     const consentParsed = photoVideoConsentFieldsSchema.safeParse(parsed.data.photoVideoConsent);
@@ -100,6 +115,16 @@ export async function POST(req: Request) {
           error:
             "The HIPAA authorization is required before a medical treatment can be booked.",
         },
+        { status: 400 },
+      );
+    }
+  }
+
+  if (requiresNurseConsent) {
+    const nurseParsed = nurseConsentFieldsSchema.safeParse(parsed.data.nurseConsent);
+    if (!nurseParsed.success) {
+      return NextResponse.json(
+        { error: "The nursing treatment agreement is required before IV therapy can be booked." },
         { status: 400 },
       );
     }
@@ -265,6 +290,16 @@ export async function POST(req: Request) {
                 photoVideoGuardianName: parsed.data.photoVideoConsent.photoVideoGuardianName ?? "",
                 photoVideoGuardianRelationship:
                   parsed.data.photoVideoConsent.photoVideoGuardianRelationship ?? "",
+              })
+            : null,
+          requiresNurseConsent && parsed.data.nurseConsent
+            ? formatNurseConsentForNotes({
+                nurseConsentAccepted: parsed.data.nurseConsent.nurseConsentAccepted,
+                nurseConsentSignedAt: parsed.data.nurseConsent.nurseConsentSignedAt,
+                nurseConsentPrintedName: parsed.data.nurseConsent.nurseConsentPrintedName,
+                nurseConsentGuardianName: parsed.data.nurseConsent.nurseConsentGuardianName ?? "",
+                nurseConsentGuardianRelationship:
+                  parsed.data.nurseConsent.nurseConsentGuardianRelationship ?? "",
               })
             : null,
           acuityAppointmentId ? `Acuity appointment #${acuityAppointmentId}` : null,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ClinicalIntakeShare } from "@/components/account/ClinicalIntakeQr";
 import { BrandedQrCard } from "@/components/ambassador/BrandedQrCard";
 import { providerBookingLinks } from "@/lib/provider";
 import { adminBtnGhost, adminEyebrow, adminMuted, adminPanel, adminTitle } from "@/components/admin/ui";
@@ -38,8 +39,8 @@ export default function ProviderLinksPage() {
         <p className={adminEyebrow}>Share</p>
         <h1 className={adminTitle}>Links & QR</h1>
         <p className={adminMuted}>
-          Share your practitioner code for consultations, telemedicine, and shop product referrals. Visitors who open
-          your link are tracked for 30 days.
+          The Book online QR opens the main KIAN Privé booking page with your code. That code stays attached when a
+          customer continues to Privé Therapeutics.
         </p>
       </div>
       {error ? <p className="text-sm text-[#7c2c2c]">{error}</p> : null}
@@ -49,7 +50,7 @@ export default function ProviderLinksPage() {
             <div className="mb-3 flex flex-wrap gap-2">
               {(
                 [
-                  ["book", "Book"],
+                  ["book", "Book online"],
                   ["telemedicine", "Telemedicine"],
                   ["shop", "Shop"],
                   ["home", "Home"],
@@ -118,6 +119,7 @@ export default function ProviderLinksPage() {
       ) : (
         <p className="text-sm text-[#6f6251]">Loading…</p>
       )}
+      {code ? <ClinicalIntakeShare code={code} title="Send a customer to clinical intake" /> : null}
     </div>
   );
 }

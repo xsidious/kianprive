@@ -1,23 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { MemberProfileFields } from "@/components/account/MemberProfileFields";
+import { emptyMemberProfile, memberProfileFromRecord, type MemberProfileDraft } from "@/lib/account/member-profile";
 import {
   EditorialEyebrow,
   EditorialSection,
   editorialCtaPrimary,
-  editorialInput,
   editorialPanel,
 } from "@/components/ui/editorial-primitives";
 
 export default function OnboardingPage() {
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
-  const [medicalConditions, setMedicalConditions] = useState("");
-  const [allergies, setAllergies] = useState("");
-  const [medications, setMedications] = useState("");
-  const [emergencyContact, setEmergencyContact] = useState("");
-  const [emergencyPhone, setEmergencyPhone] = useState("");
+  const [profile, setProfile] = useState<MemberProfileDraft>(emptyMemberProfile());
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -28,26 +22,8 @@ export default function OnboardingPage() {
         setLoading(false);
         return;
       }
-      const payload = (await res.json()) as {
-        profile: {
-          name: string;
-          phone: string;
-          dateOfBirth: string;
-          medicalConditions: string;
-          allergies: string;
-          medications: string;
-          emergencyContact: string;
-          emergencyPhone: string;
-        };
-      };
-      setName(payload.profile.name ?? "");
-      setPhone(payload.profile.phone ?? "");
-      setDateOfBirth(payload.profile.dateOfBirth ?? "");
-      setMedicalConditions(payload.profile.medicalConditions ?? "");
-      setAllergies(payload.profile.allergies ?? "");
-      setMedications(payload.profile.medications ?? "");
-      setEmergencyContact(payload.profile.emergencyContact ?? "");
-      setEmergencyPhone(payload.profile.emergencyPhone ?? "");
+      const payload = (await res.json()) as { profile: MemberProfileDraft };
+      setProfile(memberProfileFromRecord(payload.profile));
       setLoading(false);
     }
     void load();
@@ -56,20 +32,14 @@ export default function OnboardingPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    if (profile.name.trim().length < 2) {
+      setError("Enter your full name.");
+      return;
+    }
     const res = await fetch("/api/profile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name,
-        phone,
-        dateOfBirth,
-        medicalConditions,
-        allergies,
-        medications,
-        emergencyContact,
-        emergencyPhone,
-        completeOnboarding: true,
-      }),
+      body: JSON.stringify({ ...profile, completeOnboarding: true }),
     });
     if (!res.ok) {
       setError("Could not save your profile.");
@@ -90,14 +60,7 @@ export default function OnboardingPage() {
           </p>
         </div>
         <form className={`mt-8 space-y-4 ${editorialPanel} p-6`} onSubmit={(e) => void onSubmit(e)}>
-          <input className={editorialInput} required placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)} />
-          <input className={editorialInput} placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
-          <input className={editorialInput} placeholder="Date of birth" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} />
-          <textarea className={`${editorialInput} min-h-24`} placeholder="Medical conditions" value={medicalConditions} onChange={(e) => setMedicalConditions(e.target.value)} />
-          <textarea className={`${editorialInput} min-h-20`} placeholder="Allergies" value={allergies} onChange={(e) => setAllergies(e.target.value)} />
-          <textarea className={`${editorialInput} min-h-20`} placeholder="Medications" value={medications} onChange={(e) => setMedications(e.target.value)} />
-          <input className={editorialInput} placeholder="Emergency contact name" value={emergencyContact} onChange={(e) => setEmergencyContact(e.target.value)} />
-          <input className={editorialInput} placeholder="Emergency contact phone" value={emergencyPhone} onChange={(e) => setEmergencyPhone(e.target.value)} />
+          <MemberProfileFields value={profile} onChange={setProfile} />
           {error ? <p className="text-sm text-red-600">{error}</p> : null}
           <button disabled={loading} className={`w-full ${editorialCtaPrimary}`}>
             {loading ? "LOADING…" : "SAVE AND CONTINUE"}

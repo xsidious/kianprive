@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { orderIncludesPeptides } from "@/lib/commerce/peptide-orders";
 import { patientOrderProgress } from "@/lib/orders/progress";
 
 export async function GET() {
@@ -25,6 +26,7 @@ export async function GET() {
           title: true,
           quantity: true,
           sku: true,
+          product: { select: { category: true } },
         },
       },
       fulfillments: {
@@ -51,6 +53,7 @@ export async function GET() {
         orderNumber: order.orderNumber,
         createdAt: order.createdAt.toISOString(),
         progress,
+        isPeptide: orderIncludesPeptides(order.items),
         itemCount: order.items.reduce((sum, item) => sum + item.quantity, 0),
         items: order.items,
         fulfillments: order.fulfillments,

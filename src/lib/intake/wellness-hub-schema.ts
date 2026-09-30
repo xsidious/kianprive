@@ -36,6 +36,9 @@ export const wellnessHubIntakeSchema = z.object({
   familyMtcMen2: z.string().max(10),
   allergicReactionAny: z.string().max(10),
   allergicReactionDetails: z.string().max(1000),
+  medicalAccuracyCertified: z.boolean().refine((value) => value === true, {
+    message: "Please certify that your medical information is true and complete.",
+  }),
   attestationName: z.string().min(1).max(120),
   attestationDate: z.string().min(1).max(40),
   clientSignatureDataUrl: z.string().min(40).max(900_000),
@@ -119,6 +122,10 @@ export function formatWellnessHubIntakeEmail(data: WellnessHubIntakeData, refere
     "07 PATIENT ATTESTATION",
     line("Printed Name", data.attestationName),
     line("Date", data.attestationDate),
+    line(
+      "Medical information certified true and complete",
+      data.medicalAccuracyCertified ? "YES" : "NO",
+    ),
     line("Client handwritten signature", data.clientSignatureDataUrl ? "Captured on form" : "Missing"),
     "",
     "08 PHOTO / VIDEO / TESTIMONIAL HIPAA AUTHORIZATION",

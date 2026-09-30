@@ -12,6 +12,7 @@ import {
 import { celexoIntakeSchema } from "@/lib/intake/celexo-schema";
 import { generateIntakeTrackingToken } from "@/lib/intake/tracking";
 import { ehrPayloadStamp, resolveEhrAssignment, withPhysicianEmails } from "@/lib/ehr/route-intake";
+import { physicianReviewForConditions } from "@/lib/intake/medical-review";
 
 const bodySchema = z.object({
   intake: celexoIntakeSchema,
@@ -38,6 +39,7 @@ export async function POST(req: Request) {
 
   const session = await auth();
   const data = parsed.data.intake;
+  const clinicalReview = physicianReviewForConditions(data);
   const trackingToken = generateIntakeTrackingToken();
   const assignment = await resolveEhrAssignment(prisma, {
     site: "kian",
@@ -57,7 +59,8 @@ export async function POST(req: Request) {
         programs: ["Korean Exosome Therapy", data.selection.protocol, data.selection.deliveryMethod],
         clientSignatureDataUrl: data.consent.signatureDataUrl,
         publicTrackingToken: trackingToken,
-        status: "PENDING_REVIEW",
+        status: clinicalReview.status,
+        statusNote: clinicalReview.statusNote,
         assignedPartnerId: assignment.assignedPartnerId,
         payload: ehrPayloadStamp(assignment, data as unknown as Record<string, unknown>) as Prisma.InputJsonValue,
       },
@@ -81,7 +84,7 @@ export async function POST(req: Request) {
       await sendTransactionalEmail({
         to: withPhysicianEmails(recipients, assignment.physicianEmails),
         subject: report.subject,
-        text: report.text,
+        text: clinicalReview.statusNote ? `${report.text}\n\n${clinicalReview.statusNote}` : report.text,
         html: report.html,
       });
     }

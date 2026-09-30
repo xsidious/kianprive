@@ -13,6 +13,7 @@ import {
   formatVendorSettlementText,
   settleVendorCostsAfterPayment,
 } from "@/lib/commerce/vendor-payables";
+import { forwardPaidOrderToWellnessTech } from "@/lib/commerce/forward-distribution-order";
 import { issueOrderPaymentToken } from "@/lib/commerce/payment-link";
 import { sendInvoiceEmail } from "@/lib/commerce/invoices";
 import { addUtcDays, intervalLabel, resolveIntervalDays } from "@/lib/commerce/therapy-billing";
@@ -345,6 +346,7 @@ export async function chargeTherapySubscription(
 
     await createProductCommissionsForOrder(order.id);
     const settlement = await settleVendorCostsAfterPayment(order.id);
+    await forwardPaidOrderToWellnessTech(order.id);
 
     await createIntakeMessage({
       intakeSubmissionId: subscription.intakeSubmissionId,

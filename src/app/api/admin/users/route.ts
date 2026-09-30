@@ -24,6 +24,7 @@ export async function GET(req: Request) {
             OR: [
               { email: { contains: q, mode: "insensitive" } },
               { name: { contains: q, mode: "insensitive" } },
+              { profile: { phone: { contains: q, mode: "insensitive" } } },
             ],
           }
         : {}),

@@ -10,6 +10,24 @@ export const INTAKE_STATUS_LABELS: Record<IntakeSubmissionStatus, string> = {
   DECLINED: "Declined",
 };
 
+export type IntakeQueue = "IN_REVIEW" | "APPROVED" | "OTHER";
+
+export const INTAKE_QUEUES: Array<{
+  id: IntakeQueue;
+  label: string;
+  hint: string;
+}> = [
+  { id: "IN_REVIEW", label: "In review", hint: "Submitted and waiting on a physician." },
+  { id: "APPROVED", label: "Approved", hint: "Cleared for therapy." },
+  { id: "OTHER", label: "Other", hint: "Labs, follow-up, or declined." },
+];
+
+export function intakeQueue(status: string): IntakeQueue {
+  if (status === "APPROVED") return "APPROVED";
+  if (status === "PENDING_REVIEW" || status === "UNDER_PHYSICIAN_REVIEW") return "IN_REVIEW";
+  return "OTHER";
+}
+
 export const INTAKE_STATUS_OPTIONS: IntakeSubmissionStatus[] = [
   "PENDING_REVIEW",
   "UNDER_PHYSICIAN_REVIEW",

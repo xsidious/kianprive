@@ -114,9 +114,19 @@ export default function EventsRetreatsPage() {
               {event.featured ? (
                 <p className="mb-2 text-xs tracking-[0.16em] text-[#1b6568]">FEATURED · COMING SOON</p>
               ) : null}
-              <div className="relative mb-4 h-44 overflow-hidden rounded-sm border border-[#e4d9c8]">
-                <Image src={event.image} alt={event.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
-              </div>
+              {event.flyerImage ? (
+                <Image
+                  src={event.flyerImage}
+                  alt={`${event.title} flyer`}
+                  width={1100}
+                  height={1424}
+                  className="mb-4 h-auto w-full rounded-sm border border-[#e4d9c8] bg-[#f8f4ee]"
+                />
+              ) : (
+                <div className="relative mb-4 h-44 overflow-hidden rounded-sm border border-[#e4d9c8]">
+                  <Image src={event.image} alt={event.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
+                </div>
+              )}
               <p className="text-xl text-[#2b2218]">{event.title}</p>
               {event.host ? <p className="mt-1 text-xs text-[#8f6f3e]">Presented by {event.host}</p> : null}
               <p className="mt-3 text-sm leading-relaxed text-[#5f5344]">{event.subtitle}</p>

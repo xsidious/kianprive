@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ClinicalIntakeShare } from "@/components/account/ClinicalIntakeQr";
 import { BrandedQrCard } from "@/components/ambassador/BrandedQrCard";
 import { CommissionOverrideInput } from "@/components/admin/CommissionOverrideInput";
 import {
@@ -494,6 +495,7 @@ export default function AdminProvidersPage() {
                   </div>
                 </div>
               </div>
+              <ClinicalIntakeShare code={selected.partnerCode} title="Privé Therapeutics clinical intake" />
             </div>
           ) : (
             <p className="text-sm text-[#6f6251]">Select a provider to manage services and payout settings.</p>

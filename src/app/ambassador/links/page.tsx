@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ClinicalIntakeShare } from "@/components/account/ClinicalIntakeQr";
 import { BrandedQrCard } from "@/components/ambassador/BrandedQrCard";
 import { ambassadorReferralLinks } from "@/lib/ambassador";
 import { adminBtnGhost, adminEyebrow, adminMuted, adminPanel, adminTitle } from "@/components/admin/ui";
@@ -9,7 +10,7 @@ export default function AmbassadorLinksPage() {
   const [code, setCode] = useState("");
   const [copied, setCopied] = useState("");
   const [error, setError] = useState("");
-  const [target, setTarget] = useState<"shop" | "home" | "book">("shop");
+  const [target, setTarget] = useState<"shop" | "home" | "book">("book");
 
   useEffect(() => {
     void fetch("/api/partner/dashboard")
@@ -36,8 +37,8 @@ export default function AmbassadorLinksPage() {
         <p className={adminEyebrow}>Share</p>
         <h1 className={adminTitle}>Links & QR</h1>
         <p className={adminMuted}>
-          Your code works for shop purchases and book-online referrals. Customers who open your link are tracked for 30
-          days.
+          The main QR opens KIAN Privé Book Online with your code. That code stays attached if the customer continues to
+          Privé Therapeutics. Shop and home links are still available.
         </p>
       </div>
       {error ? <p className="text-sm text-[#7c2c2c]">{error}</p> : null}
@@ -47,9 +48,9 @@ export default function AmbassadorLinksPage() {
             <div className="mb-3 flex flex-wrap gap-2">
               {(
                 [
-                  ["shop", "Shop"],
+                  ["book", "Book online"],
                   ["home", "Home"],
-                  ["book", "Book"],
+                  ["shop", "Shop"],
                 ] as const
               ).map(([key, label]) => (
                 <button
@@ -79,9 +80,9 @@ export default function AmbassadorLinksPage() {
               </button>
             </div>
             {[
-              ["Shop link", links.shop, "shop"],
-              ["Home link", links.home, "home"],
               ["Book online", links.book, "book"],
+              ["Home link", links.home, "home"],
+              ["Shop link", links.shop, "shop"],
             ].map(([label, value, key]) => (
               <div key={key}>
                 <p className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">{label}</p>
@@ -100,6 +101,7 @@ export default function AmbassadorLinksPage() {
       ) : (
         <p className="text-sm text-[#6f6251]">Loading…</p>
       )}
+      {code ? <ClinicalIntakeShare code={code} title="Send a customer to clinical intake" /> : null}
     </div>
   );
 }

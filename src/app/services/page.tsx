@@ -45,7 +45,8 @@ import {
   membershipPolicySummary,
 } from "@/lib/policies/kian-prive-policies";
 import { buildSeoMetadata } from "@/lib/seo/metadata";
-import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
+import { CLINICAL_INTAKE_URL, COMPOUND_THERAPY_URL, PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
+import { TherapeuticsAnchor } from "@/components/site/TherapeuticsAnchor";
 import { getServiceBySlug } from "@/lib/services/catalog";
 import { icoonePrimaryImage } from "@/lib/media/icoone";
 import { auth } from "@/lib/auth";
@@ -162,12 +163,13 @@ const paymentMethodsClean = acceptedPaymentMethods.map((item) =>
 );
 
 const jumpNav = [
+  { href: "#compounding-peptides", label: "Compound Therapy" },
+  { href: "#prive-therapeutics", label: "Privé Therapeutics" },
   { href: "#icoone", label: "Icoone®" },
   { href: "#face-body-wellness", label: "Face & Body" },
   { href: "#iv-therapy", label: "IV Therapy" },
   { href: "#lab-panels", label: "Lab Panels" },
   { href: "#provider-visits", label: "Provider Visits" },
-  { href: "#compounding-peptides", label: "Peptides" },
   { href: "#partners", label: "Partners" },
 ];
 
@@ -203,6 +205,48 @@ export default async function ServicesPage() {
           title="Choose a pathway, then book."
           description="Published rates for each pathway. Book online or ask concierge to reserve your visit."
         />
+      </EditorialSection>
+
+      <EditorialSection id="compounding-peptides">
+        <SectionHeader
+          eyebrow="COMPOUND WELLNESS THERAPY"
+          title="Physician-led peptide and compound therapy."
+          description={
+            canViewPrices
+              ? "Board-certified physicians prescribe personalized protocols from a clinical formulary spanning longevity, recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. These therapies are not sold in the KIAN shop. Peptide optimization consult: $100."
+              : "Board-certified physicians prescribe personalized protocols from a clinical formulary spanning longevity, recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. These therapies are not sold in the KIAN shop."
+          }
+        />
+        <SectionPhoto
+          src={getServiceBySlug("glp1-peptides")?.image ?? "/images/Peptidesandexosomes.jpeg"}
+          alt="Physician-led peptide therapy"
+        />
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {peptideCategories.map((category) => (
+            <PeptideCategoryCard key={category.title} title={category.title} description={category.description} />
+          ))}
+        </div>
+        <SectionCtaBar
+          bookHref={COMPOUND_THERAPY_URL}
+          detailsHref="/services/glp1-peptides"
+          bookLabel={canViewPrices ? "Book consult · $100" : "Book consult"}
+        />
+      </EditorialSection>
+
+      <EditorialSection id="prive-therapeutics">
+        <SectionHeader
+          eyebrow="PRIVÉ THERAPEUTICS"
+          title="Continue on the therapeutics site."
+          description="Compound therapy details, physician-supported protocols, and the clinical intake live on Privé Therapeutics. If you arrived with an ambassador or practitioner code, that code stays attached when you go there."
+        />
+        <div className="mt-8">
+          <TherapeuticsAnchor
+            href={PRIVETHERAPEUTICS_URL}
+            className="inline-flex min-h-[44px] items-center justify-center rounded-sm bg-[#b78d4b] px-5 text-[11px] tracking-[0.16em] text-white transition hover:bg-[#a67d42]"
+          >
+            OPEN PRIVÉ THERAPEUTICS
+          </TherapeuticsAnchor>
+        </div>
       </EditorialSection>
 
       <EditorialSection id="icoone">
@@ -420,7 +464,7 @@ export default async function ServicesPage() {
           <PricedMenuTable
             title="Peptide optimization"
             items={providerVisitMenu.peptide}
-            bookHref="/book-online?service=glp1-peptides"
+            bookHref={COMPOUND_THERAPY_URL}
             canViewPrices={canViewPrices}
           />
         </div>
@@ -429,6 +473,14 @@ export default async function ServicesPage() {
           detailsHref="/services/telemedicine"
           bookLabel="Book a physician visit"
         />
+        <div className="mt-4">
+          <TherapeuticsAnchor
+            href={CLINICAL_INTAKE_URL}
+            className="inline-flex min-h-[44px] items-center text-sm text-[#8a682e] underline"
+          >
+            Complete the full medical intake for telemedicine
+          </TherapeuticsAnchor>
+        </div>
       </EditorialSection>
 
       <EditorialSection dark>
@@ -450,48 +502,6 @@ export default async function ServicesPage() {
           All take-home products are recommended by your provider based on your treatment history, skin type and wellness
           goals. Ask your specialist during your next visit for a personalized home-care regimen.
         </p>
-      </EditorialSection>
-
-      <EditorialSection id="compounding-peptides">
-        <SectionHeader
-          eyebrow="PHYSICIAN-LED PEPTIDE THERAPY"
-          title="Over 100 peptides, precisely prescribed."
-          description={
-            canViewPrices
-              ? "Board-certified physicians prescribe personalized protocols from a clinical formulary spanning longevity, recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. Browse the peptide catalog on Privé Therapeutics. These therapies are not sold in the KIAN shop—initial orders and refills require a physician prescription. Peptide optimization consult: $100."
-              : "Board-certified physicians prescribe personalized protocols from a clinical formulary spanning longevity, recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. Browse the peptide catalog on Privé Therapeutics. These therapies are not sold in the KIAN shop—initial orders and refills require a physician prescription."
-          }
-        />
-        <SectionPhoto
-          src={getServiceBySlug("glp1-peptides")?.image ?? "/images/Peptidesandexosomes.jpeg"}
-          alt="Physician-led peptide therapy"
-        />
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {peptideCategories.map((category) => (
-            <PeptideCategoryCard key={category.title} title={category.title} description={category.description} />
-          ))}
-        </div>
-        <SectionCtaBar
-          bookHref="/book-online?service=glp1-peptides"
-          detailsHref="/services/glp1-peptides"
-          bookLabel={canViewPrices ? "Book consult · $100" : "Book consult"}
-        />
-        <div className="mt-4 flex flex-wrap gap-3">
-          <a
-            href={PRIVETHERAPEUTICS_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex min-h-[44px] items-center rounded-sm bg-[#b78d4b] px-5 text-[11px] tracking-[0.16em] text-white transition hover:bg-[#a37c3f]"
-          >
-            BROWSE PEPTIDES
-          </a>
-          <Link
-            href="/services/glp1-peptides#consultants"
-            className="inline-flex min-h-[44px] items-center rounded-sm border border-[#b78d4b80] px-5 text-[11px] tracking-[0.16em] text-[#3b3024] transition hover:bg-[#fff6e8]"
-          >
-            MEET CONSULTANTS
-          </Link>
-        </div>
       </EditorialSection>
 
       {partnerAddOnServices.length > 0 ? (

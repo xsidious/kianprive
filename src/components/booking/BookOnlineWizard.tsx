@@ -24,15 +24,23 @@ import { MEMBER_PRICING_LABEL } from "@/lib/member-pricing-access";
 import { useCanViewServicePrices } from "@/hooks/use-can-view-service-prices";
 import { MEDICAL_REVIEW_FEE_USD } from "@/lib/intake/review-fee";
 import { AuthorizeNetPayForm } from "@/components/commerce/AuthorizeNetPayForm";
+import { NurseConsentBlock } from "@/components/intake/NurseConsentBlock";
 import { PhotoVideoConsentBlock } from "@/components/intake/PhotoVideoConsentBlock";
 import { AppointmentAftercare } from "@/components/bookings/AppointmentAftercare";
 import { DEFAULT_TIMEZONE } from "@/lib/scheduling/config";
+import { CLINICAL_INTAKE_URL, COMPOUND_THERAPY_URL } from "@/lib/privetherapeutics";
+import { TherapeuticsAnchor, withPartnerReferral } from "@/components/site/TherapeuticsAnchor";
 import { capturePartnerReferralFromUrl, readPartnerReferralClient } from "@/lib/partner-referral";
 import {
   bookingRequiresPhotoVideoConsent,
   defaultPhotoVideoConsentFields,
   type PhotoVideoConsentFields,
 } from "@/lib/intake/photo-video-consent";
+import {
+  bookingRequiresNurseConsent,
+  defaultNurseConsentFields,
+  type NurseConsentFields,
+} from "@/lib/intake/nurse-consent";
 
 type WizardStep = "welcome" | "count" | "services" | "provider" | "schedule" | "details" | "complete";
 type VisitorType = "member" | "guest" | null;
@@ -171,6 +179,8 @@ export function BookOnlineWizard() {
   const [patientDateOfBirth, setPatientDateOfBirth] = useState("");
   const [preferredLocation, setPreferredLocation] = useState("In-Clinic");
   const [mediaConsent, setMediaConsent] = useState<PhotoVideoConsentFields>(defaultPhotoVideoConsentFields);
+  const [nurseConsent, setNurseConsent] = useState<NurseConsentFields>(defaultNurseConsentFields);
+  const [medicalCertified, setMedicalCertified] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [confirmedSummary, setConfirmedSummary] = useState("");
@@ -183,6 +193,8 @@ export function BookOnlineWizard() {
   const needsProviderStep = selectedServices.includes("facial-aesthetics");
   const needsLabDemographics = bookingIncludesLabWork(selectedServices);
   const needsMediaConsent = bookingRequiresPhotoVideoConsent(selectedServices);
+  const needsNurseConsent = bookingRequiresNurseConsent(selectedServices);
+  const needsMedicalCertification = selectedServices.includes("telemedicine");
   const showAftercarePreview = bookingIncludesAftercare(selectedServices);
 
   const primaryServiceId = selectedServices[0] ?? "";
@@ -315,6 +327,12 @@ export function BookOnlineWizard() {
   }, [dateSlotGroups, selectedDateKey]);
 
   useEffect(() => {
+    if (preselectedService === "glp1-peptides") {
+      window.location.href = withPartnerReferral(COMPOUND_THERAPY_URL);
+    }
+  }, [preselectedService]);
+
+  useEffect(() => {
     if (step !== "services") {
       preselectAppliedRef.current = false;
       return;
@@ -361,7 +379,7 @@ export function BookOnlineWizard() {
 
   function toggleService(id: string) {
     if (id === "glp1-peptides") {
-      window.location.href = "/services/glp1-peptides#consultants";
+      window.location.href = withPartnerReferral(COMPOUND_THERAPY_URL);
       return;
     }
     const next = computeNextServices(selectedServices, id);
@@ -439,6 +457,7 @@ export function BookOnlineWizard() {
           timezone: DEFAULT_TIMEZONE,
           partnerCode,
           photoVideoConsent: needsMediaConsent ? mediaConsent : undefined,
+          nurseConsent: needsNurseConsent ? nurseConsent : undefined,
           opaqueData: payment?.opaqueData,
           billTo: payment?.billTo,
           testCardNumber: payment?.testCardNumber,
@@ -470,13 +489,20 @@ export function BookOnlineWizard() {
     (mediaConsent.photoVideoConsentAccepted &&
       mediaConsent.photoVideoConsentPrintedName.trim().length >= 2 &&
       Boolean(mediaConsent.photoVideoConsentSignedAt));
+  const nurseConsentReady =
+    !needsNurseConsent ||
+    (nurseConsent.nurseConsentAccepted &&
+      nurseConsent.nurseConsentPrintedName.trim().length >= 2 &&
+      Boolean(nurseConsent.nurseConsentSignedAt));
 
   const detailsReady =
     Boolean(fullName.trim()) &&
     Boolean(email.trim()) &&
     Boolean(phone.trim()) &&
     (!needsLabDemographics || Boolean(patientDateOfBirth.trim())) &&
-    mediaConsentReady;
+    mediaConsentReady &&
+    nurseConsentReady &&
+    (!needsMedicalCertification || medicalCertified);
 
   const canContinue =
     (step === "services" && servicesValid()) ||
@@ -858,6 +884,55 @@ export function BookOnlineWizard() {
                   </label>
                 ) : null}
               </div>
+
+              {needsMedicalCertification ? (
+                <div className="mt-8 rounded-sm border border-[#8a682e55] bg-[#fff6e8] p-4 text-left">
+                  <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Full medical intake</p>
+                  <p className="mt-2 text-sm leading-relaxed text-[#4f4335]">
+                    Telemedicine uses the full medical form. Complete it before your visit, then certify the statement
+                    below.
+                  </p>
+                  <TherapeuticsAnchor
+                    href={CLINICAL_INTAKE_URL}
+                    className="mt-3 inline-flex min-h-[40px] items-center text-sm text-[#8a682e] underline"
+                  >
+                    Open the medical intake form
+                  </TherapeuticsAnchor>
+                  <label className="mt-4 flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-[#3b3024]">
+                    <input
+                      type="checkbox"
+                      checked={medicalCertified}
+                      onChange={(event) => setMedicalCertified(event.target.checked)}
+                      className="mt-1 h-4 w-4"
+                    />
+                    <span>
+                      I certify that the medical information provided on this form is true, correct, complete, and
+                      accurate to the best of my knowledge. I understand that any false, misleading, or omitted
+                      information may result in denial, cancellation, or other consequences, and I assume full
+                      responsibility and liability for any misinformation, misrepresentation, or omission contained
+                      herein.
+                    </span>
+                  </label>
+                </div>
+              ) : null}
+
+              {needsNurseConsent ? (
+                <div className="mt-8 text-left">
+                  <NurseConsentBlock
+                    compact
+                    value={nurseConsent}
+                    onChange={(next) =>
+                      setNurseConsent({
+                        nurseConsentAccepted: next.nurseConsentAccepted,
+                        nurseConsentSignedAt: next.nurseConsentSignedAt,
+                        nurseConsentPrintedName: next.nurseConsentPrintedName,
+                        nurseConsentGuardianName: next.nurseConsentGuardianName ?? "",
+                        nurseConsentGuardianRelationship: next.nurseConsentGuardianRelationship ?? "",
+                      })
+                    }
+                  />
+                </div>
+              ) : null}
 
               {needsMediaConsent ? (
                 <div className="mt-8 text-left">

@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { sendTransactionalEmail } from "@/lib/email";
 import { buildAccountSetupEmail } from "@/lib/email-templates";
 import { createSetupToken, phonesMatch, SETUP_TOKEN_TTL_MS } from "@/lib/auth/setup-token";
+import { publicMemberProfile } from "@/lib/account/member-profile";
 
 const schema = z.object({
   email: z.string().email(),
@@ -121,9 +122,7 @@ export async function POST(req: Request) {
   return NextResponse.json({
     ok: true,
     token,
-    email: user.email,
-    name: user.name ?? "",
-    phone: user.profile?.phone ?? "",
+    ...publicMemberProfile(user),
     importedNotes: user.profile?.importedNotes ?? "",
   });
 }

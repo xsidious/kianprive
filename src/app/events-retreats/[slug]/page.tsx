@@ -63,14 +63,20 @@ export default async function EventDetailsPage({
             </div>
           </div>
           <div className="space-y-4">
-            <div className="relative h-[280px] overflow-hidden rounded-sm border border-[#b78d4b2d] sm:h-[340px]">
-              <Image src={event.image} alt={event.title} fill className="object-cover" priority />
-            </div>
             {event.flyerImage ? (
-              <div className="relative h-[220px] overflow-hidden rounded-sm border border-[#b78d4b2d] bg-[#f8faf6] sm:h-[280px]">
-                <Image src={event.flyerImage} alt={`${event.title} event flyer`} fill className="object-contain p-3" />
+              <Image
+                src={event.flyerImage}
+                alt={`${event.title} flyer`}
+                width={1100}
+                height={1424}
+                priority
+                className="h-auto w-full rounded-sm border border-[#b78d4b2d] bg-[#f8f4ee]"
+              />
+            ) : (
+              <div className="relative h-[280px] overflow-hidden rounded-sm border border-[#b78d4b2d] sm:h-[340px]">
+                <Image src={event.image} alt={event.title} fill className="object-cover" priority />
               </div>
-            ) : null}
+            )}
           </div>
         </div>
       </SectionWrapper>

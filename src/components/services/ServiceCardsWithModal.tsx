@@ -10,7 +10,8 @@ import type { ServiceListingItem } from "@/lib/services/types";
 import { formatUsd } from "@/lib/services/pricing-menus";
 import { MEMBER_PRICING_LABEL } from "@/lib/member-pricing-access";
 import { useCanViewServicePrices } from "@/hooks/use-can-view-service-prices";
-import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
+import { COMPOUND_THERAPY_URL } from "@/lib/privetherapeutics";
+import { TherapeuticsAnchor } from "@/components/site/TherapeuticsAnchor";
 
 function isNutritionService(service: Pick<ServiceListingItem, "slug">) {
   return service.slug === NUTRITION_SERVICE_SLUG;
@@ -18,18 +19,48 @@ function isNutritionService(service: Pick<ServiceListingItem, "slug">) {
 
 function getServiceBookingHref(service: ServiceListingItem) {
   if (service.externalBookingUrl) return service.externalBookingUrl;
-  if (service.slug === "glp1-peptides") return PRIVETHERAPEUTICS_URL;
+  if (service.slug === "glp1-peptides") return COMPOUND_THERAPY_URL;
   return service.slug ? `/book-online?service=${service.slug}` : "/book-online";
 }
 
 function getServiceCtaLabel(service: ServiceListingItem) {
   if (service.externalBookingUrl) return "Book with Partner";
-  if (service.slug === "glp1-peptides") return "Browse Peptides";
+  if (service.slug === "glp1-peptides") return "Book compound therapy";
   return "Book Now";
 }
 
 function isExternalHref(href: string) {
   return href.startsWith("http://") || href.startsWith("https://");
+}
+
+function ServiceBookLink({
+  href,
+  className,
+  children,
+}: {
+  href: string;
+  className: string;
+  children: React.ReactNode;
+}) {
+  if (href.includes("privetherapeutics.solutions")) {
+    return (
+      <TherapeuticsAnchor href={href} className={className}>
+        {children}
+      </TherapeuticsAnchor>
+    );
+  }
+  if (isExternalHref(href)) {
+    return (
+      <a href={href} target="_blank" rel="noreferrer" className={className}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} className={className}>
+      {children}
+    </Link>
+  );
 }
 
 type ServiceCardsWithModalProps = {
@@ -138,14 +169,12 @@ export function ServiceCardsWithModal({
                   {(() => {
                     const href = getServiceBookingHref(service);
                     return (
-                      <Link
+                      <ServiceBookLink
                         href={href}
-                        target={isExternalHref(href) ? "_blank" : undefined}
-                        rel={isExternalHref(href) ? "noreferrer" : undefined}
                         className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-sm bg-[#b78d4b] px-4 text-[11px] tracking-[0.16em] text-white"
                       >
                         {getServiceCtaLabel(service).toUpperCase()}
-                      </Link>
+                      </ServiceBookLink>
                     );
                   })()}
                   {service.slug ? (
@@ -236,16 +265,14 @@ export function ServiceCardsWithModal({
                   {(() => {
                     const href = getServiceBookingHref(service);
                     return (
-                      <Link
+                      <ServiceBookLink
                         href={href}
-                        target={isExternalHref(href) ? "_blank" : undefined}
-                        rel={isExternalHref(href) ? "noreferrer" : undefined}
                         className={`inline-flex rounded-sm px-5 py-2 text-sm text-white ${
                           isPriorityGroup ? "bg-gradient-to-r from-[#1f7a7a] to-[#174f63]" : "bg-[#b78d4b]"
                         }`}
                       >
                         {getServiceCtaLabel(service)}
-                      </Link>
+                      </ServiceBookLink>
                     );
                   })()}
                 </div>
@@ -313,7 +340,9 @@ export function ServiceCardsWithModal({
                 )}
               </div>
             )}
-            <p className="mt-5 leading-relaxed text-[#5f5344]">{selectedService.description}</p>
+            {selectedService.slug === "glp1-peptides" ? null : (
+              <p className="mt-5 leading-relaxed text-[#5f5344]">{selectedService.description}</p>
+            )}
             {selectedService.partnerLogo ? (
               <div className="mt-4 inline-flex items-center rounded-sm border border-[#1f7a7a33] bg-white px-4 py-2">
                 <div className="relative h-14 w-36">
@@ -321,7 +350,7 @@ export function ServiceCardsWithModal({
                 </div>
               </div>
             ) : null}
-            {selectedService.details && selectedService.details.length > 0 ? (
+            {selectedService.slug !== "glp1-peptides" && selectedService.details && selectedService.details.length > 0 ? (
               <div className="mt-5">
                 <p className="text-xs tracking-[0.16em] text-[#b78d4b]">DETAILS</p>
                 <div className="mt-2 space-y-2">
@@ -349,7 +378,7 @@ export function ServiceCardsWithModal({
                 </ul>
               </div>
             ) : null}
-            {selectedService.contentSections && selectedService.contentSections.length > 0 ? (
+            {selectedService.slug !== "glp1-peptides" && selectedService.contentSections && selectedService.contentSections.length > 0 ? (
               <div className="mt-5 space-y-4">
                 {selectedService.contentSections
                   .filter(
@@ -380,7 +409,7 @@ export function ServiceCardsWithModal({
                 ))}
               </div>
             ) : null}
-            {canViewPrices && selectedService.pricing && selectedService.pricing.length > 0 ? (
+            {selectedService.slug !== "glp1-peptides" && canViewPrices && selectedService.pricing && selectedService.pricing.length > 0 ? (
               <div className="mt-5 rounded-sm border border-[#e4d9c8] bg-white p-3">
                 <p className="text-xs tracking-[0.16em] text-[#b78d4b]">PRICING</p>
                 {selectedService.guestPrice != null ? (
@@ -396,13 +425,13 @@ export function ServiceCardsWithModal({
                   ))}
                 </ul>
               </div>
-            ) : !canViewPrices && (selectedService.pricing?.length || selectedService.guestPrice != null) ? (
+            ) : selectedService.slug !== "glp1-peptides" && !canViewPrices && (selectedService.pricing?.length || selectedService.guestPrice != null) ? (
               <div className="mt-5 rounded-sm border border-[#e4d9c8] bg-white p-3">
                 <p className="text-xs tracking-[0.16em] text-[#b78d4b]">PRICING</p>
                 <p className="mt-2 text-sm text-[#8f6f3e]">{MEMBER_PRICING_LABEL}</p>
               </div>
             ) : null}
-            {selectedService.availability && selectedService.availability.length > 0 ? (
+            {selectedService.slug !== "glp1-peptides" && selectedService.availability && selectedService.availability.length > 0 ? (
               <div className="mt-5">
                 <p className="text-xs tracking-[0.16em] text-[#b78d4b]">AVAILABILITY</p>
                 <ul className="mt-2 space-y-1">
@@ -418,18 +447,16 @@ export function ServiceCardsWithModal({
               {(() => {
                 const href = getServiceBookingHref(selectedService);
                 return (
-                  <Link
+                  <ServiceBookLink
                     href={href}
-                    target={isExternalHref(href) ? "_blank" : undefined}
-                    rel={isExternalHref(href) ? "noreferrer" : undefined}
                     className="inline-flex min-h-[44px] rounded-sm bg-[#b78d4b] px-5 py-2 text-[11px] tracking-[0.16em] text-white"
                   >
                     {selectedService.externalBookingUrl
                       ? "Book on Partner Site"
                       : selectedService.slug === "glp1-peptides"
-                        ? "Browse Peptides"
+                        ? "Book compound therapy"
                         : "Book This Service"}
-                  </Link>
+                  </ServiceBookLink>
                 );
               })()}
             </div>

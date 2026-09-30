@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { chargeAuthorizeNetCard, isTherapyPaymentTestMode } from "@/lib/authorize-net";
 import { createProductCommissionsForOrder } from "@/lib/commissions";
+import { forwardPaidOrderToWellnessTech } from "@/lib/commerce/forward-distribution-order";
 import { sendTransactionalEmail } from "@/lib/email";
 
 const paySchema = z.object({
@@ -121,6 +122,7 @@ export async function POST(req: Request, { params }: Params) {
     });
 
     await createProductCommissionsForOrder(order.id);
+    await forwardPaidOrderToWellnessTech(order.id);
 
     const adminTo = process.env.BOOKING_REPORT_EMAIL || process.env.PEPTIDE_INTAKE_REPORT_EMAIL;
     if (adminTo) {

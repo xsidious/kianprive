@@ -450,18 +450,22 @@ export function PeptidesGlpIntakeForm() {
           {form.consent.referralSource === "Other" ? <Field label="Please specify *"><TextInput value={form.consent.referralOther} onChange={(v) => update("consent", { ...form.consent, referralOther: v })} /></Field> : null}
           <div className="rounded-sm border border-[#8a682e55] bg-[#fff6e8] p-4 sm:p-5">
             <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Accuracy disclaimer</p>
-            <p className="mt-2 text-sm leading-relaxed text-[#4f4335]">
-              I certify that all information in this intake form is true, complete, and accurate to the best of my
-              knowledge. I understand that my care plan depends on honest answers, and that I must tell KIAN Privé if
-              anything changes. Typing <strong>YES</strong> below is required before I can sign.
-            </p>
-            <Field label='Type YES to confirm *' hint="Type the word YES (not Y or a checkmark).">
-              <TextInput
-                value={form.consent.accuracyTypedYes}
-                onChange={(v) => update("consent", { ...form.consent, accuracyTypedYes: v })}
-                placeholder="YES"
+            <label className="mt-3 flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-[#4f4335]">
+              <input
+                type="checkbox"
+                checked={form.consent.accuracyTypedYes.trim().toLowerCase() === "yes"}
+                onChange={(event) =>
+                  update("consent", { ...form.consent, accuracyTypedYes: event.target.checked ? "YES" : "" })
+                }
+                className="mt-1 h-4 w-4"
               />
-            </Field>
+              <span>
+                I certify that the medical information provided on this form is true, correct, complete, and accurate
+                to the best of my knowledge. I understand that any false, misleading, or omitted information may result
+                in denial, cancellation, or other consequences, and I assume full responsibility and liability for any
+                misinformation, misrepresentation, or omission contained herein.
+              </span>
+            </label>
           </div>
           <div className={`grid gap-4 md:grid-cols-2 ${form.consent.accuracyTypedYes.trim().toLowerCase() === "yes" ? "" : "pointer-events-none opacity-45"}`}>
             <Field label="Client signature (type full legal name) *"><TextInput value={form.consent.clientSignature} onChange={(v) => update("consent", { ...form.consent, clientSignature: v })} /></Field>
@@ -469,7 +473,7 @@ export function PeptidesGlpIntakeForm() {
             <Field label="Signature date *"><TextInput type="date" value={form.consent.signatureDate} onChange={(v) => update("consent", { ...form.consent, signatureDate: v })} /></Field>
           </div>
           {form.consent.accuracyTypedYes.trim().toLowerCase() !== "yes" ? (
-            <p className="text-sm text-[#8f2d2d]">Type YES above to unlock the signature fields.</p>
+            <p className="text-sm text-[#8f2d2d]">Check the certification above to unlock the signature fields.</p>
           ) : null}
           <div className="rounded-sm border border-[#efe4d4] bg-[#fffaf3] p-4 sm:p-5">
             <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Physician review fee</p>

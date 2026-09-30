@@ -4,6 +4,7 @@ import { Role, SubscriptionStatus, SubscriptionTier } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAdminAccess } from "@/lib/admin-guard";
 import { writeAuditLog } from "@/lib/ops/audit";
+import { memberProfileWriteData, type MemberProfileDraft } from "@/lib/account/member-profile";
 
 type Params = {
   params: Promise<{ id: string }>;
@@ -21,9 +22,26 @@ export async function PATCH(req: Request, { params }: Params) {
   if (body.role !== undefined) updateData.role = body.role as Role;
   if (body.password) updateData.passwordHash = await bcrypt.hash(String(body.password), 12);
 
+  const profileFields =
+    body.profile && typeof body.profile === "object"
+      ? memberProfileWriteData(body.profile as Partial<MemberProfileDraft>)
+      : null;
+
   const user = await prisma.user.update({
     where: { id },
-    data: updateData,
+    data: {
+      ...updateData,
+      ...(profileFields
+        ? {
+            profile: {
+              upsert: {
+                create: profileFields,
+                update: profileFields,
+              },
+            },
+          }
+        : {}),
+    },
     include: { subscription: true, profile: true },
   });
 

@@ -24,6 +24,7 @@ type OrderDetail = {
   orderNumber: string;
   createdAt: string;
   notes: string | null;
+  isPeptide?: boolean;
   progress: Progress;
   items: Array<{
     id: string;
@@ -118,6 +119,7 @@ export default function MemberOrderDetailPage() {
             {order ? (
               <p className="mt-2 text-sm text-[#6f6251]">
                 Placed {new Date(order.createdAt).toLocaleString()}
+                {order.isPeptide ? " · Peptide order" : ""}
               </p>
             ) : null}
           </div>

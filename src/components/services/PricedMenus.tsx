@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { TherapeuticsAnchor } from "@/components/site/TherapeuticsAnchor";
 import type { PricedMenuItem, IvDripItem, LabPanelMenuItem } from "@/lib/services/pricing-menus";
 import { formatUsd } from "@/lib/services/pricing-menus";
 import { MEMBER_PRICING_LABEL } from "@/lib/member-pricing-access";
@@ -45,9 +46,21 @@ export function SectionCtaBar({
 }) {
   return (
     <div className="mt-8 flex flex-wrap gap-3">
-      <Link href={bookHref} className={primaryCta}>
-        {bookLabel.toUpperCase()}
-      </Link>
+      {bookHref.startsWith("http") ? (
+        bookHref.includes("privetherapeutics.solutions") ? (
+          <TherapeuticsAnchor href={bookHref} className={primaryCta}>
+            {bookLabel.toUpperCase()}
+          </TherapeuticsAnchor>
+        ) : (
+          <a href={bookHref} className={primaryCta}>
+            {bookLabel.toUpperCase()}
+          </a>
+        )
+      ) : (
+        <Link href={bookHref} className={primaryCta}>
+          {bookLabel.toUpperCase()}
+        </Link>
+      )}
       {detailsHref ? (
         <Link href={detailsHref} className={secondaryCta}>
           {detailsLabel.toUpperCase()}
@@ -92,9 +105,21 @@ export function PricedMenuTable({
       )}
       {footnote ? <p className="mt-3 text-xs leading-relaxed text-[#8a7a66]">{footnote}</p> : null}
       {bookHref ? (
-        <Link href={bookHref} className={`${primaryCta} mt-5 w-full`}>
-          BOOK
-        </Link>
+        bookHref.startsWith("http") ? (
+          bookHref.includes("privetherapeutics.solutions") ? (
+            <TherapeuticsAnchor href={bookHref} className={`${primaryCta} mt-5 w-full`}>
+              BOOK
+            </TherapeuticsAnchor>
+          ) : (
+            <a href={bookHref} className={`${primaryCta} mt-5 w-full`}>
+              BOOK
+            </a>
+          )
+        ) : (
+          <Link href={bookHref} className={`${primaryCta} mt-5 w-full`}>
+            BOOK
+          </Link>
+        )
       ) : null}
     </div>
   );

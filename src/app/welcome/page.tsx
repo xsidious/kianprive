@@ -4,6 +4,8 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import { MemberProfileFields } from "@/components/account/MemberProfileFields";
+import { emptyMemberProfile, memberProfileFromRecord, type MemberProfileDraft } from "@/lib/account/member-profile";
 import {
   EditorialEyebrow,
   EditorialSection,
@@ -15,16 +17,8 @@ import {
 
 type Step = "identify" | "profile";
 
-type Preview = {
+type Preview = MemberProfileDraft & {
   email: string;
-  name: string;
-  phone: string;
-  dateOfBirth?: string;
-  medicalConditions?: string;
-  allergies?: string;
-  medications?: string;
-  emergencyContact?: string;
-  emergencyPhone?: string;
   importedNotes?: string;
 };
 
@@ -37,13 +31,7 @@ function WelcomeForm() {
   const [token, setToken] = useState(tokenFromUrl);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [name, setName] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
-  const [medicalConditions, setMedicalConditions] = useState("");
-  const [allergies, setAllergies] = useState("");
-  const [medications, setMedications] = useState("");
-  const [emergencyContact, setEmergencyContact] = useState("");
-  const [emergencyPhone, setEmergencyPhone] = useState("");
+  const [profile, setProfile] = useState<MemberProfileDraft>(emptyMemberProfile());
   const [importedNotes, setImportedNotes] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -65,17 +53,11 @@ function WelcomeForm() {
     void load();
   }, [tokenFromUrl]);
 
-  function applyPreview(preview: Preview, nextToken: string) {
+  function applyPreview(preview: Partial<MemberProfileDraft> & { email: string; importedNotes?: string }, nextToken: string) {
     setToken(nextToken);
     setEmail(preview.email);
-    setName(preview.name);
-    setPhone(preview.phone);
-    setDateOfBirth(preview.dateOfBirth ?? "");
-    setMedicalConditions(preview.medicalConditions ?? "");
-    setAllergies(preview.allergies ?? "");
-    setMedications(preview.medications ?? "");
-    setEmergencyContact(preview.emergencyContact ?? "");
-    setEmergencyPhone(preview.emergencyPhone ?? "");
+    setPhone(preview.phone ?? "");
+    setProfile(memberProfileFromRecord(preview));
     setImportedNotes(preview.importedNotes ?? "");
     setStep("profile");
   }
@@ -114,6 +96,7 @@ function WelcomeForm() {
     if (payload.token) {
       applyPreview(
         {
+          ...payload,
           email: payload.email || email,
           name: payload.name || "",
           phone: payload.phone || phone,
@@ -131,21 +114,18 @@ function WelcomeForm() {
       setError("Passwords do not match.");
       return;
     }
+    if (profile.name.trim().length < 2) {
+      setError("Enter your full name.");
+      return;
+    }
     setLoading(true);
     const res = await fetch("/api/auth/setup/complete", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+        body: JSON.stringify({
         token,
         password,
-        name,
-        phone,
-        dateOfBirth,
-        medicalConditions,
-        allergies,
-        medications,
-        emergencyContact,
-        emergencyPhone,
+        ...profile,
       }),
     });
     const payload = (await res.json()) as { error?: string; email?: string };
@@ -240,19 +220,6 @@ function WelcomeForm() {
             </div>
             <input
               className={editorialInput}
-              required
-              placeholder="Full name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <input
-              className={editorialInput}
-              placeholder="Phone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-            <input
-              className={editorialInput}
               type="password"
               required
               minLength={8}
@@ -271,45 +238,10 @@ function WelcomeForm() {
             />
 
             <div>
-              <h3 className="font-serif text-xl text-[#1f1a15]">Health information</h3>
+              <h3 className="font-serif text-xl text-[#1f1a15]">Account details</h3>
               <p className="mt-1 text-sm text-[#6f6251]">Optional, but it helps your care team. You can edit this later.</p>
             </div>
-            <input
-              className={editorialInput}
-              placeholder="Date of birth"
-              value={dateOfBirth}
-              onChange={(e) => setDateOfBirth(e.target.value)}
-            />
-            <textarea
-              className={`${editorialInput} min-h-24`}
-              placeholder="Medical conditions"
-              value={medicalConditions}
-              onChange={(e) => setMedicalConditions(e.target.value)}
-            />
-            <textarea
-              className={`${editorialInput} min-h-20`}
-              placeholder="Allergies"
-              value={allergies}
-              onChange={(e) => setAllergies(e.target.value)}
-            />
-            <textarea
-              className={`${editorialInput} min-h-20`}
-              placeholder="Medications"
-              value={medications}
-              onChange={(e) => setMedications(e.target.value)}
-            />
-            <input
-              className={editorialInput}
-              placeholder="Emergency contact name"
-              value={emergencyContact}
-              onChange={(e) => setEmergencyContact(e.target.value)}
-            />
-            <input
-              className={editorialInput}
-              placeholder="Emergency contact phone"
-              value={emergencyPhone}
-              onChange={(e) => setEmergencyPhone(e.target.value)}
-            />
+            <MemberProfileFields value={profile} onChange={setProfile} />
             {importedNotes ? (
               <div className={`${editorialPanel} p-4 text-sm text-[#5f5344]`}>
                 <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">NOTES ALREADY ON FILE</p>

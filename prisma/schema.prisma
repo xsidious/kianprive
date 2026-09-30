@@ -188,6 +188,16 @@ model Profile {
   medications        String?  @db.Text
   emergencyContact   String?
   emergencyPhone     String?
+  emergencyRelationship String?
+  addressLine1       String?
+  city               String?
+  state              String?
+  postalCode         String?
+  sexAtBirth         String?
+  primaryCarePhysician String?
+  supplements        String?  @db.Text
+  pregnancyStatus    String?
+  preferredContact   String?
   importedNotes      String?  @db.Text
   source             String?
   user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -467,6 +477,9 @@ model Order {
   stripeCheckoutSessionId String?   @unique
   stripePaymentIntentId String?     @unique
   authorizeNetTransId  String?      @unique
+  /** Wellness Tech Distribution order created from this paid KIAN order. */
+  distributionOrderId  String?
+  distributionSyncError String?     @db.Text
   paymentToken         String?      @unique
   paymentTokenExpiresAt DateTime?
   items                OrderItem[]

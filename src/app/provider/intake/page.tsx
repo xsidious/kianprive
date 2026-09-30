@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { adminBtnGhost, adminEyebrow, adminMuted, adminPanel, adminStat, adminTitle, statusTone } from "@/components/admin/ui";
+import { INTAKE_QUEUES, INTAKE_STATUS_LABELS, intakeQueue, type IntakeQueue } from "@/lib/intake/tracking";
 
 type Row = {
   id: string;
@@ -33,6 +34,8 @@ export default function ProviderIntakeListPage() {
   }, []);
 
   const pendingSign = rows.filter((r) => r.hasClientSignature && !r.hasProviderSignature).length;
+  const grouped: Record<IntakeQueue, Row[]> = { IN_REVIEW: [], APPROVED: [], OTHER: [] };
+  for (const row of rows) grouped[intakeQueue(row.status)].push(row);
 
   return (
     <div className="space-y-6">
@@ -47,28 +50,32 @@ export default function ProviderIntakeListPage() {
       {error ? <p className="text-sm text-[#7c2c2c]">{error}</p> : null}
 
       <div className="grid gap-3 sm:grid-cols-3">
-        <div className={adminStat}>
-          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Total</p>
-          <p className="mt-2 font-serif text-3xl">{rows.length}</p>
-        </div>
-        <div className={adminStat}>
-          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Awaiting your signature</p>
-          <p className="mt-2 font-serif text-3xl">{pendingSign}</p>
-        </div>
-        <div className={adminStat}>
-          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Fully signed</p>
-          <p className="mt-2 font-serif text-3xl">{rows.filter((r) => r.hasProviderSignature).length}</p>
-        </div>
+        {INTAKE_QUEUES.map((queue) => (
+          <div key={queue.id} className={adminStat}>
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">{queue.label}</p>
+            <p className="mt-2 font-serif text-3xl">{grouped[queue.id].length}</p>
+            <p className="mt-1 text-xs text-[#6f6251]">{queue.hint}</p>
+          </div>
+        ))}
       </div>
+      <p className="text-sm text-[#6f6251]">
+        {pendingSign} awaiting your signature · {rows.filter((r) => r.hasProviderSignature).length} fully signed
+      </p>
 
-      <div className="space-y-3">
-        {rows.map((row) => (
+      <div className="space-y-8">
+        {INTAKE_QUEUES.map((queue) => (
+          <section key={queue.id} className="space-y-3">
+            <h2 className="font-serif text-2xl text-[#1f1a15]">{queue.label}</h2>
+            {grouped[queue.id].length === 0 ? (
+              <p className={`${adminPanel} p-6 text-sm text-[#6f6251]`}>Nothing in {queue.label.toLowerCase()}.</p>
+            ) : (
+              grouped[queue.id].map((row) => (
           <article key={row.id} className={`${adminPanel} p-5`}>
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <div className="flex flex-wrap gap-2">
                   <span className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] ${statusTone(row.status)}`}>
-                    {row.status}
+                    {INTAKE_STATUS_LABELS[row.status as keyof typeof INTAKE_STATUS_LABELS] ?? row.status.replaceAll("_", " ")}
                   </span>
                   {row.hasClientSignature ? (
                     <span className="rounded-full bg-[#eef6f3] px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-[#1b6568]">
@@ -100,10 +107,10 @@ export default function ProviderIntakeListPage() {
               </Link>
             </div>
           </article>
+              ))
+            )}
+          </section>
         ))}
-        {!rows.length && !error ? (
-          <p className={`${adminPanel} p-6 text-sm text-[#6f6251]`}>No Wellness Hub intakes yet.</p>
-        ) : null}
       </div>
     </div>
   );

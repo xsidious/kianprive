@@ -14,6 +14,7 @@ import { peptidesGlpIntakeSchema } from "@/lib/intake/peptides-glp-schema";
 import { INTAKE_REVIEW_FEE_LABEL, INTAKE_REVIEW_FEE_USD } from "@/lib/intake/review-fee";
 import { generateIntakeTrackingToken } from "@/lib/intake/tracking";
 import { ehrPayloadStamp, resolveEhrAssignment, withPhysicianEmails } from "@/lib/ehr/route-intake";
+import { physicianReviewForConditions } from "@/lib/intake/medical-review";
 
 const bodySchema = z.object({
   intake: peptidesGlpIntakeSchema,
@@ -70,6 +71,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: message }, { status: 402 });
   }
 
+  const clinicalReview = physicianReviewForConditions(data);
   const trackingToken = generateIntakeTrackingToken();
   const assignment = await resolveEhrAssignment(prisma, {
     site: "kian",
@@ -89,7 +91,8 @@ export async function POST(req: Request) {
           dateOfBirth: data.patient.dateOfBirth,
           programs: data.programs,
           publicTrackingToken: trackingToken,
-          status: "PENDING_REVIEW",
+          status: clinicalReview.status,
+          statusNote: clinicalReview.statusNote,
           assignedPartnerId: assignment.assignedPartnerId,
           payload: ehrPayloadStamp(assignment, {
             ...data,
@@ -160,7 +163,7 @@ export async function POST(req: Request) {
       await sendTransactionalEmail({
         to: withPhysicianEmails(recipients, assignment.physicianEmails),
         subject: report.subject,
-        text: `${report.text}\n\nReview fee paid: $${INTAKE_REVIEW_FEE_USD.toFixed(2)} (AuthNet ${charge.transId})`,
+        text: `${report.text}\n\nReview fee paid: $${INTAKE_REVIEW_FEE_USD.toFixed(2)} (AuthNet ${charge.transId})${clinicalReview.statusNote ? `\n${clinicalReview.statusNote}` : ""}`,
         html: report.html,
       });
     }

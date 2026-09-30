@@ -14,9 +14,9 @@ import { auth } from "@/lib/auth";
 import { IcooneMediaGallery } from "@/components/services/IcooneMediaGallery";
 import { RotatingServiceGallery } from "@/components/services/RotatingServiceGallery";
 import { PeptidesInteractiveShowcase } from "@/components/services/PeptidesInteractiveShowcase";
-import { TherapeuticsConsultants } from "@/components/services/TherapeuticsConsultants";
 import { nutritionPromoImage, NUTRITION_SERVICE_SLUG } from "@/lib/media/nutrition";
-import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
+import { COMPOUND_THERAPY_URL } from "@/lib/privetherapeutics";
+import { TherapeuticsAnchor } from "@/components/site/TherapeuticsAnchor";
 import { getServiceBySlug, serviceCatalog } from "@/lib/services/catalog";
 import { formatUsd } from "@/lib/services/pricing-menus";
 import { canViewServicePrices } from "@/lib/member-pricing-access";
@@ -89,13 +89,13 @@ export default async function ServiceDetailPage({
   const bookingHref = service.externalBookingUrl
     ? service.externalBookingUrl
     : service.slug === "glp1-peptides"
-      ? PRIVETHERAPEUTICS_URL
+      ? COMPOUND_THERAPY_URL
       : `/book-online?service=${service.slug}`;
   const bookingIsExternal = bookingHref.startsWith("http://") || bookingHref.startsWith("https://");
   const bookingLabel = service.externalBookingUrl
     ? "Book with Partner"
     : service.slug === "glp1-peptides"
-      ? "Browse Peptides"
+      ? "Book compound therapy"
       : "Book This Service";
   const heroTitle = splitHeroTitle(service.title);
 
@@ -116,7 +116,20 @@ export default async function ServiceDetailPage({
           ]),
         ]}
       />
-      {isNutrition ? (
+      {isPeptides ? (
+        <EditorialSection>
+          <EditorialEyebrow>COMPOUND THERAPY</EditorialEyebrow>
+          <h1 className="mt-3 font-serif text-3xl text-[#1f1a15] sm:text-4xl">Compound Therapy</h1>
+          <div className="mt-6">
+            <PeptidesInteractiveShowcase />
+          </div>
+          <div className="mt-6">
+            <TherapeuticsAnchor href={COMPOUND_THERAPY_URL} className={editorialCtaPrimary}>
+              BOOK COMPOUND THERAPY
+            </TherapeuticsAnchor>
+          </div>
+        </EditorialSection>
+      ) : isNutrition ? (
         <EditorialSection>
           <div className={`${editorialPanel} p-6 sm:p-8`}>
             <EditorialEyebrow>NUTRITION SERVICES</EditorialEyebrow>
@@ -182,32 +195,6 @@ export default async function ServiceDetailPage({
         </EditorialSection>
       ) : null}
 
-      {isPeptides ? (
-        <EditorialSection className="!py-8 sm:!py-10">
-          <PeptidesInteractiveShowcase />
-          <div className="mt-8">
-            <TherapeuticsConsultants />
-          </div>
-          <div className={`mt-8 ${editorialPanel} p-5`}>
-            <p className="text-xs tracking-[0.18em] text-[#8a682e]">START YOUR WELLNESS JOURNEY</p>
-            <h2 className="mt-2 font-serif text-2xl text-[#1f1a15]">Complete your therapeutics intake</h2>
-            <p className="mt-3 max-w-3xl text-sm text-[#5f5344]">
-              After connecting with a consultant, complete intake on Privé Therapeutics so your reviewing physician can
-              evaluate eligibility. After approval, you will be contacted with booking and purchasing next steps.
-              Injection supplies such as sterile water, pen tips, and needles are available in the KIAN shop.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-3">
-              <a href={PRIVETHERAPEUTICS_URL} target="_blank" rel="noreferrer" className={editorialCtaPrimary}>
-                BROWSE PEPTIDES
-              </a>
-              <Link href="/shop" className={editorialCtaSecondary}>
-                SHOP SUPPLIES
-              </Link>
-            </div>
-          </div>
-        </EditorialSection>
-      ) : null}
-
       {isCelexo ? (
         <EditorialSection className="!py-8 sm:!py-10">
           <div className={`${editorialPanel} p-5`}>
@@ -242,7 +229,7 @@ export default async function ServiceDetailPage({
         </EditorialSection>
       ) : null}
 
-      {service.details?.length ? (
+      {!isPeptides && service.details?.length ? (
         <EditorialSection className={isPeptides ? "!py-8 sm:!py-10" : undefined}>
           <EditorialEyebrow>PROCESS</EditorialEyebrow>
           <h2 className="mt-3 font-serif text-2xl text-[#1f1a15] sm:text-3xl">How This Service Works</h2>
@@ -256,7 +243,7 @@ export default async function ServiceDetailPage({
         </EditorialSection>
       ) : null}
 
-      {service.contentSections?.length ? (
+      {!isPeptides && service.contentSections?.length ? (
         <EditorialSection className={isPeptides ? "!py-8 sm:!py-10" : undefined}>
           <EditorialEyebrow>DETAILS</EditorialEyebrow>
           <h2 className="mt-3 font-serif text-2xl text-[#1f1a15] sm:text-3xl">
@@ -284,7 +271,7 @@ export default async function ServiceDetailPage({
         </EditorialSection>
       ) : null}
 
-      {service.includes?.length ? (
+      {!isPeptides && service.includes?.length ? (
         <EditorialSection className={isPeptides ? "!py-8 sm:!py-10" : undefined}>
           <EditorialEyebrow>INCLUDES</EditorialEyebrow>
           <h2 className="mt-3 font-serif text-2xl text-[#1f1a15] sm:text-3xl">
@@ -300,7 +287,7 @@ export default async function ServiceDetailPage({
         </EditorialSection>
       ) : null}
 
-      {canViewPrices && (service.pricing?.length || service.guestPrice != null) ? (
+      {!isPeptides && canViewPrices && (service.pricing?.length || service.guestPrice != null) ? (
         <EditorialSection>
           <EditorialEyebrow>PRICING</EditorialEyebrow>
           <h2 className="mt-4 font-serif text-2xl text-[#1f1a15] sm:text-3xl">
@@ -326,7 +313,7 @@ export default async function ServiceDetailPage({
             </div>
           </div>
         </EditorialSection>
-      ) : !canViewPrices && (service.pricing?.length || service.guestPrice != null) ? (
+      ) : !isPeptides && !canViewPrices && (service.pricing?.length || service.guestPrice != null) ? (
         <EditorialSection>
           <EditorialEyebrow>PRICING</EditorialEyebrow>
           <h2 className="mt-4 font-serif text-2xl text-[#1f1a15] sm:text-3xl">
@@ -336,7 +323,7 @@ export default async function ServiceDetailPage({
         </EditorialSection>
       ) : null}
 
-      {service.availability?.length ? (
+      {!isPeptides && service.availability?.length ? (
         <EditorialSection>
           <EditorialEyebrow>AVAILABILITY</EditorialEyebrow>
           <h2 className="mt-4 font-serif text-2xl text-[#1f1a15] sm:text-3xl">Availability</h2>
@@ -367,7 +354,7 @@ export default async function ServiceDetailPage({
             </div>
           </div>
         </EditorialSection>
-      ) : (
+      ) : !isPeptides ? (
         <EditorialSection>
           <div className={`${editorialPanel} border-[#b78d4b4f] bg-gradient-to-b from-[#fff8ed] to-[#f1e7d7] p-8 text-center`}>
             <h2 className="font-serif text-2xl text-[#1f1a15] sm:text-3xl">Ready to begin?</h2>
@@ -389,7 +376,7 @@ export default async function ServiceDetailPage({
             </div>
           </div>
         </EditorialSection>
-      )}
+      ) : null}
     </div>
   );
 }

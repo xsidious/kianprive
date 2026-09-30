@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { Fragment, useEffect, useState, type FormEvent } from "react";
+import { MemberProfileFields } from "@/components/account/MemberProfileFields";
+import { memberProfileFromRecord, type MemberProfileDraft } from "@/lib/account/member-profile";
 
 type UserRecord = {
   id: string;
@@ -8,6 +10,7 @@ type UserRecord = {
   email: string;
   role: "GUEST" | "MEMBER" | "EDITOR" | "OPERATIONS" | "ADMIN" | "PARTNER" | "AMBASSADOR" | "PROVIDER";
   subscription?: { tier: "BASIC" | "PREMIUM"; status: "INACTIVE" | "ACTIVE" | "PAST_DUE" | "CANCELED" } | null;
+  profile?: Partial<MemberProfileDraft> | null;
 };
 
 const roles = ["GUEST", "MEMBER", "EDITOR", "OPERATIONS", "ADMIN", "PARTNER", "AMBASSADOR", "PROVIDER"] as const;
@@ -34,6 +37,7 @@ export default function AdminUsersPage() {
   const [creating, setCreating] = useState(false);
   const [createMessage, setCreateMessage] = useState("");
   const [createForm, setCreateForm] = useState(emptyCreateForm);
+  const [openProfileId, setOpenProfileId] = useState<string | null>(null);
 
   async function loadUsers(search = query, role = roleFilter) {
     const params = new URLSearchParams();
@@ -115,6 +119,7 @@ export default function AdminUsersPage() {
         role: user.role,
         subscriptionTier: user.subscription?.tier ?? "BASIC",
         subscriptionStatus: user.subscription?.status ?? "INACTIVE",
+        profile: memberProfileFromRecord({ ...user.profile, name: user.name ?? user.profile?.name ?? "" }),
       }),
     });
     setStatus(response.ok ? "User updated." : "Failed to update user.");
@@ -150,6 +155,30 @@ export default function AdminUsersPage() {
           placeholder="Search members by name or email"
           className={`${fieldClass} min-w-[240px] flex-1`}
         />
+        <button
+          type="button"
+          className="rounded-sm border border-[#b78d4b80] px-4 py-2 text-sm text-[#3b3024]"
+          onClick={() => {
+            const rows = users.filter((user) => user.role === "MEMBER" && user.subscription?.status === "ACTIVE");
+            const lines = rows.map((user) => user.email).filter(Boolean);
+            void navigator.clipboard.writeText(lines.join("\n"));
+            setStatus(`Copied ${lines.length} active member emails.`);
+          }}
+        >
+          Copy active emails
+        </button>
+        <button
+          type="button"
+          className="rounded-sm border border-[#b78d4b80] px-4 py-2 text-sm text-[#3b3024]"
+          onClick={() => {
+            const rows = users.filter((user) => user.role === "MEMBER" && user.subscription?.status === "ACTIVE");
+            const lines = rows.map((user) => user.profile?.phone?.trim()).filter((phone): phone is string => Boolean(phone));
+            void navigator.clipboard.writeText(lines.join("\n"));
+            setStatus(`Copied ${lines.length} active member phone numbers.`);
+          }}
+        >
+          Copy active phones
+        </button>
         <select
           value={roleFilter}
           onChange={(event) => setRoleFilter(event.target.value)}
@@ -168,6 +197,7 @@ export default function AdminUsersPage() {
             <tr>
               <th className="p-3">Name</th>
               <th className="p-3">Email</th>
+              <th className="p-3">Phone</th>
               <th className="p-3">Role</th>
               <th className="p-3">Subscription</th>
               <th className="p-3">Actions</th>
@@ -176,17 +206,18 @@ export default function AdminUsersPage() {
           <tbody>
             {users.length === 0 ? (
               <tr>
-                <td colSpan={5} className="p-6 text-[#6f6251]">
+                <td colSpan={6} className="p-6 text-[#6f6251]">
                   No members match that search.
                 </td>
               </tr>
             ) : null}
             {users.map((user) => (
-              <tr key={user.id} className="border-t border-[#d7b67633] align-top">
+              <Fragment key={user.id}>
+              <tr className="border-t border-[#d7b67633] align-top">
                 <td className="p-3">
                   <input
                     value={user.name ?? ""}
-                    onChange={(event) => setUsers((prev) => prev.map((row) => row.id === user.id ? { ...row, name: event.target.value } : row))}
+                    onChange={(event) => setUsers((prev) => prev.map((row) => row.id === user.id ? { ...row, name: event.target.value, profile: { ...memberProfileFromRecord(row.profile), ...row.profile, name: event.target.value } } : row))}
                     className="w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2"
                   />
                 </td>
@@ -194,6 +225,22 @@ export default function AdminUsersPage() {
                   <input
                     value={user.email}
                     onChange={(event) => setUsers((prev) => prev.map((row) => row.id === user.id ? { ...row, email: event.target.value } : row))}
+                    className="w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2"
+                  />
+                </td>
+                <td className="p-3">
+                  <input
+                    value={user.profile?.phone ?? ""}
+                    onChange={(event) =>
+                      setUsers((prev) =>
+                        prev.map((row) =>
+                          row.id === user.id
+                            ? { ...row, profile: { ...memberProfileFromRecord(row.profile), ...row.profile, phone: event.target.value } }
+                            : row,
+                        ),
+                      )
+                    }
+                    placeholder="Phone"
                     className="w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-2"
                   />
                 </td>
@@ -226,11 +273,30 @@ export default function AdminUsersPage() {
                 </td>
                 <td className="p-3">
                   <div className="flex flex-wrap gap-2">
+                    <button type="button" onClick={() => setOpenProfileId((current) => current === user.id ? null : user.id)} className="rounded-sm border border-[#b78d4b80] px-3 py-1.5 text-xs text-[#3b3024]">
+                      {openProfileId === user.id ? "Hide profile" : "Profile"}
+                    </button>
                     <button onClick={() => void updateUser(user)} className="rounded-sm border border-[#b78d4b80] px-3 py-1.5 text-xs text-[#3b3024]">Save</button>
                     <button onClick={() => void deleteUser(user.id)} className="rounded-sm border border-[#d07b7b80] px-3 py-1.5 text-xs text-[#7c2c2c]">Delete</button>
                   </div>
                 </td>
               </tr>
+              {openProfileId === user.id ? (
+                <tr className="border-t border-[#d7b67622] bg-[#fffaf4]">
+                  <td colSpan={6} className="p-4">
+                    <MemberProfileFields
+                      inputClassName={fieldClass}
+                      value={memberProfileFromRecord({ ...user.profile, name: user.name ?? "" })}
+                      onChange={(next) =>
+                        setUsers((prev) =>
+                          prev.map((row) => (row.id === user.id ? { ...row, name: next.name, profile: next } : row)),
+                        )
+                      }
+                    />
+                  </td>
+                </tr>
+              ) : null}
+              </Fragment>
             ))}
           </tbody>
         </table>

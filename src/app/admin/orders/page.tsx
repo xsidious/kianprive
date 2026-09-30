@@ -16,6 +16,7 @@ import {
   money,
   statusTone,
 } from "@/components/admin/ui";
+import { orderIncludesPeptides } from "@/lib/commerce/peptide-orders";
 
 type OrderItem = {
   id: string;
@@ -24,7 +25,7 @@ type OrderItem = {
   quantity: number;
   unitPrice: number | string;
   lineTotal: number | string;
-  product?: { featuredImage?: string | null; slug?: string } | null;
+  product?: { featuredImage?: string | null; slug?: string; category?: string | null; catalogKind?: string | null } | null;
 };
 
 type Order = {
@@ -41,6 +42,8 @@ type Order = {
   total?: number | string;
   createdAt?: string;
   authorizeNetTransId?: string | null;
+  distributionOrderId?: string | null;
+  distributionSyncError?: string | null;
   shippingAddress?: Record<string, string> | null;
   notes?: string | null;
   items?: OrderItem[];
@@ -71,6 +74,7 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [status, setStatus] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [catalog, setCatalog] = useState<"all" | "shop" | "peptides">("all");
 
   async function loadOrders() {
     const res = await fetch("/api/admin/commerce/orders");
@@ -171,6 +175,13 @@ export default function AdminOrdersPage() {
     [orders],
   );
 
+  const peptideOrders = useMemo(() => orders.filter((order) => orderIncludesPeptides(order.items)), [orders]);
+  const visibleOrders = useMemo(() => {
+    if (catalog === "peptides") return peptideOrders;
+    if (catalog === "shop") return orders.filter((order) => !orderIncludesPeptides(order.items));
+    return orders;
+  }, [catalog, orders, peptideOrders]);
+
   return (
     <div className="space-y-6">
       <div>
@@ -181,10 +192,36 @@ export default function AdminOrdersPage() {
 
       {status ? <p className="text-sm text-[#1b6568]">{status}</p> : null}
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="flex flex-wrap gap-2">
+        {(
+          [
+            ["all", "All orders"],
+            ["shop", "Shop"],
+            ["peptides", "Peptides"],
+          ] as const
+        ).map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => setCatalog(value)}
+            className={`rounded-full px-4 py-2 text-xs uppercase tracking-[0.14em] ${
+              catalog === value ? "bg-[#1f1a15] text-white" : "border border-[#e4d9c8] bg-white text-[#4f4335]"
+            }`}
+          >
+            {label}
+            {value === "peptides" ? ` (${peptideOrders.length})` : ""}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-4">
         <div className={`${adminPanel} p-5`}>
           <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Orders</p>
           <p className="mt-2 font-serif text-3xl">{orders.length}</p>
+        </div>
+        <div className={`${adminPanel} p-5`}>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Peptide orders</p>
+          <p className="mt-2 font-serif text-3xl">{peptideOrders.length}</p>
         </div>
         <div className={`${adminPanel} p-5`}>
           <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Paid revenue</p>
@@ -199,11 +236,20 @@ export default function AdminOrdersPage() {
       </div>
 
       <div className="space-y-3">
-        {orders.map((order) => (
+        {visibleOrders.map((order) => {
+          const peptideOrder = orderIncludesPeptides(order.items);
+          return (
           <article key={order.id} className={`${adminPanel} p-5`}>
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="font-serif text-xl text-[#1f1a15]">{order.orderNumber}</p>
+                <p className="font-serif text-xl text-[#1f1a15]">
+                  {order.orderNumber}
+                  {peptideOrder ? (
+                    <span className="ml-2 align-middle rounded-full bg-[#fff6e8] px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-[#8f6f3e]">
+                      Peptides
+                    </span>
+                  ) : null}
+                </p>
                 <p className="mt-1 text-sm text-[#6f6251]">
                   {order.email ?? "No email"}
                   {order.createdAt ? ` · ${new Date(order.createdAt).toLocaleString()}` : ""}
@@ -223,6 +269,15 @@ export default function AdminOrdersPage() {
                     Paid {money(order.total)}
                     {order.authorizeNetTransId ? ` · ID ${order.authorizeNetTransId}` : ""}
                     {order.payments?.[0]?.provider ? ` · ${order.payments[0].provider}` : ""}
+                  </p>
+                ) : null}
+                {order.distributionOrderId ? (
+                  <p className="mt-1 text-xs text-[#1b6568]">
+                    Sent to Wellness Tech Distribution · {order.distributionOrderId}
+                  </p>
+                ) : order.distributionSyncError ? (
+                  <p className="mt-1 text-xs text-[#8a4b3c]">
+                    Wellness Tech: {order.distributionSyncError}
                   </p>
                 ) : null}
               </div>
@@ -274,8 +329,13 @@ export default function AdminOrdersPage() {
               </div>
             </div>
           </article>
-        ))}
-        {!orders.length ? <div className={`${adminPanel} p-8 text-sm text-[#6f6251]`}>No orders yet.</div> : null}
+          );
+        })}
+        {!visibleOrders.length ? (
+          <div className={`${adminPanel} p-8 text-sm text-[#6f6251]`}>
+            {catalog === "peptides" ? "No peptide orders yet." : "No orders yet."}
+          </div>
+        ) : null}
       </div>
 
       <AdminModal open={Boolean(selected)} title={selected?.orderNumber ?? "Order"} eyebrow="Order detail" wide onClose={() => setSelectedId(null)}>
