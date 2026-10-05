@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { requireAdminAccess } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
 import { generatePartnerCode, writeAuditLog } from "@/lib/partners";
+import { attachNetworkProfile } from "@/lib/network-profile";
 
 const createSchema = z.object({
   name: z.string().min(2),
@@ -50,7 +51,29 @@ export async function POST(req: Request) {
 
   const existing = await prisma.user.findUnique({ where: { email: parsed.data.email.toLowerCase() } });
   if (existing) {
-    return NextResponse.json({ error: "Email already in use." }, { status: 409 });
+    const partnerType = parsed.data.type === "AMBASSADOR" || parsed.data.type === "PROVIDER" ? "CLINICAL" : parsed.data.type;
+    const attached = await attachNetworkProfile({
+      userId: existing.id,
+      type: partnerType,
+      displayName: parsed.data.displayName,
+      legalName: parsed.data.legalName,
+      specialty: parsed.data.specialty,
+      phone: parsed.data.phone,
+      status: parsed.data.status ?? "INVITED",
+      defaultServiceCommissionPct: parsed.data.defaultServiceCommissionPct ?? 20,
+      defaultProductCommissionPct: parsed.data.defaultProductCommissionPct ?? 10,
+    });
+    if (!attached.created) {
+      return NextResponse.json({ error: "This person is already a partner." }, { status: 409 });
+    }
+    await writeAuditLog({
+      userId: access.userId,
+      action: "partner.attach",
+      entityType: "PartnerProfile",
+      entityId: attached.profile.id,
+      metadata: { email: existing.email, partnerCode: attached.profile.partnerCode },
+    });
+    return NextResponse.json({ partner: attached.profile, attachedToExistingUser: true }, { status: 201 });
   }
 
   const passwordHash = await bcrypt.hash(parsed.data.password, 10);

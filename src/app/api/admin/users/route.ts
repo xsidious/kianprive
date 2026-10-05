@@ -29,7 +29,26 @@ export async function GET(req: Request) {
           }
         : {}),
     },
-    include: { subscription: true, profile: true },
+    include: {
+      subscription: true,
+      profile: true,
+      partnerProfiles: {
+        select: {
+          id: true,
+          type: true,
+          status: true,
+          displayName: true,
+          legalName: true,
+          specialty: true,
+          phone: true,
+          partnerCode: true,
+          defaultServiceCommissionPct: true,
+          defaultProductCommissionPct: true,
+          createdAt: true,
+        },
+        orderBy: { createdAt: "asc" },
+      },
+    },
     orderBy: { createdAt: "desc" },
     take: 200,
   });

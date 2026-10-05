@@ -147,6 +147,10 @@ export function formatPeptideIntakeEmail(data: PeptidesGlpIntakeFormData, refere
     line("Photo/video HIPAA media consent", data.consent.photoVideoConsentAccepted ? "YES" : "NO"),
     line("Media consent printed name", data.consent.photoVideoConsentPrintedName),
     line("Media consent date", data.consent.photoVideoConsentSignedAt),
+    line(
+      "Media consent signature",
+      data.consent.photoVideoSignatureDataUrl.startsWith("data:image") ? "YES" : "NO",
+    ),
     line("Media guardian", data.consent.photoVideoGuardianName),
     line("Referral Source", data.consent.referralSource),
     line("Referral Other", data.consent.referralOther),

@@ -29,6 +29,11 @@ export const nurseConsentFieldsSchema = z.object({
   }),
   nurseConsentSignedAt: z.string().min(1, "Consent date is required."),
   nurseConsentPrintedName: z.string().trim().min(2, "Printed name is required."),
+  nurseConsentSignatureDataUrl: z.string().refine((value) => value.startsWith("data:image"), {
+    message: "A handwritten signature is required.",
+  }),
+  nurseConsentDateOfBirth: z.string().min(1, "Date of birth is required."),
+  nurseConsentServiceDate: z.string().optional().default(""),
   nurseConsentGuardianName: z.string().trim().optional().default(""),
   nurseConsentGuardianRelationship: z.string().trim().optional().default(""),
 });
@@ -39,6 +44,9 @@ export const defaultNurseConsentFields: NurseConsentFields = {
   nurseConsentAccepted: false,
   nurseConsentSignedAt: "",
   nurseConsentPrintedName: "",
+  nurseConsentSignatureDataUrl: "",
+  nurseConsentDateOfBirth: "",
+  nurseConsentServiceDate: "",
   nurseConsentGuardianName: "",
   nurseConsentGuardianRelationship: "",
 };
@@ -48,7 +56,10 @@ export function formatNurseConsentForNotes(fields: NurseConsentFields) {
     `[${NURSE_CONSENT_TITLE}]`,
     `Accepted: ${fields.nurseConsentAccepted ? "YES" : "NO"}`,
     `Printed name: ${fields.nurseConsentPrintedName}`,
-    `Date: ${fields.nurseConsentSignedAt}`,
+    `Date of birth: ${fields.nurseConsentDateOfBirth || "—"}`,
+    `Date of service: ${fields.nurseConsentServiceDate || "—"}`,
+    `Date signed: ${fields.nurseConsentSignedAt}`,
+    `Handwritten signature: ${fields.nurseConsentSignatureDataUrl.startsWith("data:image") ? "YES" : "NO"}`,
   ];
   if (fields.nurseConsentGuardianName?.trim()) {
     lines.push(

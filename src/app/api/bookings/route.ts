@@ -45,6 +45,8 @@ const createBookingSchema = z.object({
       photoVideoConsentAccepted: z.boolean(),
       photoVideoConsentSignedAt: z.string().max(40),
       photoVideoConsentPrintedName: z.string().max(120),
+      photoVideoSignatureDataUrl: z.string().max(500000),
+      photoVideoDateOfBirth: z.string().max(40).optional(),
       photoVideoGuardianName: z.string().max(120).optional(),
       photoVideoGuardianRelationship: z.string().max(120).optional(),
     })
@@ -54,6 +56,9 @@ const createBookingSchema = z.object({
       nurseConsentAccepted: z.boolean(),
       nurseConsentSignedAt: z.string().max(40),
       nurseConsentPrintedName: z.string().max(120),
+      nurseConsentSignatureDataUrl: z.string().max(500000),
+      nurseConsentDateOfBirth: z.string().max(40).optional(),
+      nurseConsentServiceDate: z.string().max(80).optional(),
       nurseConsentGuardianName: z.string().max(120).optional(),
       nurseConsentGuardianRelationship: z.string().max(120).optional(),
     })
@@ -287,16 +292,27 @@ export async function POST(req: Request) {
                 photoVideoConsentAccepted: parsed.data.photoVideoConsent.photoVideoConsentAccepted,
                 photoVideoConsentSignedAt: parsed.data.photoVideoConsent.photoVideoConsentSignedAt,
                 photoVideoConsentPrintedName: parsed.data.photoVideoConsent.photoVideoConsentPrintedName,
+                photoVideoSignatureDataUrl: parsed.data.photoVideoConsent.photoVideoSignatureDataUrl,
+                photoVideoDateOfBirth: parsed.data.photoVideoConsent.photoVideoDateOfBirth ?? "",
                 photoVideoGuardianName: parsed.data.photoVideoConsent.photoVideoGuardianName ?? "",
                 photoVideoGuardianRelationship:
                   parsed.data.photoVideoConsent.photoVideoGuardianRelationship ?? "",
               })
+            : null,
+          requiresMediaConsent && parsed.data.photoVideoConsent?.photoVideoSignatureDataUrl.startsWith("data:image")
+            ? `[Media signature]\n${parsed.data.photoVideoConsent.photoVideoSignatureDataUrl}`
+            : null,
+          requiresNurseConsent && parsed.data.nurseConsent?.nurseConsentSignatureDataUrl.startsWith("data:image")
+            ? `[Nursing signature]\n${parsed.data.nurseConsent.nurseConsentSignatureDataUrl}`
             : null,
           requiresNurseConsent && parsed.data.nurseConsent
             ? formatNurseConsentForNotes({
                 nurseConsentAccepted: parsed.data.nurseConsent.nurseConsentAccepted,
                 nurseConsentSignedAt: parsed.data.nurseConsent.nurseConsentSignedAt,
                 nurseConsentPrintedName: parsed.data.nurseConsent.nurseConsentPrintedName,
+                nurseConsentSignatureDataUrl: parsed.data.nurseConsent.nurseConsentSignatureDataUrl,
+                nurseConsentDateOfBirth: parsed.data.nurseConsent.nurseConsentDateOfBirth ?? "",
+                nurseConsentServiceDate: parsed.data.nurseConsent.nurseConsentServiceDate ?? "",
                 nurseConsentGuardianName: parsed.data.nurseConsent.nurseConsentGuardianName ?? "",
                 nurseConsentGuardianRelationship:
                   parsed.data.nurseConsent.nurseConsentGuardianRelationship ?? "",

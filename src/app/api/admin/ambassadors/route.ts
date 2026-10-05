@@ -5,6 +5,7 @@ import { requireAdminAccess } from "@/lib/admin-guard";
 import { ambassadorReferralLinks } from "@/lib/ambassador";
 import { prisma } from "@/lib/prisma";
 import { generatePartnerCode, writeAuditLog } from "@/lib/partners";
+import { attachNetworkProfile } from "@/lib/network-profile";
 
 const createSchema = z.object({
   name: z.string().min(2),
@@ -102,10 +103,26 @@ export async function POST(req: Request) {
 
   const existing = await prisma.user.findUnique({ where: { email: parsed.data.email.toLowerCase() } });
   if (existing) {
-    return NextResponse.json(
-      { error: `Email already in use (${existing.email}). Use a different login email.` },
-      { status: 409 },
-    );
+    const attached = await attachNetworkProfile({
+      userId: existing.id,
+      type: "AMBASSADOR",
+      displayName: parsed.data.displayName,
+      phone: parsed.data.phone,
+      status: parsed.data.status ?? "ACTIVE",
+      defaultProductCommissionPct: parsed.data.defaultProductCommissionPct ?? 10,
+      defaultServiceCommissionPct: 0,
+    });
+    if (!attached.created) {
+      return NextResponse.json({ error: "This person is already an ambassador." }, { status: 409 });
+    }
+    await writeAuditLog({
+      userId: access.userId,
+      action: "ambassador.attach",
+      entityType: "PartnerProfile",
+      entityId: attached.profile.id,
+      metadata: { email: existing.email, partnerCode: attached.profile.partnerCode },
+    });
+    return NextResponse.json({ ambassador: attached.profile, attachedToExistingUser: true }, { status: 201 });
   }
 
   try {

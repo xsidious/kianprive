@@ -2,8 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Role } from "@prisma/client";
 import { auth } from "@/lib/auth";
-import { canAccessAmbassadorPortal } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
+import { profileWhere } from "@/lib/network-profile";
 import { PortalSignOut } from "@/components/auth/PortalSignOut";
 import { PortalNavList } from "@/components/portal/PortalNav";
 
@@ -16,7 +16,7 @@ const links = [
 
 export default async function AmbassadorLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  if (!session?.user?.id || !canAccessAmbassadorPortal(session.user.role)) {
+  if (!session?.user?.id) {
     redirect("/login");
   }
 
@@ -24,8 +24,8 @@ export default async function AmbassadorLayout({ children }: { children: React.R
     redirect("/admin/ambassadors");
   }
 
-  const partner = await prisma.partnerProfile.findUnique({ where: { userId: session.user.id } });
-  if (!partner || partner.type !== "AMBASSADOR" || partner.status === "SUSPENDED") {
+  const partner = await prisma.partnerProfile.findFirst({ where: profileWhere(session.user.id, "ambassador") });
+  if (!partner || partner.status === "SUSPENDED") {
     redirect("/access-required?target=ambassador");
   }
 

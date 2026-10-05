@@ -24,7 +24,7 @@ async function loadOwnedSubmission(partnerId: string, locationIds: string[], id:
 }
 
 export async function GET(_req: Request, { params }: Params) {
-  const access = await requirePartnerProfile();
+  const access = await requirePartnerProfile("provider");
   if (!access.ok) return access.response;
   if (access.partner.type !== "PROVIDER") {
     return NextResponse.json({ error: "Provider access required." }, { status: 403 });
@@ -63,7 +63,7 @@ const patchSchema = z.object({
 });
 
 export async function PATCH(req: Request, { params }: Params) {
-  const access = await requirePartnerProfile();
+  const access = await requirePartnerProfile("provider");
   if (!access.ok) return access.response;
   if (access.partner.type !== "PROVIDER") {
     return NextResponse.json({ error: "Provider access required." }, { status: 403 });

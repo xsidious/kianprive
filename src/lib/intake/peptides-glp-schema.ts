@@ -175,6 +175,9 @@ export const peptidesGlpIntakeSchema = z.object({
       }),
       photoVideoConsentSignedAt: z.string().min(1, "Media consent date is required."),
       photoVideoConsentPrintedName: z.string().trim().min(2, "Printed name is required for media consent."),
+      photoVideoSignatureDataUrl: z.string().refine((value) => value.startsWith("data:image"), {
+        message: "Sign the media authorization.",
+      }),
       photoVideoGuardianName: optionalText,
       photoVideoGuardianRelationship: optionalText,
       referralSource: z.string().min(1, "Please tell us how you heard about KIAN Privé."),
@@ -307,6 +310,7 @@ export const defaultPeptidesGlpIntake: PeptidesGlpIntakeFormData = {
     photoVideoConsentAccepted: false,
     photoVideoConsentSignedAt: "",
     photoVideoConsentPrintedName: "",
+    photoVideoSignatureDataUrl: "",
     photoVideoGuardianName: "",
     photoVideoGuardianRelationship: "",
     referralSource: "",

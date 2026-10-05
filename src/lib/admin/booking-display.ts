@@ -1,5 +1,23 @@
 const ACUITY_APPOINTMENT_RE = /Acuity appointment #(\d+)/i;
 
+const SIGNATURE_NOTE_RE = /\[(Media signature|Nursing signature)\]\n(data:image\/[^\s]+)/g;
+
+export function splitBookingNotes(notes: string | null | undefined): {
+  text: string;
+  signatures: Array<{ label: string; src: string }>;
+} {
+  if (!notes) return { text: "", signatures: [] };
+  const signatures: Array<{ label: string; src: string }> = [];
+  const text = notes
+    .replace(SIGNATURE_NOTE_RE, (_, label: string, src: string) => {
+      signatures.push({ label: label.replace(" signature", ""), src });
+      return "";
+    })
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+  return { text, signatures };
+}
+
 export function parseAcuityAppointmentId(notes: string | null | undefined): number | null {
   if (!notes) return null;
   const match = notes.match(ACUITY_APPOINTMENT_RE);

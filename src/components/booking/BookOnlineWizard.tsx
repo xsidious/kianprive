@@ -270,8 +270,11 @@ export function BookOnlineWizard() {
       try {
         const res = await fetch("/api/profile");
         if (!res.ok || cancelled) return;
-        const payload = (await res.json()) as { profile?: { phone?: string } };
+        const payload = (await res.json()) as { profile?: { phone?: string; dateOfBirth?: string } };
         if (payload.profile?.phone) setPhone(payload.profile.phone);
+        if (payload.profile?.dateOfBirth) {
+          setPatientDateOfBirth((current) => current || payload.profile?.dateOfBirth || "");
+        }
       } catch {
         /* ignore */
       }
@@ -451,13 +454,26 @@ export function BookOnlineWizard() {
           phone,
           preferredLocation,
           notes: selectedProvider ? `Preferred provider: ${selectedProvider}` : undefined,
-          patientDateOfBirth: needsLabDemographics ? patientDateOfBirth : undefined,
+          patientDateOfBirth: patientDateOfBirth || undefined,
           serviceIds: selectedServices,
           scheduledSlotId: selectedSlotId,
           timezone: DEFAULT_TIMEZONE,
           partnerCode,
-          photoVideoConsent: needsMediaConsent ? mediaConsent : undefined,
-          nurseConsent: needsNurseConsent ? nurseConsent : undefined,
+          photoVideoConsent: needsMediaConsent
+            ? {
+                ...mediaConsent,
+                photoVideoConsentPrintedName: mediaConsent.photoVideoConsentPrintedName || fullName,
+                photoVideoDateOfBirth: patientDateOfBirth,
+              }
+            : undefined,
+          nurseConsent: needsNurseConsent
+            ? {
+                ...nurseConsent,
+                nurseConsentPrintedName: nurseConsent.nurseConsentPrintedName || fullName,
+                nurseConsentDateOfBirth: patientDateOfBirth,
+                nurseConsentServiceDate: serviceDateLabel,
+              }
+            : undefined,
           opaqueData: payment?.opaqueData,
           billTo: payment?.billTo,
           testCardNumber: payment?.testCardNumber,
@@ -484,16 +500,23 @@ export function BookOnlineWizard() {
     }
   }
 
+  const serviceDateLabel = useMemo(() => {
+    const slot = availableSlots.find((item) => item.id === selectedSlotId);
+    return slot ? formatDateLabel(slot.start, DEFAULT_TIMEZONE) : "";
+  }, [availableSlots, selectedSlotId]);
+  const signed = (dataUrl: string | undefined) => Boolean(dataUrl?.startsWith("data:image"));
   const mediaConsentReady =
     !needsMediaConsent ||
     (mediaConsent.photoVideoConsentAccepted &&
-      mediaConsent.photoVideoConsentPrintedName.trim().length >= 2 &&
-      Boolean(mediaConsent.photoVideoConsentSignedAt));
+      (mediaConsent.photoVideoConsentPrintedName || fullName).trim().length >= 2 &&
+      signed(mediaConsent.photoVideoSignatureDataUrl) &&
+      Boolean(patientDateOfBirth.trim()));
   const nurseConsentReady =
     !needsNurseConsent ||
     (nurseConsent.nurseConsentAccepted &&
-      nurseConsent.nurseConsentPrintedName.trim().length >= 2 &&
-      Boolean(nurseConsent.nurseConsentSignedAt));
+      (nurseConsent.nurseConsentPrintedName || fullName).trim().length >= 2 &&
+      signed(nurseConsent.nurseConsentSignatureDataUrl) &&
+      Boolean(patientDateOfBirth.trim()));
 
   const detailsReady =
     Boolean(fullName.trim()) &&
@@ -920,12 +943,21 @@ export function BookOnlineWizard() {
                 <div className="mt-8 text-left">
                   <NurseConsentBlock
                     compact
+                    patientName={fullName}
+                    onPatientNameChange={setFullName}
+                    dateOfBirth={patientDateOfBirth}
+                    onDateOfBirthChange={setPatientDateOfBirth}
+                    serviceDate={serviceDateLabel}
                     value={nurseConsent}
                     onChange={(next) =>
                       setNurseConsent({
+                        ...nurseConsent,
                         nurseConsentAccepted: next.nurseConsentAccepted,
                         nurseConsentSignedAt: next.nurseConsentSignedAt,
                         nurseConsentPrintedName: next.nurseConsentPrintedName,
+                        nurseConsentSignatureDataUrl: next.nurseConsentSignatureDataUrl,
+                        nurseConsentDateOfBirth: patientDateOfBirth,
+                        nurseConsentServiceDate: serviceDateLabel,
                         nurseConsentGuardianName: next.nurseConsentGuardianName ?? "",
                         nurseConsentGuardianRelationship: next.nurseConsentGuardianRelationship ?? "",
                       })
@@ -938,12 +970,20 @@ export function BookOnlineWizard() {
                 <div className="mt-8 text-left">
                   <PhotoVideoConsentBlock
                     compact
+                    patientName={fullName}
+                    onPatientNameChange={setFullName}
+                    dateOfBirth={patientDateOfBirth}
+                    onDateOfBirthChange={setPatientDateOfBirth}
+                    serviceDate={serviceDateLabel}
                     value={mediaConsent}
                     onChange={(next) =>
                       setMediaConsent({
+                        ...mediaConsent,
                         photoVideoConsentAccepted: next.photoVideoConsentAccepted,
                         photoVideoConsentSignedAt: next.photoVideoConsentSignedAt,
                         photoVideoConsentPrintedName: next.photoVideoConsentPrintedName,
+                        photoVideoSignatureDataUrl: next.photoVideoSignatureDataUrl ?? "",
+                        photoVideoDateOfBirth: patientDateOfBirth,
                         photoVideoGuardianName: next.photoVideoGuardianName ?? "",
                         photoVideoGuardianRelationship: next.photoVideoGuardianRelationship ?? "",
                       })

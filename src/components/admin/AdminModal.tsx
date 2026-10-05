@@ -1,30 +1,36 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { X } from "lucide-react";
 
 type AdminModalProps = {
   open: boolean;
   title: string;
   eyebrow?: string;
+  description?: string;
   onClose: () => void;
   children: React.ReactNode;
+  footer?: React.ReactNode;
   wide?: boolean;
 };
 
-export function AdminModal({ open, title, eyebrow, onClose, children, wide }: AdminModalProps) {
+export function AdminModal({ open, title, eyebrow, description, onClose, children, footer, wide }: AdminModalProps) {
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
   useEffect(() => {
     if (!open) return;
     function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") onCloseRef.current();
     }
     document.addEventListener("keydown", onKey);
+    const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousOverflow;
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 
@@ -49,6 +55,7 @@ export function AdminModal({ open, title, eyebrow, onClose, children, wide }: Ad
               <p className="text-[10px] uppercase tracking-[0.2em] text-[#8f6f3e]">{eyebrow}</p>
             ) : null}
             <h2 className="mt-1 font-serif text-2xl text-[#1f1a15]">{title}</h2>
+            {description ? <p className="mt-1 text-sm text-[#6f6251]">{description}</p> : null}
           </div>
           <button
             type="button"
@@ -60,6 +67,11 @@ export function AdminModal({ open, title, eyebrow, onClose, children, wide }: Ad
           </button>
         </div>
         <div className="overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">{children}</div>
+        {footer ? (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#efe4d4] bg-[#fffcf8] px-5 py-4 sm:px-6">
+            {footer}
+          </div>
+        ) : null}
       </div>
     </div>
   );

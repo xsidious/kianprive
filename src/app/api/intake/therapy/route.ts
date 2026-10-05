@@ -45,11 +45,11 @@ async function resolveProviderPartnerId(userId: string, role: Role | undefined |
   if (canAccessAdmin(role)) {
     return null; // admin must pass assigned partner or we use intake.assignedPartnerId
   }
-  const partner = await prisma.partnerProfile.findUnique({
-    where: { userId },
+  const partner = await prisma.partnerProfile.findFirst({
+    where: { userId, type: "PROVIDER" },
     select: { id: true, type: true, status: true },
   });
-  if (!partner || partner.type !== "PROVIDER" || partner.status !== "ACTIVE") {
+  if (!partner || partner.status !== "ACTIVE") {
     return null;
   }
   return partner.id;

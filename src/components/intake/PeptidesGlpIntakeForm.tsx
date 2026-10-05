@@ -423,10 +423,23 @@ export function PeptidesGlpIntakeForm() {
             </span>
           </label>
           <PhotoVideoConsentBlock
+            patientName={form.patient.fullName}
+            onPatientNameChange={(fullName) => {
+              update("patient", { ...form.patient, fullName });
+              update("consent", {
+                ...form.consent,
+                photoVideoConsentPrintedName: fullName,
+                printedName: form.consent.printedName || fullName,
+              });
+            }}
+            dateOfBirth={form.patient.dateOfBirth}
+            onDateOfBirthChange={(dateOfBirth) => update("patient", { ...form.patient, dateOfBirth })}
+            serviceDate={form.patient.firstAppointmentDate}
             value={{
               photoVideoConsentAccepted: form.consent.photoVideoConsentAccepted,
               photoVideoConsentSignedAt: form.consent.photoVideoConsentSignedAt,
-              photoVideoConsentPrintedName: form.consent.photoVideoConsentPrintedName,
+              photoVideoConsentPrintedName: form.consent.photoVideoConsentPrintedName || form.patient.fullName,
+              photoVideoSignatureDataUrl: form.consent.photoVideoSignatureDataUrl,
               photoVideoGuardianName: form.consent.photoVideoGuardianName,
               photoVideoGuardianRelationship: form.consent.photoVideoGuardianRelationship,
             }}
@@ -435,9 +448,12 @@ export function PeptidesGlpIntakeForm() {
                 ...form.consent,
                 photoVideoConsentAccepted: next.photoVideoConsentAccepted ? true : (false as never),
                 photoVideoConsentSignedAt: next.photoVideoConsentSignedAt,
-                photoVideoConsentPrintedName: next.photoVideoConsentPrintedName,
+                photoVideoConsentPrintedName: next.photoVideoConsentPrintedName || form.patient.fullName,
+                photoVideoSignatureDataUrl: next.photoVideoSignatureDataUrl ?? "",
                 photoVideoGuardianName: next.photoVideoGuardianName ?? "",
                 photoVideoGuardianRelationship: next.photoVideoGuardianRelationship ?? "",
+                printedName: form.consent.printedName || next.photoVideoConsentPrintedName || form.patient.fullName,
+                signatureDate: form.consent.signatureDate || next.photoVideoConsentSignedAt,
               })
             }
           />
@@ -469,7 +485,7 @@ export function PeptidesGlpIntakeForm() {
           </div>
           <div className={`grid gap-4 md:grid-cols-2 ${form.consent.accuracyTypedYes.trim().toLowerCase() === "yes" ? "" : "pointer-events-none opacity-45"}`}>
             <Field label="Client signature (type full legal name) *"><TextInput value={form.consent.clientSignature} onChange={(v) => update("consent", { ...form.consent, clientSignature: v })} /></Field>
-            <Field label="Printed name *"><TextInput value={form.consent.printedName} onChange={(v) => update("consent", { ...form.consent, printedName: v })} /></Field>
+            <Field label="Printed name *"><TextInput value={form.consent.printedName || form.patient.fullName} onChange={(v) => update("consent", { ...form.consent, printedName: v })} /></Field>
             <Field label="Signature date *"><TextInput type="date" value={form.consent.signatureDate} onChange={(v) => update("consent", { ...form.consent, signatureDate: v })} /></Field>
           </div>
           {form.consent.accuracyTypedYes.trim().toLowerCase() !== "yes" ? (

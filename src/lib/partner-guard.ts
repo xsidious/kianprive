@@ -2,12 +2,11 @@ import { NextResponse } from "next/server";
 import { Role } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { canAccessPartnerPortal } from "@/lib/rbac";
+import { profileWhere, type NetworkKind } from "@/lib/network-profile";
 
-export async function requirePartnerAccess(opts?: { allowAdmin?: boolean }) {
-  const allowAdmin = opts?.allowAdmin ?? true;
+export async function requirePartnerProfile(kind: NetworkKind) {
   const session = await auth();
-  if (!session?.user?.id || !canAccessPartnerPortal(session.user.role)) {
+  if (!session?.user?.id) {
     return {
       ok: false as const,
       response: NextResponse.json({ error: "Unauthorized" }, { status: 401 }),
@@ -17,25 +16,21 @@ export async function requirePartnerAccess(opts?: { allowAdmin?: boolean }) {
     };
   }
 
-  if (session.user.role === Role.ADMIN && !allowAdmin) {
+  if (session.user.role === Role.ADMIN) {
     return {
       ok: false as const,
       response: NextResponse.json({ error: "Unauthorized" }, { status: 401 }),
       userId: null,
       partner: null,
-      session: null,
+      session,
     };
   }
 
-  const isPortalUser =
-    session.user.role === Role.PARTNER ||
-    session.user.role === Role.AMBASSADOR ||
-    session.user.role === Role.PROVIDER;
-  const partner = isPortalUser
-    ? await prisma.partnerProfile.findUnique({ where: { userId: session.user.id } })
-    : null;
+  const partner = await prisma.partnerProfile.findFirst({
+    where: profileWhere(session.user.id, kind),
+  });
 
-  if (isPortalUser && (!partner || partner.status === "SUSPENDED")) {
+  if (!partner || partner.status === "SUSPENDED") {
     return {
       ok: false as const,
       response: NextResponse.json({ error: "Partner account unavailable." }, { status: 403 }),
@@ -50,25 +45,5 @@ export async function requirePartnerAccess(opts?: { allowAdmin?: boolean }) {
     userId: session.user.id,
     partner,
     session,
-  };
-}
-
-export async function requirePartnerProfile() {
-  const access = await requirePartnerAccess({ allowAdmin: false });
-  if (!access.ok) return access;
-  if (!access.partner) {
-    return {
-      ok: false as const,
-      response: NextResponse.json({ error: "Partner profile not found." }, { status: 404 }),
-      userId: access.userId,
-      partner: null,
-      session: access.session,
-    };
-  }
-  return {
-    ok: true as const,
-    userId: access.userId,
-    partner: access.partner,
-    session: access.session,
   };
 }

@@ -14,6 +14,7 @@ type Props = {
 export function SignaturePad({ value, onChange, label = "Signature", className = "", height = 180 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const drawing = useRef(false);
+  const hasStrokeRef = useRef(Boolean(value));
   const [hasStroke, setHasStroke] = useState(Boolean(value));
 
   useEffect(() => {
@@ -70,6 +71,7 @@ export function SignaturePad({ value, onChange, label = "Signature", className =
     const p = point(e);
     ctx.lineTo(p.x, p.y);
     ctx.stroke();
+    hasStrokeRef.current = true;
     setHasStroke(true);
   }
 
@@ -77,7 +79,7 @@ export function SignaturePad({ value, onChange, label = "Signature", className =
     if (!drawing.current) return;
     drawing.current = false;
     const canvas = canvasRef.current;
-    if (!canvas || !hasStroke) return;
+    if (!canvas || !hasStrokeRef.current) return;
     onChange(canvas.toDataURL("image/png"));
   }
 
@@ -87,6 +89,7 @@ export function SignaturePad({ value, onChange, label = "Signature", className =
     if (!canvas || !ctx) return;
     ctx.fillStyle = "#fffdf9";
     ctx.fillRect(0, 0, canvas.clientWidth, height);
+    hasStrokeRef.current = false;
     setHasStroke(false);
     onChange(null);
   }

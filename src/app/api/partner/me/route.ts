@@ -4,7 +4,7 @@ import { requirePartnerProfile } from "@/lib/partner-guard";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
-  const access = await requirePartnerProfile();
+  const access = await requirePartnerProfile("partner");
   if (!access.ok) return access.response;
 
   const partner = await prisma.partnerProfile.findUnique({
@@ -26,7 +26,7 @@ export async function GET() {
 }
 
 export async function PATCH(req: Request) {
-  const access = await requirePartnerProfile();
+  const access = await requirePartnerProfile("partner");
   if (!access.ok) return access.response;
   const body = (await req.json()) as {
     phone?: string;

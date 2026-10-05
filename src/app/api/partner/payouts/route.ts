@@ -3,7 +3,7 @@ import { requirePartnerProfile } from "@/lib/partner-guard";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
-  const access = await requirePartnerProfile();
+  const access = await requirePartnerProfile("partner");
   if (!access.ok) return access.response;
 
   const payouts = await prisma.partnerPayout.findMany({

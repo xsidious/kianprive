@@ -54,6 +54,10 @@ export const photoVideoConsentFieldsSchema = z.object({
   }),
   photoVideoConsentSignedAt: z.string().min(1, "Consent date is required."),
   photoVideoConsentPrintedName: z.string().trim().min(2, "Printed name is required for media consent."),
+  photoVideoSignatureDataUrl: z.string().refine((value) => value.startsWith("data:image"), {
+    message: "A handwritten signature is required.",
+  }),
+  photoVideoDateOfBirth: z.string().min(1, "Date of birth is required."),
   photoVideoGuardianName: z.string().trim().optional().default(""),
   photoVideoGuardianRelationship: z.string().trim().optional().default(""),
 });
@@ -64,6 +68,8 @@ export const defaultPhotoVideoConsentFields: PhotoVideoConsentFields = {
   photoVideoConsentAccepted: false,
   photoVideoConsentSignedAt: "",
   photoVideoConsentPrintedName: "",
+  photoVideoSignatureDataUrl: "",
+  photoVideoDateOfBirth: "",
   photoVideoGuardianName: "",
   photoVideoGuardianRelationship: "",
 };
@@ -73,7 +79,9 @@ export function formatPhotoVideoConsentForNotes(fields: PhotoVideoConsentFields)
     `[${PHOTO_VIDEO_CONSENT_TITLE}]`,
     `Accepted: ${fields.photoVideoConsentAccepted ? "YES" : "NO"}`,
     `Printed name: ${fields.photoVideoConsentPrintedName}`,
-    `Date: ${fields.photoVideoConsentSignedAt}`,
+    `Date of birth: ${fields.photoVideoDateOfBirth || "—"}`,
+    `Date signed: ${fields.photoVideoConsentSignedAt}`,
+    `Handwritten signature: ${fields.photoVideoSignatureDataUrl.startsWith("data:image") ? "YES" : "NO"}`,
   ];
   if (fields.photoVideoGuardianName?.trim()) {
     lines.push(

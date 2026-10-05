@@ -1,8 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { CommissionOverrideInput } from "@/components/admin/CommissionOverrideInput";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { AdminModal } from "@/components/admin/AdminModal";
+import {
+  ChangeList,
+  ConfirmDialog,
+  Field,
+  NoticeToast,
+  PeopleHeader,
+  PersonList,
+  PersonRow,
+  RateList,
+  StatGrid,
+  TextInput,
+  changeLine,
+  prettySlug,
+  type ChangeLine,
+} from "@/components/admin/people-ui";
+import { adminBtnGhost, adminBtnPrimary, adminInput, adminSelect } from "@/components/admin/ui";
 import { parseCommissionOverride } from "@/lib/commission-parse";
 
 const SERVICE_OPTIONS = [
@@ -30,16 +46,22 @@ const SERVICE_OPTIONS = [
   "mindtap",
 ];
 
+const partnerTypes = ["CLINICAL", "BRAND", "BOTH"] as const;
+const partnerStatuses = ["INVITED", "ACTIVE", "SUSPENDED"] as const;
+
 type PartnerRow = {
   id: string;
   displayName: string;
+  legalName?: string | null;
   specialty: string | null;
+  phone?: string | null;
   type: string;
   status: string;
   partnerCode: string;
   defaultServiceCommissionPct: number | string;
   defaultProductCommissionPct: number | string;
-  user: { email: string; name: string | null };
+  user: { email: string; name: string | null; role?: string };
+  createdAt?: string;
   serviceAssignments: { serviceSlug: string; active: boolean; commissionPct: number | string | null }[];
   productAssignments: { productId: string; active: boolean; commissionPct: number | string | null }[];
   _count: { bookings: number; commissionEntries: number };
@@ -47,30 +69,122 @@ type PartnerRow = {
 
 type ProductOption = { id: string; title: string; slug: string };
 
+type PartnerDraft = {
+  displayName: string;
+  legalName: string;
+  specialty: string;
+  phone: string;
+  type: (typeof partnerTypes)[number];
+  status: (typeof partnerStatuses)[number];
+  defaultServicePct: string;
+  defaultProductPct: string;
+  serviceSlugs: string[];
+  serviceRates: Record<string, string>;
+  productIds: string[];
+  productRates: Record<string, string>;
+};
+
+const emptyCreate = {
+  name: "",
+  email: "",
+  password: "",
+  displayName: "",
+  legalName: "",
+  specialty: "",
+  phone: "",
+  type: "CLINICAL",
+  status: "INVITED",
+  servicePct: "20",
+  productPct: "10",
+};
+
+function toDraft(partner: PartnerRow): PartnerDraft {
+  const serviceRates: Record<string, string> = {};
+  for (const assignment of partner.serviceAssignments) {
+    if (assignment.commissionPct != null) serviceRates[assignment.serviceSlug] = String(assignment.commissionPct);
+  }
+  const productRates: Record<string, string> = {};
+  for (const assignment of partner.productAssignments) {
+    if (assignment.commissionPct != null) productRates[assignment.productId] = String(assignment.commissionPct);
+  }
+  const type = partnerTypes.includes(partner.type as PartnerDraft["type"]) ? (partner.type as PartnerDraft["type"]) : "CLINICAL";
+  const status = partnerStatuses.includes(partner.status as PartnerDraft["status"]) ? (partner.status as PartnerDraft["status"]) : "INVITED";
+  return {
+    displayName: partner.displayName,
+    legalName: partner.legalName ?? "",
+    specialty: partner.specialty ?? "",
+    phone: partner.phone ?? "",
+    type,
+    status,
+    defaultServicePct: String(partner.defaultServiceCommissionPct),
+    defaultProductPct: String(partner.defaultProductCommissionPct),
+    serviceSlugs: partner.serviceAssignments.filter((assignment) => assignment.active).map((assignment) => assignment.serviceSlug),
+    serviceRates,
+    productIds: partner.productAssignments.filter((assignment) => assignment.active).map((assignment) => assignment.productId),
+    productRates,
+  };
+}
+
+function listLabel(values: string[]) {
+  return values.length ? [...values].sort().join(", ") : "None";
+}
+
+function partnerChanges(before: PartnerDraft, after: PartnerDraft, products: ProductOption[]): ChangeLine[] {
+  const productName = (id: string) => products.find((product) => product.id === id)?.title ?? id;
+  const lines = [
+    changeLine("Display name", before.displayName, after.displayName),
+    changeLine("Legal name", before.legalName, after.legalName),
+    changeLine("Specialty", before.specialty, after.specialty),
+    changeLine("Phone", before.phone, after.phone),
+    changeLine("Type", before.type, after.type),
+    changeLine("Status", before.status, after.status),
+    changeLine("Default service %", before.defaultServicePct, after.defaultServicePct),
+    changeLine("Default product %", before.defaultProductPct, after.defaultProductPct),
+    changeLine("Services", listLabel(before.serviceSlugs.map(prettySlug)), listLabel(after.serviceSlugs.map(prettySlug))),
+    changeLine("Products", listLabel(before.productIds.map(productName)), listLabel(after.productIds.map(productName))),
+  ];
+  for (const slug of new Set([...before.serviceSlugs, ...after.serviceSlugs])) {
+    if (!after.serviceSlugs.includes(slug) && !before.serviceSlugs.includes(slug)) continue;
+    lines.push(changeLine(`${prettySlug(slug)} rate`, before.serviceRates[slug] || "default", after.serviceSlugs.includes(slug) ? after.serviceRates[slug] || "default" : "removed"));
+  }
+  for (const id of new Set([...before.productIds, ...after.productIds])) {
+    lines.push(changeLine(`${productName(id)} rate`, before.productRates[id] || "default", after.productIds.includes(id) ? after.productRates[id] || "default" : "removed"));
+  }
+  return lines.filter((line): line is ChangeLine => line != null);
+}
+
 export default function AdminPartnersPage() {
   const [partners, setPartners] = useState<PartnerRow[]>([]);
   const [products, setProducts] = useState<ProductOption[]>([]);
-  const [status, setStatus] = useState("");
+  const [query, setQuery] = useState("");
+  const [notice, setNotice] = useState<{ text: string; error?: boolean } | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState("");
+  const [createForm, setCreateForm] = useState(emptyCreate);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [serviceSlugs, setServiceSlugs] = useState<string[]>([]);
-  const [productIds, setProductIds] = useState<string[]>([]);
-  const [serviceRates, setServiceRates] = useState<Record<string, string>>({});
-  const [productRates, setProductRates] = useState<Record<string, string>>({});
-  const [defaultServicePct, setDefaultServicePct] = useState("20");
-  const [defaultProductPct, setDefaultProductPct] = useState("10");
+  const [baseline, setBaseline] = useState<PartnerDraft | null>(null);
+  const [draft, setDraft] = useState<PartnerDraft | null>(null);
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   async function load() {
     const [partnersRes, productsRes] = await Promise.all([
       fetch("/api/admin/partners"),
       fetch("/api/admin/commerce/products"),
     ]);
-    if (partnersRes.ok) {
-      const payload = (await partnersRes.json()) as { partners: PartnerRow[] };
-      setPartners(payload.partners);
+    setLoading(false);
+    if (!partnersRes.ok) {
+      setNotice({ text: "Could not load partners.", error: true });
+      return;
     }
+    const payload = (await partnersRes.json()) as { partners: PartnerRow[] };
+    setPartners(payload.partners);
     if (productsRes.ok) {
-      const payload = (await productsRes.json()) as { products?: ProductOption[] };
-      setProducts(payload.products ?? (payload as unknown as ProductOption[]));
+      const productPayload = (await productsRes.json()) as { products?: ProductOption[] };
+      setProducts(productPayload.products ?? (productPayload as unknown as ProductOption[]));
     }
   }
 
@@ -78,291 +192,284 @@ export default function AdminPartnersPage() {
     void load();
   }, []);
 
-  async function createPartner(formData: FormData) {
-    setStatus("");
-    const body = {
-      name: String(formData.get("name") || ""),
-      email: String(formData.get("email") || ""),
-      password: String(formData.get("password") || ""),
-      displayName: String(formData.get("displayName") || ""),
-      legalName: String(formData.get("legalName") || "") || undefined,
-      type: String(formData.get("type") || "CLINICAL"),
-      specialty: String(formData.get("specialty") || "") || undefined,
-      phone: String(formData.get("phone") || "") || undefined,
-      defaultServiceCommissionPct: Number(formData.get("servicePct") || 20),
-      defaultProductCommissionPct: Number(formData.get("productPct") || 10),
-      status: String(formData.get("status") || "INVITED"),
-    };
+  const visible = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    if (!needle) return partners;
+    return partners.filter((partner) =>
+      [partner.displayName, partner.user.email, partner.partnerCode, partner.specialty ?? ""].join(" ").toLowerCase().includes(needle),
+    );
+  }, [partners, query]);
+
+  const selected = partners.find((partner) => partner.id === selectedId) ?? null;
+  const changes = baseline && draft ? partnerChanges(baseline, draft, products) : [];
+  const activeCount = partners.filter((partner) => partner.status === "ACTIVE").length;
+
+  function openPartner(partner: PartnerRow) {
+    const next = toDraft(partner);
+    setSelectedId(partner.id);
+    setBaseline(next);
+    setDraft(next);
+    setReviewOpen(false);
+    setDeleteOpen(false);
+  }
+
+  function closePartner() {
+    setSelectedId(null);
+    setBaseline(null);
+    setDraft(null);
+    setReviewOpen(false);
+    setDeleteOpen(false);
+  }
+
+  async function createPartner(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setCreating(true);
+    setCreateError("");
     const res = await fetch("/api/admin/partners", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        name: createForm.name,
+        email: createForm.email,
+        password: createForm.password,
+        displayName: createForm.displayName,
+        legalName: createForm.legalName || undefined,
+        type: createForm.type,
+        specialty: createForm.specialty || undefined,
+        phone: createForm.phone || undefined,
+        defaultServiceCommissionPct: Number(createForm.servicePct || 20),
+        defaultProductCommissionPct: Number(createForm.productPct || 10),
+        status: createForm.status,
+      }),
     });
-    setStatus(res.ok ? "Partner created." : "Failed to create partner.");
-    if (res.ok) await load();
+    const payload = (await res.json().catch(() => ({}))) as { error?: string };
+    setCreating(false);
+    if (!res.ok) {
+      setCreateError(payload.error ?? "Failed to create partner.");
+      return;
+    }
+    const name = createForm.displayName;
+    setCreateOpen(false);
+    setCreateForm(emptyCreate);
+    setNotice({ text: `${name} added.` });
+    await load();
   }
 
-  async function saveAssignments(partnerId: string) {
-    const serviceDefault = Number(defaultServicePct);
-    const productDefault = Number(defaultProductPct);
-    const res = await fetch(`/api/admin/partners/${partnerId}`, {
+  async function savePartner() {
+    if (!selected || !draft) return;
+    setSaving(true);
+    const serviceDefault = Number(draft.defaultServicePct);
+    const productDefault = Number(draft.defaultProductPct);
+    const res = await fetch(`/api/admin/partners/${selected.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        displayName: draft.displayName,
+        legalName: draft.legalName || null,
+        specialty: draft.specialty || null,
+        phone: draft.phone || null,
+        type: draft.type,
+        status: draft.status,
         defaultServiceCommissionPct: Number.isFinite(serviceDefault) ? serviceDefault : 20,
         defaultProductCommissionPct: Number.isFinite(productDefault) ? productDefault : 10,
-        serviceAssignments: serviceSlugs.map((serviceSlug) => ({
+        serviceAssignments: draft.serviceSlugs.map((serviceSlug) => ({
           serviceSlug,
           active: true,
-          commissionPct: parseCommissionOverride(serviceRates[serviceSlug]),
+          commissionPct: parseCommissionOverride(draft.serviceRates[serviceSlug]),
         })),
-        productAssignments: productIds.map((productId) => ({
+        productAssignments: draft.productIds.map((productId) => ({
           productId,
           active: true,
-          commissionPct: parseCommissionOverride(productRates[productId]),
+          commissionPct: parseCommissionOverride(draft.productRates[productId]),
         })),
       }),
     });
-    setStatus(res.ok ? "Commissions & assignments saved." : "Failed to save.");
-    if (res.ok) await load();
-  }
-
-  async function setPartnerStatus(partnerId: string, next: string) {
-    const res = await fetch(`/api/admin/partners/${partnerId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: next }),
-    });
-    setStatus(res.ok ? "Status updated." : "Failed to update status.");
-    if (res.ok) await load();
-  }
-
-  async function deletePartner(partner: PartnerRow) {
-    if (
-      !window.confirm(
-        `Delete partner ${partner.displayName} (${partner.user.email})? Their login account will also be removed.`,
-      )
-    ) {
+    setSaving(false);
+    if (!res.ok) {
+      setNotice({ text: "Could not update that partner.", error: true });
       return;
     }
-    const res = await fetch(`/api/admin/partners/${partner.id}`, { method: "DELETE" });
-    setStatus(res.ok ? "Partner deleted." : "Failed to delete partner.");
-    if (res.ok) {
-      if (selectedId === partner.id) setSelectedId(null);
-      await load();
-    }
+    setReviewOpen(false);
+    closePartner();
+    setNotice({ text: `${draft.displayName} updated.` });
+    await load();
   }
 
-  function selectPartner(partner: PartnerRow) {
-    setSelectedId(partner.id);
-    setServiceSlugs(partner.serviceAssignments.filter((a) => a.active).map((a) => a.serviceSlug));
-    setProductIds(partner.productAssignments.filter((a) => a.active).map((a) => a.productId));
-    setDefaultServicePct(String(partner.defaultServiceCommissionPct));
-    setDefaultProductPct(String(partner.defaultProductCommissionPct));
-    const nextServiceRates: Record<string, string> = {};
-    for (const a of partner.serviceAssignments) {
-      if (a.commissionPct != null) nextServiceRates[a.serviceSlug] = String(a.commissionPct);
+  async function removePartner() {
+    if (!selected || !draft) return;
+    setSaving(true);
+    const res = await fetch(`/api/admin/partners/${selected.id}`, { method: "DELETE" });
+    setSaving(false);
+    if (!res.ok) {
+      setNotice({ text: "Could not delete that partner.", error: true });
+      return;
     }
-    setServiceRates(nextServiceRates);
-    const nextProductRates: Record<string, string> = {};
-    for (const a of partner.productAssignments) {
-      if (a.commissionPct != null) nextProductRates[a.productId] = String(a.commissionPct);
-    }
-    setProductRates(nextProductRates);
+    const name = draft.displayName;
+    closePartner();
+    setNotice({ text: `${name} deleted.` });
+    await load();
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-3xl text-[#1f1a15]">Partners</h1>
-          <p className="mt-2 text-[#6f6251]">
-            Create partner accounts, set per-person defaults, and optional per-service / per-product overrides.
-            Blank override fields use the person default.
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Link href="/admin/partners/payouts" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm">
-            Payouts
-          </Link>
-          <Link href="/admin/partners/network" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm">
-            Network
-          </Link>
-          <Link href="/admin/partners/guidelines" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm">
-            Guidelines
-          </Link>
-          <Link href="/admin/partners/commissions" className="rounded-sm border border-[#b78d4b80] bg-white px-4 py-2 text-sm">
-            Commissions
-          </Link>
-        </div>
-      </div>
-      {status ? <p className="text-sm text-[#8f6f3e]">{status}</p> : null}
-
-      <section className="rounded-sm border border-[#b78d4b2d] bg-white p-5">
-        <h2 className="text-xl text-[#1f1a15]">Create / invite partner</h2>
-        <form action={createPartner} className="mt-4 grid gap-3 md:grid-cols-2">
-          <input name="name" placeholder="Account name" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" required />
-          <input name="email" type="email" placeholder="Login email" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" required />
-          <input name="password" type="password" placeholder="Temporary password (min 8)" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" required />
-          <input name="displayName" placeholder="Display name" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" required />
-          <input name="legalName" placeholder="Legal name" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" />
-          <input name="specialty" placeholder="Specialty" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" />
-          <input name="phone" placeholder="Phone" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" />
-          <select name="type" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" defaultValue="CLINICAL">
-            <option value="CLINICAL">Clinical</option>
-            <option value="BRAND">Brand</option>
-            <option value="BOTH">Both</option>
-          </select>
-          <select name="status" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" defaultValue="INVITED">
-            <option value="INVITED">Invited</option>
-            <option value="ACTIVE">Active</option>
-            <option value="SUSPENDED">Suspended</option>
-          </select>
-          <input name="servicePct" type="number" defaultValue={20} placeholder="Service commission %" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" />
-          <input name="productPct" type="number" defaultValue={10} placeholder="Product commission %" className="rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3" />
-          <button type="submit" className="rounded-sm bg-[#b78d4b] px-5 py-3 text-white md:col-span-2">
-            Create partner account
+      <PeopleHeader
+        eyebrow="Network"
+        title="Partners"
+        description="Open a partner to see their account, rates, and assignments. Add someone from the popup, and confirm before anything is saved or deleted."
+        links={
+          <>
+            <Link href="/admin/partners/payouts" className={adminBtnGhost}>Payouts</Link>
+            <Link href="/admin/partners/network" className={adminBtnGhost}>Network</Link>
+            <Link href="/admin/partners/guidelines" className={adminBtnGhost}>Guidelines</Link>
+            <Link href="/admin/partners/commissions" className={adminBtnGhost}>Commissions</Link>
+          </>
+        }
+        action={
+          <button type="button" className={adminBtnPrimary} onClick={() => { setCreateForm(emptyCreate); setCreateError(""); setCreateOpen(true); }}>
+            Add partner
           </button>
-        </form>
-      </section>
+        }
+      />
 
-      <section className="grid gap-4">
-        {partners.map((partner) => (
-          <article key={partner.id} className="rounded-sm border border-[#b78d4b2d] bg-white p-5">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <p className="text-xs tracking-[0.16em] text-[#8f6f3e]">
-                  {partner.type} · {partner.status} · CODE {partner.partnerCode}
-                </p>
-                <h3 className="mt-1 text-2xl text-[#1f1a15]">{partner.displayName}</h3>
-                <p className="text-sm text-[#6f6251]">
-                  {partner.user.email} · {partner.specialty || "No specialty"} · {partner._count.bookings} bookings
-                </p>
-                <p className="mt-1 text-xs text-[#8f6f3e]">
-                  Defaults: {String(partner.defaultServiceCommissionPct)}% services /{" "}
-                  {String(partner.defaultProductCommissionPct)}% products
-                </p>
-                <p className="mt-2 text-xs text-[#5f5344]">
-                  Services: {partner.serviceAssignments.map((a) => a.serviceSlug).join(", ") || "None"}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <button type="button" onClick={() => selectPartner(partner)} className="rounded-sm border border-[#b78d4b70] px-3 py-2 text-sm">
-                  Assign & rates
-                </button>
-                <button type="button" onClick={() => void setPartnerStatus(partner.id, "ACTIVE")} className="rounded-sm bg-[#b78d4b] px-3 py-2 text-sm text-white">
-                  Activate
-                </button>
-                <button type="button" onClick={() => void setPartnerStatus(partner.id, "SUSPENDED")} className="rounded-sm border border-[#d07b7b80] px-3 py-2 text-sm text-[#7c2c2c]">
-                  Suspend
-                </button>
-                <button
-                  type="button"
-                  onClick={() => void deletePartner(partner)}
-                  className="rounded-sm border border-[#d07b7b80] bg-[#fdeeee] px-3 py-2 text-sm text-[#7c2c2c]"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
+      <StatGrid
+        items={[
+          { label: "Partners", value: String(partners.length) },
+          { label: "Active", value: String(activeCount) },
+          { label: "Showing", value: String(visible.length), hint: query ? "Matching search" : "All partners" },
+        ]}
+      />
 
-            {selectedId === partner.id ? (
-              <div className="mt-4 space-y-4 border-t border-[#e4d9c8] pt-4">
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <label className="block text-sm text-[#4f4335]">
-                    <span className="text-xs tracking-[0.14em] text-[#8f6f3e]">DEFAULT SERVICE %</span>
-                    <input
-                      type="number"
-                      min={0}
-                      max={100}
-                      step="0.01"
-                      value={defaultServicePct}
-                      onChange={(e) => setDefaultServicePct(e.target.value)}
-                      className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2"
-                    />
-                  </label>
-                  <label className="block text-sm text-[#4f4335]">
-                    <span className="text-xs tracking-[0.14em] text-[#8f6f3e]">DEFAULT PRODUCT %</span>
-                    <input
-                      type="number"
-                      min={0}
-                      max={100}
-                      step="0.01"
-                      value={defaultProductPct}
-                      onChange={(e) => setDefaultProductPct(e.target.value)}
-                      className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] px-3 py-2"
-                    />
-                  </label>
-                </div>
-                <p className="text-xs text-[#6f6251]">
-                  Leave item % blank to use the defaults above. Enter a value (including 0) to override that item only.
-                </p>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div>
-                    <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">SERVICES (+ optional % override)</p>
-                    <div className="mt-2 max-h-56 space-y-2 overflow-auto">
-                      {SERVICE_OPTIONS.map((slug) => (
-                        <div key={slug} className="flex items-center gap-2 text-sm text-[#4f4335]">
-                          <input
-                            type="checkbox"
-                            checked={serviceSlugs.includes(slug)}
-                            onChange={(e) =>
-                              setServiceSlugs((prev) => (e.target.checked ? [...prev, slug] : prev.filter((s) => s !== slug)))
-                            }
-                          />
-                          <span className="min-w-0 flex-1 truncate">{slug}</span>
-                          {serviceSlugs.includes(slug) ? (
-                            <CommissionOverrideInput
-                              value={serviceRates[slug] ?? ""}
-                              onChange={(next) => setServiceRates((prev) => ({ ...prev, [slug]: next }))}
-                              defaultPct={defaultServicePct}
-                              label={`${slug} commission override`}
-                            />
-                          ) : null}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">PRODUCTS (+ optional % override)</p>
-                    <div className="mt-2 max-h-56 space-y-2 overflow-auto">
-                      {products.map((product) => (
-                        <div key={product.id} className="flex items-center gap-2 text-sm text-[#4f4335]">
-                          <input
-                            type="checkbox"
-                            checked={productIds.includes(product.id)}
-                            onChange={(e) =>
-                              setProductIds((prev) =>
-                                e.target.checked ? [...prev, product.id] : prev.filter((id) => id !== product.id),
-                              )
-                            }
-                          />
-                          <span className="min-w-0 flex-1 truncate">{product.title}</span>
-                          {productIds.includes(product.id) ? (
-                            <CommissionOverrideInput
-                              value={productRates[product.id] ?? ""}
-                              onChange={(next) => setProductRates((prev) => ({ ...prev, [product.id]: next }))}
-                              defaultPct={defaultProductPct}
-                              label={`${product.title} commission override`}
-                            />
-                          ) : null}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => void saveAssignments(partner.id)}
-                  className="rounded-sm bg-[#b78d4b] px-4 py-2 text-sm text-white"
-                >
-                  Save commissions & assignments
-                </button>
-              </div>
-            ) : null}
-          </article>
+      <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by name, email, or code" className={adminInput} />
+
+      <PersonList empty={loading ? "Loading partners…" : visible.length ? undefined : "No partners match that search."}>
+        {visible.map((partner) => (
+          <PersonRow
+            key={partner.id}
+            name={partner.displayName}
+            badge={partner.status}
+            meta={`${partner.user.email} · ${partner.user.name || "No account name"} · ${partner.phone || "No phone"} · ${partner.partnerCode} · ${partner.type} · ${String(partner.defaultServiceCommissionPct)}% / ${String(partner.defaultProductCommissionPct)}% · ${partner._count.bookings} bookings`}
+            onOpen={() => openPartner(partner)}
+          />
         ))}
-      </section>
+      </PersonList>
+
+      <AdminModal
+        open={createOpen}
+        title="Add partner"
+        eyebrow="New account"
+        description="The form closes after the account is created."
+        onClose={() => { if (!creating) setCreateOpen(false); }}
+        footer={
+          <>
+            <button type="button" className={adminBtnGhost} disabled={creating} onClick={() => setCreateOpen(false)}>Cancel</button>
+            <button type="submit" form="create-partner-form" className={adminBtnPrimary} disabled={creating}>{creating ? "Creating…" : "Create partner"}</button>
+          </>
+        }
+      >
+        <form id="create-partner-form" className="grid gap-3 sm:grid-cols-2" onSubmit={(event) => void createPartner(event)}>
+          <Field label="Account name"><TextInput required value={createForm.name} onChange={(event) => setCreateForm({ ...createForm, name: event.target.value })} /></Field>
+          <Field label="Display name"><TextInput required value={createForm.displayName} onChange={(event) => setCreateForm({ ...createForm, displayName: event.target.value })} /></Field>
+          <Field label="Login email"><TextInput required type="email" value={createForm.email} onChange={(event) => setCreateForm({ ...createForm, email: event.target.value })} /></Field>
+          <Field label="Temporary password"><TextInput required type="password" minLength={8} value={createForm.password} onChange={(event) => setCreateForm({ ...createForm, password: event.target.value })} /></Field>
+          <Field label="Legal name"><TextInput value={createForm.legalName} onChange={(event) => setCreateForm({ ...createForm, legalName: event.target.value })} /></Field>
+          <Field label="Specialty"><TextInput value={createForm.specialty} onChange={(event) => setCreateForm({ ...createForm, specialty: event.target.value })} /></Field>
+          <Field label="Phone"><TextInput value={createForm.phone} onChange={(event) => setCreateForm({ ...createForm, phone: event.target.value })} /></Field>
+          <Field label="Type">
+            <select className={adminSelect} value={createForm.type} onChange={(event) => setCreateForm({ ...createForm, type: event.target.value })}>
+              {partnerTypes.map((type) => <option key={type} value={type}>{type}</option>)}
+            </select>
+          </Field>
+          <Field label="Status">
+            <select className={adminSelect} value={createForm.status} onChange={(event) => setCreateForm({ ...createForm, status: event.target.value })}>
+              {partnerStatuses.map((status) => <option key={status} value={status}>{status}</option>)}
+            </select>
+          </Field>
+          <Field label="Service commission %"><TextInput type="number" min={0} max={100} value={createForm.servicePct} onChange={(event) => setCreateForm({ ...createForm, servicePct: event.target.value })} /></Field>
+          <Field label="Product commission %"><TextInput type="number" min={0} max={100} value={createForm.productPct} onChange={(event) => setCreateForm({ ...createForm, productPct: event.target.value })} /></Field>
+          {createError ? <p className="text-sm text-[#7c2c2c] sm:col-span-2">{createError}</p> : null}
+        </form>
+      </AdminModal>
+
+      <AdminModal
+        open={Boolean(selected && draft)}
+        wide
+        title={draft?.displayName || "Partner"}
+        eyebrow={selected?.partnerCode}
+        description={selected ? `${selected.user.email} · ${selected._count.bookings} bookings` : undefined}
+        onClose={() => {
+          if (reviewOpen || deleteOpen || saving) return;
+          closePartner();
+        }}
+        footer={
+          <>
+            <button type="button" className="text-sm text-[#7c2c2c]" onClick={() => setDeleteOpen(true)}>Delete</button>
+            <button type="button" className={adminBtnPrimary} onClick={() => { if (!changes.length) { setNotice({ text: "Nothing has changed." }); return; } setReviewOpen(true); }}>
+              Review changes
+            </button>
+          </>
+        }
+      >
+        {draft && selected ? (
+          <div className="space-y-5">
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-xl bg-[#fff8ef] p-3"><p className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Login</p><p className="mt-1 text-[#1f1a15]">{selected.user.email}</p><p className="text-xs text-[#6f6251]">{selected.user.role || "Account"} · {selected.user.name || "No name"}</p></div>
+              <div className="rounded-xl bg-[#fff8ef] p-3"><p className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Code</p><p className="mt-1 font-mono text-lg">{selected.partnerCode}</p></div>
+              <div className="rounded-xl bg-[#fff8ef] p-3"><p className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Added</p><p className="mt-1 text-lg">{selected.createdAt ? new Date(selected.createdAt).toLocaleDateString() : "—"}</p><p className="text-xs text-[#6f6251]">{selected._count.bookings} bookings · {selected._count.commissionEntries} commissions</p></div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="Display name"><TextInput value={draft.displayName} onChange={(event) => setDraft({ ...draft, displayName: event.target.value })} /></Field>
+              <Field label="Legal name"><TextInput value={draft.legalName} onChange={(event) => setDraft({ ...draft, legalName: event.target.value })} /></Field>
+              <Field label="Specialty"><TextInput value={draft.specialty} onChange={(event) => setDraft({ ...draft, specialty: event.target.value })} /></Field>
+              <Field label="Phone"><TextInput value={draft.phone} onChange={(event) => setDraft({ ...draft, phone: event.target.value })} /></Field>
+              <Field label="Type">
+                <select className={adminSelect} value={draft.type} onChange={(event) => setDraft({ ...draft, type: event.target.value as PartnerDraft["type"] })}>
+                  {partnerTypes.map((type) => <option key={type} value={type}>{type}</option>)}
+                </select>
+              </Field>
+              <Field label="Status">
+                <select className={adminSelect} value={draft.status} onChange={(event) => setDraft({ ...draft, status: event.target.value as PartnerDraft["status"] })}>
+                  {partnerStatuses.map((status) => <option key={status} value={status}>{status}</option>)}
+                </select>
+              </Field>
+              <Field label="Default service %"><TextInput type="number" min={0} max={100} step="0.01" value={draft.defaultServicePct} onChange={(event) => setDraft({ ...draft, defaultServicePct: event.target.value })} /></Field>
+              <Field label="Default product %"><TextInput type="number" min={0} max={100} step="0.01" value={draft.defaultProductPct} onChange={(event) => setDraft({ ...draft, defaultProductPct: event.target.value })} /></Field>
+            </div>
+            <p className="text-xs text-[#6f6251]">Leave an item % blank to use the defaults. Enter a value, including 0, to override that item only.</p>
+            <div className="grid gap-4 lg:grid-cols-2">
+              <RateList
+                title="Services"
+                rows={SERVICE_OPTIONS.map((slug) => ({
+                  id: slug,
+                  label: prettySlug(slug),
+                  checked: draft.serviceSlugs.includes(slug),
+                  onChecked: (checked) => setDraft({ ...draft, serviceSlugs: checked ? [...draft.serviceSlugs, slug] : draft.serviceSlugs.filter((item) => item !== slug) }),
+                  rate: draft.serviceRates[slug] ?? "",
+                  onRate: (next) => setDraft({ ...draft, serviceRates: { ...draft.serviceRates, [slug]: next } }),
+                  defaultPct: draft.defaultServicePct,
+                }))}
+              />
+              <RateList
+                title="Products"
+                rows={products.map((product) => ({
+                  id: product.id,
+                  label: product.title,
+                  checked: draft.productIds.includes(product.id),
+                  onChecked: (checked) => setDraft({ ...draft, productIds: checked ? [...draft.productIds, product.id] : draft.productIds.filter((id) => id !== product.id) }),
+                  rate: draft.productRates[product.id] ?? "",
+                  onRate: (next) => setDraft({ ...draft, productRates: { ...draft.productRates, [product.id]: next } }),
+                  defaultPct: draft.defaultProductPct,
+                }))}
+              />
+            </div>
+          </div>
+        ) : null}
+      </AdminModal>
+
+      <ConfirmDialog open={reviewOpen} title="Save these changes?" message="Review what will be updated before it is saved." confirmLabel="Save changes" busy={saving} onCancel={() => setReviewOpen(false)} onConfirm={() => void savePartner()}>
+        <ChangeList changes={changes} />
+      </ConfirmDialog>
+      <ConfirmDialog open={deleteOpen} title="Delete this partner?" message={`${draft?.displayName || "This partner"} (${selected?.user.email ?? ""}) and their login will be removed. This cannot be undone.`} confirmLabel="Delete partner" danger busy={saving} onCancel={() => setDeleteOpen(false)} onConfirm={() => void removePartner()} />
+      <NoticeToast notice={notice} onDone={() => setNotice(null)} />
     </div>
   );
 }

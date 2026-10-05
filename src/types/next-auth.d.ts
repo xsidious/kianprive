@@ -9,6 +9,7 @@ declare module "next-auth" {
       subscriptionTier: string;
       mustSetPassword?: boolean;
       memberOnboardingComplete?: boolean;
+      portals?: Array<"partner" | "ambassador" | "practitioner">;
       name?: string | null;
       email?: string | null;
       image?: string | null;
@@ -27,5 +28,6 @@ declare module "next-auth/jwt" {
     subscriptionTier?: string;
     mustSetPassword?: boolean;
     memberOnboardingComplete?: boolean;
+    portals?: Array<"partner" | "ambassador" | "practitioner">;
   }
 }

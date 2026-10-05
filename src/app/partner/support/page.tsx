@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { profileWhere } from "@/lib/network-profile";
 import { buildWhatsAppUrl, conciergeEmail } from "@/lib/contact";
 import { partnerEyebrow, partnerMuted, partnerPanel, partnerTitle } from "@/components/partner/ui";
 
 export default async function PartnerSupportPage() {
   const session = await auth();
   const partner = session?.user?.id
-    ? await prisma.partnerProfile.findUnique({ where: { userId: session.user.id } })
+    ? await prisma.partnerProfile.findFirst({ where: profileWhere(session.user.id, "partner") })
     : null;
 
   const name = partner?.displayName ?? session?.user?.name ?? "Partner";

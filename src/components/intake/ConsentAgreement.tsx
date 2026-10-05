@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
+import { SignaturePad } from "@/components/intake/SignaturePad";
 
 export type ConsentSection = {
   title: string;
@@ -13,6 +14,7 @@ type SignatureValue = {
   accepted: boolean;
   signedAt: string;
   printedName: string;
+  signatureDataUrl: string;
   guardianName?: string;
   guardianRelationship?: string;
 };
@@ -24,6 +26,11 @@ type Props = {
   highlights: string[];
   sections: ConsentSection[];
   acknowledgment: string;
+  patientName: string;
+  onPatientNameChange: (value: string) => void;
+  dateOfBirth: string;
+  onDateOfBirthChange: (value: string) => void;
+  serviceDate?: string;
   value: SignatureValue;
   onChange: (next: SignatureValue) => void;
   className?: string;
@@ -69,6 +76,13 @@ function prettyTitle(title: string) {
     .replace(/\bPhi\b/g, "PHI");
 }
 
+function localDate() {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${now.getFullYear()}-${month}-${day}`;
+}
+
 function tidy(body: string) {
   return body
     .replaceAll(";•", "\n•")
@@ -85,6 +99,11 @@ export function ConsentAgreement({
   highlights,
   sections,
   acknowledgment,
+  patientName,
+  onPatientNameChange,
+  dateOfBirth,
+  onDateOfBirthChange,
+  serviceDate,
   value,
   onChange,
   className = "",
@@ -118,8 +137,8 @@ export function ConsentAgreement({
         <h3 className="mt-2 font-serif text-2xl leading-tight text-[#1f1a15]">{title}</h3>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#6f6251]">{lede}</p>
 
-        <ul className="mt-5 space-y-2.5">
-          {highlights.map((item) => (
+        <ul className="mt-4 space-y-2">
+          {highlights.slice(0, 2).map((item) => (
             <li key={item} className="flex gap-3 text-sm leading-relaxed text-[#3b3024]">
               <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#b78d4b]" />
               <span>{item}</span>
@@ -130,10 +149,46 @@ export function ConsentAgreement({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="mt-5 text-sm font-medium text-[#8a682e] underline decoration-[#b78d4b66] underline-offset-4"
+          className="mt-3 text-sm font-medium text-[#8a682e] underline decoration-[#b78d4b66] underline-offset-4"
         >
           Read the full agreement
         </button>
+
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          <label className="block text-sm text-[#4f4335]">
+            <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-[#9a8b78]">Patient name</span>
+            <input
+              type="text"
+              value={patientName}
+              onChange={(event) => {
+                onPatientNameChange(event.target.value);
+                patch({ printedName: event.target.value });
+              }}
+              className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-white px-3 py-2.5 text-sm outline-none focus:border-[#b78d4b]"
+              autoComplete="name"
+            />
+          </label>
+          <label className="block text-sm text-[#4f4335]">
+            <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-[#9a8b78]">Date of birth</span>
+            <input
+              type="date"
+              value={dateOfBirth}
+              onChange={(event) => onDateOfBirthChange(event.target.value)}
+              className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-white px-3 py-2.5 text-sm outline-none focus:border-[#b78d4b]"
+            />
+          </label>
+          {serviceDate ? (
+            <label className="block text-sm text-[#4f4335] sm:col-span-2">
+              <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-[#9a8b78]">Date of service</span>
+              <input
+                type="text"
+                value={serviceDate}
+                readOnly
+                className="mt-1 w-full rounded-sm border border-[#e4d9c8] bg-[#faf6ef] px-3 py-2.5 text-sm text-[#3b3024]"
+              />
+            </label>
+          ) : null}
+        </div>
 
         {open
           ? createPortal(
@@ -192,32 +247,34 @@ export function ConsentAgreement({
           <input
             type="checkbox"
             checked={value.accepted}
-            onChange={(event) => patch({ accepted: event.target.checked })}
+            onChange={(event) =>
+              patch({
+                accepted: event.target.checked,
+                printedName: value.printedName || patientName,
+                signedAt: value.signedAt || localDate(),
+              })
+            }
             className="mt-1 h-4 w-4 accent-[#8f6f3e]"
           />
           <span>{acknowledgment}</span>
         </label>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <label className="block text-sm text-[#4f4335]">
-            <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-[#9a8b78]">Printed name</span>
-            <input
-              type="text"
-              value={value.printedName}
-              onChange={(event) => patch({ printedName: event.target.value })}
-              className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-white px-3 py-2.5 text-sm outline-none focus:border-[#b78d4b]"
-              autoComplete="name"
-            />
-          </label>
-          <label className="block text-sm text-[#4f4335]">
-            <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-[#9a8b78]">Date signed</span>
-            <input
-              type="date"
-              value={value.signedAt}
-              onChange={(event) => patch({ signedAt: event.target.value })}
-              className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-white px-3 py-2.5 text-sm outline-none focus:border-[#b78d4b]"
-            />
-          </label>
+        <div className="mt-4">
+          <SignaturePad
+            value={value.signatureDataUrl || null}
+            onChange={(dataUrl) =>
+              patch({
+                signatureDataUrl: dataUrl ?? "",
+                printedName: value.printedName || patientName,
+                signedAt: value.signedAt || localDate(),
+              })
+            }
+            label="Sign here"
+            height={140}
+          />
+          <p className="mt-2 text-xs text-[#8f6f3e]">
+            {value.signedAt ? `Signed ${value.signedAt}` : "Your signature and the acceptance box are both required."}
+          </p>
         </div>
 
         <button

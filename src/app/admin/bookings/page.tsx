@@ -7,6 +7,7 @@ import {
   formatBookingDateTime,
   formatMoney,
   parseAcuityAppointmentId,
+  splitBookingNotes,
 } from "@/lib/admin/booking-display";
 import { bookingIncludesLabWork } from "@/lib/bookings/lab-services";
 
@@ -286,10 +287,7 @@ export default function AdminBookingsPage() {
                 ) : null}
 
                 {booking.notes ? (
-                  <div className="mt-4 rounded-sm border border-[#d7b67644] bg-[#fffaf4] p-3">
-                    <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">NOTES</p>
-                    <p className="mt-2 whitespace-pre-wrap text-sm text-[#3b3024]">{booking.notes}</p>
-                  </div>
+                  <BookingNotes notes={booking.notes} />
                 ) : null}
 
                 <div className="mt-5 grid gap-3 border-t border-[#d7b67633] pt-5 md:grid-cols-3">
@@ -353,6 +351,23 @@ export default function AdminBookingsPage() {
       )}
 
       {statusMessage ? <p className="text-sm text-[#8f6f3e]">{statusMessage}</p> : null}
+    </div>
+  );
+}
+
+function BookingNotes({ notes }: { notes: string }) {
+  const { text, signatures } = splitBookingNotes(notes);
+  return (
+    <div className="mt-4 rounded-sm border border-[#d7b67644] bg-[#fffaf4] p-3">
+      <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">NOTES</p>
+      {text ? <p className="mt-2 whitespace-pre-wrap text-sm text-[#3b3024]">{text}</p> : null}
+      {signatures.map((signature) => (
+        <div key={signature.label} className="mt-3">
+          <p className="text-xs text-[#8f6f3e]">{signature.label} signature</p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={signature.src} alt={`${signature.label} signature`} className="mt-1 h-24 rounded-sm border border-[#e4d9c8] bg-white" />
+        </div>
+      ))}
     </div>
   );
 }

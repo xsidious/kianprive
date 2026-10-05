@@ -10,7 +10,6 @@ import {
   TextInput,
 } from "@/components/intake/intake-field-kit";
 import { PhotoVideoConsentBlock } from "@/components/intake/PhotoVideoConsentBlock";
-import { SignaturePad } from "@/components/intake/SignaturePad";
 import {
   CELEXO_ACTIVE_CONDITIONS,
   CELEXO_AFTERCARE_SUMMARY,
@@ -611,62 +610,54 @@ export function CelexoIntakeForm() {
               onChange={(acknowledgments) => setForm((p) => ({ ...p, consent: { ...p.consent, acknowledgments } }))}
             />
             <PhotoVideoConsentBlock
+              patientName={form.patient.fullName}
+              onPatientNameChange={(fullName) =>
+                setForm((p) => ({
+                  ...p,
+                  patient: { ...p.patient, fullName },
+                  consent: {
+                    ...p.consent,
+                    printedName: fullName,
+                    photoVideoConsentPrintedName: fullName,
+                  },
+                }))
+              }
+              dateOfBirth={form.patient.dateOfBirth}
+              onDateOfBirthChange={(dateOfBirth) =>
+                setForm((p) => ({ ...p, patient: { ...p.patient, dateOfBirth } }))
+              }
+              serviceDate={form.patient.visitDate}
               value={{
                 photoVideoConsentAccepted: form.consent.photoVideoConsentAccepted,
-                photoVideoConsentSignedAt: form.consent.photoVideoConsentSignedAt,
-                photoVideoConsentPrintedName: form.consent.photoVideoConsentPrintedName,
-                photoVideoGuardianName: form.consent.photoVideoGuardianName,
-                photoVideoGuardianRelationship: form.consent.photoVideoGuardianRelationship,
+                photoVideoConsentSignedAt: form.consent.photoVideoConsentSignedAt || form.consent.signatureDate,
+                photoVideoConsentPrintedName: form.consent.photoVideoConsentPrintedName || form.patient.fullName,
+                photoVideoSignatureDataUrl: form.consent.signatureDataUrl,
+                photoVideoGuardianName: form.consent.photoVideoGuardianName || form.consent.guardianName,
+                photoVideoGuardianRelationship:
+                  form.consent.photoVideoGuardianRelationship || form.consent.guardianRelationship,
               }}
               onChange={(next) =>
                 setForm((p) => ({
                   ...p,
+                  patient: {
+                    ...p.patient,
+                    fullName: next.photoVideoConsentPrintedName || p.patient.fullName,
+                  },
                   consent: {
                     ...p.consent,
                     photoVideoConsentAccepted: next.photoVideoConsentAccepted,
                     photoVideoConsentSignedAt: next.photoVideoConsentSignedAt,
-                    photoVideoConsentPrintedName: next.photoVideoConsentPrintedName,
+                    photoVideoConsentPrintedName: next.photoVideoConsentPrintedName || p.patient.fullName,
                     photoVideoGuardianName: next.photoVideoGuardianName ?? "",
                     photoVideoGuardianRelationship: next.photoVideoGuardianRelationship ?? "",
+                    printedName: next.photoVideoConsentPrintedName || p.patient.fullName,
+                    signatureDate: next.photoVideoConsentSignedAt || p.consent.signatureDate,
+                    signatureDataUrl: next.photoVideoSignatureDataUrl || p.consent.signatureDataUrl,
+                    guardianName: next.photoVideoGuardianName ?? p.consent.guardianName,
+                    guardianRelationship: next.photoVideoGuardianRelationship ?? p.consent.guardianRelationship,
                   },
                 }))
               }
-            />
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Printed full name">
-                <TextInput
-                  value={form.consent.printedName}
-                  onChange={(value) => setForm((p) => ({ ...p, consent: { ...p.consent, printedName: value } }))}
-                />
-              </Field>
-              <Field label="Signature date">
-                <TextInput
-                  type="date"
-                  value={form.consent.signatureDate}
-                  onChange={(value) => setForm((p) => ({ ...p, consent: { ...p.consent, signatureDate: value } }))}
-                />
-              </Field>
-              <Field label="Parent / guardian (if applicable)">
-                <TextInput
-                  value={form.consent.guardianName}
-                  onChange={(value) => setForm((p) => ({ ...p, consent: { ...p.consent, guardianName: value } }))}
-                />
-              </Field>
-              <Field label="Relationship">
-                <TextInput
-                  value={form.consent.guardianRelationship}
-                  onChange={(value) =>
-                    setForm((p) => ({ ...p, consent: { ...p.consent, guardianRelationship: value } }))
-                  }
-                />
-              </Field>
-            </div>
-            <SignaturePad
-              value={form.consent.signatureDataUrl || null}
-              onChange={(dataUrl) =>
-                setForm((p) => ({ ...p, consent: { ...p.consent, signatureDataUrl: dataUrl || "" } }))
-              }
-              label="Patient signature"
             />
           </div>
         ) : null}

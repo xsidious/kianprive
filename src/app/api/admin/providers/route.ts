@@ -5,6 +5,7 @@ import { requireAdminAccess } from "@/lib/admin-guard";
 import { providerBookingLinks } from "@/lib/provider";
 import { prisma } from "@/lib/prisma";
 import { generatePartnerCode, writeAuditLog } from "@/lib/partners";
+import { attachNetworkProfile } from "@/lib/network-profile";
 import { getBookingOptionIds } from "@/lib/services/booking-options";
 
 const assignmentSchema = z.object({
@@ -111,10 +112,37 @@ export async function POST(req: Request) {
 
   const existing = await prisma.user.findUnique({ where: { email: parsed.data.email.toLowerCase() } });
   if (existing) {
-    return NextResponse.json(
-      { error: `Email already in use (${existing.email}). Use a different login email or update the existing user.` },
-      { status: 409 },
-    );
+    const attached = await attachNetworkProfile({
+      userId: existing.id,
+      type: "PROVIDER",
+      displayName: parsed.data.displayName,
+      phone: parsed.data.phone,
+      specialty: parsed.data.specialty,
+      status: parsed.data.status ?? "ACTIVE",
+      defaultServiceCommissionPct: parsed.data.defaultServiceCommissionPct ?? 20,
+      defaultProductCommissionPct: parsed.data.defaultProductCommissionPct ?? 10,
+    });
+    if (!attached.created) {
+      return NextResponse.json({ error: "This person is already a practitioner." }, { status: 409 });
+    }
+    if (parsed.data.serviceAssignments?.length) {
+      await prisma.partnerServiceAssignment.createMany({
+        data: parsed.data.serviceAssignments.map((assignment) => ({
+          partnerId: attached.profile.id,
+          serviceSlug: assignment.serviceSlug,
+          active: assignment.active ?? true,
+          commissionPct: assignment.commissionPct ?? null,
+        })),
+      });
+    }
+    await writeAuditLog({
+      userId: access.userId,
+      action: "provider.attach",
+      entityType: "PartnerProfile",
+      entityId: attached.profile.id,
+      metadata: { email: existing.email, partnerCode: attached.profile.partnerCode },
+    });
+    return NextResponse.json({ provider: attached.profile, attachedToExistingUser: true }, { status: 201 });
   }
 
   try {

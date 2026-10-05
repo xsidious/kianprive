@@ -6,7 +6,7 @@ import { intakeVisibleWhere } from "@/lib/ehr/route-intake";
 
 /** Practitioner intake queue — Wellness Hub + assigned submissions. */
 export async function GET() {
-  const access = await requirePartnerProfile();
+  const access = await requirePartnerProfile("provider");
   if (!access.ok) return access.response;
   if (access.partner.type !== "PROVIDER") {
     return NextResponse.json({ error: "Provider access required." }, { status: 403 });

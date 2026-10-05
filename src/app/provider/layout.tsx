@@ -2,8 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Role } from "@prisma/client";
 import { auth } from "@/lib/auth";
-import { canAccessProviderPortal } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
+import { profileWhere } from "@/lib/network-profile";
 import { PortalSignOut } from "@/components/auth/PortalSignOut";
 import { PortalNavList } from "@/components/portal/PortalNav";
 
@@ -20,7 +20,7 @@ const links = [
 
 export default async function ProviderLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  if (!session?.user?.id || !canAccessProviderPortal(session.user.role)) {
+  if (!session?.user?.id) {
     redirect("/login");
   }
 
@@ -28,8 +28,8 @@ export default async function ProviderLayout({ children }: { children: React.Rea
     redirect("/admin/providers");
   }
 
-  const partner = await prisma.partnerProfile.findUnique({ where: { userId: session.user.id } });
-  if (!partner || partner.type !== "PROVIDER" || partner.status === "SUSPENDED") {
+  const partner = await prisma.partnerProfile.findFirst({ where: profileWhere(session.user.id, "practitioner") });
+  if (!partner || partner.status === "SUSPENDED") {
     redirect("/access-required?target=provider");
   }
 

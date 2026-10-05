@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { writeAuditLog } from "@/lib/partners";
 
 export async function GET() {
-  const access = await requirePartnerProfile();
+  const access = await requirePartnerProfile("partner");
   if (!access.ok) return access.response;
 
   const guidelines = await prisma.partnerGuideline.findMany({
@@ -25,7 +25,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const access = await requirePartnerProfile();
+  const access = await requirePartnerProfile("partner");
   if (!access.ok) return access.response;
   const body = (await req.json()) as { guidelineId?: string };
   if (!body.guidelineId) return NextResponse.json({ error: "guidelineId required" }, { status: 400 });

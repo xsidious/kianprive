@@ -5,6 +5,7 @@ import { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { networkKindFromType } from "@/lib/network-profile";
 
 const credentialsSchema = z.object({
   email: z.string().email(),
@@ -55,7 +56,7 @@ export const authOptions: NextAuthOptions = {
 
       const dbUser = await prisma.user.findUnique({
         where: { id: token.sub },
-        include: { subscription: true },
+        include: { subscription: true, partnerProfiles: { select: { type: true, status: true } } },
       });
       if (!dbUser) return token;
 
@@ -64,6 +65,13 @@ export const authOptions: NextAuthOptions = {
       token.subscriptionTier = dbUser.subscription?.tier ?? "BASIC";
       token.mustSetPassword = dbUser.mustSetPassword;
       token.memberOnboardingComplete = dbUser.memberOnboardingComplete;
+      token.portals = [
+        ...new Set(
+          dbUser.partnerProfiles
+            .filter((profile) => profile.status !== "SUSPENDED")
+            .map((profile) => networkKindFromType(profile.type)),
+        ),
+      ];
       return token;
     },
     async session({ session, token }) {
@@ -74,6 +82,7 @@ export const authOptions: NextAuthOptions = {
         session.user.subscriptionTier = (token.subscriptionTier as string) ?? "BASIC";
         session.user.mustSetPassword = Boolean(token.mustSetPassword);
         session.user.memberOnboardingComplete = token.memberOnboardingComplete !== false;
+        session.user.portals = Array.isArray(token.portals) ? token.portals : [];
       }
       return session;
     },

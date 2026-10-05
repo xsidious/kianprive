@@ -16,7 +16,7 @@ const saleSchema = z.object({
 });
 
 export async function POST(req: Request) {
-  const access = await requirePartnerProfile();
+  const access = await requirePartnerProfile("partner");
   if (!access.ok) return access.response;
   if (access.partner.status !== "ACTIVE") {
     return NextResponse.json({ error: "Partner must be ACTIVE to record sales." }, { status: 403 });

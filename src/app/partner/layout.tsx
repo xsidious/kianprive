@@ -2,15 +2,15 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Role } from "@prisma/client";
 import { auth } from "@/lib/auth";
-import { canAccessPartnerPortal } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
+import { profileWhere } from "@/lib/network-profile";
 import { buildWhatsAppUrl, conciergeEmail } from "@/lib/contact";
 import { PartnerSidebarNav } from "@/components/partner/PartnerSidebarNav";
 import { PortalSignOut } from "@/components/auth/PortalSignOut";
 
 export default async function PartnerLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  if (!session?.user?.id || !canAccessPartnerPortal(session.user.role)) {
+  if (!session?.user?.id) {
     redirect("/login");
   }
 
@@ -18,24 +18,12 @@ export default async function PartnerLayout({ children }: { children: React.Reac
     redirect("/admin/partners");
   }
 
-  if (session.user.role === Role.AMBASSADOR) {
-    redirect("/ambassador");
+  const partner = await prisma.partnerProfile.findFirst({ where: profileWhere(session.user.id, "partner") });
+  if (!partner || partner.status === "SUSPENDED") {
+    redirect("/access-required?target=partner");
   }
-
-  if (session.user.role === Role.PROVIDER) {
-    redirect("/provider");
-  }
-
-  let partnerName = "Partner";
-  let partnerCode = "";
-  if (session.user.role === Role.PARTNER) {
-    const partner = await prisma.partnerProfile.findUnique({ where: { userId: session.user.id } });
-    if (!partner || partner.status === "SUSPENDED") {
-      redirect("/access-required?target=partner");
-    }
-    partnerName = partner.displayName;
-    partnerCode = partner.partnerCode;
-  }
+  const partnerName = partner.displayName;
+  const partnerCode = partner.partnerCode;
 
   const whatsapp = buildWhatsAppUrl(
     `Hi KIAN Privé team — partner support request from ${partnerName}${partnerCode ? ` (${partnerCode})` : ""}.`,

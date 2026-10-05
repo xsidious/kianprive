@@ -68,6 +68,7 @@ export default async function AdminPage() {
       orderBy: { createdAt: "desc" },
       take: 6,
       select: {
+        id: true,
         orderNumber: true,
         email: true,
         total: true,
@@ -80,7 +81,7 @@ export default async function AdminPage() {
       take: 5,
       select: { id: true, fullName: true, email: true, status: true, createdAt: true, programs: true },
     }),
-    prisma.partnerProfile.count({ where: { type: { not: "AMBASSADOR" } } }),
+    prisma.partnerProfile.count({ where: { type: { in: ["CLINICAL", "BRAND", "BOTH"] } } }),
   ]);
 
   const users = usersResult.status === "fulfilled" ? usersResult.value : [];
@@ -248,7 +249,7 @@ export default async function AdminPage() {
                         </p>
                       ) : null}
                     </div>
-                    <p className="font-medium text-[#1f1a15]">{money(order.total)}</p>
+                    <p className="font-medium text-[#1f1a15]">{money(Number(order.total))}</p>
                   </div>
                 </div>
               ))

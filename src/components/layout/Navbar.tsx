@@ -203,17 +203,17 @@ export function Navbar() {
                   <Link href="/" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                     Public website
                   </Link>
-                  {data.user.role === "PARTNER" ? (
+                  {data.user.portals?.includes("partner") || data.user.role === "PARTNER" ? (
                     <Link href="/partner" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                       Partner Portal
                     </Link>
                   ) : null}
-                  {data.user.role === "AMBASSADOR" ? (
+                  {data.user.portals?.includes("ambassador") || data.user.role === "AMBASSADOR" ? (
                     <Link href="/ambassador" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                       Ambassador Portal
                     </Link>
                   ) : null}
-                  {data.user.role === "PROVIDER" ? (
+                  {data.user.portals?.includes("practitioner") || data.user.role === "PROVIDER" ? (
                     <Link href="/provider" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                       Practitioner Portal
                     </Link>

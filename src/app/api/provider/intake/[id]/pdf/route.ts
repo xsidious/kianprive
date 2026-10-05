@@ -6,7 +6,7 @@ import { buildIntakePdf } from "@/lib/intake/intake-pdf";
 type Params = { params: Promise<{ id: string }> };
 
 export async function GET(_req: Request, { params }: Params) {
-  const access = await requirePartnerProfile();
+  const access = await requirePartnerProfile("provider");
   if (!access.ok) return access.response;
   if (access.partner.type !== "PROVIDER") {
     return NextResponse.json({ error: "Provider access required." }, { status: 403 });
