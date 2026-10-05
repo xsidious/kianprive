@@ -32,6 +32,7 @@ function parseRetreatEvent(item: Record<string, unknown>): RetreatEvent | null {
   if (typeof item.ticketUrl === "string") event.ticketUrl = item.ticketUrl;
   if (typeof item.ticketPrice === "string") event.ticketPrice = item.ticketPrice;
   if (item.featured === true) event.featured = true;
+  if (item.soldOut === true) event.soldOut = true;
   if (Array.isArray(item.highlights)) {
     event.highlights = item.highlights.filter((line): line is string => typeof line === "string");
   }
@@ -49,9 +50,15 @@ function normalizeRetreatEvents(input: unknown): RetreatEvent[] {
     .filter((value): value is RetreatEvent => Boolean(value));
 
   if (parsed.length === 0) return retreatEvents;
-  const storedSlugs = new Set(parsed.map((event) => event.slug));
+  const catalogBySlug = new Map(retreatEvents.map((event) => [event.slug, event]));
+  const merged = parsed.map((event) => {
+    const catalog = catalogBySlug.get(event.slug);
+    if (catalog?.soldOut) return { ...event, soldOut: true };
+    return event;
+  });
+  const storedSlugs = new Set(merged.map((event) => event.slug));
   const missing = retreatEvents.filter((event) => !storedSlugs.has(event.slug));
-  return [...missing, ...parsed];
+  return [...missing, ...merged];
 }
 
 export async function getRetreatEventsFromStore() {

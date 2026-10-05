@@ -1,6 +1,7 @@
 const ACUITY_APPOINTMENT_RE = /Acuity appointment #(\d+)/i;
 
-const SIGNATURE_NOTE_RE = /\[(Media signature|Nursing signature)\]\n(data:image\/[^\s]+)/g;
+const SIGNATURE_NOTE_RE = /\[(Media signature|Nursing signature)\]\s*(data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=]+)/gi;
+const RAW_DATA_URL_RE = /data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=\s]+/gi;
 
 export function splitBookingNotes(notes: string | null | undefined): {
   text: string;
@@ -10,9 +11,10 @@ export function splitBookingNotes(notes: string | null | undefined): {
   const signatures: Array<{ label: string; src: string }> = [];
   const text = notes
     .replace(SIGNATURE_NOTE_RE, (_, label: string, src: string) => {
-      signatures.push({ label: label.replace(" signature", ""), src });
+      signatures.push({ label: label.replace(/ signature/i, ""), src });
       return "";
     })
+    .replace(RAW_DATA_URL_RE, "")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
   return { text, signatures };

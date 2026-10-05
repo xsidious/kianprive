@@ -111,7 +111,9 @@ export default function EventsRetreatsPage() {
               key={event.slug}
               className={`${editorialPanel} p-5 ${event.featured ? "border-[#1f7a7a55] ring-1 ring-[#1f7a7a33]" : ""}`}
             >
-              {event.featured ? (
+              {event.soldOut ? (
+                <p className="mb-2 text-xs tracking-[0.16em] text-[#7c2c2c]">SOLD OUT</p>
+              ) : event.featured ? (
                 <p className="mb-2 text-xs tracking-[0.16em] text-[#1b6568]">FEATURED · COMING SOON</p>
               ) : null}
               {event.flyerImage ? (
@@ -137,7 +139,11 @@ export default function EventsRetreatsPage() {
                 <Link href={`/events-retreats/${event.slug}`} className={editorialCtaSecondary}>
                   MORE INFO
                 </Link>
-                {event.ticketUrl ? (
+                {event.soldOut ? (
+                  <span className="inline-flex items-center rounded-sm border border-[#e8b4b4] bg-[#fdeeee] px-4 py-2 text-sm text-[#7c2c2c]">
+                    SOLD OUT
+                  </span>
+                ) : event.ticketUrl ? (
                   <a href={event.ticketUrl} target="_blank" rel="noopener noreferrer" className={editorialCtaPrimary}>
                     GET TICKETS
                   </a>

@@ -132,7 +132,7 @@ async function main() {
     take: 3,
   });
   if (products.length < 1) {
-    throw new Error("Need priced clinical products. Import PrescribeUSA + set prices first.");
+    throw new Error("Need at least one priced clinical product.");
   }
 
   // Ensure prices for the selected products

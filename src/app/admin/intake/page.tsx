@@ -67,6 +67,7 @@ function sourceLabel(submission: IntakeSubmission) {
   const source = submission.payload?.source;
   if (source === "wellness-hub") return "Wellness Hub";
   if (source === "celexo-exosome") return "Celexo / Exosome";
+  if (source === "icoone") return "Icoone";
   if (source === "facial-design") return "Facial Design Studio";
   if (source === "4everglow") return "4everglow Wellness";
   const siteLabel = submission.payload?.siteLabel;

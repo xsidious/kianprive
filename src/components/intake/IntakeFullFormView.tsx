@@ -59,10 +59,81 @@ function isCelexoPayload(payload: Record<string, unknown> | null | undefined) {
   return Boolean(payload && payload.source === "celexo-exosome");
 }
 
+function isIcoonePayload(payload: Record<string, unknown> | null | undefined) {
+  return Boolean(payload && payload.source === "icoone");
+}
+
 function isPeptidesPayload(payload: Record<string, unknown> | null | undefined) {
   if (!payload) return false;
-  if (payload.source === "wellness-hub" || payload.source === "celexo-exosome") return false;
+  if (payload.source === "wellness-hub" || payload.source === "celexo-exosome" || payload.source === "icoone") return false;
   return Boolean(payload.patient || payload.programs || payload.medicalHistory || payload.goals);
+}
+
+function buildIcooneSections(payload: Record<string, unknown>): Section[] {
+  return [
+    {
+      title: "01 Patient",
+      rows: rowsFromPairs(payload, [
+        ["Full name", "patient.fullName"],
+        ["Email", "patient.email"],
+        ["Phone", "patient.phone"],
+        ["Date of birth", "patient.dateOfBirth"],
+        ["Age", "patient.age"],
+        ["Occupation", "patient.occupation"],
+        ["Recent cold, flu, or virus", "recentIllness"],
+        ["How they heard about us", "heardAbout"],
+        ["Referral name", "referralName"],
+      ]),
+    },
+    {
+      title: "02 Surgery and clearance",
+      rows: rowsFromPairs(payload, [
+        ["Cosmetic surgery", "cosmeticSurgery"],
+        ["Surgery site", "surgerySite"],
+        ["When", "surgeryWhen"],
+        ["Doctor name and phone", "surgeonNamePhone"],
+        ["Surgery notes", "surgeryNotes"],
+        ["Physician cleared Icoone", "physicianCleared"],
+      ]),
+    },
+    {
+      title: "03 Focus and history",
+      rows: rowsFromPairs(payload, [
+        ["Areas of focus", "focusAreas"],
+        ["Under a doctor's care", "underDoctorCare"],
+        ["Drug allergies", "drugAllergies"],
+        ["Medical history", "medicalHistory.conditions"],
+        ["Who", "medicalHistory.who"],
+        ["Current symptoms", "symptoms"],
+        ["Prescriptions and supplements", "medications"],
+        ["Peptides", "peptides"],
+      ]),
+    },
+    {
+      title: "04 Women only and lifestyle",
+      rows: rowsFromPairs(payload, [
+        ["Women only", "womenOnly"],
+        ["Children", "children"],
+        ["How many", "childrenCount"],
+        ["Age of youngest", "youngestChildAge"],
+        ["Delivery", "delivery"],
+        ["Menopause", "menopause"],
+        ["Menopause age", "menopauseAge"],
+        ["Illegal drug use", "illegalDrugUse"],
+        ["Alcohol", "alcohol"],
+        ["Disclaimer accepted", "disclaimerAccepted"],
+        ["Typed signature", "typedSignature"],
+      ]),
+    },
+    {
+      title: "05 Clinician visit",
+      rows: rowsFromPairs(payload, [
+        ["Height", "clinician.height"],
+        ["Weight", "clinician.weight"],
+        ["Protocol", "clinician.protocols"],
+      ]),
+    },
+  ];
 }
 
 function buildCelexoSections(payload: Record<string, unknown>): Section[] {
@@ -411,19 +482,22 @@ export function IntakeFullFormView({ submission, payload, className }: Props) {
   const record = submission as Record<string, unknown>;
   const sections = isCelexoPayload(payload)
     ? buildCelexoSections(payload!)
-    : isPeptidesPayload(payload)
-      ? buildPeptidesSections(payload!)
-      : payload || record
-        ? [...buildWellnessSections(record, payload ?? null)]
-        : [];
+    : isIcoonePayload(payload)
+      ? buildIcooneSections(payload!)
+      : isPeptidesPayload(payload)
+        ? buildPeptidesSections(payload!)
+        : payload || record
+          ? [...buildWellnessSections(record, payload ?? null)]
+          : [];
 
   const wellnessEmpty =
     !isCelexoPayload(payload) &&
+    !isIcoonePayload(payload) &&
     !isPeptidesPayload(payload) &&
     sections.every((section) => section.rows.every((row) => row.value === "—"));
 
   const finalSections =
-    isCelexoPayload(payload) || isPeptidesPayload(payload)
+    isCelexoPayload(payload) || isIcoonePayload(payload) || isPeptidesPayload(payload)
       ? sections
       : wellnessEmpty
         ? buildFallbackSections(payload ?? null)
@@ -431,9 +505,11 @@ export function IntakeFullFormView({ submission, payload, className }: Props) {
 
   const packetLabel = isCelexoPayload(payload)
     ? " (Celexo / Korean Exosome intake)."
-    : isPeptidesPayload(payload)
-      ? " (site peptides / GLP intake)."
-      : " (Wellness Hub / flat intake).";
+    : isIcoonePayload(payload)
+      ? " (Icoone lymphatic drainage intake)."
+      : isPeptidesPayload(payload)
+        ? " (site peptides / GLP intake)."
+        : " (Wellness Hub / flat intake).";
 
   return (
     <div className={className ?? "space-y-4"}>

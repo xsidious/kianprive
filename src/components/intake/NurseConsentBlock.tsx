@@ -26,7 +26,7 @@ type Props = {
 
 const HIGHLIGHTS = [
   "A KIAN Privé nurse gives the treatment your physician approved, and may pause it if it is not safe.",
-  "You accept the risks of IV therapy, including bruising, allergic reaction, and rare serious complications.",
+  "You accept the risks of IV therapy and nurse visits, including bruising, allergic reaction, and rare serious complications.",
 ];
 
 export function NurseConsentBlock({
@@ -42,9 +42,9 @@ export function NurseConsentBlock({
   return (
     <ConsentAgreement
       className={className}
-      eyebrow="IV therapy"
+      eyebrow="IV therapy and nurse visits"
       title="Nursing treatment agreement"
-      lede="Your visit details are filled in below. Accept the agreement and sign. The nurse completes vitals at the appointment."
+      lede="This agreement is for IV therapy and nurse visits. Your visit details are filled in below. Accept it and sign. The nurse completes vitals at the appointment."
       highlights={HIGHLIGHTS}
       sections={splitConsentSections(NURSE_CONSENT_PARAGRAPHS)}
       acknowledgment={NURSE_CONSENT_ACK}

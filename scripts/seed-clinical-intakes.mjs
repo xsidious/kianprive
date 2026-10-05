@@ -66,7 +66,7 @@ async function main() {
   });
 
   if (clinicalProducts.length < 2) {
-    throw new Error("Need priced clinical products. Import PrescribeUSA CSV and set prices first.");
+    throw new Error("Need at least two priced clinical products.");
   }
 
   // Clear prior demo therapy orders + intakes (stable tokens) so re-runs are idempotent

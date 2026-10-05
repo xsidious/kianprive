@@ -4,10 +4,12 @@ import { BadgeDollarSign, CalendarCheck2, CircleUserRound, Crown, FileText, Mess
 import { auth } from "@/lib/auth";
 import { getPortalHomeForRole } from "@/lib/auth-redirect";
 import { prisma } from "@/lib/prisma";
+import { splitBookingNotes } from "@/lib/admin/booking-display";
 import { patientOrderProgress } from "@/lib/orders/progress";
 import { getUserSubscription } from "@/lib/subscription";
 import { buildWhatsAppUrl } from "@/lib/contact";
 import { PortalSignOut } from "@/components/auth/PortalSignOut";
+import { MemberIntakeStarts } from "@/components/portal/MemberIntakeStarts";
 import {
   EditorialEyebrow,
   EditorialSection,
@@ -131,6 +133,7 @@ export default async function DashboardPage() {
             GO TO ICOONE TRAINING
           </Link>
         </div>
+        <MemberIntakeStarts />
 
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
           <section className={`${editorialPanel} p-5`}>
@@ -166,16 +169,19 @@ export default async function DashboardPage() {
               <p className="mt-3 text-sm text-[#6f6251]">No bookings yet.</p>
             ) : (
               <div className="mt-4 space-y-3">
-                {bookings.map((booking) => (
-                  <article key={booking.id} className={`${editorialPanel} p-3`}>
+                {bookings.map((booking) => {
+                  const note = splitBookingNotes(booking.notes).text;
+                  return (
+                  <article key={booking.id} className={`${editorialPanel} overflow-hidden p-3`}>
                     <p className="text-[#2b2218]">{booking.serviceTitles.join(", ")}</p>
                     <p className="text-xs text-[#8f6f3e]">Location: {booking.preferredLocation}</p>
                     <p className="text-sm text-[#6f6251]">
                       {booking.preferredDate.toISOString().slice(0, 10)} · {booking.status}
                     </p>
-                    {booking.notes ? <p className="mt-1 text-xs text-[#6f6251]">{booking.notes}</p> : null}
+                    {note ? <p className="mt-1 whitespace-pre-line break-words text-xs text-[#6f6251]">{note}</p> : null}
                   </article>
-                ))}
+                  );
+                })}
               </div>
             )}
             <Link href="/dashboard/services" className={`mt-4 ${editorialCtaSecondary}`}>

@@ -129,7 +129,7 @@ export async function POST(req: Request) {
     const nurseParsed = nurseConsentFieldsSchema.safeParse(parsed.data.nurseConsent);
     if (!nurseParsed.success) {
       return NextResponse.json(
-        { error: "The nursing treatment agreement is required before IV therapy can be booked." },
+        { error: "The nursing treatment agreement is required before IV therapy or a nurse visit can be booked." },
         { status: 400 },
       );
     }

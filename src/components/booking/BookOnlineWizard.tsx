@@ -716,6 +716,15 @@ export function BookOnlineWizard() {
                     ))}
                   </div>
                 ) : null}
+                {selectedServices.includes("icoone-laser") ? (
+                  <p className="mt-4 text-sm text-[#6f6251]">
+                    Complete the{" "}
+                    <Link href="/intake/icoone" className="font-medium text-[#8f6f3e] underline">
+                      Icoone lymphatic drainage intake
+                    </Link>{" "}
+                    before your appointment.
+                  </p>
+                ) : null}
               </div>
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 {bookingServiceOptions.map((service) => {

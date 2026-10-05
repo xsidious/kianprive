@@ -47,7 +47,11 @@ export default async function EventDetailsPage({
               ) : null}
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
-              {event.ticketUrl ? (
+              {event.soldOut ? (
+                <span className="rounded-sm border border-[#e8b4b4] bg-[#fdeeee] px-5 py-2 text-sm text-[#7c2c2c]">
+                  Sold out
+                </span>
+              ) : event.ticketUrl ? (
                 <a
                   href={event.ticketUrl}
                   target="_blank"
@@ -112,7 +116,16 @@ export default async function EventDetailsPage({
         </SectionWrapper>
       ) : null}
 
-      {event.ticketUrl ? (
+      {event.soldOut ? (
+        <SectionWrapper>
+          <div className="rounded-sm border border-[#e8b4b4] bg-[#fdeeee] p-8 text-center">
+            <h2 className="text-2xl text-[#7c2c2c] sm:text-3xl">Sold out</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-[#5f5344]">
+              {event.title} is no longer accepting reservations.
+            </p>
+          </div>
+        </SectionWrapper>
+      ) : event.ticketUrl ? (
         <SectionWrapper>
           <div className="rounded-sm border border-[#b78d4b4f] bg-gradient-to-b from-[#fff8ed] to-[#f1e7d7] p-8 text-center shadow-[0_18px_40px_-30px_rgba(66,45,14,0.45)]">
             <h2 className="text-2xl text-[#1f1a15] sm:text-3xl">Register Today</h2>
@@ -131,7 +144,7 @@ export default async function EventDetailsPage({
         </SectionWrapper>
       ) : null}
 
-      <SectionWrapper>
+      {!event.soldOut ? <SectionWrapper>
         <div className="rounded-sm border border-[#b78d4b2d] bg-white p-5 shadow-[0_18px_45px_-35px_rgba(66,45,14,0.45)] sm:p-8">
           <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">{intent === "rsvp" ? "RSVP" : "REQUEST INVITATION"}</p>
           <h2 className="mt-2 text-2xl text-[#1f1a15] sm:text-3xl">
@@ -157,7 +170,7 @@ export default async function EventDetailsPage({
             </button>
           </form>
         </div>
-      </SectionWrapper>
+      </SectionWrapper> : null}
     </div>
   );
 }

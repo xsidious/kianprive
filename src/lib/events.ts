@@ -12,6 +12,7 @@ export type RetreatEvent = {
   ticketUrl?: string;
   ticketPrice?: string;
   featured?: boolean;
+  soldOut?: boolean;
   highlights?: string[];
 };
 
@@ -26,6 +27,7 @@ export const retreatEvents: RetreatEvent[] = [
     when: "November 13–27, 2027",
     image: "/images/kian-prive-seoul-flyer.jpg",
     flyerImage: "/images/kian-prive-seoul-flyer.jpg",
+    soldOut: true,
     highlights: [
       "5-, 7-, and 10-day escapes",
       "Premium bespoke packages starting at $4,999",

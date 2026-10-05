@@ -86,6 +86,7 @@ export default async function ServiceDetailPage({
   const heroImage = isNutrition ? service.promoImage ?? nutritionPromoImage : service.image;
   const isPeptides = slug === "glp1-peptides";
   const isCelexo = slug === "microneedling-with-exosomes";
+  const isIcoone = slug === "icoone-laser";
   const bookingHref = service.externalBookingUrl
     ? service.externalBookingUrl
     : service.slug === "glp1-peptides"
@@ -209,6 +210,26 @@ export default async function ServiceDetailPage({
                 START CELEXO INTAKE
               </Link>
               <Link href="/book-online?service=microneedling-with-exosomes" className={editorialCtaSecondary}>
+                BOOK APPOINTMENT
+              </Link>
+            </div>
+          </div>
+        </EditorialSection>
+      ) : null}
+
+      {isIcoone ? (
+        <EditorialSection className="!py-8 sm:!py-10">
+          <div className={`${editorialPanel} p-5`}>
+            <p className="text-xs tracking-[0.18em] text-[#8a682e]">BEFORE YOUR VISIT</p>
+            <h2 className="mt-2 font-serif text-2xl text-[#1f1a15]">Icoone lymphatic drainage intake</h2>
+            <p className="mt-3 max-w-3xl text-sm text-[#5f5344]">
+              Complete the Icoone intake before your lymphatic drainage appointment. Height, weight, and the treatment protocol are filled in by the clinician at the visit.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Link href="/intake/icoone" className={editorialCtaPrimary}>
+                START ICOONE INTAKE
+              </Link>
+              <Link href="/book-online?service=icoone-laser" className={editorialCtaSecondary}>
                 BOOK APPOINTMENT
               </Link>
             </div>

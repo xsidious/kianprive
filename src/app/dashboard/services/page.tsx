@@ -12,7 +12,9 @@ import {
   editorialPanel,
 } from "@/components/ui/editorial-primitives";
 import { AppointmentAftercare } from "@/components/bookings/AppointmentAftercare";
+import { splitBookingNotes } from "@/lib/admin/booking-display";
 import { bookingIncludesAftercare } from "@/lib/bookings/aftercare-services";
+import { intakeLinksForServices } from "@/components/portal/MemberIntakeStarts";
 
 function buildChatMailto(booking: {
   id: string;
@@ -85,8 +87,11 @@ export default async function DashboardServicesPage() {
           </div>
         ) : (
           <div className="mt-8 grid gap-4">
-            {bookings.map((booking) => (
-              <article key={booking.id} className={`${editorialPanel} p-6`}>
+            {bookings.map((booking) => {
+              const note = splitBookingNotes(booking.notes).text;
+              const intakeLinks = intakeLinksForServices(booking.serviceIds);
+              return (
+              <article key={booking.id} className={`${editorialPanel} overflow-hidden p-6`}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <p className="text-xs tracking-[0.14em] text-[#8f6f3e]">
@@ -126,7 +131,23 @@ export default async function DashboardServicesPage() {
                   </div>
                 </div>
 
-                {booking.notes ? <p className="mt-4 text-sm text-[#6f6251]">{booking.notes}</p> : null}
+                {note ? <p className="mt-4 whitespace-pre-line break-words text-sm text-[#6f6251]">{note}</p> : null}
+
+                {intakeLinks.length ? (
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    {intakeLinks.map((link) =>
+                      link.external ? (
+                        <a key={link.href} href={link.href} className="text-sm text-[#8f6f3e] underline underline-offset-2">
+                          {link.label}
+                        </a>
+                      ) : (
+                        <Link key={link.href} href={link.href} className="text-sm text-[#8f6f3e] underline underline-offset-2">
+                          {link.label}
+                        </Link>
+                      ),
+                    )}
+                  </div>
+                ) : null}
 
                 {booking.status === "COMPLETED" || bookingIncludesAftercare(booking.serviceIds) ? (
                   <div className="mt-5">
@@ -159,7 +180,8 @@ export default async function DashboardServicesPage() {
                   </Link>
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
         )}
       </EditorialSection>

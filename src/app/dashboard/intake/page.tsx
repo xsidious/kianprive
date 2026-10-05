@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { PortalSignOut } from "@/components/auth/PortalSignOut";
+import { MemberIntakeStarts } from "@/components/portal/MemberIntakeStarts";
 import { IntakeMessageThread } from "@/components/intake/IntakeMessageThread";
 import { TherapyAcceptPay } from "@/components/intake/TherapyAcceptPay";
 import { TherapyOrderSummary } from "@/components/commerce/TherapyOrderSummary";
@@ -117,24 +118,13 @@ export default function MemberIntakePage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link
-            href="/intake/celexo"
-            className="rounded-full border border-[#d8cbb5] px-4 py-2 text-sm text-[#6f6251]"
-          >
-            Celexo intake
-          </Link>
-          <Link
-            href="/intake/peptides-glp"
-            className="rounded-full border border-[#d8cbb5] px-4 py-2 text-sm text-[#6f6251]"
-          >
-            Peptide intake
-          </Link>
           <Link href="/dashboard" className="rounded-full border border-[#d8cbb5] px-4 py-2 text-sm text-[#6f6251]">
             Dashboard
           </Link>
           <PortalSignOut />
         </div>
       </div>
+      <MemberIntakeStarts />
 
       {loading ? <p className="mt-8 text-sm text-[#6f6251]">Loading…</p> : null}
       {error ? <p className="mt-8 text-sm text-red-700">{error}</p> : null}

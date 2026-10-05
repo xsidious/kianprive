@@ -133,6 +133,16 @@ export default function AdminRetreatsPage() {
                   className="mt-1 w-full rounded-sm border border-[#b78d4b35] bg-[#fffaf4] p-3 text-[#1f1a15]"
                 />
               </label>
+              <label className="flex items-center gap-2 text-sm text-[#5f5344]">
+                <input
+                  type="checkbox"
+                  checked={event.soldOut === true}
+                  onChange={(e) =>
+                    setEvents((prev) => prev.map((item, i) => (i === index ? { ...item, soldOut: e.target.checked } : item)))
+                  }
+                />
+                Sold out
+              </label>
               <label className="text-sm text-[#5f5344]">
                 Host / Presenter
                 <input

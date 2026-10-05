@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-/** Nurse-administered treatments. The charting worksheet stays with the nurse at the visit. */
-export const NURSE_CONSENT_SERVICE_IDS = ["iv-therapy"] as const;
+/** IV therapy and nurse visits. The charting worksheet stays with the nurse at the visit. */
+export const NURSE_CONSENT_SERVICE_IDS = ["iv-therapy", "comprehensive-bloodwork"] as const;
 
 export function bookingRequiresNurseConsent(serviceIds: string[]) {
   const nurseServices = new Set<string>(NURSE_CONSENT_SERVICE_IDS);
@@ -12,7 +12,7 @@ export const NURSE_CONSENT_TITLE =
   "Patient Consent, Authorization, Acknowledgment, and Treatment Agreement";
 
 export const NURSE_CONSENT_INTRO =
-  "KIAN Privé nursing services, including IV therapy and nurse-administered injections. Sign this before the visit. Vitals, lot numbers, and the nurse certification are completed by the nurse at the appointment.";
+  "KIAN Privé IV therapy and nurse visits. Sign this before the visit. Vitals, lot numbers, and the nurse certification are completed by the nurse at the appointment.";
 
 export const NURSE_CONSENT_ACK =
   "I have read this agreement, I understand the risks, benefits, and alternatives, and I voluntarily consent to the nurse-administered treatment.";
@@ -25,7 +25,7 @@ export const NURSE_CONSENT_PARAGRAPHS = [
 
 export const nurseConsentFieldsSchema = z.object({
   nurseConsentAccepted: z.boolean().refine((value) => value === true, {
-    message: "The nursing treatment agreement is required for IV therapy.",
+    message: "The nursing treatment agreement is required for IV therapy and nurse visits.",
   }),
   nurseConsentSignedAt: z.string().min(1, "Consent date is required."),
   nurseConsentPrintedName: z.string().trim().min(2, "Printed name is required."),
