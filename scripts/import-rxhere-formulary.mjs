@@ -139,7 +139,8 @@ async function main() {
     const externalId = `rxhere:${vendorSku}`;
     const title = buildTitle(row);
     const slug = `rxhere-${slugify(vendorSku)}`.slice(0, 70);
-    const productSku = `RXH-${vendorSku}`.slice(0, 64);
+    // Use the pharmacy catalog SKU so KIAN → Wellness Tech → RxHere share one identifier.
+    const productSku = vendorSku.slice(0, 64);
     const wholesale = money(row.price);
     const category = applyGlpNaming(row.category) || "Compounded";
     const description = buildDescription(row);

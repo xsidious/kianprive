@@ -680,6 +680,8 @@ model PartnerProfile {
   bio                          String?
   phone                        String?
   avatarUrl                    String?
+  npi                          String?
+  credentialsTitle             String?
   partnerCode                  String           @unique
   taxId                        String?
   payoutMethod                 String?

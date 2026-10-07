@@ -5,6 +5,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
 import { createProductCommissionsForOrder } from "@/lib/commissions";
+import { settleVendorCostsAfterPayment } from "@/lib/commerce/vendor-payables";
+import { forwardPaidOrderToWellnessTech } from "@/lib/commerce/forward-distribution-order";
 
 export async function POST(req: Request) {
   if (!stripe || !process.env.STRIPE_WEBHOOK_SECRET) {
@@ -43,6 +45,12 @@ export async function POST(req: Request) {
         },
       });
       await createProductCommissionsForOrder(session.metadata.orderId);
+      await settleVendorCostsAfterPayment(session.metadata.orderId).catch((error) => {
+        console.error("[stripe] vendor settlement failed", session.metadata?.orderId, error);
+      });
+      await forwardPaidOrderToWellnessTech(session.metadata.orderId).catch((error) => {
+        console.error("[stripe] wellness tech forward failed", session.metadata?.orderId, error);
+      });
     }
 
     const userId = session.metadata?.userId;
