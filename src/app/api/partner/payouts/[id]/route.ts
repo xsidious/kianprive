@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 type Params = { params: Promise<{ id: string }> };
 
 export async function GET(_req: Request, { params }: Params) {
-  const access = await requirePartnerProfile("partner");
+  const access = await requirePartnerProfile(["partner", "practitioner", "ambassador"]);
   if (!access.ok) return access.response;
   const { id } = await params;
 

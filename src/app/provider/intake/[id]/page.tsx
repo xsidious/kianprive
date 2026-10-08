@@ -58,6 +58,8 @@ export default function ProviderIntakeDetailPage() {
   const [createOrderDraft, setCreateOrderDraft] = useState(true);
   const [canPrescribe, setCanPrescribe] = useState(true);
   const [signerName, setSignerName] = useState("Assigned physician");
+  const [savedSignature, setSavedSignature] = useState<string | null>(null);
+  const [saveAsDefault, setSaveAsDefault] = useState(false);
 
   async function load() {
     const res = await fetch(`/api/provider/intake/${id}`);
@@ -68,20 +70,36 @@ export default function ProviderIntakeDetailPage() {
     const payload = (await res.json()) as { submission: Submission; canPrescribe?: boolean };
     setSubmission(payload.submission);
     setCanPrescribe(payload.canPrescribe !== false);
-    setSignature(payload.submission.providerSignatureDataUrl);
     setStatusNote(payload.submission.statusNote || "");
+    return payload.submission;
   }
 
   useEffect(() => {
-    void load();
-    void fetch("/api/partner/me")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
+    void (async () => {
+      const [submissionRow, meRes] = await Promise.all([load(), fetch("/api/partner/me")]);
+      let profileSig: string | null = null;
+      if (meRes.ok) {
+        const data = (await meRes.json()) as {
+          partner?: { displayName?: string; signatureDataUrl?: string | null };
+        };
         const name = data?.partner?.displayName;
         if (typeof name === "string" && name.trim()) setSignerName(name.trim());
-      })
-      .catch(() => undefined);
+        profileSig = data?.partner?.signatureDataUrl ?? null;
+        setSavedSignature(profileSig);
+      }
+      const existing = submissionRow?.providerSignatureDataUrl ?? null;
+      setSignature(existing || profileSig);
+    })();
   }, [id]);
+
+  function useSavedSignature() {
+    if (!savedSignature) {
+      setMessage("No saved signature on your profile yet. Draw once and check “Save as my default”.");
+      return;
+    }
+    setSignature(savedSignature);
+    setMessage("Applied your saved signature.");
+  }
 
   async function saveSignature() {
     if (!signature) {
@@ -99,8 +117,17 @@ export default function ProviderIntakeDetailPage() {
         providerSignedName: signerName,
       }),
     });
+    if (res.ok && (saveAsDefault || !savedSignature)) {
+      await fetch("/api/partner/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ signatureDataUrl: signature }),
+      });
+      setSavedSignature(signature);
+      setSaveAsDefault(false);
+    }
     setBusy(false);
-    setMessage(res.ok ? "Signature saved." : "Could not save signature.");
+    setMessage(res.ok ? "Signature saved on this intake." : "Could not save signature.");
     if (res.ok) await load();
   }
 
@@ -296,14 +323,44 @@ export default function ProviderIntakeDetailPage() {
       <section className={`${adminPanel} p-5`}>
         <h2 className="font-serif text-xl text-[#1f1a15]">Provider signature</h2>
         <p className="mt-1 text-sm text-[#6f6251]">
-          Sign below to complete the clinical intake. You can then download or email the dual-signed PDF.
+          Sign below to complete the clinical intake. Your saved signature is applied automatically when this chart is
+          unsigned — or tap “Use saved signature”.
         </p>
+        {savedSignature ? (
+          <div className="mt-3 flex flex-wrap items-center gap-3 rounded-xl border border-[#efe6d8] bg-[#fffaf3] p-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={savedSignature} alt="Saved signature preview" className="h-12 max-w-[180px] object-contain" />
+            <button type="button" disabled={!canPrescribe} onClick={useSavedSignature} className={adminBtnGhost}>
+              Use saved signature
+            </button>
+            <Link href="/provider/profile" className="text-xs uppercase tracking-[0.14em] text-[#8f6f3e]">
+              Manage on profile
+            </Link>
+          </div>
+        ) : (
+          <p className="mt-3 text-xs text-[#8f6f3e]">
+            No profile signature yet — draw once and save it as your default below.{" "}
+            <Link href="/provider/profile" className="underline">
+              Open profile
+            </Link>
+          </p>
+        )}
         <div className="mt-4">
           <SignaturePad value={signature} onChange={setSignature} label={`${signerName} signature`} />
         </div>
+        <label className="mt-3 flex items-center gap-2 text-sm text-[#6f6251]">
+          <input
+            type="checkbox"
+            checked={saveAsDefault || !savedSignature}
+            onChange={(e) => setSaveAsDefault(e.target.checked)}
+            className="accent-[#8f6f3e]"
+            disabled={!canPrescribe}
+          />
+          Save as my default signature for future intakes
+        </label>
         {submission.providerSignedAt ? (
           <p className="mt-2 text-xs text-[#6f6251]">
-            Saved {new Date(submission.providerSignedAt).toLocaleString()}
+            On this chart: {new Date(submission.providerSignedAt).toLocaleString()}
             {submission.providerSignedName ? ` as ${submission.providerSignedName}` : ""}
           </p>
         ) : null}

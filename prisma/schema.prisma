@@ -686,6 +686,9 @@ model PartnerProfile {
   taxId                        String?
   payoutMethod                 String?
   payoutDetails                Json?
+  /** Reusable handwritten signature (PNG data URL) for practitioners. */
+  signatureDataUrl             String?          @db.Text
+  signatureUpdatedAt           DateTime?
   status                       PartnerStatus    @default(INVITED)
   defaultServiceCommissionPct  Decimal          @default(20) @db.Decimal(5, 2)
   defaultProductCommissionPct  Decimal          @default(10) @db.Decimal(5, 2)

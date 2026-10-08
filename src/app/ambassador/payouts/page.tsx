@@ -1,0 +1,63 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { adminEyebrow, adminMuted, adminPanel, adminTitle, money, statusTone } from "@/components/admin/ui";
+
+type Payout = {
+  id: string;
+  status: string;
+  totalAmount: number | string;
+  periodStart: string;
+  periodEnd: string;
+  paidAt: string | null;
+  entries?: { id: string; description: string | null; commissionAmount: number | string }[];
+};
+
+export default function AmbassadorPayoutsPage() {
+  const [payouts, setPayouts] = useState<Payout[]>([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    void fetch("/api/partner/payouts")
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Could not load payouts");
+        const payload = (await res.json()) as { payouts: Payout[] };
+        setPayouts(payload.payouts);
+      })
+      .catch((e: Error) => setError(e.message));
+  }, []);
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <p className={adminEyebrow}>Finance</p>
+        <h1 className={adminTitle}>Payouts</h1>
+        <p className={adminMuted}>Payout periods for commissions earned on your attributed sales.</p>
+      </div>
+      {error ? <p className="text-sm text-[#7c2c2c]">{error}</p> : null}
+      <div className="space-y-3">
+        {payouts.map((payout) => (
+          <article key={payout.id} className={`${adminPanel} p-5`}>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="font-serif text-xl text-[#1f1a15]">{money(payout.totalAmount)}</p>
+                <p className="mt-1 text-sm text-[#6f6251]">
+                  {new Date(payout.periodStart).toLocaleDateString()} – {new Date(payout.periodEnd).toLocaleDateString()}
+                </p>
+              </div>
+              <span className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] ${statusTone(payout.status)}`}>
+                {payout.status}
+              </span>
+            </div>
+            {payout.paidAt ? (
+              <p className="mt-2 text-xs text-[#8f6f3e]">Paid {new Date(payout.paidAt).toLocaleDateString()}</p>
+            ) : null}
+          </article>
+        ))}
+        {!payouts.length && !error ? (
+          <p className={`${adminPanel} p-5 text-sm text-[#6f6251]`}>No payout periods yet.</p>
+        ) : null}
+      </div>
+    </div>
+  );
+}

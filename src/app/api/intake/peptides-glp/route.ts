@@ -111,6 +111,7 @@ export async function POST(req: Request) {
         data: {
           orderNumber: invoiceNumber,
           userId: session?.user?.id ?? undefined,
+          partnerId: assignment.assignedPartnerId ?? undefined,
           intakeSubmissionId: created.id,
           email: data.patient.email,
           phone: data.patient.phone,

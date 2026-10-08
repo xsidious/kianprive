@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { adminEyebrow, adminMuted, adminPanel, adminTitle } from "@/components/admin/ui";
+import { adminEyebrow, adminMuted, adminPanel, adminTitle, statusTone } from "@/components/admin/ui";
 
 type Patient = {
   id: string;
@@ -15,6 +16,12 @@ type Patient = {
   medicalConditions: string;
   allergies: string;
   medications: string;
+  status?: string;
+  source?: string;
+  intakeId?: string | null;
+  bookingId?: string | null;
+  lastActivityAt?: string;
+  serviceTitles?: string[];
 };
 
 export default function ProviderPatientsPage() {
@@ -45,10 +52,9 @@ export default function ProviderPatientsPage() {
     <div className="space-y-6">
       <div>
         <p className={adminEyebrow}>Clinical records</p>
-        <h1 className={adminTitle}>Members & patients</h1>
+        <h1 className={adminTitle}>Your patients</h1>
         <p className={adminMuted}>
-          Active member accounts with the phone number, email, and health details on file. Use this list for care,
-          email, and text messages.
+          People from intakes and consultations assigned to you — not the full member directory.
         </p>
       </div>
       {error ? <p className="text-sm text-[#7c2c2c]">{error}</p> : null}
@@ -60,15 +66,27 @@ export default function ProviderPatientsPage() {
       />
       <div className="grid gap-3">
         {visible.length === 0 ? (
-          <p className={`${adminPanel} p-5 text-sm text-[#6f6251]`}>No member records match.</p>
+          <p className={`${adminPanel} p-5 text-sm text-[#6f6251]`}>No assigned patients match.</p>
         ) : (
           visible.map((patient) => (
-            <article key={patient.id} className={`${adminPanel} p-4`}>
-              <button type="button" className="w-full text-left" onClick={() => setOpenId((current) => (current === patient.id ? null : patient.id))}>
-                <p className="font-serif text-xl text-[#1f1a15]">{patient.name || "Unnamed member"}</p>
+            <article key={`${patient.email}-${patient.id}`} className={`${adminPanel} p-4`}>
+              <button
+                type="button"
+                className="w-full text-left"
+                onClick={() => setOpenId((current) => (current === patient.id ? null : patient.id))}
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="font-serif text-xl text-[#1f1a15]">{patient.name || "Unnamed patient"}</p>
+                  {patient.status ? (
+                    <span className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] ${statusTone(patient.status)}`}>
+                      {patient.status.replaceAll("_", " ")}
+                    </span>
+                  ) : null}
+                </div>
                 <p className="mt-1 text-sm text-[#6f6251]">
                   {patient.email}
                   {patient.phone ? ` · ${patient.phone}` : " · No phone on file"}
+                  {patient.source ? ` · via ${patient.source}` : ""}
                 </p>
               </button>
               {openId === patient.id ? (
@@ -85,18 +103,29 @@ export default function ProviderPatientsPage() {
                     <dt className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Preferred contact</dt>
                     <dd>{patient.preferredContact || "—"}</dd>
                   </div>
+                  <div>
+                    <dt className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Services</dt>
+                    <dd>{(patient.serviceTitles ?? []).join(", ") || "—"}</dd>
+                  </div>
                   <div className="sm:col-span-2">
-                    <dt className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Medical conditions</dt>
-                    <dd className="whitespace-pre-wrap">{patient.medicalConditions || "—"}</dd>
+                    <dt className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Conditions</dt>
+                    <dd>{patient.medicalConditions || "—"}</dd>
                   </div>
                   <div>
                     <dt className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Allergies</dt>
-                    <dd className="whitespace-pre-wrap">{patient.allergies || "—"}</dd>
+                    <dd>{patient.allergies || "—"}</dd>
                   </div>
                   <div>
                     <dt className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Medications</dt>
-                    <dd className="whitespace-pre-wrap">{patient.medications || "—"}</dd>
+                    <dd>{patient.medications || "—"}</dd>
                   </div>
+                  {patient.intakeId ? (
+                    <div className="sm:col-span-2">
+                      <Link href={`/provider/intake/${patient.intakeId}`} className="text-sm text-[#8f6f3e] underline">
+                        Open assigned intake →
+                      </Link>
+                    </div>
+                  ) : null}
                 </dl>
               ) : null}
             </article>

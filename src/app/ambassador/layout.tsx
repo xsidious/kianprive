@@ -12,6 +12,8 @@ const links = [
   { href: "/ambassador/links", label: "Links & QR" },
   { href: "/ambassador/sales", label: "Sales" },
   { href: "/ambassador/earnings", label: "Earnings" },
+  { href: "/ambassador/payouts", label: "Payouts" },
+  { href: "/ambassador/profile", label: "Profile" },
 ];
 
 export default async function AmbassadorLayout({ children }: { children: React.ReactNode }) {

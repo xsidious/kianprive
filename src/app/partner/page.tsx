@@ -12,6 +12,19 @@ import {
   partnerTitle,
 } from "@/components/partner/ui";
 
+type PaidActivity = {
+  id: string;
+  at: string;
+  kind: string;
+  label: string;
+  patientName: string;
+  patientEmail: string | null;
+  amount: number;
+  reference: string;
+  status: string;
+  detail: string | null;
+};
+
 type DashboardPayload = {
   stats: {
     bookings: number;
@@ -20,6 +33,9 @@ type DashboardPayload = {
     pendingCommission: number;
     awaitingCompletion: number;
     mtdSales: number;
+    intakesAssigned?: number;
+    reviewFeesTotal?: number;
+    patientPaidTotal?: number;
   };
   todaysBookings: {
     id: string;
@@ -28,6 +44,7 @@ type DashboardPayload = {
     status: string;
     serviceTitles: string[];
   }[];
+  paidActivity?: PaidActivity[];
   latestPayout: {
     id: string;
     status: string;
@@ -92,11 +109,13 @@ export default function PartnerDashboardPage() {
         </div>
       ) : null}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {[
           ["Pending approvals", data?.stats.pending ?? "—", "/partner/bookings?status=PENDING"],
           ["Bookings total", data?.stats.bookings ?? "—", "/partner/bookings"],
-          ["Completed MTD", data?.stats.completedMtd ?? "—", "/partner/analytics"],
+          ["Assigned intakes", data?.stats.intakesAssigned ?? "—", "/partner/bookings"],
+          ["Patient payments", data ? money(data.stats.patientPaidTotal ?? data.stats.mtdSales) : "—", "/partner/earnings"],
+          ["Review fees", data ? money(data.stats.reviewFeesTotal ?? 0) : "—", "/partner/earnings"],
           ["MTD attributed sales", data ? money(data.stats.mtdSales) : "—", "/partner/earnings"],
           ["Eligible commission", data ? money(data.stats.pendingCommission) : "—", "/partner/earnings"],
           ["Awaiting completion", data ? money(data.stats.awaitingCompletion) : "—", "/partner/earnings"],
@@ -166,6 +185,37 @@ export default function PartnerDashboardPage() {
           )}
         </section>
       </div>
+
+      <section className={`${partnerPanel} p-5`}>
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-xl text-[#1f1a15]">What people paid</h2>
+          <Link href="/partner/earnings" className="text-sm text-[#8f6f3e] underline">
+            Earnings
+          </Link>
+        </div>
+        <ul className="mt-4 space-y-3">
+          {(data?.paidActivity ?? []).slice(0, 12).map((row) => (
+            <li
+              key={row.id}
+              className="flex flex-wrap items-center justify-between gap-2 border-b border-[#f0e6d8] pb-3 text-sm"
+            >
+              <div>
+                <p className="text-[#1f1a15]">{row.patientName}</p>
+                <p className="text-[#6f6251]">
+                  {row.label}
+                  {row.detail ? ` · ${row.detail}` : ""}
+                </p>
+              </div>
+              <p className="text-[#8f6f3e]">
+                {money(row.amount)} · {new Date(row.at).toLocaleDateString()}
+              </p>
+            </li>
+          ))}
+          {!data?.paidActivity?.length ? (
+            <li className="text-sm text-[#6f6251]">No attributed payments yet.</li>
+          ) : null}
+        </ul>
+      </section>
 
       <section className={`${partnerPanel} p-5`}>
         <div className="flex items-center justify-between gap-3">
