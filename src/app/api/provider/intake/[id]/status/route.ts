@@ -40,7 +40,7 @@ export async function POST(req: Request, { params }: Params) {
   let locationIds: string[] = [];
   let canPrescribe = isAdmin;
   if (!isAdmin) {
-    const access = await requirePartnerProfile("provider");
+    const access = await requirePartnerProfile("practitioner");
     if (!access.ok) return access.response;
     if (access.partner.type !== "PROVIDER") {
       return NextResponse.json({ error: "Provider access required." }, { status: 403 });

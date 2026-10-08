@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 /** Practitioners can read member and patient contact records for care and outreach. */
 export async function GET() {
-  const access = await requirePartnerProfile("provider");
+  const access = await requirePartnerProfile("practitioner");
   if (!access.ok) return access.response;
   if (access.partner.type !== "PROVIDER") {
     return NextResponse.json({ error: "Provider access required." }, { status: 403 });

@@ -7,7 +7,7 @@ import { createServiceCommissionForBooking, markServiceCommissionEligible } from
 import { notifyBookingCompleted } from "@/lib/booking-aftercare-notify";
 
 export async function GET(req: Request) {
-  const access = await requirePartnerProfile("partner");
+  const access = await requirePartnerProfile(["partner", "practitioner"]);
   if (!access.ok) return access.response;
 
   const { searchParams } = new URL(req.url);
@@ -36,7 +36,7 @@ const patchSchema = z.object({
 });
 
 export async function PATCH(req: Request) {
-  const access = await requirePartnerProfile("partner");
+  const access = await requirePartnerProfile(["partner", "practitioner"]);
   if (!access.ok) return access.response;
   const parsed = patchSchema.safeParse(await req.json());
   if (!parsed.success) return NextResponse.json({ error: "Invalid payload" }, { status: 400 });

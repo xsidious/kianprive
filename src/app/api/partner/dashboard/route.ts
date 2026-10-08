@@ -3,7 +3,7 @@ import { requirePartnerProfile } from "@/lib/partner-guard";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
-  const access = await requirePartnerProfile("partner");
+  const access = await requirePartnerProfile(["partner", "practitioner"]);
   if (!access.ok) return access.response;
   const partnerId = access.partner.id;
 

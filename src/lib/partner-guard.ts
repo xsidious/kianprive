@@ -1,10 +1,15 @@
 import { NextResponse } from "next/server";
-import { Role } from "@prisma/client";
+import { PartnerType, Role } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { profileWhere, type NetworkKind } from "@/lib/network-profile";
+import { typesForKind, type NetworkKind } from "@/lib/network-profile";
 
-export async function requirePartnerProfile(kind: NetworkKind) {
+function typesForKinds(kinds: NetworkKind[]): PartnerType[] {
+  return [...new Set(kinds.flatMap((kind) => typesForKind(kind)))];
+}
+
+/** Resolve the signed-in user's network profile for one or more portal kinds. */
+export async function requirePartnerProfile(kind: NetworkKind | NetworkKind[]) {
   const session = await auth();
   if (!session?.user?.id) {
     return {
@@ -26,8 +31,13 @@ export async function requirePartnerProfile(kind: NetworkKind) {
     };
   }
 
+  const kinds = Array.isArray(kind) ? kind : [kind];
+  const types = typesForKinds(kinds);
   const partner = await prisma.partnerProfile.findFirst({
-    where: profileWhere(session.user.id, kind),
+    where: {
+      userId: session.user.id,
+      type: types.length === 1 ? types[0] : { in: types },
+    },
   });
 
   if (!partner || partner.status === "SUSPENDED") {

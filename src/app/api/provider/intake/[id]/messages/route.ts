@@ -21,7 +21,7 @@ async function authorizeProviderAccess(id: string) {
   let partnerId: string | null = null;
   let partnerName: string | null = null;
   if (!isAdmin) {
-    const access = await requirePartnerProfile("provider");
+    const access = await requirePartnerProfile("practitioner");
     if (!access.ok) return { error: access.response as NextResponse };
     if (access.partner.type !== "PROVIDER") {
       return { error: NextResponse.json({ error: "Provider access required." }, { status: 403 }) };
