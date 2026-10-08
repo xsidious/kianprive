@@ -114,7 +114,7 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [shipping, setShipping] = useState("12");
+  const [shipping, setShipping] = useState("35");
   const [priceTouched, setPriceTouched] = useState<Record<string, boolean>>({});
 
   useEffect(() => {

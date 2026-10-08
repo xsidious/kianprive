@@ -11,6 +11,7 @@ import {
 import { activateTherapySubscriptionFromPayment } from "@/lib/commerce/therapy-subscriptions";
 import { forwardPaidOrderToWellnessTech } from "@/lib/commerce/forward-distribution-order";
 import { formatChargeDate, intervalLabel } from "@/lib/commerce/therapy-billing";
+import { notifyPartnerTherapyPaid } from "@/lib/intake/partner-status-sync";
 
 type OpaqueData = { dataDescriptor: string; dataValue: string };
 
@@ -179,6 +180,14 @@ export async function processOrderCardPayment(input: {
   await createProductCommissionsForOrder(order.id);
   const settlement = await settleVendorCostsAfterPayment(order.id);
   await forwardPaidOrderToWellnessTech(order.id);
+
+  if (order.intakeSubmissionId && order.therapyProposal) {
+    await notifyPartnerTherapyPaid({
+      intakeSubmissionId: order.intakeSubmissionId,
+      orderNumber: order.orderNumber,
+      totalCents: Math.round(Number(order.total) * 100),
+    });
+  }
 
   const proposalId = order.therapyProposal?.id ?? order.therapySubscription?.proposalId;
   const activated = proposalId

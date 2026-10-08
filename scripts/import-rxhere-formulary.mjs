@@ -9,12 +9,14 @@
  *   - Vendor "RxHere" (PO email from RXHERE_VENDOR_EMAIL or info@rxhere.com)
  *   - CLINICAL Product rows (source=RXHERE, externalId=rxhere:<SKU>)
  *   - ProductVendorOffer with formulary wholesale unit cost
+ *   - Patient `price` = formulary wholesale × 2 (100% markup)
  *
  * Applies GLP naming policy: Semaglutide→GLP 1, Tirzepatide→GLP 2, Retatrutide→GLP 3
  */
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { PrismaClient } from "@prisma/client";
+import { formularyImageForCategory } from "./formulary-image-map.mjs";
 
 const prisma = new PrismaClient();
 
@@ -44,6 +46,12 @@ function applyGlpNaming(text) {
 function money(value) {
   const n = Number(value);
   return Number.isFinite(n) ? Math.round(n * 100) / 100 : 0;
+}
+
+/** Patient sell price = RxHere wholesale × 2. */
+const PATIENT_MARKUP = 2;
+function patientPrice(wholesale) {
+  return money(wholesale * PATIENT_MARKUP);
 }
 
 function buildTitle(row) {
@@ -142,10 +150,13 @@ async function main() {
     // Use the pharmacy catalog SKU so KIAN → Wellness Tech → RxHere share one identifier.
     const productSku = vendorSku.slice(0, 64);
     const wholesale = money(row.price);
+    const sellPrice = patientPrice(wholesale);
     const category = applyGlpNaming(row.category) || "Compounded";
     const description = buildDescription(row);
     const strength = [row.strength, row.size].filter(Boolean).join(" · ") || null;
     const form = row.form || null;
+
+    const featuredImage = formularyImageForCategory(category);
 
     const product = await prisma.product.upsert({
       where: { externalId },
@@ -162,7 +173,8 @@ async function main() {
         catalogKind: "CLINICAL",
         isPrescription: true,
         wholesalePrice: wholesale || null,
-        price: 0,
+        price: sellPrice,
+        featuredImage,
         sku: productSku,
         status: "ACTIVE",
         inventoryQty: 100,
@@ -180,6 +192,8 @@ async function main() {
         catalogKind: "CLINICAL",
         isPrescription: true,
         wholesalePrice: wholesale || null,
+        price: sellPrice,
+        featuredImage,
         sku: productSku,
         status: "ACTIVE",
         vendorId: vendor.id,
@@ -212,7 +226,7 @@ async function main() {
   }
 
   console.log(`Done. Products upserted: ${upserted}, offers: ${offers}, skipped: ${skipped}`);
-  console.log("Retail/clinic price left at $0 — set patient prices in Admin → Prescriptions / Pricing.");
+  console.log(`Patient price set to ${PATIENT_MARKUP}× RxHere wholesale on every clinical SKU.`);
   console.log("After therapy payment, POs email to the RxHere vendor when WELLNESS_TECH_AUTO_EMAIL_PO is enabled.");
 }
 

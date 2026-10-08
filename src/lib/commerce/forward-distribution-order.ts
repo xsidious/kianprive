@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { buildClinicalChartPackage } from "@/lib/commerce/clinical-chart-package";
 
 type ShipAddress = Record<string, string | null | undefined>;
 
@@ -168,6 +169,44 @@ export async function forwardPaidOrderToWellnessTech(orderId: string) {
     phone: provider?.phone || undefined,
   };
 
+  const clinicalChart = buildClinicalChartPackage({
+    order: {
+      id: order.id,
+      orderNumber: order.orderNumber,
+      email: order.email,
+      phone: order.phone,
+      total: order.total,
+      subtotal: order.subtotal,
+      shippingTotal: order.shippingTotal,
+      paymentStatus: order.paymentStatus,
+      notes: order.notes,
+      shippingAddress: order.shippingAddress,
+      createdAt: order.createdAt,
+    },
+    intake,
+    profile,
+    therapy: order.therapyProposal
+      ? {
+          id: order.therapyProposal.id,
+          status: order.therapyProposal.status,
+          notes: order.therapyProposal.notes,
+          sentAt: order.therapyProposal.sentAt,
+          paidAt: order.therapyProposal.paidAt,
+          billingInterval: order.therapyProposal.billingInterval,
+          items: order.therapyProposal.items,
+          providerPartner: order.therapyProposal.providerPartner,
+        }
+      : null,
+    lines: sendable.map((line) => ({
+      sku: line.sku,
+      qty: line.qty,
+      name: line.name,
+      strength: line.strength,
+      dosageForm: line.dosageForm,
+      sig: line.sig,
+    })),
+  });
+
   try {
     const res = await fetch(`${base}/api/partner/orders`, {
       method: "POST",
@@ -191,6 +230,8 @@ export async function forwardPaidOrderToWellnessTech(orderId: string) {
         })),
         patient,
         prescriber,
+        clinicalChart,
+        kianIntakeId: intake?.id || null,
         notes: [
           `KIAN Privé order ${order.orderNumber}`,
           intake ? `Intake ${intake.id}` : "",

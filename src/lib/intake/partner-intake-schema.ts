@@ -51,20 +51,28 @@ function asString(value: unknown, fallback = "") {
 /** Pull common contact fields from nested partner payloads. */
 export function resolvePartnerContact(data: PartnerIntakeEnvelope) {
   const p = data.payload;
+  const nestedPatient =
+    p.patient && typeof p.patient === "object" && !Array.isArray(p.patient)
+      ? (p.patient as Record<string, unknown>)
+      : null;
   const email =
     data.patientEmail?.trim().toLowerCase() ||
-    asString(p.email || p.patientEmail || p.contactEmail).toLowerCase();
+    asString(nestedPatient?.email || p.email || p.patientEmail || p.contactEmail).toLowerCase();
   const fullName =
     data.patientName?.trim() ||
-    asString(p.fullName || p.name || p.patientName || p.contactName) ||
+    asString(
+      nestedPatient?.fullName || p.fullName || p.name || p.patientName || p.contactName,
+    ) ||
     "Partner submission";
   const phone =
     data.patientPhone?.trim() ||
-    asString(p.phone || p.patientPhone || p.contactPhone) ||
+    asString(nestedPatient?.phone || p.phone || p.patientPhone || p.contactPhone) ||
     "n/a";
   const dateOfBirth =
     data.patientDateOfBirth?.trim() ||
-    asString(p.dateOfBirth || p.dob || p.patientDateOfBirth) ||
+    asString(
+      nestedPatient?.dateOfBirth || p.dateOfBirth || p.dob || p.patientDateOfBirth,
+    ) ||
     "n/a";
 
   return { email, fullName, phone, dateOfBirth };
@@ -80,6 +88,12 @@ export function partnerProgramLabels(
   if (purpose) labels.push(purpose);
   const service = asString(payload.serviceInterest || payload.service || payload.primaryService);
   if (service && !labels.includes(service)) labels.push(service);
+  if (Array.isArray(payload.programs)) {
+    for (const program of payload.programs) {
+      const label = asString(program);
+      if (label && !labels.includes(label)) labels.push(label);
+    }
+  }
   return labels;
 }
 

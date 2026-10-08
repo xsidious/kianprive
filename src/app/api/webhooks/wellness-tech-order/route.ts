@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { timingSafeEqual } from "crypto";
 import { prisma } from "@/lib/prisma";
+import { notifyPartnerOrderUpdated } from "@/lib/intake/partner-status-sync";
 
 function secretOk(header: string | null) {
   const expected =
@@ -98,6 +99,21 @@ export async function POST(request: Request) {
         },
       });
     }
+  }
+
+  if (order.intakeSubmissionId) {
+    await notifyPartnerOrderUpdated({
+      orderId: order.id,
+      status: mapped.order || order.status,
+      fulfillment: {
+        status: mapped.fulfillment || order.fulfillmentStatus,
+        carrier: body.carrier || order.fulfillments[0]?.carrier || null,
+        trackingNumber: body.trackingNumber || order.fulfillments[0]?.trackingNumber || null,
+        trackingUrl: body.trackingNumber
+          ? `https://www.fedex.com/fedextrack/?trknbr=${encodeURIComponent(body.trackingNumber)}`
+          : order.fulfillments[0]?.trackingUrl || null,
+      },
+    });
   }
 
   return NextResponse.json({ ok: true, orderId: order.id });

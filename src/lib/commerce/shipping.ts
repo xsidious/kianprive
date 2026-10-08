@@ -14,7 +14,7 @@ export type ShippingConfig = {
 
 export const DEFAULT_SHIPPING_CONFIG: ShippingConfig = {
   freeThreshold: 150,
-  flatRate: 12,
+  flatRate: 35,
   alwaysFree: false,
 };
 

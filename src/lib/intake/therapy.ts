@@ -5,6 +5,7 @@ import { issueOrderPaymentToken } from "@/lib/commerce/payment-link";
 import { sendInvoiceEmail } from "@/lib/commerce/invoices";
 import { intervalLabel, resolveIntervalDays } from "@/lib/commerce/therapy-billing";
 import { syncTherapySubscriptionForProposal } from "@/lib/commerce/therapy-subscriptions";
+import { notifyPartnerTherapySent } from "@/lib/intake/partner-status-sync";
 
 export async function getProposalForIntake(intakeSubmissionId: string) {
   return prisma.intakeTherapyProposal.findFirst({
@@ -397,6 +398,18 @@ export async function upsertTherapyProposal(input: {
         recurringLabel,
       });
     }
+
+    await notifyPartnerTherapySent({
+      intakeSubmissionId: input.intakeSubmissionId,
+      paymentUrl,
+      orderNumber: orderForNotify?.orderNumber ?? null,
+      totalCents: Math.round(orderTotal * 100),
+      therapyItems: orderForNotify?.items.map((item) => ({
+        title: item.title,
+        quantity: item.quantity,
+        lineTotalCents: Math.round(Number(item.lineTotal) * 100),
+      })),
+    });
   }
 
   return getProposalForIntake(input.intakeSubmissionId);
