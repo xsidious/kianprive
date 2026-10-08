@@ -16,7 +16,7 @@
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { PrismaClient } from "@prisma/client";
-import { formularyImageForCategory } from "./formulary-image-map.mjs";
+import { formularyImageForRow } from "./formulary-image-map.mjs";
 
 const prisma = new PrismaClient();
 
@@ -156,7 +156,7 @@ async function main() {
     const strength = [row.strength, row.size].filter(Boolean).join(" · ") || null;
     const form = row.form || null;
 
-    const featuredImage = formularyImageForCategory(category);
+    const featuredImage = formularyImageForRow(row);
 
     const product = await prisma.product.upsert({
       where: { externalId },

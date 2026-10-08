@@ -7,8 +7,11 @@
     "strength": "10mg/mL",
     "size": "1 mL",
     "total": "10mg",
-    "price": 105.0,
-    "description": "Triple-agonist (GLP-1/GIP/glucagon) for advanced weight loss and metabolic control."
+    "price": 105,
+    "description": "Triple-agonist (GLP-1/GIP/glucagon) for advanced weight loss and metabolic control.",
+    "imageId": "j9tja5jlqkmyy3yw09o20los",
+    "image": "/images/formulary/rxhere/j9tja5jlqkmyy3yw09o20los.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/j9tja5jlqkmyy3yw09o20los.webp"
   },
   {
     "sku": "AS-RET-02",
@@ -18,8 +21,11 @@
     "strength": "10mg/mL",
     "size": "2 mL",
     "total": "20mg",
-    "price": 160.0,
-    "description": "Triple-agonist (GLP-1/GIP/glucagon) for advanced weight loss and metabolic control."
+    "price": 160,
+    "description": "Triple-agonist (GLP-1/GIP/glucagon) for advanced weight loss and metabolic control.",
+    "imageId": "j9tja5jlqkmyy3yw09o20los",
+    "image": "/images/formulary/rxhere/j9tja5jlqkmyy3yw09o20los.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/j9tja5jlqkmyy3yw09o20los.webp"
   },
   {
     "sku": "AS-RET-04",
@@ -29,8 +35,11 @@
     "strength": "10mg/mL",
     "size": "3mL",
     "total": "30mg",
-    "price": 190.0,
-    "description": "Triple-agonist (GLP-1/GIP/glucagon) for advanced weight loss and metabolic control."
+    "price": 190,
+    "description": "Triple-agonist (GLP-1/GIP/glucagon) for advanced weight loss and metabolic control.",
+    "imageId": "l7wi04c6swte7jqteyd154ww",
+    "image": "/images/formulary/rxhere/l7wi04c6swte7jqteyd154ww.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/l7wi04c6swte7jqteyd154ww.webp"
   },
   {
     "sku": "AS-RET-05",
@@ -40,8 +49,11 @@
     "strength": "10mg/mL",
     "size": "4mL",
     "total": "40mg",
-    "price": 215.0,
-    "description": "Triple-agonist (GLP-1/GIP/glucagon) for advanced weight loss and metabolic control."
+    "price": 215,
+    "description": "Triple-agonist (GLP-1/GIP/glucagon) for advanced weight loss and metabolic control.",
+    "imageId": "iab8dmhvbqaf0bwgpsmxu6j2",
+    "image": "/images/formulary/rxhere/iab8dmhvbqaf0bwgpsmxu6j2.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/iab8dmhvbqaf0bwgpsmxu6j2.webp"
   },
   {
     "sku": "AS-RET-06",
@@ -51,8 +63,11 @@
     "strength": "10mg/mL",
     "size": "5mL",
     "total": "50mg",
-    "price": 235.0,
-    "description": "Triple-agonist (GLP-1/GIP/glucagon) for advanced weight loss and metabolic control."
+    "price": 235,
+    "description": "Triple-agonist (GLP-1/GIP/glucagon) for advanced weight loss and metabolic control.",
+    "imageId": "mwh7zl91podyfk4eyit2797z",
+    "image": "/images/formulary/rxhere/mwh7zl91podyfk4eyit2797z.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/mwh7zl91podyfk4eyit2797z.webp"
   },
   {
     "sku": "AS-SGY",
@@ -62,8 +77,11 @@
     "strength": "0.5mg/5mg/mL",
     "size": "2 mL",
     "total": "1mg/10mg",
-    "price": 40.0,
-    "description": "GLP-1 agonist with glycine buffer to reduce injection-site discomfort."
+    "price": 40,
+    "description": "GLP-1 agonist with glycine buffer to reduce injection-site discomfort.",
+    "imageId": "um3s4pqsq85o8icxdliu8umm",
+    "image": "/images/formulary/rxhere/um3s4pqsq85o8icxdliu8umm.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/um3s4pqsq85o8icxdliu8umm.webp"
   },
   {
     "sku": "AS-SGY-02",
@@ -73,8 +91,11 @@
     "strength": "1mg/5mg/mL",
     "size": "2 mL",
     "total": "2mg/10mg",
-    "price": 45.0,
-    "description": "GLP-1 agonist with glycine buffer to reduce injection-site discomfort."
+    "price": 45,
+    "description": "GLP-1 agonist with glycine buffer to reduce injection-site discomfort.",
+    "imageId": "ppazrjf3enb4f6dmx2snvjwt",
+    "image": "/images/formulary/rxhere/ppazrjf3enb4f6dmx2snvjwt.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ppazrjf3enb4f6dmx2snvjwt.webp"
   },
   {
     "sku": "AS-SGY-03",
@@ -84,8 +105,11 @@
     "strength": "2mg/5mg/mL",
     "size": "2 mL",
     "total": "4mg/10mg",
-    "price": 50.0,
-    "description": "GLP-1 agonist with glycine buffer to reduce injection-site discomfort."
+    "price": 50,
+    "description": "GLP-1 agonist with glycine buffer to reduce injection-site discomfort.",
+    "imageId": "i7stfbb1p55sb3bhb1j20dd3",
+    "image": "/images/formulary/rxhere/i7stfbb1p55sb3bhb1j20dd3.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/i7stfbb1p55sb3bhb1j20dd3.webp"
   },
   {
     "sku": "AS-SGY-04",
@@ -95,8 +119,11 @@
     "strength": "3.5mg/5mg/mL",
     "size": "2 mL",
     "total": "7mg/10mg",
-    "price": 55.0,
-    "description": "GLP-1 agonist with glycine buffer to reduce injection-site discomfort."
+    "price": 55,
+    "description": "GLP-1 agonist with glycine buffer to reduce injection-site discomfort.",
+    "imageId": "wycyo0i8bjr7vqk153nux63g",
+    "image": "/images/formulary/rxhere/wycyo0i8bjr7vqk153nux63g.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/wycyo0i8bjr7vqk153nux63g.webp"
   },
   {
     "sku": "AS-SGY-05",
@@ -106,8 +133,11 @@
     "strength": "5mg/5mg/mL",
     "size": "2 mL",
     "total": "10mg/10mg",
-    "price": 60.0,
-    "description": "GLP-1 agonist with glycine buffer to reduce injection-site discomfort."
+    "price": 60,
+    "description": "GLP-1 agonist with glycine buffer to reduce injection-site discomfort.",
+    "imageId": "ilh5m0q9eebk3nfigvq7wmng",
+    "image": "/images/formulary/rxhere/ilh5m0q9eebk3nfigvq7wmng.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ilh5m0q9eebk3nfigvq7wmng.webp"
   },
   {
     "sku": "AS-SB12",
@@ -117,8 +147,11 @@
     "strength": "0.5mg/0.5mg/mL",
     "size": "2 mL",
     "total": "1mg/1mg",
-    "price": 40.0,
-    "description": "GLP-1 agonist paired with B12 to support energy and nerve health during weight loss."
+    "price": 40,
+    "description": "GLP-1 agonist paired with B12 to support energy and nerve health during weight loss.",
+    "imageId": "aqddsqnuybs3alx29oh01ax8",
+    "image": "/images/formulary/rxhere/aqddsqnuybs3alx29oh01ax8.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/aqddsqnuybs3alx29oh01ax8.webp"
   },
   {
     "sku": "AS-SB12-02",
@@ -128,8 +161,11 @@
     "strength": "1mg/0.5mg/mL",
     "size": "2 mL",
     "total": "2mg/1mg",
-    "price": 45.0,
-    "description": "GLP-1 agonist paired with B12 to support energy and nerve health during weight loss."
+    "price": 45,
+    "description": "GLP-1 agonist paired with B12 to support energy and nerve health during weight loss.",
+    "imageId": "rfnrffhegb9uatms2hbu0x7d",
+    "image": "/images/formulary/rxhere/rfnrffhegb9uatms2hbu0x7d.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/rfnrffhegb9uatms2hbu0x7d.webp"
   },
   {
     "sku": "AS-SB12-03",
@@ -139,8 +175,11 @@
     "strength": "2mg/0.5mg/mL",
     "size": "2 mL",
     "total": "4mg/1mg",
-    "price": 50.0,
-    "description": "GLP-1 agonist paired with B12 to support energy and nerve health during weight loss."
+    "price": 50,
+    "description": "GLP-1 agonist paired with B12 to support energy and nerve health during weight loss.",
+    "imageId": "p25genjfmid8wcja3q3dx323",
+    "image": "/images/formulary/rxhere/p25genjfmid8wcja3q3dx323.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/p25genjfmid8wcja3q3dx323.webp"
   },
   {
     "sku": "AS-SB12-04",
@@ -150,8 +189,11 @@
     "strength": "3.5mg/0.5mg/mL",
     "size": "2 mL",
     "total": "7mg/1mg",
-    "price": 55.0,
-    "description": "GLP-1 agonist paired with B12 to support energy and nerve health during weight loss."
+    "price": 55,
+    "description": "GLP-1 agonist paired with B12 to support energy and nerve health during weight loss.",
+    "imageId": "dv9rw18gutpe56d8hcel5fdo",
+    "image": "/images/formulary/rxhere/dv9rw18gutpe56d8hcel5fdo.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/dv9rw18gutpe56d8hcel5fdo.webp"
   },
   {
     "sku": "AS-SB12-05",
@@ -161,8 +203,11 @@
     "strength": "5mg/0.5mg/mL",
     "size": "2 mL",
     "total": "10mg/1mg",
-    "price": 70.0,
-    "description": "GLP-1 agonist paired with B12 to support energy and nerve health during weight loss."
+    "price": 70,
+    "description": "GLP-1 agonist paired with B12 to support energy and nerve health during weight loss.",
+    "imageId": "y6coxq9sirhhihnlhoiqa3pb",
+    "image": "/images/formulary/rxhere/y6coxq9sirhhihnlhoiqa3pb.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/y6coxq9sirhhihnlhoiqa3pb.webp"
   },
   {
     "sku": "AS-TGY",
@@ -172,8 +217,11 @@
     "strength": "10mg/5mg/mL",
     "size": "2 mL",
     "total": "20mg/10mg",
-    "price": 60.0,
-    "description": "Dual GIP/GLP-1 agonist with glycine buffer to reduce injection-site discomfort."
+    "price": 60,
+    "description": "Dual GIP/GLP-1 agonist with glycine buffer to reduce injection-site discomfort.",
+    "imageId": "k432z2pf8iek227tsl581xgq",
+    "image": "/images/formulary/rxhere/k432z2pf8iek227tsl581xgq.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/k432z2pf8iek227tsl581xgq.webp"
   },
   {
     "sku": "AS-TGY-02",
@@ -183,8 +231,11 @@
     "strength": "15mg/5mg/mL",
     "size": "2 mL",
     "total": "30mg/10mg",
-    "price": 65.0,
-    "description": "Dual GIP/GLP-1 agonist with glycine buffer to reduce injection-site discomfort."
+    "price": 65,
+    "description": "Dual GIP/GLP-1 agonist with glycine buffer to reduce injection-site discomfort.",
+    "imageId": "k432z2pf8iek227tsl581xgq",
+    "image": "/images/formulary/rxhere/k432z2pf8iek227tsl581xgq.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/k432z2pf8iek227tsl581xgq.webp"
   },
   {
     "sku": "AS-TGY-03",
@@ -194,8 +245,11 @@
     "strength": "20mg/5mg/mL",
     "size": "2 mL",
     "total": "40mg/10mg",
-    "price": 85.0,
-    "description": "Dual GIP/GLP-1 agonist with glycine buffer to reduce injection-site discomfort."
+    "price": 85,
+    "description": "Dual GIP/GLP-1 agonist with glycine buffer to reduce injection-site discomfort.",
+    "imageId": "a7clpixermyg5a1f3xf1r209",
+    "image": "/images/formulary/rxhere/a7clpixermyg5a1f3xf1r209.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/a7clpixermyg5a1f3xf1r209.webp"
   },
   {
     "sku": "AS-TGY-04",
@@ -205,8 +259,11 @@
     "strength": "25mg/5mg/mL",
     "size": "2 mL",
     "total": "50mg/10mg",
-    "price": 90.0,
-    "description": "Dual GIP/GLP-1 agonist with glycine buffer to reduce injection-site discomfort."
+    "price": 90,
+    "description": "Dual GIP/GLP-1 agonist with glycine buffer to reduce injection-site discomfort.",
+    "imageId": "mht5tvdk578jqegk2zm7u92g",
+    "image": "/images/formulary/rxhere/mht5tvdk578jqegk2zm7u92g.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/mht5tvdk578jqegk2zm7u92g.webp"
   },
   {
     "sku": "AS-TGY-05",
@@ -216,8 +273,11 @@
     "strength": "30mg/5mg/mL",
     "size": "2 mL",
     "total": "60mg/10mg",
-    "price": 105.0,
-    "description": "Dual GIP/GLP-1 agonist with glycine buffer to reduce injection-site discomfort."
+    "price": 105,
+    "description": "Dual GIP/GLP-1 agonist with glycine buffer to reduce injection-site discomfort.",
+    "imageId": "w44x1fqtd9cyo2ucc4fq2nqt",
+    "image": "/images/formulary/rxhere/w44x1fqtd9cyo2ucc4fq2nqt.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/w44x1fqtd9cyo2ucc4fq2nqt.webp"
   },
   {
     "sku": "AS-TES",
@@ -227,8 +287,11 @@
     "strength": "250 mcg",
     "size": "each",
     "total": "250mcg",
-    "price": 2.0,
-    "description": "Triple monoamine reuptake inhibitor; reduces appetite and raises thermogenesis."
+    "price": 2,
+    "description": "Triple monoamine reuptake inhibitor; reduces appetite and raises thermogenesis.",
+    "imageId": "kg86v8c5tsx3yj0gil7dwoma",
+    "image": "/images/formulary/rxhere/kg86v8c5tsx3yj0gil7dwoma.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/kg86v8c5tsx3yj0gil7dwoma.webp"
   },
   {
     "sku": "AS-TES-02",
@@ -239,7 +302,10 @@
     "size": "each",
     "total": "500mcg",
     "price": 2.25,
-    "description": "Triple monoamine reuptake inhibitor; reduces appetite and raises thermogenesis."
+    "description": "Triple monoamine reuptake inhibitor; reduces appetite and raises thermogenesis.",
+    "imageId": "u7jg8wfrbe95xg7sg2r0bi3u",
+    "image": "/images/formulary/rxhere/u7jg8wfrbe95xg7sg2r0bi3u.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/u7jg8wfrbe95xg7sg2r0bi3u.webp"
   },
   {
     "sku": "AS-RT",
@@ -249,8 +315,11 @@
     "strength": "16mg/5mg/mL",
     "size": "1 mL",
     "total": "16mg/5mg",
-    "price": 125.0,
-    "description": "Triple + dual agonist combination for synergistic fat loss."
+    "price": 125,
+    "description": "Triple + dual agonist combination for synergistic fat loss.",
+    "imageId": "p6xx26xlkc9db8marob2ml6h",
+    "image": "/images/formulary/rxhere/p6xx26xlkc9db8marob2ml6h.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/p6xx26xlkc9db8marob2ml6h.webp"
   },
   {
     "sku": "AS-RT-02",
@@ -260,8 +329,11 @@
     "strength": "16mg/5mg/mL",
     "size": "2 mL",
     "total": "32mg/10mg",
-    "price": 215.0,
-    "description": "Triple + dual agonist combination for synergistic fat loss."
+    "price": 215,
+    "description": "Triple + dual agonist combination for synergistic fat loss.",
+    "imageId": "p6xx26xlkc9db8marob2ml6h",
+    "image": "/images/formulary/rxhere/p6xx26xlkc9db8marob2ml6h.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/p6xx26xlkc9db8marob2ml6h.webp"
   },
   {
     "sku": "AS-SAM",
@@ -271,7 +343,7 @@
     "strength": "2mg/600mcg/10mg/mL",
     "size": "5 mL",
     "total": "10mg/3mg/50mg",
-    "price": 145.0,
+    "price": 145,
     "description": "GLP-1 weight-loss agonist Semaglutide combined with lipolytic AOD-9604 and metabolic MOTS-c for enhanced fat loss."
   },
   {
@@ -282,8 +354,11 @@
     "strength": "1.2mg/mL",
     "size": "5 mL",
     "total": "6mg",
-    "price": 70.0,
-    "description": "C-terminal HGH fragment stimulating lipolysis without affecting IGF-1 or blood sugar."
+    "price": 70,
+    "description": "C-terminal HGH fragment stimulating lipolysis without affecting IGF-1 or blood sugar.",
+    "imageId": "hxwsliyqhj3tfwjkge6u23mr",
+    "image": "/images/formulary/rxhere/hxwsliyqhj3tfwjkge6u23mr.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/hxwsliyqhj3tfwjkge6u23mr.webp"
   },
   {
     "sku": "FL-AOD-02",
@@ -293,8 +368,11 @@
     "strength": "2.4mg/mL",
     "size": "5 mL",
     "total": "12mg",
-    "price": 90.0,
-    "description": "C-terminal HGH fragment stimulating lipolysis without affecting IGF-1 or blood sugar."
+    "price": 90,
+    "description": "C-terminal HGH fragment stimulating lipolysis without affecting IGF-1 or blood sugar.",
+    "imageId": "xo3zvlq6xuaw38hjhom32g5q",
+    "image": "/images/formulary/rxhere/xo3zvlq6xuaw38hjhom32g5q.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/xo3zvlq6xuaw38hjhom32g5q.webp"
   },
   {
     "sku": "FL-AOD-03",
@@ -304,8 +382,11 @@
     "strength": "300mcg",
     "size": "each",
     "total": "300mcg",
-    "price": 2.0,
-    "description": "C-terminal HGH fragment stimulating lipolysis without affecting IGF-1 or blood sugar."
+    "price": 2,
+    "description": "C-terminal HGH fragment stimulating lipolysis without affecting IGF-1 or blood sugar.",
+    "imageId": "vmp3u2h7w12w7jfselecwb1k",
+    "image": "/images/formulary/rxhere/vmp3u2h7w12w7jfselecwb1k.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/vmp3u2h7w12w7jfselecwb1k.webp"
   },
   {
     "sku": "FL-AOD-M",
@@ -315,8 +396,11 @@
     "strength": "1.2mg/2mg/mL",
     "size": "5 mL",
     "total": "6mg/10mg",
-    "price": 90.0,
-    "description": "Lipolytic + mitochondrial activation stack for metabolic fat loss."
+    "price": 90,
+    "description": "Lipolytic + mitochondrial activation stack for metabolic fat loss.",
+    "imageId": "y125apck87jq0bceyin39t5h",
+    "image": "/images/formulary/rxhere/y125apck87jq0bceyin39t5h.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/y125apck87jq0bceyin39t5h.webp"
   },
   {
     "sku": "FL-AOD-M-02",
@@ -326,8 +410,11 @@
     "strength": "2.4mg/4mg/mL",
     "size": "5 mL",
     "total": "12mg/20mg",
-    "price": 125.0,
-    "description": "Lipolytic + mitochondrial activation stack for metabolic fat loss."
+    "price": 125,
+    "description": "Lipolytic + mitochondrial activation stack for metabolic fat loss.",
+    "imageId": "z2ae0rs0ercxt8qpm214fh7d",
+    "image": "/images/formulary/rxhere/z2ae0rs0ercxt8qpm214fh7d.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/z2ae0rs0ercxt8qpm214fh7d.webp"
   },
   {
     "sku": "FL-AMT",
@@ -337,8 +424,11 @@
     "strength": "1.2mg/2mg/3mg/mL",
     "size": "5 mL",
     "total": "6mg/10mg/15mg",
-    "price": 110.0,
-    "description": "Triple stack targeting visceral fat, mitochondria, and GH pulsatility."
+    "price": 110,
+    "description": "Triple stack targeting visceral fat, mitochondria, and GH pulsatility.",
+    "imageId": "y125apck87jq0bceyin39t5h",
+    "image": "/images/formulary/rxhere/y125apck87jq0bceyin39t5h.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/y125apck87jq0bceyin39t5h.webp"
   },
   {
     "sku": "FL-AMT-02",
@@ -348,8 +438,11 @@
     "strength": "2.4mg/4mg/6mg/mL",
     "size": "5 mL",
     "total": "12mg/20mg/30mg",
-    "price": 155.0,
-    "description": "Triple stack targeting visceral fat, mitochondria, and GH pulsatility."
+    "price": 155,
+    "description": "Triple stack targeting visceral fat, mitochondria, and GH pulsatility.",
+    "imageId": "z2ae0rs0ercxt8qpm214fh7d",
+    "image": "/images/formulary/rxhere/z2ae0rs0ercxt8qpm214fh7d.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/z2ae0rs0ercxt8qpm214fh7d.webp"
   },
   {
     "sku": "FL-CAG",
@@ -359,8 +452,11 @@
     "strength": "4mg/mL",
     "size": "5 mL",
     "total": "20mg",
-    "price": 75.0,
-    "description": "Long-acting amylin analogue that suppresses appetite and slows gastric emptying."
+    "price": 75,
+    "description": "Long-acting amylin analogue that suppresses appetite and slows gastric emptying.",
+    "imageId": "dxulw0x4ve2avmfilf2cnpiu",
+    "image": "/images/formulary/rxhere/dxulw0x4ve2avmfilf2cnpiu.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/dxulw0x4ve2avmfilf2cnpiu.webp"
   },
   {
     "sku": "FL-MOT",
@@ -370,8 +466,11 @@
     "strength": "10mg/mL",
     "size": "5 mL",
     "total": "50mg",
-    "price": 125.0,
-    "description": "Mitochondria-derived peptide improving insulin sensitivity and energy expenditure."
+    "price": 125,
+    "description": "Mitochondria-derived peptide improving insulin sensitivity and energy expenditure.",
+    "imageId": "v09638abj3w4ezfui6lhcwez",
+    "image": "/images/formulary/rxhere/v09638abj3w4ezfui6lhcwez.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/v09638abj3w4ezfui6lhcwez.webp"
   },
   {
     "sku": "FL-MOT-02",
@@ -381,8 +480,11 @@
     "strength": "2mg/mL",
     "size": "5 mL",
     "total": "10mg",
-    "price": 70.0,
-    "description": "Mitochondria-derived peptide improving insulin sensitivity and energy expenditure."
+    "price": 70,
+    "description": "Mitochondria-derived peptide improving insulin sensitivity and energy expenditure.",
+    "imageId": "y125apck87jq0bceyin39t5h",
+    "image": "/images/formulary/rxhere/y125apck87jq0bceyin39t5h.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/y125apck87jq0bceyin39t5h.webp"
   },
   {
     "sku": "FL-5AM",
@@ -393,7 +495,10 @@
     "size": "each",
     "total": "50mg",
     "price": 1.5,
-    "description": "NNMT inhibitor activating fat-burning pathways at the cellular level."
+    "description": "NNMT inhibitor activating fat-burning pathways at the cellular level.",
+    "imageId": "bdv8csw79j9hzvtlywo77s72",
+    "image": "/images/formulary/rxhere/bdv8csw79j9hzvtlywo77s72.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/bdv8csw79j9hzvtlywo77s72.webp"
   },
   {
     "sku": "FL-S32",
@@ -403,8 +508,11 @@
     "strength": "5mg/mL",
     "size": "5 mL",
     "total": "25mg",
-    "price": 90.0,
-    "description": "ERR agonist mimicking exercise-induced metabolic changes; boosts fat oxidation."
+    "price": 90,
+    "description": "ERR agonist mimicking exercise-induced metabolic changes; boosts fat oxidation.",
+    "imageId": "qz1gkb607jyifiqn8nms8lh7",
+    "image": "/images/formulary/rxhere/qz1gkb607jyifiqn8nms8lh7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/qz1gkb607jyifiqn8nms8lh7.webp"
   },
   {
     "sku": "FL-S33",
@@ -415,7 +523,10 @@
     "size": "each",
     "total": "200mcg",
     "price": 1.5,
-    "description": "Oral ERR\u03b1/\u03b4 agonist promoting mitochondrial biogenesis and metabolic rate."
+    "description": "Oral ERRα/δ agonist promoting mitochondrial biogenesis and metabolic rate.",
+    "imageId": "syz9xuutagq1tp81i240e9jp",
+    "image": "/images/formulary/rxhere/syz9xuutagq1tp81i240e9jp.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/syz9xuutagq1tp81i240e9jp.webp"
   },
   {
     "sku": "FL-S33-02",
@@ -426,7 +537,10 @@
     "size": "each",
     "total": "1000mcg",
     "price": 1.5,
-    "description": "Oral ERR\u03b1/\u03b4 agonist promoting mitochondrial biogenesis and metabolic rate."
+    "description": "Oral ERRα/δ agonist promoting mitochondrial biogenesis and metabolic rate.",
+    "imageId": "e6fymivaxz0o50gebs63cj3a",
+    "image": "/images/formulary/rxhere/e6fymivaxz0o50gebs63cj3a.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/e6fymivaxz0o50gebs63cj3a.webp"
   },
   {
     "sku": "FL-BAM",
@@ -437,7 +551,10 @@
     "size": "each",
     "total": "15mg",
     "price": 2.5,
-    "description": "Mitochondrial uncoupler converting calories to heat without disrupting membrane potential."
+    "description": "Mitochondrial uncoupler converting calories to heat without disrupting membrane potential.",
+    "imageId": "irork615dema3yx4qq8inavu",
+    "image": "/images/formulary/rxhere/irork615dema3yx4qq8inavu.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/irork615dema3yx4qq8inavu.webp"
   },
   {
     "sku": "FL-LPB",
@@ -447,8 +564,11 @@
     "strength": "25mg/50mg/50mg/1mg/mL",
     "size": "10 mL",
     "total": "250mg/500mg/500mg/10mg",
-    "price": 30.0,
-    "description": "MIC-B12 injection (methionine, inositol, choline, B12) for lipotropic fat metabolism."
+    "price": 30,
+    "description": "MIC-B12 injection (methionine, inositol, choline, B12) for lipotropic fat metabolism.",
+    "imageId": "eho4alz8cpapdjbtia7mqou4",
+    "image": "/images/formulary/rxhere/eho4alz8cpapdjbtia7mqou4.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/eho4alz8cpapdjbtia7mqou4.webp"
   },
   {
     "sku": "FL-LPC",
@@ -458,8 +578,11 @@
     "strength": "10mg/mL",
     "size": "30 mL",
     "total": "300mg",
-    "price": 30.0,
-    "description": "Lipotropic complex supporting liver fat metabolism and body composition."
+    "price": 30,
+    "description": "Lipotropic complex supporting liver fat metabolism and body composition.",
+    "imageId": "tzrsg488lqqhq3oubo4l14ps",
+    "image": "/images/formulary/rxhere/tzrsg488lqqhq3oubo4l14ps.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/tzrsg488lqqhq3oubo4l14ps.webp"
   },
   {
     "sku": "AA-CER",
@@ -469,8 +592,11 @@
     "strength": "200mg/mL",
     "size": "5 mL",
     "total": "1000mg",
-    "price": 85.0,
-    "description": "Neuropeptide mixture supporting neuronal repair and cognitive function."
+    "price": 85,
+    "description": "Neuropeptide mixture supporting neuronal repair and cognitive function.",
+    "imageId": "gr5gopsus88y5175vl6zlv6i",
+    "image": "/images/formulary/rxhere/gr5gopsus88y5175vl6zlv6i.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/gr5gopsus88y5175vl6zlv6i.webp"
   },
   {
     "sku": "AA-FOX",
@@ -480,8 +606,11 @@
     "strength": "2mg/mL",
     "size": "5 mL",
     "total": "10mg",
-    "price": 70.0,
-    "description": "Peptide selectively inducing apoptosis in senescent cells to rejuvenate tissue."
+    "price": 70,
+    "description": "Peptide selectively inducing apoptosis in senescent cells to rejuvenate tissue.",
+    "imageId": "acbv2ew3ggkxnw6z501bp5bz",
+    "image": "/images/formulary/rxhere/acbv2ew3ggkxnw6z501bp5bz.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/acbv2ew3ggkxnw6z501bp5bz.webp"
   },
   {
     "sku": "AA-GSH",
@@ -491,8 +620,11 @@
     "strength": "200mg/mL",
     "size": "10 mL",
     "total": "2000mg",
-    "price": 25.0,
-    "description": "Master antioxidant detoxifying cells and supporting immune function."
+    "price": 25,
+    "description": "Master antioxidant detoxifying cells and supporting immune function.",
+    "imageId": "yvpccoj9cfu6nqb3fvzl1nxl",
+    "image": "/images/formulary/rxhere/yvpccoj9cfu6nqb3fvzl1nxl.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/yvpccoj9cfu6nqb3fvzl1nxl.webp"
   },
   {
     "sku": "AA-GSH-02",
@@ -502,8 +634,11 @@
     "strength": "600mg/mL",
     "size": "10 mL",
     "total": "6000mg",
-    "price": 40.0,
-    "description": "Master antioxidant detoxifying cells and supporting immune function."
+    "price": 40,
+    "description": "Master antioxidant detoxifying cells and supporting immune function.",
+    "imageId": "tjgpm28ipobx5f664v8149z7",
+    "image": "/images/formulary/rxhere/tjgpm28ipobx5f664v8149z7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/tjgpm28ipobx5f664v8149z7.webp"
   },
   {
     "sku": "AA-MEL",
@@ -513,8 +648,11 @@
     "strength": "10mg/mL",
     "size": "5 mL",
     "total": "50mg",
-    "price": 70.0,
-    "description": "Injectable melatonin for circadian regulation and antioxidant protection."
+    "price": 70,
+    "description": "Injectable melatonin for circadian regulation and antioxidant protection.",
+    "imageId": "ebji9tvnj7m7s8s3vib5dyb4",
+    "image": "/images/formulary/rxhere/ebji9tvnj7m7s8s3vib5dyb4.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ebji9tvnj7m7s8s3vib5dyb4.webp"
   },
   {
     "sku": "AA-NAD",
@@ -524,8 +662,11 @@
     "strength": "100mg/mL",
     "size": "10 mL",
     "total": "1000mg",
-    "price": 50.0,
-    "description": "Coenzyme supporting mitochondrial energy, DNA repair, and cellular aging pathways."
+    "price": 50,
+    "description": "Coenzyme supporting mitochondrial energy, DNA repair, and cellular aging pathways.",
+    "imageId": "u9adn1zr0fg8ffc3p0hav1o4",
+    "image": "/images/formulary/rxhere/u9adn1zr0fg8ffc3p0hav1o4.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/u9adn1zr0fg8ffc3p0hav1o4.webp"
   },
   {
     "sku": "AA-NAD-02",
@@ -535,8 +676,11 @@
     "strength": "200mg/mL",
     "size": "5mL",
     "total": "1000mg",
-    "price": 50.0,
-    "description": "Coenzyme supporting mitochondrial energy, DNA repair, and cellular aging pathways."
+    "price": 50,
+    "description": "Coenzyme supporting mitochondrial energy, DNA repair, and cellular aging pathways.",
+    "imageId": "waa7dmj3rpbi1j4s6utuoa0a",
+    "image": "/images/formulary/rxhere/waa7dmj3rpbi1j4s6utuoa0a.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/waa7dmj3rpbi1j4s6utuoa0a.webp"
   },
   {
     "sku": "AA-ODN",
@@ -546,8 +690,11 @@
     "strength": "4mg",
     "size": "30 ct",
     "total": "120mg",
-    "price": 10.0,
-    "description": "5-HT3 antiemetic to manage nausea, especially during GLP-1 therapy."
+    "price": 10,
+    "description": "5-HT3 antiemetic to manage nausea, especially during GLP-1 therapy.",
+    "imageId": "z9lluw3u8cxzztn6o1c5oz81",
+    "image": "/images/formulary/rxhere/z9lluw3u8cxzztn6o1c5oz81.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/z9lluw3u8cxzztn6o1c5oz81.webp"
   },
   {
     "sku": "AA-MK6",
@@ -558,7 +705,10 @@
     "size": "each",
     "total": "12.5mg",
     "price": 2.35,
-    "description": "Oral GH secretagogue raising IGF-1 for muscle, sleep, and recovery support."
+    "description": "Oral GH secretagogue raising IGF-1 for muscle, sleep, and recovery support.",
+    "imageId": "fhukmx2wfnq0clcrkzseycqw",
+    "image": "/images/formulary/rxhere/fhukmx2wfnq0clcrkzseycqw.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/fhukmx2wfnq0clcrkzseycqw.webp"
   },
   {
     "sku": "AA-MK6-02",
@@ -569,7 +719,10 @@
     "size": "each",
     "total": "25mg",
     "price": 2.75,
-    "description": "Oral GH secretagogue raising IGF-1 for muscle, sleep, and recovery support."
+    "description": "Oral GH secretagogue raising IGF-1 for muscle, sleep, and recovery support.",
+    "imageId": "x3qr2p1swhjbbbhz4vm5esd5",
+    "image": "/images/formulary/rxhere/x3qr2p1swhjbbbhz4vm5esd5.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/x3qr2p1swhjbbbhz4vm5esd5.webp"
   },
   {
     "sku": "AA-DHX",
@@ -579,8 +732,11 @@
     "strength": "10mg",
     "size": "each",
     "total": "10mg",
-    "price": 2.0,
-    "description": "Potent nootropic promoting synaptogenesis via the HGF/MET pathway."
+    "price": 2,
+    "description": "Potent nootropic promoting synaptogenesis via the HGF/MET pathway.",
+    "imageId": "zezd8b1k76h32ugk332aawxc",
+    "image": "/images/formulary/rxhere/zezd8b1k76h32ugk332aawxc.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/zezd8b1k76h32ugk332aawxc.webp"
   },
   {
     "sku": "AA-DHX-02",
@@ -591,7 +747,10 @@
     "size": "each",
     "total": "20mg",
     "price": 2.75,
-    "description": "Potent nootropic promoting synaptogenesis via the HGF/MET pathway."
+    "description": "Potent nootropic promoting synaptogenesis via the HGF/MET pathway.",
+    "imageId": "xmwv8ktrhwmh9987jn1ljv0t",
+    "image": "/images/formulary/rxhere/xmwv8ktrhwmh9987jn1ljv0t.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/xmwv8ktrhwmh9987jn1ljv0t.webp"
   },
   {
     "sku": "AA-MB",
@@ -602,7 +761,10 @@
     "size": "each",
     "total": "10mg",
     "price": 1.5,
-    "description": "Mitochondrial electron carrier (wellness dose) for brain energy and anti-aging."
+    "description": "Mitochondrial electron carrier (wellness dose) for brain energy and anti-aging.",
+    "imageId": "eev3oim18f39q4ymabik10cc",
+    "image": "/images/formulary/rxhere/eev3oim18f39q4ymabik10cc.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/eev3oim18f39q4ymabik10cc.webp"
   },
   {
     "sku": "AA-SYN",
@@ -612,8 +774,11 @@
     "strength": "RG3 2mg/B12 2mg/NR 50mg/mL",
     "size": "10mL",
     "total": "20mg/20mg/500mg",
-    "price": 90.0,
-    "description": "Nasal Rg3 + B12 + NR blend for cognitive clarity and neurological support."
+    "price": 90,
+    "description": "Nasal Rg3 + B12 + NR blend for cognitive clarity and neurological support.",
+    "imageId": "s17xykbt6ka1pakn8coffjr9",
+    "image": "/images/formulary/rxhere/s17xykbt6ka1pakn8coffjr9.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/s17xykbt6ka1pakn8coffjr9.webp"
   },
   {
     "sku": "AA-NADN",
@@ -623,8 +788,11 @@
     "strength": "300mg/mL",
     "size": "10mL",
     "total": "3000mg",
-    "price": 70.0,
-    "description": "Intranasal NAD+ for rapid absorption supporting brain energy and anti-aging."
+    "price": 70,
+    "description": "Intranasal NAD+ for rapid absorption supporting brain energy and anti-aging.",
+    "imageId": "bra706n4l09b0ssvov2pd7do",
+    "image": "/images/formulary/rxhere/bra706n4l09b0ssvov2pd7do.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/bra706n4l09b0ssvov2pd7do.webp"
   },
   {
     "sku": "TR-ARA",
@@ -634,8 +802,11 @@
     "strength": "20mg/mL",
     "size": "5 mL",
     "total": "100mg",
-    "price": 70.0,
-    "description": "Innate repair receptor agonist with anti-inflammatory and neuroprotective properties."
+    "price": 70,
+    "description": "Innate repair receptor agonist with anti-inflammatory and neuroprotective properties.",
+    "imageId": "n3cf5tlnti4iw2sahgj29eas",
+    "image": "/images/formulary/rxhere/n3cf5tlnti4iw2sahgj29eas.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/n3cf5tlnti4iw2sahgj29eas.webp"
   },
   {
     "sku": "TR-BPC",
@@ -645,8 +816,11 @@
     "strength": "3mg/mL",
     "size": "5 mL",
     "total": "15mg",
-    "price": 85.0,
-    "description": "Synthetic gastric pentadecapeptide accelerating tendon, ligament, gut, and muscle healing."
+    "price": 85,
+    "description": "Synthetic gastric pentadecapeptide accelerating tendon, ligament, gut, and muscle healing.",
+    "imageId": "gybf2zx4xnjd8thy56bsfz69",
+    "image": "/images/formulary/rxhere/gybf2zx4xnjd8thy56bsfz69.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/gybf2zx4xnjd8thy56bsfz69.webp"
   },
   {
     "sku": "TR-BPC-02",
@@ -656,8 +830,11 @@
     "strength": "4mg/mL",
     "size": "5 mL",
     "total": "20mg",
-    "price": 95.0,
-    "description": "Synthetic gastric pentadecapeptide accelerating tendon, ligament, gut, and muscle healing."
+    "price": 95,
+    "description": "Synthetic gastric pentadecapeptide accelerating tendon, ligament, gut, and muscle healing.",
+    "imageId": "kc4x239fr8c5kkaiqjj39fgs",
+    "image": "/images/formulary/rxhere/kc4x239fr8c5kkaiqjj39fgs.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/kc4x239fr8c5kkaiqjj39fgs.webp"
   },
   {
     "sku": "TR-BT5",
@@ -667,8 +844,11 @@
     "strength": "3mg/3mg/mL",
     "size": "5 mL",
     "total": "15mg/15mg",
-    "price": 90.0,
-    "description": "Wolverine Stack \u2014 gut-healing BPC-157 combined with systemic repair peptide TB-500."
+    "price": 90,
+    "description": "Wolverine Stack — gut-healing BPC-157 combined with systemic repair peptide TB-500.",
+    "imageId": "d8grhqth4kqe4nkwaz5aj7j7",
+    "image": "/images/formulary/rxhere/d8grhqth4kqe4nkwaz5aj7j7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/d8grhqth4kqe4nkwaz5aj7j7.webp"
   },
   {
     "sku": "TR-BTK",
@@ -678,8 +858,11 @@
     "strength": "3mg/3mg/3mg/mL",
     "size": "5 mL",
     "total": "15mg/15mg/15mg",
-    "price": 90.0,
-    "description": "Triple stack adding anti-inflammatory KPV for gut and systemic healing."
+    "price": 90,
+    "description": "Triple stack adding anti-inflammatory KPV for gut and systemic healing.",
+    "imageId": "d8grhqth4kqe4nkwaz5aj7j7",
+    "image": "/images/formulary/rxhere/d8grhqth4kqe4nkwaz5aj7j7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/d8grhqth4kqe4nkwaz5aj7j7.webp"
   },
   {
     "sku": "TR-BTKG",
@@ -689,8 +872,11 @@
     "strength": "3mg/3mg/3mg/10mg/mL",
     "size": "5 mL",
     "total": "15mg/15mg/15mg/50mg",
-    "price": 90.0,
-    "description": "Advanced Wolverine Stack with copper peptide for added regenerative benefits."
+    "price": 90,
+    "description": "Advanced Wolverine Stack with copper peptide for added regenerative benefits.",
+    "imageId": "d8grhqth4kqe4nkwaz5aj7j7",
+    "image": "/images/formulary/rxhere/d8grhqth4kqe4nkwaz5aj7j7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/d8grhqth4kqe4nkwaz5aj7j7.webp"
   },
   {
     "sku": "TR-TB5",
@@ -700,8 +886,11 @@
     "strength": "4mg/mL",
     "size": "5 mL",
     "total": "20mg",
-    "price": 90.0,
-    "description": "Actin-binding peptide promoting cell migration, tissue regeneration, and anti-inflammation."
+    "price": 90,
+    "description": "Actin-binding peptide promoting cell migration, tissue regeneration, and anti-inflammation.",
+    "imageId": "vqm5jzx2ufje9jbnbo672zpb",
+    "image": "/images/formulary/rxhere/vqm5jzx2ufje9jbnbo672zpb.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/vqm5jzx2ufje9jbnbo672zpb.webp"
   },
   {
     "sku": "TR-TB5-02",
@@ -711,8 +900,11 @@
     "strength": "3mg/mL",
     "size": "5 mL",
     "total": "15mg",
-    "price": 70.0,
-    "description": "Actin-binding peptide promoting cell migration, tissue regeneration, and anti-inflammation."
+    "price": 70,
+    "description": "Actin-binding peptide promoting cell migration, tissue regeneration, and anti-inflammation.",
+    "imageId": "d8grhqth4kqe4nkwaz5aj7j7",
+    "image": "/images/formulary/rxhere/d8grhqth4kqe4nkwaz5aj7j7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/d8grhqth4kqe4nkwaz5aj7j7.webp"
   },
   {
     "sku": "TR-BPC-03",
@@ -723,7 +915,10 @@
     "size": "each",
     "total": "500mcg",
     "price": 1.5,
-    "description": "Synthetic gastric pentadecapeptide accelerating tendon, ligament, gut, and muscle healing."
+    "description": "Synthetic gastric pentadecapeptide accelerating tendon, ligament, gut, and muscle healing.",
+    "imageId": "wup158kgyraqp2gvqp3shxo8",
+    "image": "/images/formulary/rxhere/wup158kgyraqp2gvqp3shxo8.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/wup158kgyraqp2gvqp3shxo8.webp"
   },
   {
     "sku": "TR-BKP",
@@ -734,7 +929,10 @@
     "size": "each",
     "total": "500/500mcg/400/400mg",
     "price": 2.5,
-    "description": "Oral gut-healing capsule combining BPC-157, KPV, PEA, and butyrate."
+    "description": "Oral gut-healing capsule combining BPC-157, KPV, PEA, and butyrate.",
+    "imageId": "d0h4cd5f0xlz2yz31sdidvqf",
+    "image": "/images/formulary/rxhere/d0h4cd5f0xlz2yz31sdidvqf.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/d0h4cd5f0xlz2yz31sdidvqf.webp"
   },
   {
     "sku": "TR-BKV",
@@ -745,7 +943,10 @@
     "size": "each",
     "total": "500mcg/500mcg",
     "price": 2.25,
-    "description": "Oral peptide duo targeting gut-lining inflammation and intestinal permeability."
+    "description": "Oral peptide duo targeting gut-lining inflammation and intestinal permeability.",
+    "imageId": "d0h4cd5f0xlz2yz31sdidvqf",
+    "image": "/images/formulary/rxhere/d0h4cd5f0xlz2yz31sdidvqf.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/d0h4cd5f0xlz2yz31sdidvqf.webp"
   },
   {
     "sku": "TR-BPCN",
@@ -755,8 +956,11 @@
     "strength": "10mg/mL",
     "size": "10mL",
     "total": "100mg",
-    "price": 85.0,
-    "description": "Intranasal BPC-157 for systemic healing without injection."
+    "price": 85,
+    "description": "Intranasal BPC-157 for systemic healing without injection.",
+    "imageId": "uyuvbo1nk16sey7bwnm933ny",
+    "image": "/images/formulary/rxhere/uyuvbo1nk16sey7bwnm933ny.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/uyuvbo1nk16sey7bwnm933ny.webp"
   },
   {
     "sku": "TR-BTN",
@@ -766,8 +970,11 @@
     "strength": "10mg/10mg/mL",
     "size": "10mL",
     "total": "100mg/100mg",
-    "price": 95.0,
-    "description": "Nasal Wolverine Stack for non-injectable recovery support."
+    "price": 95,
+    "description": "Nasal Wolverine Stack for non-injectable recovery support.",
+    "imageId": "z1ezypphxruhl0j8bg5dsfds",
+    "image": "/images/formulary/rxhere/z1ezypphxruhl0j8bg5dsfds.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/z1ezypphxruhl0j8bg5dsfds.webp"
   },
   {
     "sku": "TR-BHS",
@@ -777,7 +984,7 @@
     "strength": "1000mcg/4mg/4mg/mL",
     "size": "5 mL",
     "total": "5mg/20mg/20mg",
-    "price": 90.0,
+    "price": 90,
     "description": "Regenerative stack combining tissue-healing BPC-157 with mitochondrial-protective Humanin and SS-31 (elamipretide analogue)."
   },
   {
@@ -788,8 +995,11 @@
     "strength": "3mg/mL",
     "size": "5 mL",
     "total": "15mg",
-    "price": 75.0,
-    "description": "Tetrapeptide bioregulator supporting cardiovascular tissue repair."
+    "price": 75,
+    "description": "Tetrapeptide bioregulator supporting cardiovascular tissue repair.",
+    "imageId": "db62u6i9pi3h4lcxczfnxomc",
+    "image": "/images/formulary/rxhere/db62u6i9pi3h4lcxczfnxomc.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/db62u6i9pi3h4lcxczfnxomc.webp"
   },
   {
     "sku": "LG-CTX",
@@ -799,8 +1009,11 @@
     "strength": "3mg/mL",
     "size": "5 mL",
     "total": "15mg",
-    "price": 50.0,
-    "description": "Peptide bioregulator promoting cartilage and connective tissue regeneration."
+    "price": 50,
+    "description": "Peptide bioregulator promoting cartilage and connective tissue regeneration.",
+    "imageId": "gkq4nu3aw09u5e05u5rd72cd",
+    "image": "/images/formulary/rxhere/gkq4nu3aw09u5e05u5rd72cd.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/gkq4nu3aw09u5e05u5rd72cd.webp"
   },
   {
     "sku": "LG-EPT",
@@ -810,8 +1023,11 @@
     "strength": "2mg/mL",
     "size": "5 mL",
     "total": "10mg",
-    "price": 75.0,
-    "description": "Tetrapeptide activating telomerase and supporting longevity pathways."
+    "price": 75,
+    "description": "Tetrapeptide activating telomerase and supporting longevity pathways.",
+    "imageId": "knsjipb6dxzcbhpozm4vww3s",
+    "image": "/images/formulary/rxhere/knsjipb6dxzcbhpozm4vww3s.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/knsjipb6dxzcbhpozm4vww3s.webp"
   },
   {
     "sku": "LG-SS3",
@@ -821,8 +1037,11 @@
     "strength": "60mg/mL",
     "size": "5 mL",
     "total": "300mg",
-    "price": 90.0,
-    "description": "Mitochondria-targeted antioxidant restoring energy production and reducing oxidative damage."
+    "price": 90,
+    "description": "Mitochondria-targeted antioxidant restoring energy production and reducing oxidative damage.",
+    "imageId": "htrnwwqb888rfebontru25fo",
+    "image": "/images/formulary/rxhere/htrnwwqb888rfebontru25fo.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/htrnwwqb888rfebontru25fo.webp"
   },
   {
     "sku": "LG-EPN",
@@ -832,8 +1051,11 @@
     "strength": "3mg",
     "size": "each",
     "total": "3mg",
-    "price": 2.0,
-    "description": "Telomerase-activating tetrapeptide with anti-aging and circadian properties."
+    "price": 2,
+    "description": "Telomerase-activating tetrapeptide with anti-aging and circadian properties.",
+    "imageId": "m9xd6myi8g0fxibrfk1m74at",
+    "image": "/images/formulary/rxhere/m9xd6myi8g0fxibrfk1m74at.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/m9xd6myi8g0fxibrfk1m74at.webp"
   },
   {
     "sku": "LG-ETG",
@@ -843,7 +1065,7 @@
     "strength": "20mg/10mg/4mg/mL",
     "size": "5 mL",
     "total": "100mg/50mg/20mg",
-    "price": 145.0,
+    "price": 145,
     "description": "Longevity bioregulator stack pairing telomerase-activating Epitalon with thymic immune peptide Thymalin and copper regeneration peptide GHK-Cu."
   },
   {
@@ -854,8 +1076,11 @@
     "strength": "1mg/mL",
     "size": "5 mL",
     "total": "5mg",
-    "price": 95.0,
-    "description": "Delta sleep-inducing peptide promoting deep sleep and regulating circadian stress response."
+    "price": 95,
+    "description": "Delta sleep-inducing peptide promoting deep sleep and regulating circadian stress response.",
+    "imageId": "qqv43gzyd48hlf83ptj8k20l",
+    "image": "/images/formulary/rxhere/qqv43gzyd48hlf83ptj8k20l.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/qqv43gzyd48hlf83ptj8k20l.webp"
   },
   {
     "sku": "SL-DBC",
@@ -865,8 +1090,11 @@
     "strength": "1mg/2mg/2mg/mL",
     "size": "5 mL",
     "total": "5mg/10mg/10mg",
-    "price": 125.0,
-    "description": "Night Repair Stack \u2014 sleep induction, tissue healing, and GH release overnight."
+    "price": 125,
+    "description": "Night Repair Stack — sleep induction, tissue healing, and GH release overnight.",
+    "imageId": "qe294tprj9a04z388g0466t1",
+    "image": "/images/formulary/rxhere/qe294tprj9a04z388g0466t1.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/qe294tprj9a04z388g0466t1.webp"
   },
   {
     "sku": "GH-CJC",
@@ -876,8 +1104,11 @@
     "strength": "1.2mg/2mg/mL",
     "size": "5 mL",
     "total": "6mg/10mg",
-    "price": 120.0,
-    "description": "Gold-standard GH stack: GHRH analogue + GH secretagogue for pulsatile GH release."
+    "price": 120,
+    "description": "Gold-standard GH stack: GHRH analogue + GH secretagogue for pulsatile GH release.",
+    "imageId": "t1cpl6653zq6k0xqsf1ptx1l",
+    "image": "/images/formulary/rxhere/t1cpl6653zq6k0xqsf1ptx1l.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/t1cpl6653zq6k0xqsf1ptx1l.webp"
   },
   {
     "sku": "GH-CJC-02",
@@ -887,8 +1118,11 @@
     "strength": "2mg/3mg/mL",
     "size": "5 mL",
     "total": "10mg/15mg",
-    "price": 135.0,
-    "description": "Gold-standard GH stack: GHRH analogue + GH secretagogue for pulsatile GH release."
+    "price": 135,
+    "description": "Gold-standard GH stack: GHRH analogue + GH secretagogue for pulsatile GH release.",
+    "imageId": "t1cpl6653zq6k0xqsf1ptx1l",
+    "image": "/images/formulary/rxhere/t1cpl6653zq6k0xqsf1ptx1l.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/t1cpl6653zq6k0xqsf1ptx1l.webp"
   },
   {
     "sku": "GH-G2",
@@ -898,8 +1132,11 @@
     "strength": "10mg/mL",
     "size": "5 mL",
     "total": "50mg",
-    "price": 95.0,
-    "description": "GH releasing peptide stimulating GH secretion and promoting muscle anabolism."
+    "price": 95,
+    "description": "GH releasing peptide stimulating GH secretion and promoting muscle anabolism.",
+    "imageId": "mfbw9vybmar37yij79s2qj1n",
+    "image": "/images/formulary/rxhere/mfbw9vybmar37yij79s2qj1n.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/mfbw9vybmar37yij79s2qj1n.webp"
   },
   {
     "sku": "GH-G6",
@@ -909,8 +1146,11 @@
     "strength": "10mg/mL",
     "size": "5 mL",
     "total": "50mg",
-    "price": 95.0,
-    "description": "Potent GH secretagogue that also increases appetite and supports recovery."
+    "price": 95,
+    "description": "Potent GH secretagogue that also increases appetite and supports recovery.",
+    "imageId": "p4jq6drt6xjku1yqpf748hop",
+    "image": "/images/formulary/rxhere/p4jq6drt6xjku1yqpf748hop.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/p4jq6drt6xjku1yqpf748hop.webp"
   },
   {
     "sku": "GH-IGF",
@@ -920,8 +1160,11 @@
     "strength": "200mcg/mL",
     "size": "5 mL",
     "total": "1mg",
-    "price": 110.0,
-    "description": "Long-acting IGF-1 analogue for muscle hypertrophy, fat loss, and cellular repair."
+    "price": 110,
+    "description": "Long-acting IGF-1 analogue for muscle hypertrophy, fat loss, and cellular repair.",
+    "imageId": "xy6gjkbpoea1n1t9dm093qhi",
+    "image": "/images/formulary/rxhere/xy6gjkbpoea1n1t9dm093qhi.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/xy6gjkbpoea1n1t9dm093qhi.webp"
   },
   {
     "sku": "GH-SER",
@@ -931,8 +1174,11 @@
     "strength": "3mg/mL",
     "size": "5 mL",
     "total": "15mg",
-    "price": 95.0,
-    "description": "GHRH analogue stimulating natural pulsatile GH release for anti-aging support."
+    "price": 95,
+    "description": "GHRH analogue stimulating natural pulsatile GH release for anti-aging support.",
+    "imageId": "ms1vh9wqply9idqhdrhjw5xe",
+    "image": "/images/formulary/rxhere/ms1vh9wqply9idqhdrhjw5xe.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ms1vh9wqply9idqhdrhjw5xe.webp"
   },
   {
     "sku": "GH-TSM",
@@ -942,8 +1188,11 @@
     "strength": "2mg/mL",
     "size": "5 mL",
     "total": "10mg",
-    "price": 65.0,
-    "description": "GHRH analogue reducing visceral adiposity and supporting metabolic health."
+    "price": 65,
+    "description": "GHRH analogue reducing visceral adiposity and supporting metabolic health.",
+    "imageId": "icx4hzchzh6gdk9sjrdzryv6",
+    "image": "/images/formulary/rxhere/icx4hzchzh6gdk9sjrdzryv6.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/icx4hzchzh6gdk9sjrdzryv6.webp"
   },
   {
     "sku": "GH-TSM-02",
@@ -953,8 +1202,11 @@
     "strength": "5mg/mL",
     "size": "5 mL",
     "total": "25mg",
-    "price": 105.0,
-    "description": "GHRH analogue reducing visceral adiposity and supporting metabolic health."
+    "price": 105,
+    "description": "GHRH analogue reducing visceral adiposity and supporting metabolic health.",
+    "imageId": "red1itvjq1k6b6rv1qi2oia0",
+    "image": "/images/formulary/rxhere/red1itvjq1k6b6rv1qi2oia0.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/red1itvjq1k6b6rv1qi2oia0.webp"
   },
   {
     "sku": "GH-TIP",
@@ -964,8 +1216,11 @@
     "strength": "5mg/1.5mg/mL",
     "size": "5 mL",
     "total": "25mg/7.5mg",
-    "price": 125.0,
-    "description": "Dual-peptide GH stack for synergistic hormone optimization."
+    "price": 125,
+    "description": "Dual-peptide GH stack for synergistic hormone optimization.",
+    "imageId": "o7pbq99qjggosxspnh0ff36h",
+    "image": "/images/formulary/rxhere/o7pbq99qjggosxspnh0ff36h.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/o7pbq99qjggosxspnh0ff36h.webp"
   },
   {
     "sku": "GH-TCG",
@@ -975,7 +1230,7 @@
     "strength": "2mg/600mcg/400mcg/mL",
     "size": "5 mL",
     "total": "10mg/3mg/2mg",
-    "price": 92.0,
+    "price": 92,
     "description": "Triple GH-optimization stack combining GHRH analogues Tesamorelin and CJC-1295 with GHRP-6 secretagogue for pulsatile GH release."
   },
   {
@@ -986,8 +1241,11 @@
     "strength": "2mg/mL",
     "size": "5 mL",
     "total": "10mg",
-    "price": 65.0,
-    "description": "Human cathelicidin with broad-spectrum immune and wound-healing properties."
+    "price": 65,
+    "description": "Human cathelicidin with broad-spectrum immune and wound-healing properties.",
+    "imageId": "ozoyfzt8uq6xslqao2ovju6f",
+    "image": "/images/formulary/rxhere/ozoyfzt8uq6xslqao2ovju6f.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ozoyfzt8uq6xslqao2ovju6f.webp"
   },
   {
     "sku": "IM-LLT",
@@ -997,8 +1255,11 @@
     "strength": "2mg/5mg/mL",
     "size": "5 mL",
     "total": "10mg/25mg",
-    "price": 105.0,
-    "description": "Immune Defense Stack pairing innate immunity peptide with thymosin."
+    "price": 105,
+    "description": "Immune Defense Stack pairing innate immunity peptide with thymosin.",
+    "imageId": "ozoyfzt8uq6xslqao2ovju6f",
+    "image": "/images/formulary/rxhere/ozoyfzt8uq6xslqao2ovju6f.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ozoyfzt8uq6xslqao2ovju6f.webp"
   },
   {
     "sku": "IM-TA1",
@@ -1008,8 +1269,11 @@
     "strength": "4mg/mL",
     "size": "5 mL",
     "total": "20mg",
-    "price": 90.0,
-    "description": "Thymic immunomodulatory peptide boosting T-cell activity and immune surveillance."
+    "price": 90,
+    "description": "Thymic immunomodulatory peptide boosting T-cell activity and immune surveillance.",
+    "imageId": "e4fssb9g0hmbytblait9fyi1",
+    "image": "/images/formulary/rxhere/e4fssb9g0hmbytblait9fyi1.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/e4fssb9g0hmbytblait9fyi1.webp"
   },
   {
     "sku": "IM-TLB",
@@ -1019,7 +1283,7 @@
     "strength": "3.2mg/2mg/1000mcg/mL",
     "size": "5 mL",
     "total": "16mg/10mg/5mg",
-    "price": 110.0,
+    "price": 110,
     "description": "Immune-defense and repair stack combining thymic TA-1, antimicrobial LL-37, and tissue-healing BPC-157."
   },
   {
@@ -1030,8 +1294,11 @@
     "strength": "2mg/2mg/2mg/mL",
     "size": "5 mL",
     "total": "10mg/10mg/10mg",
-    "price": 105.0,
-    "description": "Neurogenesis Stack \u2014 synaptic plasticity, neuroprotection, and anxiolytic support."
+    "price": 105,
+    "description": "Neurogenesis Stack — synaptic plasticity, neuroprotection, and anxiolytic support.",
+    "imageId": "u81vd5bdal7r5kk9ue26w9m2",
+    "image": "/images/formulary/rxhere/u81vd5bdal7r5kk9ue26w9m2.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/u81vd5bdal7r5kk9ue26w9m2.webp"
   },
   {
     "sku": "CM-SMS",
@@ -1041,8 +1308,11 @@
     "strength": "1mg/1mg/mL",
     "size": "5 mL",
     "total": "5mg/5mg",
-    "price": 90.0,
-    "description": "Cognitive Enhancement Stack combining ACTH nootropic with anxiolytic neuropeptide."
+    "price": 90,
+    "description": "Cognitive Enhancement Stack combining ACTH nootropic with anxiolytic neuropeptide.",
+    "imageId": "e1h32r5jpbpe3dkf6f1xbsu0",
+    "image": "/images/formulary/rxhere/e1h32r5jpbpe3dkf6f1xbsu0.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/e1h32r5jpbpe3dkf6f1xbsu0.webp"
   },
   {
     "sku": "CM-PNN",
@@ -1052,8 +1322,11 @@
     "strength": "4mg/mL",
     "size": "10mL",
     "total": "40mg",
-    "price": 75.0,
-    "description": "Intranasal tripeptide bioregulator for neuronal protection and circadian function."
+    "price": 75,
+    "description": "Intranasal tripeptide bioregulator for neuronal protection and circadian function.",
+    "imageId": "espjd81yrnsb0cf22y862pkm",
+    "image": "/images/formulary/rxhere/espjd81yrnsb0cf22y862pkm.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/espjd81yrnsb0cf22y862pkm.webp"
   },
   {
     "sku": "CM-SLN",
@@ -1063,8 +1336,11 @@
     "strength": "7.5mg/mL",
     "size": "10mL",
     "total": "75mg",
-    "price": 75.0,
-    "description": "Intranasal anxiolytic and nootropic peptide derived from tuftsin."
+    "price": 75,
+    "description": "Intranasal anxiolytic and nootropic peptide derived from tuftsin.",
+    "imageId": "uhblo4w6goc36r0m3cbb4az2",
+    "image": "/images/formulary/rxhere/uhblo4w6goc36r0m3cbb4az2.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/uhblo4w6goc36r0m3cbb4az2.webp"
   },
   {
     "sku": "CM-SMN",
@@ -1074,8 +1350,11 @@
     "strength": "7.5mg/mL",
     "size": "10mL",
     "total": "75mg",
-    "price": 75.0,
-    "description": "Intranasal ACTH analogue enhancing memory, focus, and neuroprotection."
+    "price": 75,
+    "description": "Intranasal ACTH analogue enhancing memory, focus, and neuroprotection.",
+    "imageId": "nven739i502ix33ay0w3h38c",
+    "image": "/images/formulary/rxhere/nven739i502ix33ay0w3h38c.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/nven739i502ix33ay0w3h38c.webp"
   },
   {
     "sku": "CM-SSN",
@@ -1085,8 +1364,11 @@
     "strength": "10mg/10mg/mL",
     "size": "10mL",
     "total": "100mg/100mg",
-    "price": 95.0,
-    "description": "Nasal cognitive stack blending focus-enhancing Semax with calming Selank."
+    "price": 95,
+    "description": "Nasal cognitive stack blending focus-enhancing Semax with calming Selank.",
+    "imageId": "ybuzd2h4lrikmo89d711tyxf",
+    "image": "/images/formulary/rxhere/ybuzd2h4lrikmo89d711tyxf.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ybuzd2h4lrikmo89d711tyxf.webp"
   },
   {
     "sku": "CM-ADX",
@@ -1096,7 +1378,7 @@
     "strength": "2mg/mL",
     "size": "5 mL",
     "total": "10mg",
-    "price": 90.0,
+    "price": 90,
     "description": "Heptapeptide ACTH(4-7) analogue in the Semax family supporting focus, memory, and neuroprotection."
   },
   {
@@ -1107,7 +1389,7 @@
     "strength": "1200mcg/1000mcg/10mg/mL",
     "size": "5 mL",
     "total": "6mg/5mg/50mg",
-    "price": 115.0,
+    "price": 115,
     "description": "Advanced nootropic stack pairing focus-enhancing Semax and anxiolytic Selank with potent synaptogenic Dihexa."
   },
   {
@@ -1118,8 +1400,11 @@
     "strength": "1mg/mL",
     "size": "5 mL",
     "total": "5mg",
-    "price": 90.0,
-    "description": "Myostatin/activin inhibitor promoting muscle growth and fat suppression."
+    "price": 90,
+    "description": "Myostatin/activin inhibitor promoting muscle growth and fat suppression.",
+    "imageId": "qrd655aym3meuezzdluespc7",
+    "image": "/images/formulary/rxhere/qrd655aym3meuezzdluespc7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/qrd655aym3meuezzdluespc7.webp"
   },
   {
     "sku": "HR-KSP",
@@ -1129,8 +1414,11 @@
     "strength": "1mg/mL",
     "size": "5 mL",
     "total": "5mg",
-    "price": 70.0,
-    "description": "Hypothalamic neuropeptide stimulating GnRH for reproductive hormone balance."
+    "price": 70,
+    "description": "Hypothalamic neuropeptide stimulating GnRH for reproductive hormone balance.",
+    "imageId": "b1b2lf5f745mwtpqf1ene11w",
+    "image": "/images/formulary/rxhere/b1b2lf5f745mwtpqf1ene11w.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/b1b2lf5f745mwtpqf1ene11w.webp"
   },
   {
     "sku": "HR-GND",
@@ -1140,8 +1428,11 @@
     "strength": "1mg/mL",
     "size": "5 mL",
     "total": "5mg",
-    "price": 70.0,
-    "description": "GnRH analogue stimulating LH/FSH to support fertility and testosterone levels."
+    "price": 70,
+    "description": "GnRH analogue stimulating LH/FSH to support fertility and testosterone levels.",
+    "imageId": "hzyb8igtgdr9sv0dx7bhkvxs",
+    "image": "/images/formulary/rxhere/hzyb8igtgdr9sv0dx7bhkvxs.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/hzyb8igtgdr9sv0dx7bhkvxs.webp"
   },
   {
     "sku": "HR-GN5-02",
@@ -1151,8 +1442,11 @@
     "strength": "2mg/mL",
     "size": "5 mL",
     "total": "10mg",
-    "price": 90.0,
-    "description": "Gonadorelin for LH/FSH stimulation in HRT protocols."
+    "price": 90,
+    "description": "Gonadorelin for LH/FSH stimulation in HRT protocols.",
+    "imageId": "o2yhnybcxoh62h00luw7b4lc",
+    "image": "/images/formulary/rxhere/o2yhnybcxoh62h00luw7b4lc.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/o2yhnybcxoh62h00luw7b4lc.webp"
   },
   {
     "sku": "HR-HCG",
@@ -1162,8 +1456,11 @@
     "strength": "12000IU",
     "size": "10 mL",
     "total": "12000IU",
-    "price": 150.0,
-    "description": "hCG mimics LH to support testicular function and fertility."
+    "price": 150,
+    "description": "hCG mimics LH to support testicular function and fertility.",
+    "imageId": "uonz6jbq5cpaq922eefzgsq1",
+    "image": "/images/formulary/rxhere/uonz6jbq5cpaq922eefzgsq1.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/uonz6jbq5cpaq922eefzgsq1.webp"
   },
   {
     "sku": "HR-ANZ",
@@ -1173,8 +1470,11 @@
     "strength": "0.25mg",
     "size": "each",
     "total": "0.25mg",
-    "price": 1.0,
-    "description": "Aromatase inhibitor reducing estrogen conversion from testosterone in HRT/TRT."
+    "price": 1,
+    "description": "Aromatase inhibitor reducing estrogen conversion from testosterone in HRT/TRT.",
+    "imageId": "lkgdta43amr68bteq9rg7iyt",
+    "image": "/images/formulary/rxhere/lkgdta43amr68bteq9rg7iyt.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/lkgdta43amr68bteq9rg7iyt.webp"
   },
   {
     "sku": "HR-ANZ-02",
@@ -1184,8 +1484,11 @@
     "strength": "0.5mg",
     "size": "each",
     "total": "0.5mg",
-    "price": 1.0,
-    "description": "Aromatase inhibitor reducing estrogen conversion from testosterone in HRT/TRT."
+    "price": 1,
+    "description": "Aromatase inhibitor reducing estrogen conversion from testosterone in HRT/TRT.",
+    "imageId": "ex0qfrlg9vdjbw6mdfn2fffb",
+    "image": "/images/formulary/rxhere/ex0qfrlg9vdjbw6mdfn2fffb.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ex0qfrlg9vdjbw6mdfn2fffb.webp"
   },
   {
     "sku": "HR-ANZ-03",
@@ -1195,8 +1498,11 @@
     "strength": "1mg",
     "size": "each",
     "total": "1mg",
-    "price": 1.0,
-    "description": "Aromatase inhibitor reducing estrogen conversion from testosterone in HRT/TRT."
+    "price": 1,
+    "description": "Aromatase inhibitor reducing estrogen conversion from testosterone in HRT/TRT.",
+    "imageId": "nlzr5f4r2w50dlm1np3xnilw",
+    "image": "/images/formulary/rxhere/nlzr5f4r2w50dlm1np3xnilw.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/nlzr5f4r2w50dlm1np3xnilw.webp"
   },
   {
     "sku": "HR-ANS",
@@ -1207,7 +1513,10 @@
     "size": "each",
     "total": "0.1mg",
     "price": 1.25,
-    "description": "Sustained-release aromatase inhibitor for steady estrogen suppression."
+    "description": "Sustained-release aromatase inhibitor for steady estrogen suppression.",
+    "imageId": "krdism5wvblcvar89cfsovah",
+    "image": "/images/formulary/rxhere/krdism5wvblcvar89cfsovah.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/krdism5wvblcvar89cfsovah.webp"
   },
   {
     "sku": "HR-ANS-02",
@@ -1218,7 +1527,10 @@
     "size": "each",
     "total": "0.125mg",
     "price": 1.25,
-    "description": "Sustained-release aromatase inhibitor for steady estrogen suppression."
+    "description": "Sustained-release aromatase inhibitor for steady estrogen suppression.",
+    "imageId": "yl7hczp8k56apaul2nbuv1xu",
+    "image": "/images/formulary/rxhere/yl7hczp8k56apaul2nbuv1xu.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/yl7hczp8k56apaul2nbuv1xu.webp"
   },
   {
     "sku": "HR-ANS-03",
@@ -1229,7 +1541,10 @@
     "size": "each",
     "total": "0.25mg",
     "price": 1.25,
-    "description": "Sustained-release aromatase inhibitor for steady estrogen suppression."
+    "description": "Sustained-release aromatase inhibitor for steady estrogen suppression.",
+    "imageId": "lkgdta43amr68bteq9rg7iyt",
+    "image": "/images/formulary/rxhere/lkgdta43amr68bteq9rg7iyt.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/lkgdta43amr68bteq9rg7iyt.webp"
   },
   {
     "sku": "HR-ANS-04",
@@ -1240,7 +1555,10 @@
     "size": "each",
     "total": "0.4mg",
     "price": 1.25,
-    "description": "Sustained-release aromatase inhibitor for steady estrogen suppression."
+    "description": "Sustained-release aromatase inhibitor for steady estrogen suppression.",
+    "imageId": "n6ws1mx5pc1xe9na59di5ev3",
+    "image": "/images/formulary/rxhere/n6ws1mx5pc1xe9na59di5ev3.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/n6ws1mx5pc1xe9na59di5ev3.webp"
   },
   {
     "sku": "HR-ANS-05",
@@ -1251,7 +1569,10 @@
     "size": "each",
     "total": "0.5mg",
     "price": 1.25,
-    "description": "Sustained-release aromatase inhibitor for steady estrogen suppression."
+    "description": "Sustained-release aromatase inhibitor for steady estrogen suppression.",
+    "imageId": "ex0qfrlg9vdjbw6mdfn2fffb",
+    "image": "/images/formulary/rxhere/ex0qfrlg9vdjbw6mdfn2fffb.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ex0qfrlg9vdjbw6mdfn2fffb.webp"
   },
   {
     "sku": "HR-ANS-06",
@@ -1262,7 +1583,10 @@
     "size": "each",
     "total": "0.75mg",
     "price": 1.25,
-    "description": "Sustained-release aromatase inhibitor for steady estrogen suppression."
+    "description": "Sustained-release aromatase inhibitor for steady estrogen suppression.",
+    "imageId": "stmv4x79k6lh0257ocn8s8st",
+    "image": "/images/formulary/rxhere/stmv4x79k6lh0257ocn8s8st.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/stmv4x79k6lh0257ocn8s8st.webp"
   },
   {
     "sku": "HR-ANS-07",
@@ -1273,7 +1597,10 @@
     "size": "each",
     "total": "1.1mg",
     "price": 1.5,
-    "description": "Sustained-release aromatase inhibitor for steady estrogen suppression."
+    "description": "Sustained-release aromatase inhibitor for steady estrogen suppression.",
+    "imageId": "gzfca95lnpvwxy271e2wpadn",
+    "image": "/images/formulary/rxhere/gzfca95lnpvwxy271e2wpadn.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/gzfca95lnpvwxy271e2wpadn.webp"
   },
   {
     "sku": "HR-ECL",
@@ -1284,7 +1611,10 @@
     "size": "each",
     "total": "12.5mg",
     "price": 1.25,
-    "description": "SERM raising endogenous LH/FSH and testosterone without estrogenic effects."
+    "description": "SERM raising endogenous LH/FSH and testosterone without estrogenic effects.",
+    "imageId": "fn7zj633kwcg4phx9saqe4yn",
+    "image": "/images/formulary/rxhere/fn7zj633kwcg4phx9saqe4yn.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/fn7zj633kwcg4phx9saqe4yn.webp"
   },
   {
     "sku": "HR-ECL-02",
@@ -1295,7 +1625,10 @@
     "size": "each",
     "total": "25mg",
     "price": 1.75,
-    "description": "SERM raising endogenous LH/FSH and testosterone without estrogenic effects."
+    "description": "SERM raising endogenous LH/FSH and testosterone without estrogenic effects.",
+    "imageId": "r3q6rexciung1tyrmjzj4gx0",
+    "image": "/images/formulary/rxhere/r3q6rexciung1tyrmjzj4gx0.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/r3q6rexciung1tyrmjzj4gx0.webp"
   },
   {
     "sku": "HR-ECC-03",
@@ -1305,8 +1638,11 @@
     "strength": "51mg",
     "size": "each",
     "total": "51mg",
-    "price": 3.0,
-    "description": "Pure trans-isomer of clomiphene for cleaner testosterone stimulation."
+    "price": 3,
+    "description": "Pure trans-isomer of clomiphene for cleaner testosterone stimulation.",
+    "imageId": "xizv8ho8luk5edqdl2k259zd",
+    "image": "/images/formulary/rxhere/xizv8ho8luk5edqdl2k259zd.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/xizv8ho8luk5edqdl2k259zd.webp"
   },
   {
     "sku": "HR-OXA",
@@ -1317,7 +1653,10 @@
     "size": "each",
     "total": "5mg",
     "price": 2.5,
-    "description": "Anabolic steroid used in HRT and muscle-wasting conditions at therapeutic doses."
+    "description": "Anabolic steroid used in HRT and muscle-wasting conditions at therapeutic doses.",
+    "imageId": "dgp0mh98vs6eutk0ylnvh1kg",
+    "image": "/images/formulary/rxhere/dgp0mh98vs6eutk0ylnvh1kg.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/dgp0mh98vs6eutk0ylnvh1kg.webp"
   },
   {
     "sku": "HR-OXA-02",
@@ -1328,7 +1667,10 @@
     "size": "each",
     "total": "10mg",
     "price": 2.75,
-    "description": "Anabolic steroid used in HRT and muscle-wasting conditions at therapeutic doses."
+    "description": "Anabolic steroid used in HRT and muscle-wasting conditions at therapeutic doses.",
+    "imageId": "o8ippmqjyjs68dmvh4alg0q1",
+    "image": "/images/formulary/rxhere/o8ippmqjyjs68dmvh4alg0q1.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/o8ippmqjyjs68dmvh4alg0q1.webp"
   },
   {
     "sku": "HR-OXA-03",
@@ -1338,8 +1680,11 @@
     "strength": "20mg",
     "size": "each",
     "total": "20mg",
-    "price": 3.0,
-    "description": "Anabolic steroid used in HRT and muscle-wasting conditions at therapeutic doses."
+    "price": 3,
+    "description": "Anabolic steroid used in HRT and muscle-wasting conditions at therapeutic doses.",
+    "imageId": "pky7398ypgjmfjedubhumna8",
+    "image": "/images/formulary/rxhere/pky7398ypgjmfjedubhumna8.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/pky7398ypgjmfjedubhumna8.webp"
   },
   {
     "sku": "HR-OXA-04",
@@ -1350,7 +1695,10 @@
     "size": "each",
     "total": "25mg",
     "price": 3.25,
-    "description": "Anabolic steroid used in HRT and muscle-wasting conditions at therapeutic doses."
+    "description": "Anabolic steroid used in HRT and muscle-wasting conditions at therapeutic doses.",
+    "imageId": "hrb1joakr7ymvyrkmbzr90d2",
+    "image": "/images/formulary/rxhere/hrb1joakr7ymvyrkmbzr90d2.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/hrb1joakr7ymvyrkmbzr90d2.webp"
   },
   {
     "sku": "HR-OXA-05",
@@ -1361,7 +1709,10 @@
     "size": "each",
     "total": "50mg",
     "price": 3.5,
-    "description": "Anabolic steroid used in HRT and muscle-wasting conditions at therapeutic doses."
+    "description": "Anabolic steroid used in HRT and muscle-wasting conditions at therapeutic doses.",
+    "imageId": "vyzswu8sdjkkzvxs8bdyfdhi",
+    "image": "/images/formulary/rxhere/vyzswu8sdjkkzvxs8bdyfdhi.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/vyzswu8sdjkkzvxs8bdyfdhi.webp"
   },
   {
     "sku": "HR-OXA-06",
@@ -1372,7 +1723,10 @@
     "size": "each",
     "total": "25mg",
     "price": 3.25,
-    "description": "Anabolic steroid used in HRT and muscle-wasting conditions at therapeutic doses."
+    "description": "Anabolic steroid used in HRT and muscle-wasting conditions at therapeutic doses.",
+    "imageId": "hrb1joakr7ymvyrkmbzr90d2",
+    "image": "/images/formulary/rxhere/hrb1joakr7ymvyrkmbzr90d2.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/hrb1joakr7ymvyrkmbzr90d2.webp"
   },
   {
     "sku": "HR-OXA-07",
@@ -1383,7 +1737,10 @@
     "size": "each",
     "total": "50mg",
     "price": 3.5,
-    "description": "Anabolic steroid used in HRT and muscle-wasting conditions at therapeutic doses."
+    "description": "Anabolic steroid used in HRT and muscle-wasting conditions at therapeutic doses.",
+    "imageId": "vyzswu8sdjkkzvxs8bdyfdhi",
+    "image": "/images/formulary/rxhere/vyzswu8sdjkkzvxs8bdyfdhi.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/vyzswu8sdjkkzvxs8bdyfdhi.webp"
   },
   {
     "sku": "HR-B28",
@@ -1393,8 +1750,11 @@
     "strength": "0.2mg/mL",
     "size": "30mL Tube",
     "total": "6mg",
-    "price": 35.0,
-    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT."
+    "price": 35,
+    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT.",
+    "imageId": "rywik73q9ziz8jgnav6lcb3z",
+    "image": "/images/formulary/rxhere/rywik73q9ziz8jgnav6lcb3z.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/rywik73q9ziz8jgnav6lcb3z.webp"
   },
   {
     "sku": "HR-B28-02",
@@ -1404,8 +1764,11 @@
     "strength": "0.4mg/mL",
     "size": "30mL Tube",
     "total": "12mg",
-    "price": 35.0,
-    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT."
+    "price": 35,
+    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT.",
+    "imageId": "pbwjsju6ra7ilyyajmam7xr3",
+    "image": "/images/formulary/rxhere/pbwjsju6ra7ilyyajmam7xr3.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/pbwjsju6ra7ilyyajmam7xr3.webp"
   },
   {
     "sku": "HR-B28-03",
@@ -1415,8 +1778,11 @@
     "strength": "0.625mg/mL",
     "size": "30mL Tube",
     "total": "18.75mg",
-    "price": 35.0,
-    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT."
+    "price": 35,
+    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT.",
+    "imageId": "v1hp9s4a1laaxfw69kgwmz4f",
+    "image": "/images/formulary/rxhere/v1hp9s4a1laaxfw69kgwmz4f.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/v1hp9s4a1laaxfw69kgwmz4f.webp"
   },
   {
     "sku": "HR-B28-04",
@@ -1426,8 +1792,11 @@
     "strength": "1mg/mL",
     "size": "30mL Tube",
     "total": "30mg",
-    "price": 35.0,
-    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT."
+    "price": 35,
+    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT.",
+    "imageId": "z742c22bq8nmh9x9l31mui4i",
+    "image": "/images/formulary/rxhere/z742c22bq8nmh9x9l31mui4i.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/z742c22bq8nmh9x9l31mui4i.webp"
   },
   {
     "sku": "HR-B28-05",
@@ -1437,8 +1806,11 @@
     "strength": "1.25mg/mL",
     "size": "30mL Tube",
     "total": "37.5mg",
-    "price": 35.0,
-    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT."
+    "price": 35,
+    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT.",
+    "imageId": "l1zdgciukdraci9hiuxbzvj7",
+    "image": "/images/formulary/rxhere/l1zdgciukdraci9hiuxbzvj7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/l1zdgciukdraci9hiuxbzvj7.webp"
   },
   {
     "sku": "HR-B28-06",
@@ -1448,8 +1820,11 @@
     "strength": "2mg/mL",
     "size": "30mL Tube",
     "total": "60mg",
-    "price": 35.0,
-    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT."
+    "price": 35,
+    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT.",
+    "imageId": "e2qap7jlsbc4nroh6p2k073e",
+    "image": "/images/formulary/rxhere/e2qap7jlsbc4nroh6p2k073e.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/e2qap7jlsbc4nroh6p2k073e.webp"
   },
   {
     "sku": "HR-B28-07",
@@ -1459,8 +1834,11 @@
     "strength": "2.5mg/mL",
     "size": "30mL Tube",
     "total": "75mg",
-    "price": 35.0,
-    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT."
+    "price": 35,
+    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT.",
+    "imageId": "y78azhf7nws8grqgpwqrx93o",
+    "image": "/images/formulary/rxhere/y78azhf7nws8grqgpwqrx93o.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/y78azhf7nws8grqgpwqrx93o.webp"
   },
   {
     "sku": "HR-B28-08",
@@ -1471,7 +1849,10 @@
     "size": "each",
     "total": "0.05mg",
     "price": 2.5,
-    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT."
+    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT.",
+    "imageId": "yih3kha4hlg7l2uqjzweylh3",
+    "image": "/images/formulary/rxhere/yih3kha4hlg7l2uqjzweylh3.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/yih3kha4hlg7l2uqjzweylh3.webp"
   },
   {
     "sku": "HR-B28-09",
@@ -1481,8 +1862,11 @@
     "strength": "0.1mg",
     "size": "each",
     "total": "0.1mg",
-    "price": 3.0,
-    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT."
+    "price": 3,
+    "description": "Bioidentical estrogen blend (20% E2 / 80% E3) for menopause HRT.",
+    "imageId": "p3i83nvhhxwohv3jqymfpph0",
+    "image": "/images/formulary/rxhere/p3i83nvhhxwohv3jqymfpph0.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/p3i83nvhhxwohv3jqymfpph0.webp"
   },
   {
     "sku": "HR-B2I",
@@ -1492,8 +1876,11 @@
     "strength": "1.5mg",
     "size": "each",
     "total": "1.5mg",
-    "price": 3.0,
-    "description": "Immediate-release 20:80 BIEST capsule for female HRT."
+    "price": 3,
+    "description": "Immediate-release 20:80 BIEST capsule for female HRT.",
+    "imageId": "l6lavdujavfkl4z8gnh8j5pw",
+    "image": "/images/formulary/rxhere/l6lavdujavfkl4z8gnh8j5pw.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/l6lavdujavfkl4z8gnh8j5pw.webp"
   },
   {
     "sku": "HR-B2V",
@@ -1504,7 +1891,10 @@
     "size": "30mL Tube",
     "total": "90mg",
     "price": 3.25,
-    "description": "20:80 BIEST in Versabase carrier for superior transdermal absorption."
+    "description": "20:80 BIEST in Versabase carrier for superior transdermal absorption.",
+    "imageId": "ial7iwi1sf68xkg2te5ybbex",
+    "image": "/images/formulary/rxhere/ial7iwi1sf68xkg2te5ybbex.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ial7iwi1sf68xkg2te5ybbex.webp"
   },
   {
     "sku": "HR-B55",
@@ -1514,8 +1904,11 @@
     "strength": "0.75mg/mL",
     "size": "30mL Tube",
     "total": "22.5mg",
-    "price": 35.0,
-    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement."
+    "price": 35,
+    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement.",
+    "imageId": "ti5na93hj1etb4s3xxp2z10k",
+    "image": "/images/formulary/rxhere/ti5na93hj1etb4s3xxp2z10k.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ti5na93hj1etb4s3xxp2z10k.webp"
   },
   {
     "sku": "HR-B55-02",
@@ -1525,8 +1918,11 @@
     "strength": "1mg/mL",
     "size": "30mL Tube",
     "total": "30mg",
-    "price": 35.0,
-    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement."
+    "price": 35,
+    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement.",
+    "imageId": "f7bsdrs79j56d1mpdazaf7d2",
+    "image": "/images/formulary/rxhere/f7bsdrs79j56d1mpdazaf7d2.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/f7bsdrs79j56d1mpdazaf7d2.webp"
   },
   {
     "sku": "HR-B55-03",
@@ -1536,8 +1932,11 @@
     "strength": "1.25mg/mL",
     "size": "30mL Tube",
     "total": "37.5mg",
-    "price": 35.0,
-    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement."
+    "price": 35,
+    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement.",
+    "imageId": "swxwf6pkkor7g5na2sleguyh",
+    "image": "/images/formulary/rxhere/swxwf6pkkor7g5na2sleguyh.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/swxwf6pkkor7g5na2sleguyh.webp"
   },
   {
     "sku": "HR-B55-04",
@@ -1547,8 +1946,11 @@
     "strength": "2mg/mL",
     "size": "30mL Tube",
     "total": "60mg",
-    "price": 35.0,
-    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement."
+    "price": 35,
+    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement.",
+    "imageId": "qbvvp2tt0l7e6rasny9uhwk6",
+    "image": "/images/formulary/rxhere/qbvvp2tt0l7e6rasny9uhwk6.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/qbvvp2tt0l7e6rasny9uhwk6.webp"
   },
   {
     "sku": "HR-B55-05",
@@ -1558,8 +1960,11 @@
     "strength": "2.75mg/mL",
     "size": "30mL Tube",
     "total": "82.5mg",
-    "price": 35.0,
-    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement."
+    "price": 35,
+    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement.",
+    "imageId": "r6uo7wkicpxeeloq46p1hlom",
+    "image": "/images/formulary/rxhere/r6uo7wkicpxeeloq46p1hlom.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/r6uo7wkicpxeeloq46p1hlom.webp"
   },
   {
     "sku": "HR-B55-06",
@@ -1569,8 +1974,11 @@
     "strength": "3mg/mL",
     "size": "30mL Tube",
     "total": "90mg",
-    "price": 35.0,
-    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement."
+    "price": 35,
+    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement.",
+    "imageId": "xkw0g4y0ki3je0rklhldny3l",
+    "image": "/images/formulary/rxhere/xkw0g4y0ki3je0rklhldny3l.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/xkw0g4y0ki3je0rklhldny3l.webp"
   },
   {
     "sku": "HR-B55-07",
@@ -1581,7 +1989,10 @@
     "size": "each",
     "total": "0.05mg",
     "price": 1.5,
-    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement."
+    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement.",
+    "imageId": "mkar163rfbdfseu03328lowf",
+    "image": "/images/formulary/rxhere/mkar163rfbdfseu03328lowf.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/mkar163rfbdfseu03328lowf.webp"
   },
   {
     "sku": "HR-B55-08",
@@ -1592,7 +2003,10 @@
     "size": "each",
     "total": "0.1mg",
     "price": 1.5,
-    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement."
+    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement.",
+    "imageId": "d9wwpj6lau95knn4twvxdhxf",
+    "image": "/images/formulary/rxhere/d9wwpj6lau95knn4twvxdhxf.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/d9wwpj6lau95knn4twvxdhxf.webp"
   },
   {
     "sku": "HR-B55-09",
@@ -1603,7 +2017,10 @@
     "size": "each",
     "total": "0.2mg",
     "price": 1.5,
-    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement."
+    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement.",
+    "imageId": "xqe8j2hk3c2uq6czkq7ockcn",
+    "image": "/images/formulary/rxhere/xqe8j2hk3c2uq6czkq7ockcn.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/xqe8j2hk3c2uq6czkq7ockcn.webp"
   },
   {
     "sku": "HR-B55-10",
@@ -1614,7 +2031,10 @@
     "size": "each",
     "total": "0.4mg",
     "price": 1.5,
-    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement."
+    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement.",
+    "imageId": "l8or56ivprfqzogt3w2tw3u5",
+    "image": "/images/formulary/rxhere/l8or56ivprfqzogt3w2tw3u5.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/l8or56ivprfqzogt3w2tw3u5.webp"
   },
   {
     "sku": "HR-B55-11",
@@ -1625,7 +2045,10 @@
     "size": "each",
     "total": "0.5mg",
     "price": 1.5,
-    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement."
+    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement.",
+    "imageId": "xprpmyjtnrlrimq485u4is17",
+    "image": "/images/formulary/rxhere/xprpmyjtnrlrimq485u4is17.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/xprpmyjtnrlrimq485u4is17.webp"
   },
   {
     "sku": "HR-B55-12",
@@ -1636,7 +2059,10 @@
     "size": "each",
     "total": "1mg",
     "price": 1.75,
-    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement."
+    "description": "Equal-ratio bioidentical estrogen blend for balanced menopause replacement.",
+    "imageId": "f7bsdrs79j56d1mpdazaf7d2",
+    "image": "/images/formulary/rxhere/f7bsdrs79j56d1mpdazaf7d2.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/f7bsdrs79j56d1mpdazaf7d2.webp"
   },
   {
     "sku": "HR-B5I",
@@ -1647,7 +2073,10 @@
     "size": "each",
     "total": "1mg",
     "price": 1.5,
-    "description": "Immediate-release 50:50 BIEST capsule."
+    "description": "Immediate-release 50:50 BIEST capsule.",
+    "imageId": "f7bsdrs79j56d1mpdazaf7d2",
+    "image": "/images/formulary/rxhere/f7bsdrs79j56d1mpdazaf7d2.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/f7bsdrs79j56d1mpdazaf7d2.webp"
   },
   {
     "sku": "HR-B5I-02",
@@ -1658,7 +2087,10 @@
     "size": "each",
     "total": "2mg",
     "price": 2.5,
-    "description": "Immediate-release 50:50 BIEST capsule."
+    "description": "Immediate-release 50:50 BIEST capsule.",
+    "imageId": "qbvvp2tt0l7e6rasny9uhwk6",
+    "image": "/images/formulary/rxhere/qbvvp2tt0l7e6rasny9uhwk6.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/qbvvp2tt0l7e6rasny9uhwk6.webp"
   },
   {
     "sku": "HR-B5C",
@@ -1669,7 +2101,10 @@
     "size": "each",
     "total": "0.1mg",
     "price": 2.5,
-    "description": "Flavored sublingual 50:50 BIEST troche for discreet estrogen dosing."
+    "description": "Flavored sublingual 50:50 BIEST troche for discreet estrogen dosing.",
+    "imageId": "d9wwpj6lau95knn4twvxdhxf",
+    "image": "/images/formulary/rxhere/d9wwpj6lau95knn4twvxdhxf.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/d9wwpj6lau95knn4twvxdhxf.webp"
   },
   {
     "sku": "HR-BPS",
@@ -1680,7 +2115,10 @@
     "size": "each",
     "total": "1.8mg/200mg",
     "price": 2.75,
-    "description": "Triple bioidentical HRT capsule combining balanced BIEST with sustained progesterone."
+    "description": "Triple bioidentical HRT capsule combining balanced BIEST with sustained progesterone.",
+    "imageId": "t1x4qkbrbnjf8jeyqzdm327j",
+    "image": "/images/formulary/rxhere/t1x4qkbrbnjf8jeyqzdm327j.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/t1x4qkbrbnjf8jeyqzdm327j.webp"
   },
   {
     "sku": "HR-CAB",
@@ -1690,8 +2128,11 @@
     "strength": "0.5mg",
     "size": "8 tab bottle",
     "total": "4mg",
-    "price": 2.0,
-    "description": "Dopamine agonist lowering prolactin; used in HRT, fertility, and performance protocols."
+    "price": 2,
+    "description": "Dopamine agonist lowering prolactin; used in HRT, fertility, and performance protocols.",
+    "imageId": "odzf00z97hxfk5fm7sswpt6p",
+    "image": "/images/formulary/rxhere/odzf00z97hxfk5fm7sswpt6p.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/odzf00z97hxfk5fm7sswpt6p.webp"
   },
   {
     "sku": "HR-CLO",
@@ -1702,7 +2143,10 @@
     "size": "each",
     "total": "25mg",
     "price": 2.5,
-    "description": "SERM stimulating pituitary FSH/LH; used in female fertility and male HRT."
+    "description": "SERM stimulating pituitary FSH/LH; used in female fertility and male HRT.",
+    "imageId": "a2id9b3pde6ccp6g28x2mj6p",
+    "image": "/images/formulary/rxhere/a2id9b3pde6ccp6g28x2mj6p.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/a2id9b3pde6ccp6g28x2mj6p.webp"
   },
   {
     "sku": "HR-CLO-02",
@@ -1713,7 +2157,10 @@
     "size": "each",
     "total": "51mg",
     "price": 2.75,
-    "description": "SERM stimulating pituitary FSH/LH; used in female fertility and male HRT."
+    "description": "SERM stimulating pituitary FSH/LH; used in female fertility and male HRT.",
+    "imageId": "xizv8ho8luk5edqdl2k259zd",
+    "image": "/images/formulary/rxhere/xizv8ho8luk5edqdl2k259zd.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/xizv8ho8luk5edqdl2k259zd.webp"
   },
   {
     "sku": "HR-DHS",
@@ -1724,7 +2171,10 @@
     "size": "each",
     "total": "10mg",
     "price": 2.25,
-    "description": "Sustained-release adrenal precursor supporting energy, mood, and sex hormone balance."
+    "description": "Sustained-release adrenal precursor supporting energy, mood, and sex hormone balance.",
+    "imageId": "vbdh3fyrz5mtxhi3vvkq4xnw",
+    "image": "/images/formulary/rxhere/vbdh3fyrz5mtxhi3vvkq4xnw.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/vbdh3fyrz5mtxhi3vvkq4xnw.webp"
   },
   {
     "sku": "HR-DHS-02",
@@ -1734,8 +2184,11 @@
     "strength": "50mg",
     "size": "each",
     "total": "50mg",
-    "price": 2.0,
-    "description": "Sustained-release adrenal precursor supporting energy, mood, and sex hormone balance."
+    "price": 2,
+    "description": "Sustained-release adrenal precursor supporting energy, mood, and sex hormone balance.",
+    "imageId": "hbx9npjcppsdc6xabf53zt4j",
+    "image": "/images/formulary/rxhere/hbx9npjcppsdc6xabf53zt4j.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/hbx9npjcppsdc6xabf53zt4j.webp"
   },
   {
     "sku": "HR-DHD",
@@ -1745,8 +2198,11 @@
     "strength": "25mg",
     "size": "each",
     "total": "25mg",
-    "price": 2.0,
-    "description": "Dye-free DHEA SR for patients with sensitivities."
+    "price": 2,
+    "description": "Dye-free DHEA SR for patients with sensitivities.",
+    "imageId": "n8ce5prantv2nvyzbj10w5j2",
+    "image": "/images/formulary/rxhere/n8ce5prantv2nvyzbj10w5j2.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/n8ce5prantv2nvyzbj10w5j2.webp"
   },
   {
     "sku": "HR-DHP",
@@ -1757,7 +2213,10 @@
     "size": "each",
     "total": "25mg/25mg",
     "price": 2.5,
-    "description": "Dual adrenal hormone stack for comprehensive hormonal precursor support."
+    "description": "Dual adrenal hormone stack for comprehensive hormonal precursor support.",
+    "imageId": "zo1ux0ztztx8e23711hzrqmd",
+    "image": "/images/formulary/rxhere/zo1ux0ztztx8e23711hzrqmd.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/zo1ux0ztztx8e23711hzrqmd.webp"
   },
   {
     "sku": "HR-DHP-02",
@@ -1768,7 +2227,10 @@
     "size": "each",
     "total": "10mg/50mg",
     "price": 2.5,
-    "description": "Dual adrenal hormone stack for comprehensive hormonal precursor support."
+    "description": "Dual adrenal hormone stack for comprehensive hormonal precursor support.",
+    "imageId": "cx5laks9g1w5jkqk5t6cxsk4",
+    "image": "/images/formulary/rxhere/cx5laks9g1w5jkqk5t6cxsk4.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/cx5laks9g1w5jkqk5t6cxsk4.webp"
   },
   {
     "sku": "HR-EIR",
@@ -1778,8 +2240,11 @@
     "strength": "1.0mg",
     "size": "each",
     "total": "1.0mg",
-    "price": 1.0,
-    "description": "Immediate-release bioidentical E2 capsule for female HRT."
+    "price": 1,
+    "description": "Immediate-release bioidentical E2 capsule for female HRT.",
+    "imageId": "yqfr64h1chmil7kvw4bs5vsi",
+    "image": "/images/formulary/rxhere/yqfr64h1chmil7kvw4bs5vsi.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/yqfr64h1chmil7kvw4bs5vsi.webp"
   },
   {
     "sku": "HR-EIR-02",
@@ -1789,8 +2254,11 @@
     "strength": "1.5mg",
     "size": "each",
     "total": "1.5mg",
-    "price": 1.0,
-    "description": "Immediate-release bioidentical E2 capsule for female HRT."
+    "price": 1,
+    "description": "Immediate-release bioidentical E2 capsule for female HRT.",
+    "imageId": "oob8g4i0ku4imxsgavpx85uu",
+    "image": "/images/formulary/rxhere/oob8g4i0ku4imxsgavpx85uu.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/oob8g4i0ku4imxsgavpx85uu.webp"
   },
   {
     "sku": "HR-EIR-03",
@@ -1800,8 +2268,11 @@
     "strength": "2mg",
     "size": "each",
     "total": "2mg",
-    "price": 1.0,
-    "description": "Immediate-release bioidentical E2 capsule for female HRT."
+    "price": 1,
+    "description": "Immediate-release bioidentical E2 capsule for female HRT.",
+    "imageId": "q9saf9y1f7drz3tcy0k60g3d",
+    "image": "/images/formulary/rxhere/q9saf9y1f7drz3tcy0k60g3d.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/q9saf9y1f7drz3tcy0k60g3d.webp"
   },
   {
     "sku": "HR-EIR-04",
@@ -1811,8 +2282,11 @@
     "strength": "2.5mg",
     "size": "each",
     "total": "2.5mg",
-    "price": 1.0,
-    "description": "Immediate-release bioidentical E2 capsule for female HRT."
+    "price": 1,
+    "description": "Immediate-release bioidentical E2 capsule for female HRT.",
+    "imageId": "s7uqle2qzr44tudo7nxf2f6u",
+    "image": "/images/formulary/rxhere/s7uqle2qzr44tudo7nxf2f6u.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/s7uqle2qzr44tudo7nxf2f6u.webp"
   },
   {
     "sku": "HR-EIR-05",
@@ -1822,8 +2296,11 @@
     "strength": "4mg",
     "size": "each",
     "total": "4mg",
-    "price": 1.0,
-    "description": "Immediate-release bioidentical E2 capsule for female HRT."
+    "price": 1,
+    "description": "Immediate-release bioidentical E2 capsule for female HRT.",
+    "imageId": "wv3cys69vgm8ho3qf58b63nj",
+    "image": "/images/formulary/rxhere/wv3cys69vgm8ho3qf58b63nj.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/wv3cys69vgm8ho3qf58b63nj.webp"
   },
   {
     "sku": "HR-EST",
@@ -1833,8 +2310,11 @@
     "strength": "1mg/mL",
     "size": "30mL Tube",
     "total": "30mg",
-    "price": 35.0,
-    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT."
+    "price": 35,
+    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT.",
+    "imageId": "yqfr64h1chmil7kvw4bs5vsi",
+    "image": "/images/formulary/rxhere/yqfr64h1chmil7kvw4bs5vsi.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/yqfr64h1chmil7kvw4bs5vsi.webp"
   },
   {
     "sku": "HR-EST-02",
@@ -1844,8 +2324,11 @@
     "strength": "1.5mg/mL",
     "size": "30mL Tube",
     "total": "45mg",
-    "price": 35.0,
-    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT."
+    "price": 35,
+    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT.",
+    "imageId": "oob8g4i0ku4imxsgavpx85uu",
+    "image": "/images/formulary/rxhere/oob8g4i0ku4imxsgavpx85uu.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/oob8g4i0ku4imxsgavpx85uu.webp"
   },
   {
     "sku": "HR-EST-03",
@@ -1855,8 +2338,11 @@
     "strength": "2mg/mL",
     "size": "30mL Tube",
     "total": "60mg",
-    "price": 35.0,
-    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT."
+    "price": 35,
+    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT.",
+    "imageId": "q9saf9y1f7drz3tcy0k60g3d",
+    "image": "/images/formulary/rxhere/q9saf9y1f7drz3tcy0k60g3d.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/q9saf9y1f7drz3tcy0k60g3d.webp"
   },
   {
     "sku": "HR-EST-04",
@@ -1866,8 +2352,11 @@
     "strength": "2.5mg/mL",
     "size": "30mL Tube",
     "total": "75mg",
-    "price": 35.0,
-    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT."
+    "price": 35,
+    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT.",
+    "imageId": "s7uqle2qzr44tudo7nxf2f6u",
+    "image": "/images/formulary/rxhere/s7uqle2qzr44tudo7nxf2f6u.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/s7uqle2qzr44tudo7nxf2f6u.webp"
   },
   {
     "sku": "HR-EST-05",
@@ -1877,8 +2366,11 @@
     "strength": "3mg/mL",
     "size": "30mL Tube",
     "total": "90mg",
-    "price": 35.0,
-    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT."
+    "price": 35,
+    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT.",
+    "imageId": "vpwklavslwayjxgni35zd0dh",
+    "image": "/images/formulary/rxhere/vpwklavslwayjxgni35zd0dh.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/vpwklavslwayjxgni35zd0dh.webp"
   },
   {
     "sku": "HR-EST-06",
@@ -1889,7 +2381,10 @@
     "size": "each",
     "total": "0.5mg",
     "price": 0.94,
-    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT."
+    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT.",
+    "imageId": "i814ouiksx3fj0g7zxspxq4j",
+    "image": "/images/formulary/rxhere/i814ouiksx3fj0g7zxspxq4j.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/i814ouiksx3fj0g7zxspxq4j.webp"
   },
   {
     "sku": "HR-EST-07",
@@ -1900,7 +2395,10 @@
     "size": "each",
     "total": "1mg",
     "price": 0.94,
-    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT."
+    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT.",
+    "imageId": "yqfr64h1chmil7kvw4bs5vsi",
+    "image": "/images/formulary/rxhere/yqfr64h1chmil7kvw4bs5vsi.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/yqfr64h1chmil7kvw4bs5vsi.webp"
   },
   {
     "sku": "HR-EST-08",
@@ -1911,7 +2409,10 @@
     "size": "each",
     "total": "2mg",
     "price": 0.94,
-    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT."
+    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT.",
+    "imageId": "q9saf9y1f7drz3tcy0k60g3d",
+    "image": "/images/formulary/rxhere/q9saf9y1f7drz3tcy0k60g3d.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/q9saf9y1f7drz3tcy0k60g3d.webp"
   },
   {
     "sku": "HR-EST-09",
@@ -1922,7 +2423,10 @@
     "size": "each",
     "total": "10mcg",
     "price": 2.2,
-    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT."
+    "description": "Bioidentical estradiol in cream, tablet, or vaginal forms for menopause HRT.",
+    "imageId": "x87gqiu0xhth2irsnfh0xz2f",
+    "image": "/images/formulary/rxhere/x87gqiu0xhth2irsnfh0xz2f.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/x87gqiu0xhth2irsnfh0xz2f.webp"
   },
   {
     "sku": "HR-EVC",
@@ -1933,7 +2437,10 @@
     "size": "30mL Tube",
     "total": "3mg",
     "price": 59.25,
-    "description": "Vaginal estradiol cream for urogenital atrophy and pelvic health."
+    "description": "Vaginal estradiol cream for urogenital atrophy and pelvic health.",
+    "imageId": "hi5t3coiih9wxkp384srarbl",
+    "image": "/images/formulary/rxhere/hi5t3coiih9wxkp384srarbl.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/hi5t3coiih9wxkp384srarbl.webp"
   },
   {
     "sku": "HR-EVC-02",
@@ -1944,7 +2451,10 @@
     "size": "30mL Tube",
     "total": "15mg",
     "price": 59.25,
-    "description": "Vaginal estradiol cream for urogenital atrophy and pelvic health."
+    "description": "Vaginal estradiol cream for urogenital atrophy and pelvic health.",
+    "imageId": "i814ouiksx3fj0g7zxspxq4j",
+    "image": "/images/formulary/rxhere/i814ouiksx3fj0g7zxspxq4j.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/i814ouiksx3fj0g7zxspxq4j.webp"
   },
   {
     "sku": "HR-EVC-03",
@@ -1955,7 +2465,10 @@
     "size": "30mL Tube",
     "total": "0.0001",
     "price": 59.25,
-    "description": "Vaginal estradiol cream for urogenital atrophy and pelvic health."
+    "description": "Vaginal estradiol cream for urogenital atrophy and pelvic health.",
+    "imageId": "at83vxsa4wsb5w3j3j672e9o",
+    "image": "/images/formulary/rxhere/at83vxsa4wsb5w3j3j672e9o.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/at83vxsa4wsb5w3j3j672e9o.webp"
   },
   {
     "sku": "HR-EVB",
@@ -1966,7 +2479,10 @@
     "size": "30mL Tube",
     "total": "4.5mg",
     "price": 59.25,
-    "description": "Estradiol in Versabase carrier for superior skin absorption."
+    "description": "Estradiol in Versabase carrier for superior skin absorption.",
+    "imageId": "d4girq2efhdheivxj1piw2i8",
+    "image": "/images/formulary/rxhere/d4girq2efhdheivxj1piw2i8.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/d4girq2efhdheivxj1piw2i8.webp"
   },
   {
     "sku": "HR-EVB-02",
@@ -1977,7 +2493,10 @@
     "size": "30mL Tube",
     "total": "6mg",
     "price": 59.25,
-    "description": "Estradiol in Versabase carrier for superior skin absorption."
+    "description": "Estradiol in Versabase carrier for superior skin absorption.",
+    "imageId": "aiqlxanbc1tajcysk3sx9edp",
+    "image": "/images/formulary/rxhere/aiqlxanbc1tajcysk3sx9edp.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/aiqlxanbc1tajcysk3sx9edp.webp"
   },
   {
     "sku": "HR-EVB-03",
@@ -1988,7 +2507,10 @@
     "size": "30mL Tube",
     "total": "30mg",
     "price": 59.25,
-    "description": "Estradiol in Versabase carrier for superior skin absorption."
+    "description": "Estradiol in Versabase carrier for superior skin absorption.",
+    "imageId": "yqfr64h1chmil7kvw4bs5vsi",
+    "image": "/images/formulary/rxhere/yqfr64h1chmil7kvw4bs5vsi.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/yqfr64h1chmil7kvw4bs5vsi.webp"
   },
   {
     "sku": "HR-EVB-04",
@@ -1999,7 +2521,10 @@
     "size": "30mL Tube",
     "total": "60mg",
     "price": 59.25,
-    "description": "Estradiol in Versabase carrier for superior skin absorption."
+    "description": "Estradiol in Versabase carrier for superior skin absorption.",
+    "imageId": "q9saf9y1f7drz3tcy0k60g3d",
+    "image": "/images/formulary/rxhere/q9saf9y1f7drz3tcy0k60g3d.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/q9saf9y1f7drz3tcy0k60g3d.webp"
   },
   {
     "sku": "HR-EDF",
@@ -2009,8 +2534,11 @@
     "strength": "2mg",
     "size": "each",
     "total": "2mg",
-    "price": 1.0,
-    "description": "Hypoallergenic immediate-release estradiol for sensitive patients."
+    "price": 1,
+    "description": "Hypoallergenic immediate-release estradiol for sensitive patients.",
+    "imageId": "q9saf9y1f7drz3tcy0k60g3d",
+    "image": "/images/formulary/rxhere/q9saf9y1f7drz3tcy0k60g3d.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/q9saf9y1f7drz3tcy0k60g3d.webp"
   },
   {
     "sku": "HR-ESL",
@@ -2021,7 +2549,10 @@
     "size": "each",
     "total": "4.5mg",
     "price": 1.25,
-    "description": "Flavored sublingual estradiol troche for fast-absorbing estrogen replacement."
+    "description": "Flavored sublingual estradiol troche for fast-absorbing estrogen replacement.",
+    "imageId": "e1rqqehg5k1l6s1eqdkeyspu",
+    "image": "/images/formulary/rxhere/e1rqqehg5k1l6s1eqdkeyspu.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/e1rqqehg5k1l6s1eqdkeyspu.webp"
   },
   {
     "sku": "HR-EP",
@@ -2031,8 +2562,11 @@
     "strength": "1mg/100mg/mL",
     "size": "30mL Tube",
     "total": "30mg/3000mg",
-    "price": 30.0,
-    "description": "Combined bioidentical E2 and progesterone cream for balanced female HRT."
+    "price": 30,
+    "description": "Combined bioidentical E2 and progesterone cream for balanced female HRT.",
+    "imageId": "xwrbxx7xt5fj5fxw03luvzmd",
+    "image": "/images/formulary/rxhere/xwrbxx7xt5fj5fxw03luvzmd.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/xwrbxx7xt5fj5fxw03luvzmd.webp"
   },
   {
     "sku": "HR-EP-02",
@@ -2042,8 +2576,11 @@
     "strength": "2mg/200mg/mL",
     "size": "30mL Tube",
     "total": "60mg/6000mg",
-    "price": 30.0,
-    "description": "Combined bioidentical E2 and progesterone cream for balanced female HRT."
+    "price": 30,
+    "description": "Combined bioidentical E2 and progesterone cream for balanced female HRT.",
+    "imageId": "nkc38el182jtyjxqz3zyty33",
+    "image": "/images/formulary/rxhere/nkc38el182jtyjxqz3zyty33.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/nkc38el182jtyjxqz3zyty33.webp"
   },
   {
     "sku": "HR-EXM",
@@ -2054,7 +2591,10 @@
     "size": "each",
     "total": "25mg",
     "price": 2.13,
-    "description": "Steroidal aromatase inactivator for breast cancer prevention and TRT estrogen management."
+    "description": "Steroidal aromatase inactivator for breast cancer prevention and TRT estrogen management.",
+    "imageId": "blzlyqruem2xj5t82tgm8ofr",
+    "image": "/images/formulary/rxhere/blzlyqruem2xj5t82tgm8ofr.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/blzlyqruem2xj5t82tgm8ofr.webp"
   },
   {
     "sku": "HR-HGH",
@@ -2064,8 +2604,11 @@
     "strength": "10IU",
     "size": "5mL",
     "total": "10IU",
-    "price": 115.0,
-    "description": "Injectable human growth hormone for GH deficiency, anti-aging, and body composition."
+    "price": 115,
+    "description": "Injectable human growth hormone for GH deficiency, anti-aging, and body composition.",
+    "imageId": "bpq5ptchgn1xaanp4y4mvuxc",
+    "image": "/images/formulary/rxhere/bpq5ptchgn1xaanp4y4mvuxc.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/bpq5ptchgn1xaanp4y4mvuxc.webp"
   },
   {
     "sku": "HR-T3I",
@@ -2075,8 +2618,11 @@
     "strength": "6.5mcg",
     "size": "each",
     "total": "6.5mcg",
-    "price": 1.0,
-    "description": "Immediate-release active thyroid hormone for hypothyroidism and metabolic support."
+    "price": 1,
+    "description": "Immediate-release active thyroid hormone for hypothyroidism and metabolic support.",
+    "imageId": "l1h4091zxpr03v4xwfqk7yk7",
+    "image": "/images/formulary/rxhere/l1h4091zxpr03v4xwfqk7yk7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/l1h4091zxpr03v4xwfqk7yk7.webp"
   },
   {
     "sku": "HR-T3S",
@@ -2086,8 +2632,11 @@
     "strength": "6.5mcg",
     "size": "each",
     "total": "6.5mcg",
-    "price": 1.0,
-    "description": "Sustained-release T3 for steady thyroid levels and metabolic optimization."
+    "price": 1,
+    "description": "Sustained-release T3 for steady thyroid levels and metabolic optimization.",
+    "imageId": "l1h4091zxpr03v4xwfqk7yk7",
+    "image": "/images/formulary/rxhere/l1h4091zxpr03v4xwfqk7yk7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/l1h4091zxpr03v4xwfqk7yk7.webp"
   },
   {
     "sku": "HR-T3S-02",
@@ -2097,8 +2646,11 @@
     "strength": "12mcg",
     "size": "each",
     "total": "12mcg",
-    "price": 1.0,
-    "description": "Sustained-release T3 for steady thyroid levels and metabolic optimization."
+    "price": 1,
+    "description": "Sustained-release T3 for steady thyroid levels and metabolic optimization.",
+    "imageId": "dcpopy1wmtms19nao5o7jgp7",
+    "image": "/images/formulary/rxhere/dcpopy1wmtms19nao5o7jgp7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/dcpopy1wmtms19nao5o7jgp7.webp"
   },
   {
     "sku": "HR-T3S-03",
@@ -2108,8 +2660,11 @@
     "strength": "22mcg",
     "size": "each",
     "total": "22mcg",
-    "price": 1.0,
-    "description": "Sustained-release T3 for steady thyroid levels and metabolic optimization."
+    "price": 1,
+    "description": "Sustained-release T3 for steady thyroid levels and metabolic optimization.",
+    "imageId": "q1kndur5r1ioxa4a7ubczxks",
+    "image": "/images/formulary/rxhere/q1kndur5r1ioxa4a7ubczxks.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/q1kndur5r1ioxa4a7ubczxks.webp"
   },
   {
     "sku": "HR-NAN",
@@ -2119,8 +2674,11 @@
     "strength": "200mg/mL",
     "size": "5mL",
     "total": "1000mg",
-    "price": 95.0,
-    "description": "Long-acting anabolic steroid for muscle wasting, osteoporosis, and anemia."
+    "price": 95,
+    "description": "Long-acting anabolic steroid for muscle wasting, osteoporosis, and anemia.",
+    "imageId": "tmoot17jw9by3yrt0dokgmqh",
+    "image": "/images/formulary/rxhere/tmoot17jw9by3yrt0dokgmqh.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/tmoot17jw9by3yrt0dokgmqh.webp"
   },
   {
     "sku": "HR-OXT",
@@ -2131,7 +2689,10 @@
     "size": "each",
     "total": "50IU",
     "price": 0.94,
-    "description": "Rapid-dissolve oxytocin tablet for bonding, libido, and stress regulation."
+    "description": "Rapid-dissolve oxytocin tablet for bonding, libido, and stress regulation.",
+    "imageId": "z2z0upvmz1lzzcstz6w2v33n",
+    "image": "/images/formulary/rxhere/z2z0upvmz1lzzcstz6w2v33n.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/z2z0upvmz1lzzcstz6w2v33n.webp"
   },
   {
     "sku": "HR-OXT-02",
@@ -2142,7 +2703,10 @@
     "size": "each",
     "total": "250IU",
     "price": 1.24,
-    "description": "Rapid-dissolve oxytocin tablet for bonding, libido, and stress regulation."
+    "description": "Rapid-dissolve oxytocin tablet for bonding, libido, and stress regulation.",
+    "imageId": "ueyd7s6gtm6vtvfvn30fruop",
+    "image": "/images/formulary/rxhere/ueyd7s6gtm6vtvfvn30fruop.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ueyd7s6gtm6vtvfvn30fruop.webp"
   },
   {
     "sku": "HR-PRG",
@@ -2153,7 +2717,10 @@
     "size": "each",
     "total": "25mg",
     "price": 0.94,
-    "description": "Neurosteroid precursor to all sex and adrenal hormones; supports cognition."
+    "description": "Neurosteroid precursor to all sex and adrenal hormones; supports cognition.",
+    "imageId": "zo1ux0ztztx8e23711hzrqmd",
+    "image": "/images/formulary/rxhere/zo1ux0ztztx8e23711hzrqmd.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/zo1ux0ztztx8e23711hzrqmd.webp"
   },
   {
     "sku": "HR-PIR",
@@ -2163,8 +2730,11 @@
     "strength": "50mg",
     "size": "each",
     "total": "50mg",
-    "price": 1.0,
-    "description": "Immediate-release bioidentical progesterone for luteal support and female HRT."
+    "price": 1,
+    "description": "Immediate-release bioidentical progesterone for luteal support and female HRT.",
+    "imageId": "rd9ro1cl4f8xdtfghq6kr46s",
+    "image": "/images/formulary/rxhere/rd9ro1cl4f8xdtfghq6kr46s.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/rd9ro1cl4f8xdtfghq6kr46s.webp"
   },
   {
     "sku": "HR-PIR-02",
@@ -2174,8 +2744,11 @@
     "strength": "150mg",
     "size": "each",
     "total": "150mg",
-    "price": 1.0,
-    "description": "Immediate-release bioidentical progesterone for luteal support and female HRT."
+    "price": 1,
+    "description": "Immediate-release bioidentical progesterone for luteal support and female HRT.",
+    "imageId": "p3citocsa8crv9lfxfjnndrw",
+    "image": "/images/formulary/rxhere/p3citocsa8crv9lfxfjnndrw.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/p3citocsa8crv9lfxfjnndrw.webp"
   },
   {
     "sku": "HR-PIR-03",
@@ -2185,8 +2758,11 @@
     "strength": "200mg",
     "size": "each",
     "total": "200mg",
-    "price": 1.0,
-    "description": "Immediate-release bioidentical progesterone for luteal support and female HRT."
+    "price": 1,
+    "description": "Immediate-release bioidentical progesterone for luteal support and female HRT.",
+    "imageId": "t1x4qkbrbnjf8jeyqzdm327j",
+    "image": "/images/formulary/rxhere/t1x4qkbrbnjf8jeyqzdm327j.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/t1x4qkbrbnjf8jeyqzdm327j.webp"
   },
   {
     "sku": "HR-PIR-04",
@@ -2196,8 +2772,11 @@
     "strength": "300mg",
     "size": "each",
     "total": "300mg",
-    "price": 1.0,
-    "description": "Immediate-release bioidentical progesterone for luteal support and female HRT."
+    "price": 1,
+    "description": "Immediate-release bioidentical progesterone for luteal support and female HRT.",
+    "imageId": "hh7qij9lqutka0tmub1jppjz",
+    "image": "/images/formulary/rxhere/hh7qij9lqutka0tmub1jppjz.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/hh7qij9lqutka0tmub1jppjz.webp"
   },
   {
     "sku": "HR-PSR",
@@ -2207,8 +2786,11 @@
     "strength": "100mg",
     "size": "each",
     "total": "100mg",
-    "price": 1.0,
-    "description": "Sustained-release progesterone for stable overnight levels in HRT protocols."
+    "price": 1,
+    "description": "Sustained-release progesterone for stable overnight levels in HRT protocols.",
+    "imageId": "owzsqmvtyljn18yn7gu721ta",
+    "image": "/images/formulary/rxhere/owzsqmvtyljn18yn7gu721ta.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/owzsqmvtyljn18yn7gu721ta.webp"
   },
   {
     "sku": "HR-PSR-02",
@@ -2218,8 +2800,11 @@
     "strength": "150mg",
     "size": "each",
     "total": "150mg",
-    "price": 1.0,
-    "description": "Sustained-release progesterone for stable overnight levels in HRT protocols."
+    "price": 1,
+    "description": "Sustained-release progesterone for stable overnight levels in HRT protocols.",
+    "imageId": "p3citocsa8crv9lfxfjnndrw",
+    "image": "/images/formulary/rxhere/p3citocsa8crv9lfxfjnndrw.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/p3citocsa8crv9lfxfjnndrw.webp"
   },
   {
     "sku": "HR-PSR-03",
@@ -2229,8 +2814,11 @@
     "strength": "300mg",
     "size": "each",
     "total": "300mg",
-    "price": 1.0,
-    "description": "Sustained-release progesterone for stable overnight levels in HRT protocols."
+    "price": 1,
+    "description": "Sustained-release progesterone for stable overnight levels in HRT protocols.",
+    "imageId": "hh7qij9lqutka0tmub1jppjz",
+    "image": "/images/formulary/rxhere/hh7qij9lqutka0tmub1jppjz.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/hh7qij9lqutka0tmub1jppjz.webp"
   },
   {
     "sku": "HR-PRO",
@@ -2240,8 +2828,11 @@
     "strength": "50mg/mL",
     "size": "30mL Tube",
     "total": "1500mg",
-    "price": 35.0,
-    "description": "Topical bioidentical progesterone cream for transdermal HRT delivery."
+    "price": 35,
+    "description": "Topical bioidentical progesterone cream for transdermal HRT delivery.",
+    "imageId": "rd9ro1cl4f8xdtfghq6kr46s",
+    "image": "/images/formulary/rxhere/rd9ro1cl4f8xdtfghq6kr46s.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/rd9ro1cl4f8xdtfghq6kr46s.webp"
   },
   {
     "sku": "HR-PRO-02",
@@ -2251,8 +2842,11 @@
     "strength": "100mg/mL",
     "size": "30mL Tube",
     "total": "3000mg",
-    "price": 35.0,
-    "description": "Topical bioidentical progesterone cream for transdermal HRT delivery."
+    "price": 35,
+    "description": "Topical bioidentical progesterone cream for transdermal HRT delivery.",
+    "imageId": "owzsqmvtyljn18yn7gu721ta",
+    "image": "/images/formulary/rxhere/owzsqmvtyljn18yn7gu721ta.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/owzsqmvtyljn18yn7gu721ta.webp"
   },
   {
     "sku": "HR-PRO-03",
@@ -2262,8 +2856,11 @@
     "strength": "200mg/mL",
     "size": "30mL Tube",
     "total": "6000mg",
-    "price": 35.0,
-    "description": "Topical bioidentical progesterone cream for transdermal HRT delivery."
+    "price": 35,
+    "description": "Topical bioidentical progesterone cream for transdermal HRT delivery.",
+    "imageId": "t1x4qkbrbnjf8jeyqzdm327j",
+    "image": "/images/formulary/rxhere/t1x4qkbrbnjf8jeyqzdm327j.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/t1x4qkbrbnjf8jeyqzdm327j.webp"
   },
   {
     "sku": "HR-STB",
@@ -2274,7 +2871,10 @@
     "size": "each",
     "total": "5mg",
     "price": 2.5,
-    "description": "Flavored sublingual stanozolol troche for anabolic and tissue healing support."
+    "description": "Flavored sublingual stanozolol troche for anabolic and tissue healing support.",
+    "imageId": "zx1armci4debh9ae5bgt18vm",
+    "image": "/images/formulary/rxhere/zx1armci4debh9ae5bgt18vm.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/zx1armci4debh9ae5bgt18vm.webp"
   },
   {
     "sku": "HR-STA",
@@ -2285,7 +2885,10 @@
     "size": "each",
     "total": "10mg",
     "price": 1.88,
-    "description": "Anabolic steroid used in muscle preservation, wound healing, and anemia protocols."
+    "description": "Anabolic steroid used in muscle preservation, wound healing, and anemia protocols.",
+    "imageId": "bi42q5xo7gl7u6cur96jiihy",
+    "image": "/images/formulary/rxhere/bi42q5xo7gl7u6cur96jiihy.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/bi42q5xo7gl7u6cur96jiihy.webp"
   },
   {
     "sku": "HR-STD",
@@ -2296,7 +2899,10 @@
     "size": "each",
     "total": "25mg",
     "price": 2.75,
-    "description": "Hypoallergenic stanozolol capsule for sensitive patients."
+    "description": "Hypoallergenic stanozolol capsule for sensitive patients.",
+    "imageId": "fxao8qyoeri6u38u0emtnb74",
+    "image": "/images/formulary/rxhere/fxao8qyoeri6u38u0emtnb74.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/fxao8qyoeri6u38u0emtnb74.webp"
   },
   {
     "sku": "HR-STD-02",
@@ -2307,7 +2913,10 @@
     "size": "each",
     "total": "50mg",
     "price": 3.63,
-    "description": "Hypoallergenic stanozolol capsule for sensitive patients."
+    "description": "Hypoallergenic stanozolol capsule for sensitive patients.",
+    "imageId": "kswcy1ev6izmxgv8e1e6mt8f",
+    "image": "/images/formulary/rxhere/kswcy1ev6izmxgv8e1e6mt8f.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/kswcy1ev6izmxgv8e1e6mt8f.webp"
   },
   {
     "sku": "HR-T34",
@@ -2318,7 +2927,10 @@
     "size": "each",
     "total": "25/150mcg",
     "price": 1.1,
-    "description": "Combination thyroid hormone capsule replicating natural thyroid output."
+    "description": "Combination thyroid hormone capsule replicating natural thyroid output.",
+    "imageId": "mb8nxxydqyjx5k94vv2ndjum",
+    "image": "/images/formulary/rxhere/mb8nxxydqyjx5k94vv2ndjum.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/mb8nxxydqyjx5k94vv2ndjum.webp"
   },
   {
     "sku": "HR-T34-02",
@@ -2328,8 +2940,11 @@
     "strength": "12/50mcg",
     "size": "each",
     "total": "12/50mcg",
-    "price": 1.0,
-    "description": "Combination thyroid hormone capsule replicating natural thyroid output."
+    "price": 1,
+    "description": "Combination thyroid hormone capsule replicating natural thyroid output.",
+    "imageId": "koq140rksfy5ve6c1xyrqwpn",
+    "image": "/images/formulary/rxhere/koq140rksfy5ve6c1xyrqwpn.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/koq140rksfy5ve6c1xyrqwpn.webp"
   },
   {
     "sku": "HR-T4",
@@ -2339,8 +2954,11 @@
     "strength": "50mcg",
     "size": "each",
     "total": "50mcg",
-    "price": 1.0,
-    "description": "Synthetic T4 for hypothyroidism and thyroid replacement."
+    "price": 1,
+    "description": "Synthetic T4 for hypothyroidism and thyroid replacement.",
+    "imageId": "ytto5183rlnomi71d03ppgno",
+    "image": "/images/formulary/rxhere/ytto5183rlnomi71d03ppgno.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ytto5183rlnomi71d03ppgno.webp"
   },
   {
     "sku": "HR-TAM",
@@ -2350,8 +2968,11 @@
     "strength": "10mg",
     "size": "each",
     "total": "10mg",
-    "price": 1.0,
-    "description": "SERM blocking estrogen receptors; used in cancer prevention and post-cycle therapy."
+    "price": 1,
+    "description": "SERM blocking estrogen receptors; used in cancer prevention and post-cycle therapy.",
+    "imageId": "hq8puckgrmvd0zl7xql1r66o",
+    "image": "/images/formulary/rxhere/hq8puckgrmvd0zl7xql1r66o.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/hq8puckgrmvd0zl7xql1r66o.webp"
   },
   {
     "sku": "HR-TAM-02",
@@ -2362,7 +2983,10 @@
     "size": "each",
     "total": "20mg",
     "price": 2.13,
-    "description": "SERM blocking estrogen receptors; used in cancer prevention and post-cycle therapy."
+    "description": "SERM blocking estrogen receptors; used in cancer prevention and post-cycle therapy.",
+    "imageId": "c5nn8r21ssl4db6fuqlvt4n2",
+    "image": "/images/formulary/rxhere/c5nn8r21ssl4db6fuqlvt4n2.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/c5nn8r21ssl4db6fuqlvt4n2.webp"
   },
   {
     "sku": "HR-TST",
@@ -2373,7 +2997,10 @@
     "size": "each",
     "total": "10mg",
     "price": 1.25,
-    "description": "Sublingual sustained-release testosterone for convenient androgen delivery."
+    "description": "Sublingual sustained-release testosterone for convenient androgen delivery.",
+    "imageId": "ihmbnj1b203ru17yf7owx0qr",
+    "image": "/images/formulary/rxhere/ihmbnj1b203ru17yf7owx0qr.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ihmbnj1b203ru17yf7owx0qr.webp"
   },
   {
     "sku": "HR-TST-02",
@@ -2384,7 +3011,10 @@
     "size": "each",
     "total": "25mg",
     "price": 1.25,
-    "description": "Sublingual sustained-release testosterone for convenient androgen delivery."
+    "description": "Sublingual sustained-release testosterone for convenient androgen delivery.",
+    "imageId": "hok50yhrovt7uc9m82qq0asj",
+    "image": "/images/formulary/rxhere/hok50yhrovt7uc9m82qq0asj.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/hok50yhrovt7uc9m82qq0asj.webp"
   },
   {
     "sku": "HR-TST-03",
@@ -2395,7 +3025,10 @@
     "size": "each",
     "total": "50mg",
     "price": 1.25,
-    "description": "Sublingual sustained-release testosterone for convenient androgen delivery."
+    "description": "Sublingual sustained-release testosterone for convenient androgen delivery.",
+    "imageId": "lnndf1cybspzg5jaf7vubach",
+    "image": "/images/formulary/rxhere/lnndf1cybspzg5jaf7vubach.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/lnndf1cybspzg5jaf7vubach.webp"
   },
   {
     "sku": "HR-TST-04",
@@ -2406,7 +3039,10 @@
     "size": "each",
     "total": "75mg",
     "price": 1.25,
-    "description": "Sublingual sustained-release testosterone for convenient androgen delivery."
+    "description": "Sublingual sustained-release testosterone for convenient androgen delivery.",
+    "imageId": "lsm4im4fn2gxvm9bjt3tl52t",
+    "image": "/images/formulary/rxhere/lsm4im4fn2gxvm9bjt3tl52t.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/lsm4im4fn2gxvm9bjt3tl52t.webp"
   },
   {
     "sku": "HR-TST-05",
@@ -2417,7 +3053,10 @@
     "size": "each",
     "total": "100mg",
     "price": 1.5,
-    "description": "Sublingual sustained-release testosterone for convenient androgen delivery."
+    "description": "Sublingual sustained-release testosterone for convenient androgen delivery.",
+    "imageId": "wnezu5wo1qb0xr2lz6gv0s8a",
+    "image": "/images/formulary/rxhere/wnezu5wo1qb0xr2lz6gv0s8a.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/wnezu5wo1qb0xr2lz6gv0s8a.webp"
   },
   {
     "sku": "HR-TST-06",
@@ -2427,8 +3066,11 @@
     "strength": "200mg",
     "size": "each",
     "total": "200mg",
-    "price": 1.0,
-    "description": "Sublingual sustained-release testosterone for convenient androgen delivery."
+    "price": 1,
+    "description": "Sublingual sustained-release testosterone for convenient androgen delivery.",
+    "imageId": "g285cgvdm5qdcwxz4e7j7x7n",
+    "image": "/images/formulary/rxhere/g285cgvdm5qdcwxz4e7j7x7n.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/g285cgvdm5qdcwxz4e7j7x7n.webp"
   },
   {
     "sku": "HR-TCC",
@@ -2438,8 +3080,11 @@
     "strength": "10mg/ml",
     "size": "30mL Tube",
     "total": "300mg",
-    "price": 35.0,
-    "description": "Transdermal testosterone cream for consistent androgen levels in HRT."
+    "price": 35,
+    "description": "Transdermal testosterone cream for consistent androgen levels in HRT.",
+    "imageId": "ihmbnj1b203ru17yf7owx0qr",
+    "image": "/images/formulary/rxhere/ihmbnj1b203ru17yf7owx0qr.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ihmbnj1b203ru17yf7owx0qr.webp"
   },
   {
     "sku": "HR-TCC-02",
@@ -2449,8 +3094,11 @@
     "strength": "20mg/ml",
     "size": "30mL Tube",
     "total": "600mg",
-    "price": 35.0,
-    "description": "Transdermal testosterone cream for consistent androgen levels in HRT."
+    "price": 35,
+    "description": "Transdermal testosterone cream for consistent androgen levels in HRT.",
+    "imageId": "vkx1uhghssvq86iryt4qhpd1",
+    "image": "/images/formulary/rxhere/vkx1uhghssvq86iryt4qhpd1.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/vkx1uhghssvq86iryt4qhpd1.webp"
   },
   {
     "sku": "HR-TCC-03",
@@ -2460,8 +3108,11 @@
     "strength": "30mg/ml",
     "size": "30mL Tube",
     "total": "900mg",
-    "price": 35.0,
-    "description": "Transdermal testosterone cream for consistent androgen levels in HRT."
+    "price": 35,
+    "description": "Transdermal testosterone cream for consistent androgen levels in HRT.",
+    "imageId": "ihmbnj1b203ru17yf7owx0qr",
+    "image": "/images/formulary/rxhere/ihmbnj1b203ru17yf7owx0qr.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ihmbnj1b203ru17yf7owx0qr.webp"
   },
   {
     "sku": "HR-TCC-04",
@@ -2471,8 +3122,11 @@
     "strength": "40mg/ml",
     "size": "30mL Tube",
     "total": "1200mg",
-    "price": 35.0,
-    "description": "Transdermal testosterone cream for consistent androgen levels in HRT."
+    "price": 35,
+    "description": "Transdermal testosterone cream for consistent androgen levels in HRT.",
+    "imageId": "r10xn8szvtk4b3jk7brijowh",
+    "image": "/images/formulary/rxhere/r10xn8szvtk4b3jk7brijowh.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/r10xn8szvtk4b3jk7brijowh.webp"
   },
   {
     "sku": "HR-TCC-05",
@@ -2482,8 +3136,11 @@
     "strength": "50mg/ml",
     "size": "30mL Tube",
     "total": "1500mg",
-    "price": 35.0,
-    "description": "Transdermal testosterone cream for consistent androgen levels in HRT."
+    "price": 35,
+    "description": "Transdermal testosterone cream for consistent androgen levels in HRT.",
+    "imageId": "lnndf1cybspzg5jaf7vubach",
+    "image": "/images/formulary/rxhere/lnndf1cybspzg5jaf7vubach.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/lnndf1cybspzg5jaf7vubach.webp"
   },
   {
     "sku": "HR-TCC-06",
@@ -2493,8 +3150,11 @@
     "strength": "120mg/ml",
     "size": "30mL Tube",
     "total": "3600mg",
-    "price": 35.0,
-    "description": "Transdermal testosterone cream for consistent androgen levels in HRT."
+    "price": 35,
+    "description": "Transdermal testosterone cream for consistent androgen levels in HRT.",
+    "imageId": "sn58cctoji9zscpokytfnrse",
+    "image": "/images/formulary/rxhere/sn58cctoji9zscpokytfnrse.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/sn58cctoji9zscpokytfnrse.webp"
   },
   {
     "sku": "HR-TCC-07",
@@ -2504,8 +3164,11 @@
     "strength": "200mg/ml",
     "size": "30mL Tube",
     "total": "6000mg",
-    "price": 35.0,
-    "description": "Transdermal testosterone cream for consistent androgen levels in HRT."
+    "price": 35,
+    "description": "Transdermal testosterone cream for consistent androgen levels in HRT.",
+    "imageId": "g285cgvdm5qdcwxz4e7j7x7n",
+    "image": "/images/formulary/rxhere/g285cgvdm5qdcwxz4e7j7x7n.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/g285cgvdm5qdcwxz4e7j7x7n.webp"
   },
   {
     "sku": "HR-TCP",
@@ -2515,8 +3178,11 @@
     "strength": "25mg/ml GSO",
     "size": "5mL",
     "total": "125mg",
-    "price": 35.0,
-    "description": "Long-acting injectable testosterone ester for hypogonadism and TRT."
+    "price": 35,
+    "description": "Long-acting injectable testosterone ester for hypogonadism and TRT.",
+    "imageId": "hok50yhrovt7uc9m82qq0asj",
+    "image": "/images/formulary/rxhere/hok50yhrovt7uc9m82qq0asj.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/hok50yhrovt7uc9m82qq0asj.webp"
   },
   {
     "sku": "HR-TCP-02",
@@ -2526,8 +3192,11 @@
     "strength": "25mg/ml MCT",
     "size": "5mL",
     "total": "125mg",
-    "price": 35.0,
-    "description": "Long-acting injectable testosterone ester for hypogonadism and TRT."
+    "price": 35,
+    "description": "Long-acting injectable testosterone ester for hypogonadism and TRT.",
+    "imageId": "hok50yhrovt7uc9m82qq0asj",
+    "image": "/images/formulary/rxhere/hok50yhrovt7uc9m82qq0asj.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/hok50yhrovt7uc9m82qq0asj.webp"
   },
   {
     "sku": "HR-TCP-03",
@@ -2538,7 +3207,10 @@
     "size": "5mL",
     "total": "1000mg",
     "price": 17.5,
-    "description": "Long-acting injectable testosterone ester for hypogonadism and TRT."
+    "description": "Long-acting injectable testosterone ester for hypogonadism and TRT.",
+    "imageId": "umohtqprnvqnemd6jpc35sx4",
+    "image": "/images/formulary/rxhere/umohtqprnvqnemd6jpc35sx4.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/umohtqprnvqnemd6jpc35sx4.webp"
   },
   {
     "sku": "HR-TCP-04",
@@ -2549,7 +3221,10 @@
     "size": "5mL",
     "total": "1000mg",
     "price": 17.5,
-    "description": "Long-acting injectable testosterone ester for hypogonadism and TRT."
+    "description": "Long-acting injectable testosterone ester for hypogonadism and TRT.",
+    "imageId": "umohtqprnvqnemd6jpc35sx4",
+    "image": "/images/formulary/rxhere/umohtqprnvqnemd6jpc35sx4.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/umohtqprnvqnemd6jpc35sx4.webp"
   },
   {
     "sku": "HR-TCP-05",
@@ -2559,8 +3234,11 @@
     "strength": "200mg/ml MCT",
     "size": "10mL",
     "total": "2000mg",
-    "price": 30.0,
-    "description": "Long-acting injectable testosterone ester for hypogonadism and TRT."
+    "price": 30,
+    "description": "Long-acting injectable testosterone ester for hypogonadism and TRT.",
+    "imageId": "umohtqprnvqnemd6jpc35sx4",
+    "image": "/images/formulary/rxhere/umohtqprnvqnemd6jpc35sx4.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/umohtqprnvqnemd6jpc35sx4.webp"
   },
   {
     "sku": "HR-TPC",
@@ -2570,8 +3248,11 @@
     "strength": "200mg/ml",
     "size": "10mL",
     "total": "2000mg",
-    "price": 30.0,
-    "description": "Commercial-grade testosterone cypionate for TRT."
+    "price": 30,
+    "description": "Commercial-grade testosterone cypionate for TRT.",
+    "imageId": "umohtqprnvqnemd6jpc35sx4",
+    "image": "/images/formulary/rxhere/umohtqprnvqnemd6jpc35sx4.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/umohtqprnvqnemd6jpc35sx4.webp"
   },
   {
     "sku": "HR-TEN",
@@ -2582,7 +3263,10 @@
     "size": "5mL",
     "total": "1000mg",
     "price": 17.5,
-    "description": "Injectable testosterone ester with 1\u20132 week half-life for TRT dosing."
+    "description": "Injectable testosterone ester with 1–2 week half-life for TRT dosing.",
+    "imageId": "umohtqprnvqnemd6jpc35sx4",
+    "image": "/images/formulary/rxhere/umohtqprnvqnemd6jpc35sx4.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/umohtqprnvqnemd6jpc35sx4.webp"
   },
   {
     "sku": "HR-TEN-02",
@@ -2593,7 +3277,10 @@
     "size": "10mL",
     "total": "2000mg",
     "price": 17.5,
-    "description": "Injectable testosterone ester with 1\u20132 week half-life for TRT dosing."
+    "description": "Injectable testosterone ester with 1–2 week half-life for TRT dosing.",
+    "imageId": "umohtqprnvqnemd6jpc35sx4",
+    "image": "/images/formulary/rxhere/umohtqprnvqnemd6jpc35sx4.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/umohtqprnvqnemd6jpc35sx4.webp"
   },
   {
     "sku": "HR-TCA",
@@ -2603,8 +3290,11 @@
     "strength": "200mg/1mg",
     "size": "10mL",
     "total": "2000mg/10mg",
-    "price": 50.0,
-    "description": "Combined TRT injectable with built-in aromatase inhibitor."
+    "price": 50,
+    "description": "Combined TRT injectable with built-in aromatase inhibitor.",
+    "imageId": "nlzr5f4r2w50dlm1np3xnilw",
+    "image": "/images/formulary/rxhere/nlzr5f4r2w50dlm1np3xnilw.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/nlzr5f4r2w50dlm1np3xnilw.webp"
   },
   {
     "sku": "HR-7KD",
@@ -2614,8 +3304,11 @@
     "strength": "10mg",
     "size": "each",
     "total": "10mg",
-    "price": 1.0,
-    "description": "Non-androgenic DHEA metabolite supporting thermogenesis and cortisol balance."
+    "price": 1,
+    "description": "Non-androgenic DHEA metabolite supporting thermogenesis and cortisol balance.",
+    "imageId": "vbdh3fyrz5mtxhi3vvkq4xnw",
+    "image": "/images/formulary/rxhere/vbdh3fyrz5mtxhi3vvkq4xnw.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/vbdh3fyrz5mtxhi3vvkq4xnw.webp"
   },
   {
     "sku": "SX-PT1",
@@ -2625,8 +3318,11 @@
     "strength": "2mg/mL",
     "size": "5 mL",
     "total": "10mg",
-    "price": 80.0,
-    "description": "Melanocortin receptor agonist centrally stimulating sexual arousal."
+    "price": 80,
+    "description": "Melanocortin receptor agonist centrally stimulating sexual arousal.",
+    "imageId": "jn6o0ngolpjjefcndc6cktpy",
+    "image": "/images/formulary/rxhere/jn6o0ngolpjjefcndc6cktpy.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/jn6o0ngolpjjefcndc6cktpy.webp"
   },
   {
     "sku": "SX-OXN",
@@ -2636,8 +3332,11 @@
     "strength": "100IU/mL",
     "size": "10mL",
     "total": "1000IU",
-    "price": 60.0,
-    "description": "Intranasal oxytocin for bonding, sexual arousal, and stress reduction."
+    "price": 60,
+    "description": "Intranasal oxytocin for bonding, sexual arousal, and stress reduction.",
+    "imageId": "rb04isbtfndygvpgcwnocpa1",
+    "image": "/images/formulary/rxhere/rb04isbtfndygvpgcwnocpa1.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/rb04isbtfndygvpgcwnocpa1.webp"
   },
   {
     "sku": "SX-OXN-02",
@@ -2647,8 +3346,11 @@
     "strength": "50IU/mL",
     "size": "10mL",
     "total": "500IU",
-    "price": 60.0,
-    "description": "Intranasal oxytocin for bonding, sexual arousal, and stress reduction."
+    "price": 60,
+    "description": "Intranasal oxytocin for bonding, sexual arousal, and stress reduction.",
+    "imageId": "z2z0upvmz1lzzcstz6w2v33n",
+    "image": "/images/formulary/rxhere/z2z0upvmz1lzzcstz6w2v33n.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/z2z0upvmz1lzzcstz6w2v33n.webp"
   },
   {
     "sku": "SX-BRM",
@@ -2658,8 +3360,11 @@
     "strength": "5mg/mL",
     "size": "10mL",
     "total": "50mg",
-    "price": 80.0,
-    "description": "Nasal PT-141 for female HSDD and male erectile support."
+    "price": 80,
+    "description": "Nasal PT-141 for female HSDD and male erectile support.",
+    "imageId": "u4ide95vwrztpmuzszcizfa2",
+    "image": "/images/formulary/rxhere/u4ide95vwrztpmuzszcizfa2.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/u4ide95vwrztpmuzszcizfa2.webp"
   },
   {
     "sku": "SX-SLD",
@@ -2670,7 +3375,10 @@
     "size": "each",
     "total": "50mg",
     "price": 1.25,
-    "description": "PDE5 inhibitor increasing penile blood flow for erectile dysfunction."
+    "description": "PDE5 inhibitor increasing penile blood flow for erectile dysfunction.",
+    "imageId": "dz0i2h4yzkj4yik52rgo3ykx",
+    "image": "/images/formulary/rxhere/dz0i2h4yzkj4yik52rgo3ykx.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/dz0i2h4yzkj4yik52rgo3ykx.webp"
   },
   {
     "sku": "SX-SLD-02",
@@ -2681,7 +3389,10 @@
     "size": "each",
     "total": "100mg",
     "price": 1.25,
-    "description": "PDE5 inhibitor increasing penile blood flow for erectile dysfunction."
+    "description": "PDE5 inhibitor increasing penile blood flow for erectile dysfunction.",
+    "imageId": "waw86vcgtfxiz88zgvbwzy6u",
+    "image": "/images/formulary/rxhere/waw86vcgtfxiz88zgvbwzy6u.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/waw86vcgtfxiz88zgvbwzy6u.webp"
   },
   {
     "sku": "SX-SCS",
@@ -2691,8 +3402,11 @@
     "strength": "125mg",
     "size": "each",
     "total": "125mg",
-    "price": 2.0,
-    "description": "Sublingual sildenafil troche for rapid-onset ED management."
+    "price": 2,
+    "description": "Sublingual sildenafil troche for rapid-onset ED management.",
+    "imageId": "svzhm1akes39j7u1v52avljc",
+    "image": "/images/formulary/rxhere/svzhm1akes39j7u1v52avljc.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/svzhm1akes39j7u1v52avljc.webp"
   },
   {
     "sku": "SX-STS",
@@ -2703,7 +3417,10 @@
     "size": "each",
     "total": "120mg/22mg",
     "price": 1.88,
-    "description": "Combined PDE5 inhibitor troche for enhanced ED response."
+    "description": "Combined PDE5 inhibitor troche for enhanced ED response.",
+    "imageId": "ovawm2xx02qobu1xr2eagf48",
+    "image": "/images/formulary/rxhere/ovawm2xx02qobu1xr2eagf48.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ovawm2xx02qobu1xr2eagf48.webp"
   },
   {
     "sku": "SX-TAD",
@@ -2713,8 +3430,11 @@
     "strength": "5.5mg",
     "size": "each",
     "total": "5.5mg",
-    "price": 2.0,
-    "description": "Long-acting PDE5 inhibitor for ED and BPH with up to 36-hour duration."
+    "price": 2,
+    "description": "Long-acting PDE5 inhibitor for ED and BPH with up to 36-hour duration.",
+    "imageId": "d6mzlhh1qw9zmuucn95f80pb",
+    "image": "/images/formulary/rxhere/d6mzlhh1qw9zmuucn95f80pb.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/d6mzlhh1qw9zmuucn95f80pb.webp"
   },
   {
     "sku": "SX-TAD-02",
@@ -2725,7 +3445,10 @@
     "size": "each",
     "total": "25mg",
     "price": 0.5,
-    "description": "Long-acting PDE5 inhibitor for ED and BPH with up to 36-hour duration."
+    "description": "Long-acting PDE5 inhibitor for ED and BPH with up to 36-hour duration.",
+    "imageId": "l3vo0ynmili2kog976e5zkpv",
+    "image": "/images/formulary/rxhere/l3vo0ynmili2kog976e5zkpv.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/l3vo0ynmili2kog976e5zkpv.webp"
   },
   {
     "sku": "SX-TSL",
@@ -2736,7 +3459,10 @@
     "size": "each",
     "total": "20mg",
     "price": 1.5,
-    "description": "Flavored sublingual tadalafil troche for convenient rapid-dissolve ED therapy."
+    "description": "Flavored sublingual tadalafil troche for convenient rapid-dissolve ED therapy.",
+    "imageId": "psbdrm9l92a1yjbzjh0r5fa9",
+    "image": "/images/formulary/rxhere/psbdrm9l92a1yjbzjh0r5fa9.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/psbdrm9l92a1yjbzjh0r5fa9.webp"
   },
   {
     "sku": "SX-VAR",
@@ -2747,7 +3473,10 @@
     "size": "each",
     "total": "20mg",
     "price": 1.5,
-    "description": "Highly selective PDE5 inhibitor for rapid-onset erectile dysfunction treatment."
+    "description": "Highly selective PDE5 inhibitor for rapid-onset erectile dysfunction treatment.",
+    "imageId": "sx84fldlcxomtd3jmzp3ivmt",
+    "image": "/images/formulary/rxhere/sx84fldlcxomtd3jmzp3ivmt.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/sx84fldlcxomtd3jmzp3ivmt.webp"
   },
   {
     "sku": "SX-CLX",
@@ -2758,7 +3487,10 @@
     "size": "30mL",
     "total": "270/2.25/225/45/6.3mg",
     "price": 31.25,
-    "description": "Topical arousal cream combining arginine, ergoloid, pentoxifylline, sildenafil, and theophylline."
+    "description": "Topical arousal cream combining arginine, ergoloid, pentoxifylline, sildenafil, and theophylline.",
+    "imageId": "rc2zo6rjsv4kdy7y9kgza451",
+    "image": "/images/formulary/rxhere/rc2zo6rjsv4kdy7y9kgza451.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/rc2zo6rjsv4kdy7y9kgza451.webp"
   },
   {
     "sku": "SX-TAP",
@@ -2768,8 +3500,11 @@
     "strength": "40mg/4mg",
     "size": "each",
     "total": "40mg/4mg",
-    "price": 19.0,
-    "description": "Novel troche pairing PDE5 inhibitor with dopamine agonist for enhanced sexual response."
+    "price": 19,
+    "description": "Novel troche pairing PDE5 inhibitor with dopamine agonist for enhanced sexual response.",
+    "imageId": "pdlj9c0rlty6ncq11b09zmol",
+    "image": "/images/formulary/rxhere/pdlj9c0rlty6ncq11b09zmol.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/pdlj9c0rlty6ncq11b09zmol.webp"
   },
   {
     "sku": "SX-TAP-02",
@@ -2780,7 +3515,10 @@
     "size": "each",
     "total": "40mg/6mg",
     "price": 1.98,
-    "description": "Novel troche pairing PDE5 inhibitor with dopamine agonist for enhanced sexual response."
+    "description": "Novel troche pairing PDE5 inhibitor with dopamine agonist for enhanced sexual response.",
+    "imageId": "pdlj9c0rlty6ncq11b09zmol",
+    "image": "/images/formulary/rxhere/pdlj9c0rlty6ncq11b09zmol.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/pdlj9c0rlty6ncq11b09zmol.webp"
   },
   {
     "sku": "SX-PKO",
@@ -2790,7 +3528,7 @@
     "strength": "3.5mg/2mg/200IU/mL",
     "size": "5 mL",
     "total": "16.5mg/10mg/1000IU",
-    "price": 108.0,
+    "price": 108,
     "description": "Libido and arousal stack combining melanocortin PT-141, hormone-stimulating Kisspeptin-10, and bonding peptide oxytocin."
   },
   {
@@ -2801,8 +3539,11 @@
     "strength": "2mg/10mg/mL",
     "size": "5 mL",
     "total": "10mg/50mg",
-    "price": 108.0,
-    "description": "Skin rejuvenation stack combining telomerase activator with copper peptide."
+    "price": 108,
+    "description": "Skin rejuvenation stack combining telomerase activator with copper peptide.",
+    "imageId": "g5spyxwgk68kas8tgmf87hzt",
+    "image": "/images/formulary/rxhere/g5spyxwgk68kas8tgmf87hzt.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/g5spyxwgk68kas8tgmf87hzt.webp"
   },
   {
     "sku": "SK-GHK",
@@ -2812,8 +3553,11 @@
     "strength": "10mg/mL",
     "size": "5 mL",
     "total": "50mg",
-    "price": 80.0,
-    "description": "Copper tripeptide promoting collagen synthesis, wound healing, and skin regeneration."
+    "price": 80,
+    "description": "Copper tripeptide promoting collagen synthesis, wound healing, and skin regeneration.",
+    "imageId": "odrrjde6o2s8n46oewcn7pyz",
+    "image": "/images/formulary/rxhere/odrrjde6o2s8n46oewcn7pyz.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/odrrjde6o2s8n46oewcn7pyz.webp"
   },
   {
     "sku": "SK-FIN",
@@ -2823,8 +3567,11 @@
     "strength": "0.50mg",
     "size": "each",
     "total": "0.50mg",
-    "price": 1.0,
-    "description": "5\u03b1-reductase inhibitor reducing DHT to treat androgenetic alopecia."
+    "price": 1,
+    "description": "5α-reductase inhibitor reducing DHT to treat androgenetic alopecia.",
+    "imageId": "o65jwso612j6ff7bdksq8e6f",
+    "image": "/images/formulary/rxhere/o65jwso612j6ff7bdksq8e6f.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/o65jwso612j6ff7bdksq8e6f.webp"
   },
   {
     "sku": "SK-FIN-02",
@@ -2835,7 +3582,10 @@
     "size": "each",
     "total": "1mg",
     "price": 1.25,
-    "description": "5\u03b1-reductase inhibitor reducing DHT to treat androgenetic alopecia."
+    "description": "5α-reductase inhibitor reducing DHT to treat androgenetic alopecia.",
+    "imageId": "uj6iky05tst4tt43stoly40g",
+    "image": "/images/formulary/rxhere/uj6iky05tst4tt43stoly40g.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/uj6iky05tst4tt43stoly40g.webp"
   },
   {
     "sku": "SK-FMT",
@@ -2845,8 +3595,11 @@
     "strength": "0.25mg/5.0mg/0.03%",
     "size": "30mL",
     "total": "7.5mg/150mg/0.03%",
-    "price": 35.0,
-    "description": "Triple hair-loss foam combining DHT blocker, vasodilator, and retinoid."
+    "price": 35,
+    "description": "Triple hair-loss foam combining DHT blocker, vasodilator, and retinoid.",
+    "imageId": "czi25tnwhrdjho5ogmo5jg2c",
+    "image": "/images/formulary/rxhere/czi25tnwhrdjho5ogmo5jg2c.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/czi25tnwhrdjho5ogmo5jg2c.webp"
   },
   {
     "sku": "SK-FM",
@@ -2856,8 +3609,11 @@
     "strength": "0.25mg/5mg",
     "size": "30mL",
     "total": "7.5mg/150mg",
-    "price": 35.0,
-    "description": "DHT blocker + scalp vasodilator combination for synergistic hair retention."
+    "price": 35,
+    "description": "DHT blocker + scalp vasodilator combination for synergistic hair retention.",
+    "imageId": "czi25tnwhrdjho5ogmo5jg2c",
+    "image": "/images/formulary/rxhere/czi25tnwhrdjho5ogmo5jg2c.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/czi25tnwhrdjho5ogmo5jg2c.webp"
   },
   {
     "sku": "SK-FM-02",
@@ -2867,8 +3623,11 @@
     "strength": "0.25/12%",
     "size": "30mL",
     "total": "7.5mg/12%",
-    "price": 35.0,
-    "description": "DHT blocker + scalp vasodilator combination for synergistic hair retention."
+    "price": 35,
+    "description": "DHT blocker + scalp vasodilator combination for synergistic hair retention.",
+    "imageId": "ap3huzbgga0wflhakahyb4e2",
+    "image": "/images/formulary/rxhere/ap3huzbgga0wflhakahyb4e2.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ap3huzbgga0wflhakahyb4e2.webp"
   },
   {
     "sku": "SK-FM-03",
@@ -2878,8 +3637,11 @@
     "strength": "1mg/2.5mg",
     "size": "each",
     "total": "1mg/2.5mg",
-    "price": 1.0,
-    "description": "DHT blocker + scalp vasodilator combination for synergistic hair retention."
+    "price": 1,
+    "description": "DHT blocker + scalp vasodilator combination for synergistic hair retention.",
+    "imageId": "uj6iky05tst4tt43stoly40g",
+    "image": "/images/formulary/rxhere/uj6iky05tst4tt43stoly40g.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/uj6iky05tst4tt43stoly40g.webp"
   },
   {
     "sku": "SK-FM-04",
@@ -2890,7 +3652,10 @@
     "size": "30mL",
     "total": "7.5mg/12%",
     "price": 37.5,
-    "description": "DHT blocker + scalp vasodilator combination for synergistic hair retention."
+    "description": "DHT blocker + scalp vasodilator combination for synergistic hair retention.",
+    "imageId": "ap3huzbgga0wflhakahyb4e2",
+    "image": "/images/formulary/rxhere/ap3huzbgga0wflhakahyb4e2.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ap3huzbgga0wflhakahyb4e2.webp"
   },
   {
     "sku": "SK-MNX",
@@ -2901,7 +3666,10 @@
     "size": "each",
     "total": "2.5mg",
     "price": 1.25,
-    "description": "Topical vasodilator extending hair follicle anagen phase to reduce shedding."
+    "description": "Topical vasodilator extending hair follicle anagen phase to reduce shedding.",
+    "imageId": "jzre1oa0p8k2o0t1pt8v2dpn",
+    "image": "/images/formulary/rxhere/jzre1oa0p8k2o0t1pt8v2dpn.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/jzre1oa0p8k2o0t1pt8v2dpn.webp"
   },
   {
     "sku": "SK-TRT",
@@ -2911,8 +3679,11 @@
     "strength": "0.00015",
     "size": "30mL",
     "total": "0.00015",
-    "price": 35.0,
-    "description": "Topical retinoid increasing cell turnover to treat acne, photoaging, and hyperpigmentation."
+    "price": 35,
+    "description": "Topical retinoid increasing cell turnover to treat acne, photoaging, and hyperpigmentation.",
+    "imageId": "v7h8lw09c97ti1opzj8v9gth",
+    "image": "/images/formulary/rxhere/v7h8lw09c97ti1opzj8v9gth.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/v7h8lw09c97ti1opzj8v9gth.webp"
   },
   {
     "sku": "SK-TRT-02",
@@ -2922,8 +3693,11 @@
     "strength": "0.0002",
     "size": "30mL",
     "total": "0.0002",
-    "price": 35.0,
-    "description": "Topical retinoid increasing cell turnover to treat acne, photoaging, and hyperpigmentation."
+    "price": 35,
+    "description": "Topical retinoid increasing cell turnover to treat acne, photoaging, and hyperpigmentation.",
+    "imageId": "tmyxw4atqb3dpczew63d5mcl",
+    "image": "/images/formulary/rxhere/tmyxw4atqb3dpczew63d5mcl.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/tmyxw4atqb3dpczew63d5mcl.webp"
   },
   {
     "sku": "DM-BLT1",
@@ -2933,8 +3707,11 @@
     "strength": "20%/10%/10%",
     "size": "30g Jar",
     "total": "20%/10%/10%",
-    "price": 35.0,
-    "description": "Triple topical anesthetic (20/10/10%) for procedural pain management."
+    "price": 35,
+    "description": "Triple topical anesthetic (20/10/10%) for procedural pain management.",
+    "imageId": "g18n35mnuu2hjrzt0yfc7f25",
+    "image": "/images/formulary/rxhere/g18n35mnuu2hjrzt0yfc7f25.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/g18n35mnuu2hjrzt0yfc7f25.webp"
   },
   {
     "sku": "DM-BLT2",
@@ -2944,8 +3721,11 @@
     "strength": "20%/6%/4%",
     "size": "30g Jar",
     "total": "20%/6%/4%",
-    "price": 35.0,
-    "description": "Triple topical anesthetic (20/6/4%) for procedural numbing."
+    "price": 35,
+    "description": "Triple topical anesthetic (20/6/4%) for procedural numbing.",
+    "imageId": "azlw9gbef28y8ibzzwtysyhk",
+    "image": "/images/formulary/rxhere/azlw9gbef28y8ibzzwtysyhk.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/azlw9gbef28y8ibzzwtysyhk.webp"
   },
   {
     "sku": "DM-BLT3",
@@ -2955,8 +3735,11 @@
     "strength": "20%/8%/6%",
     "size": "30g Jar",
     "total": "20%/8%/6%",
-    "price": 36.0,
-    "description": "Triple topical anesthetic (20/8/6%) for dermatologic procedures."
+    "price": 36,
+    "description": "Triple topical anesthetic (20/8/6%) for dermatologic procedures.",
+    "imageId": "azlw9gbef28y8ibzzwtysyhk",
+    "image": "/images/formulary/rxhere/azlw9gbef28y8ibzzwtysyhk.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/azlw9gbef28y8ibzzwtysyhk.webp"
   },
   {
     "sku": "DM-CAN",
@@ -2966,8 +3749,11 @@
     "strength": "Canthar. 1%/Sal. Acid 30%/Podoph. 5%",
     "size": "10mL",
     "total": "1%/30%/5%",
-    "price": 45.0,
-    "description": "Compounded cantharidin/salicylic acid/podophyllum for warts and molluscum."
+    "price": 45,
+    "description": "Compounded cantharidin/salicylic acid/podophyllum for warts and molluscum.",
+    "imageId": "z0ftqtl45q3a2p8vsc59m4ra",
+    "image": "/images/formulary/rxhere/z0ftqtl45q3a2p8vsc59m4ra.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/z0ftqtl45q3a2p8vsc59m4ra.webp"
   },
   {
     "sku": "DM-HQ10",
@@ -2977,8 +3763,11 @@
     "strength": "0.1",
     "size": "30g Jar",
     "total": "0.1",
-    "price": 35.0,
-    "description": "High-potency skin lightening cream targeting hyperpigmentation."
+    "price": 35,
+    "description": "High-potency skin lightening cream targeting hyperpigmentation.",
+    "imageId": "jus0kxysmzhtlwknzmk1ayv8",
+    "image": "/images/formulary/rxhere/jus0kxysmzhtlwknzmk1ayv8.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/jus0kxysmzhtlwknzmk1ayv8.webp"
   },
   {
     "sku": "DM-HQ4A",
@@ -2988,8 +3777,11 @@
     "strength": "4%/2%",
     "size": "30g Jar",
     "total": "4%/2%",
-    "price": 35.0,
-    "description": "Lightening + antioxidant combination for moderate pigmentation correction."
+    "price": 35,
+    "description": "Lightening + antioxidant combination for moderate pigmentation correction.",
+    "imageId": "dxdtuxb1z6fxv1srdabukvwn",
+    "image": "/images/formulary/rxhere/dxdtuxb1z6fxv1srdabukvwn.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/dxdtuxb1z6fxv1srdabukvwn.webp"
   },
   {
     "sku": "DM-HQ4R",
@@ -2999,8 +3791,11 @@
     "strength": "4%/0.05%/2%",
     "size": "30g Jar",
     "total": "4%/0.05%/2%",
-    "price": 35.0,
-    "description": "Classic triple-combination cream for melasma."
+    "price": 35,
+    "description": "Classic triple-combination cream for melasma.",
+    "imageId": "dxdtuxb1z6fxv1srdabukvwn",
+    "image": "/images/formulary/rxhere/dxdtuxb1z6fxv1srdabukvwn.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/dxdtuxb1z6fxv1srdabukvwn.webp"
   },
   {
     "sku": "DM-HQ5A",
@@ -3010,8 +3805,11 @@
     "strength": "5%/0.1%/2.5%/2%",
     "size": "20g Tube",
     "total": "5%/0.1%/2.5%/2%",
-    "price": 35.0,
-    "description": "Quad-combination brightening cream for melasma with vitamin C."
+    "price": 35,
+    "description": "Quad-combination brightening cream for melasma with vitamin C.",
+    "imageId": "s4y1x8ttcy2dqp51kux8cxy3",
+    "image": "/images/formulary/rxhere/s4y1x8ttcy2dqp51kux8cxy3.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/s4y1x8ttcy2dqp51kux8cxy3.webp"
   },
   {
     "sku": "DM-HQ5B",
@@ -3021,8 +3819,11 @@
     "strength": "5%/0.05%/2.5%/2%",
     "size": "20g Tube",
     "total": "5%/0.05%/2.5%/2%",
-    "price": 35.0,
-    "description": "Quad-combination brightening cream (low retinoid) with vitamin C."
+    "price": 35,
+    "description": "Quad-combination brightening cream (low retinoid) with vitamin C.",
+    "imageId": "s4y1x8ttcy2dqp51kux8cxy3",
+    "image": "/images/formulary/rxhere/s4y1x8ttcy2dqp51kux8cxy3.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/s4y1x8ttcy2dqp51kux8cxy3.webp"
   },
   {
     "sku": "DM-HQ5D",
@@ -3032,8 +3833,11 @@
     "strength": "5%/0.1%/0.1%",
     "size": "30g Jar",
     "total": "5%/0.1%/0.1%",
-    "price": 35.0,
-    "description": "Triple-combination melasma cream with dexamethasone anti-inflammatory."
+    "price": 35,
+    "description": "Triple-combination melasma cream with dexamethasone anti-inflammatory.",
+    "imageId": "g56cg33rwzf7nszkw1u12obs",
+    "image": "/images/formulary/rxhere/g56cg33rwzf7nszkw1u12obs.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/g56cg33rwzf7nszkw1u12obs.webp"
   },
   {
     "sku": "DM-HQ6",
@@ -3043,8 +3847,11 @@
     "strength": "0.06",
     "size": "30g Jar",
     "total": "0.06",
-    "price": 35.0,
-    "description": "Intermediate-strength lightening cream for moderate hyperpigmentation."
+    "price": 35,
+    "description": "Intermediate-strength lightening cream for moderate hyperpigmentation.",
+    "imageId": "pahnlnfzf0ug2onn9jtf9qym",
+    "image": "/images/formulary/rxhere/pahnlnfzf0ug2onn9jtf9qym.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/pahnlnfzf0ug2onn9jtf9qym.webp"
   },
   {
     "sku": "DM-HQ6K",
@@ -3054,8 +3861,11 @@
     "strength": "6%/0.5%/4%",
     "size": "30g Jar",
     "total": "6%/0.5%/4%",
-    "price": 35.0,
-    "description": "Triple-action brightening with high retinoid and kojic acid."
+    "price": 35,
+    "description": "Triple-action brightening with high retinoid and kojic acid.",
+    "imageId": "s5e3y528gotzge9ze4o0yn2v",
+    "image": "/images/formulary/rxhere/s5e3y528gotzge9ze4o0yn2v.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/s5e3y528gotzge9ze4o0yn2v.webp"
   },
   {
     "sku": "DM-HQ6A",
@@ -3065,8 +3875,11 @@
     "strength": "6%/2%/2.5%",
     "size": "30g Jar",
     "total": "6%/2%/2.5%",
-    "price": 35.0,
-    "description": "Lightening cream with vitamin C and anti-inflammatory cortisone."
+    "price": 35,
+    "description": "Lightening cream with vitamin C and anti-inflammatory cortisone.",
+    "imageId": "ehxl3bu8fwkjb7br735mwng7",
+    "image": "/images/formulary/rxhere/ehxl3bu8fwkjb7br735mwng7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ehxl3bu8fwkjb7br735mwng7.webp"
   },
   {
     "sku": "DM-HQ6R",
@@ -3076,8 +3889,11 @@
     "strength": "6%/0.25%/4%/0.05%",
     "size": "20g Tube",
     "total": "6%/0.25%/4%/0.05%",
-    "price": 35.0,
-    "description": "Quad-combination moderate-strength depigmentation cream."
+    "price": 35,
+    "description": "Quad-combination moderate-strength depigmentation cream.",
+    "imageId": "xbykyjwkxmc01otpmzisqp72",
+    "image": "/images/formulary/rxhere/xbykyjwkxmc01otpmzisqp72.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/xbykyjwkxmc01otpmzisqp72.webp"
   },
   {
     "sku": "DM-HQ8",
@@ -3087,8 +3903,11 @@
     "strength": "0.08",
     "size": "30g Jar",
     "total": "0.08",
-    "price": 35.0,
-    "description": "High-strength depigmentation for resistant melasma and hyperpigmentation."
+    "price": 35,
+    "description": "High-strength depigmentation for resistant melasma and hyperpigmentation.",
+    "imageId": "ormvzjgnoyrfjxnfdwydpdsz",
+    "image": "/images/formulary/rxhere/ormvzjgnoyrfjxnfdwydpdsz.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ormvzjgnoyrfjxnfdwydpdsz.webp"
   },
   {
     "sku": "DM-HQ8K",
@@ -3098,8 +3917,11 @@
     "strength": "8%/0.025%/4%/0.05%",
     "size": "20g Tube",
     "total": "8%/0.025%/4%/0.05%",
-    "price": 35.0,
-    "description": "High-strength HQ with mild retinoid and kojic acid."
+    "price": 35,
+    "description": "High-strength HQ with mild retinoid and kojic acid.",
+    "imageId": "u36bwd71skfl7hta5ob17fiz",
+    "image": "/images/formulary/rxhere/u36bwd71skfl7hta5ob17fiz.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/u36bwd71skfl7hta5ob17fiz.webp"
   },
   {
     "sku": "DM-HQ8A",
@@ -3109,8 +3931,11 @@
     "strength": "8%/0.05%/2.5%",
     "size": "20g Tube",
     "total": "8%/0.05%/2.5%",
-    "price": 35.0,
-    "description": "High-strength triple combination for stubborn pigmentation."
+    "price": 35,
+    "description": "High-strength triple combination for stubborn pigmentation.",
+    "imageId": "u36bwd71skfl7hta5ob17fiz",
+    "image": "/images/formulary/rxhere/u36bwd71skfl7hta5ob17fiz.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/u36bwd71skfl7hta5ob17fiz.webp"
   },
   {
     "sku": "DM-HQ8B",
@@ -3120,8 +3945,11 @@
     "strength": "8%/0.1%/0.1%",
     "size": "30g Tube",
     "total": "8%/0.1%/0.1%",
-    "price": 35.0,
-    "description": "High-strength HQ with moderate retinoid and light cortisone."
+    "price": 35,
+    "description": "High-strength HQ with moderate retinoid and light cortisone.",
+    "imageId": "g56cg33rwzf7nszkw1u12obs",
+    "image": "/images/formulary/rxhere/g56cg33rwzf7nszkw1u12obs.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/g56cg33rwzf7nszkw1u12obs.webp"
   },
   {
     "sku": "DM-HQ8C",
@@ -3131,8 +3959,11 @@
     "strength": "8%/0.1%/4%/15%/1%",
     "size": "30g Jar",
     "total": "8%/0.1%/4%/15%/1%",
-    "price": 35.0,
-    "description": "Premium 5-agent brightening formula for severe hyperpigmentation."
+    "price": 35,
+    "description": "Premium 5-agent brightening formula for severe hyperpigmentation.",
+    "imageId": "bp0dqzqm357nr4989ext6x5a",
+    "image": "/images/formulary/rxhere/bp0dqzqm357nr4989ext6x5a.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/bp0dqzqm357nr4989ext6x5a.webp"
   },
   {
     "sku": "DM-KAH",
@@ -3142,8 +3973,11 @@
     "strength": "5%/2%/0.5%",
     "size": "30g Jar",
     "total": "5%/2%/0.5%",
-    "price": 35.0,
-    "description": "Natural brightening stack with kojic acid, vitamin C, and hyaluronic acid."
+    "price": 35,
+    "description": "Natural brightening stack with kojic acid, vitamin C, and hyaluronic acid.",
+    "imageId": "etwk1llsyp2zyrbufon3azfh",
+    "image": "/images/formulary/rxhere/etwk1llsyp2zyrbufon3azfh.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/etwk1llsyp2zyrbufon3azfh.webp"
   },
   {
     "sku": "DM-LPP",
@@ -3153,8 +3987,11 @@
     "strength": "23%/10%/0.5%",
     "size": "30g Jar",
     "total": "23%/10%/0.5%",
-    "price": 35.0,
-    "description": "Anesthetic with vasoconstrictor for extended and enhanced numbing."
+    "price": 35,
+    "description": "Anesthetic with vasoconstrictor for extended and enhanced numbing.",
+    "imageId": "wncn136mdb3ntgcwv47qytmu",
+    "image": "/images/formulary/rxhere/wncn136mdb3ntgcwv47qytmu.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/wncn136mdb3ntgcwv47qytmu.webp"
   },
   {
     "sku": "DM-LTC",
@@ -3164,8 +4001,11 @@
     "strength": "23%/7%",
     "size": "30g Jar",
     "total": "23%/7%",
-    "price": 35.0,
-    "description": "High-potency topical anesthetic for laser and aesthetic procedures."
+    "price": 35,
+    "description": "High-potency topical anesthetic for laser and aesthetic procedures.",
+    "imageId": "wncn136mdb3ntgcwv47qytmu",
+    "image": "/images/formulary/rxhere/wncn136mdb3ntgcwv47qytmu.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/wncn136mdb3ntgcwv47qytmu.webp"
   },
   {
     "sku": "DM-LTP",
@@ -3175,8 +4015,11 @@
     "strength": "23%/7%/2%",
     "size": "30g Jar",
     "total": "23%/7%/2%",
-    "price": 35.0,
-    "description": "Triple anesthetic for superior numbing in cosmetic procedures."
+    "price": 35,
+    "description": "Triple anesthetic for superior numbing in cosmetic procedures.",
+    "imageId": "niqa9n8lwsoc9qoircmazfwy",
+    "image": "/images/formulary/rxhere/niqa9n8lwsoc9qoircmazfwy.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/niqa9n8lwsoc9qoircmazfwy.webp"
   },
   {
     "sku": "DM-RA1",
@@ -3186,8 +4029,11 @@
     "strength": "0.05%/0.1%/2%",
     "size": "30g Jar",
     "total": "0.05%/0.1%/2%",
-    "price": 35.0,
-    "description": "Anti-aging retinoid cream with hydration and antioxidant support."
+    "price": 35,
+    "description": "Anti-aging retinoid cream with hydration and antioxidant support.",
+    "imageId": "dxdtuxb1z6fxv1srdabukvwn",
+    "image": "/images/formulary/rxhere/dxdtuxb1z6fxv1srdabukvwn.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/dxdtuxb1z6fxv1srdabukvwn.webp"
   },
   {
     "sku": "DM-RA2",
@@ -3197,8 +4043,11 @@
     "strength": "0.05%/0.2%/2%",
     "size": "30g Jar",
     "total": "0.05%/0.2%/2%",
-    "price": 35.0,
-    "description": "Anti-aging retinoid cream with higher hyaluronic acid concentration."
+    "price": 35,
+    "description": "Anti-aging retinoid cream with higher hyaluronic acid concentration.",
+    "imageId": "bnkcsg5pnqo70echuxkvcfi8",
+    "image": "/images/formulary/rxhere/bnkcsg5pnqo70echuxkvcfi8.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/bnkcsg5pnqo70echuxkvcfi8.webp"
   },
   {
     "sku": "DM-RA3",
@@ -3208,8 +4057,11 @@
     "strength": "0.05%/0.1%",
     "size": "30g Jar",
     "total": "0.05%/0.1%",
-    "price": 35.0,
-    "description": "Hydrating retinoid cream for photoaging and skin renewal."
+    "price": 35,
+    "description": "Hydrating retinoid cream for photoaging and skin renewal.",
+    "imageId": "g56cg33rwzf7nszkw1u12obs",
+    "image": "/images/formulary/rxhere/g56cg33rwzf7nszkw1u12obs.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/g56cg33rwzf7nszkw1u12obs.webp"
   },
   {
     "sku": "DM-RA4",
@@ -3219,8 +4071,11 @@
     "strength": "0.05%/0.2%",
     "size": "30g Jar",
     "total": "0.05%/0.2%",
-    "price": 35.0,
-    "description": "Retinoid with elevated hyaluronic acid for intensive skin hydration."
+    "price": 35,
+    "description": "Retinoid with elevated hyaluronic acid for intensive skin hydration.",
+    "imageId": "bnkcsg5pnqo70echuxkvcfi8",
+    "image": "/images/formulary/rxhere/bnkcsg5pnqo70echuxkvcfi8.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/bnkcsg5pnqo70echuxkvcfi8.webp"
   },
   {
     "sku": "DM-RA5",
@@ -3230,8 +4085,11 @@
     "strength": "0.1%/2%",
     "size": "30g Jar",
     "total": "0.1%/2%",
-    "price": 35.0,
-    "description": "Retinoid + antibiotic combination targeting acne and cell turnover."
+    "price": 35,
+    "description": "Retinoid + antibiotic combination targeting acne and cell turnover.",
+    "imageId": "g56cg33rwzf7nszkw1u12obs",
+    "image": "/images/formulary/rxhere/g56cg33rwzf7nszkw1u12obs.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/g56cg33rwzf7nszkw1u12obs.webp"
   },
   {
     "sku": "DM-RA6",
@@ -3241,8 +4099,11 @@
     "strength": "0.1%/0.5%",
     "size": "30g Jar",
     "total": "0.1%/0.5%",
-    "price": 35.0,
-    "description": "High-potency retinoid with intensive hyaluronic acid hydration."
+    "price": 35,
+    "description": "High-potency retinoid with intensive hyaluronic acid hydration.",
+    "imageId": "g56cg33rwzf7nszkw1u12obs",
+    "image": "/images/formulary/rxhere/g56cg33rwzf7nszkw1u12obs.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/g56cg33rwzf7nszkw1u12obs.webp"
   },
   {
     "sku": "AD-NLT",
@@ -3253,7 +4114,10 @@
     "size": "each",
     "total": "3mg",
     "price": 1.251,
-    "description": "Low-dose naltrexone (LDN) for addiction support and immune modulation."
+    "description": "Low-dose naltrexone (LDN) for addiction support and immune modulation.",
+    "imageId": "qovxk25ejb5cxnixu8fd14j1",
+    "image": "/images/formulary/rxhere/qovxk25ejb5cxnixu8fd14j1.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/qovxk25ejb5cxnixu8fd14j1.webp"
   },
   {
     "sku": "AD-NLT-02",
@@ -3263,8 +4127,11 @@
     "strength": "4mg",
     "size": "each",
     "total": "4mg",
-    "price": 1.0,
-    "description": "Low-dose naltrexone (LDN) for addiction support and immune modulation."
+    "price": 1,
+    "description": "Low-dose naltrexone (LDN) for addiction support and immune modulation.",
+    "imageId": "o6jc5mqr6d06gihi5hnh5zw1",
+    "image": "/images/formulary/rxhere/o6jc5mqr6d06gihi5hnh5zw1.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/o6jc5mqr6d06gihi5hnh5zw1.webp"
   },
   {
     "sku": "AD-NLT-03",
@@ -3274,8 +4141,11 @@
     "strength": "4.5mg",
     "size": "each",
     "total": "4.5mg",
-    "price": 1.0,
-    "description": "Low-dose naltrexone (LDN) for addiction support and immune modulation."
+    "price": 1,
+    "description": "Low-dose naltrexone (LDN) for addiction support and immune modulation.",
+    "imageId": "jn41aonnxgfg419ol81huus3",
+    "image": "/images/formulary/rxhere/jn41aonnxgfg419ol81huus3.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/jn41aonnxgfg419ol81huus3.webp"
   },
   {
     "sku": "AD-NLT-04",
@@ -3285,8 +4155,11 @@
     "strength": "5mg",
     "size": "each",
     "total": "5mg",
-    "price": 1.0,
-    "description": "Low-dose naltrexone (LDN) for addiction support and immune modulation."
+    "price": 1,
+    "description": "Low-dose naltrexone (LDN) for addiction support and immune modulation.",
+    "imageId": "dhbt347a4e4pv3r2gx752n5u",
+    "image": "/images/formulary/rxhere/dhbt347a4e4pv3r2gx752n5u.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/dhbt347a4e4pv3r2gx752n5u.webp"
   },
   {
     "sku": "AD-NLT-05",
@@ -3296,8 +4169,11 @@
     "strength": "6mg",
     "size": "each",
     "total": "6mg",
-    "price": 1.0,
-    "description": "Low-dose naltrexone (LDN) for addiction support and immune modulation."
+    "price": 1,
+    "description": "Low-dose naltrexone (LDN) for addiction support and immune modulation.",
+    "imageId": "ljfkw3ko0k7b4mjzldig9zjz",
+    "image": "/images/formulary/rxhere/ljfkw3ko0k7b4mjzldig9zjz.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ljfkw3ko0k7b4mjzldig9zjz.webp"
   },
   {
     "sku": "AD-NLT-06",
@@ -3307,8 +4183,11 @@
     "strength": "8mg",
     "size": "each",
     "total": "8mg",
-    "price": 1.0,
-    "description": "Low-dose naltrexone (LDN) for addiction support and immune modulation."
+    "price": 1,
+    "description": "Low-dose naltrexone (LDN) for addiction support and immune modulation.",
+    "imageId": "oq4zjxj75h8ufaykjhmmnwgz",
+    "image": "/images/formulary/rxhere/oq4zjxj75h8ufaykjhmmnwgz.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/oq4zjxj75h8ufaykjhmmnwgz.webp"
   },
   {
     "sku": "AD-NLT-07",
@@ -3318,8 +4197,11 @@
     "strength": "1.5mg",
     "size": "each",
     "total": "1.5mg",
-    "price": 1.0,
-    "description": "Low-dose naltrexone (LDN) for addiction support and immune modulation."
+    "price": 1,
+    "description": "Low-dose naltrexone (LDN) for addiction support and immune modulation.",
+    "imageId": "qb5p7mk79c32a4mvttf8awql",
+    "image": "/images/formulary/rxhere/qb5p7mk79c32a4mvttf8awql.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/qb5p7mk79c32a4mvttf8awql.webp"
   },
   {
     "sku": "AN-KET",
@@ -3330,7 +4212,10 @@
     "size": "each",
     "total": "50mg",
     "price": 1.5,
-    "description": "Rapid-dissolve ketamine for treatment-resistant depression and pain management."
+    "description": "Rapid-dissolve ketamine for treatment-resistant depression and pain management.",
+    "imageId": "jwrm0r9b5zf2eqc0ecr985ji",
+    "image": "/images/formulary/rxhere/jwrm0r9b5zf2eqc0ecr985ji.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/jwrm0r9b5zf2eqc0ecr985ji.webp"
   },
   {
     "sku": "AN-KET-02",
@@ -3340,8 +4225,11 @@
     "strength": "100mg",
     "size": "each",
     "total": "100mg",
-    "price": 2.0,
-    "description": "Rapid-dissolve ketamine for treatment-resistant depression and pain management."
+    "price": 2,
+    "description": "Rapid-dissolve ketamine for treatment-resistant depression and pain management.",
+    "imageId": "nslu3558u8bwd9unrmecy9ur",
+    "image": "/images/formulary/rxhere/nslu3558u8bwd9unrmecy9ur.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/nslu3558u8bwd9unrmecy9ur.webp"
   },
   {
     "sku": "AN-KET-03",
@@ -3352,7 +4240,10 @@
     "size": "each",
     "total": "150mg",
     "price": 2.5,
-    "description": "Rapid-dissolve ketamine for treatment-resistant depression and pain management."
+    "description": "Rapid-dissolve ketamine for treatment-resistant depression and pain management.",
+    "imageId": "m8tjlw5vxbqov7y6j6qghzu7",
+    "image": "/images/formulary/rxhere/m8tjlw5vxbqov7y6j6qghzu7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/m8tjlw5vxbqov7y6j6qghzu7.webp"
   },
   {
     "sku": "AN-KET-04",
@@ -3362,8 +4253,11 @@
     "strength": "200mg",
     "size": "each",
     "total": "200mg",
-    "price": 3.0,
-    "description": "Rapid-dissolve ketamine for treatment-resistant depression and pain management."
+    "price": 3,
+    "description": "Rapid-dissolve ketamine for treatment-resistant depression and pain management.",
+    "imageId": "aukjkewl04qoq1jtflx26vpc",
+    "image": "/images/formulary/rxhere/aukjkewl04qoq1jtflx26vpc.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/aukjkewl04qoq1jtflx26vpc.webp"
   },
   {
     "sku": "AN-KTI",
@@ -3373,7 +4267,7 @@
     "strength": "50mg/mL",
     "size": "5 mL",
     "total": "250mg",
-    "price": 45.0,
+    "price": 45,
     "description": "Schedule III controlled substance. Injectable ketamine for treatment-resistant depression and pain management."
   },
   {
@@ -3384,7 +4278,7 @@
     "strength": "50mg/mL",
     "size": "10 mL",
     "total": "500mg",
-    "price": 65.0,
+    "price": 65,
     "description": "Schedule III controlled substance. Injectable ketamine for treatment-resistant depression and pain management."
   },
   {
@@ -3395,7 +4289,7 @@
     "strength": "100mg/mL",
     "size": "5 mL",
     "total": "500mg",
-    "price": 65.0,
+    "price": 65,
     "description": "Schedule III controlled substance. Injectable ketamine for treatment-resistant depression and pain management."
   },
   {
@@ -3406,7 +4300,7 @@
     "strength": "50mg/mL",
     "size": "10mL",
     "total": "500mg",
-    "price": 85.0,
+    "price": 85,
     "description": "Schedule III controlled substance. Intranasal ketamine for treatment-resistant depression and pain management."
   },
   {
@@ -3417,7 +4311,7 @@
     "strength": "100mg/mL",
     "size": "10mL",
     "total": "1000mg",
-    "price": 105.0,
+    "price": 105,
     "description": "Schedule III controlled substance. Intranasal ketamine for treatment-resistant depression and pain management."
   },
   {
@@ -3428,8 +4322,11 @@
     "strength": "200mg/mL",
     "size": "10mL",
     "total": "2000mg",
-    "price": 32.0,
-    "description": "Master antioxidant detoxifying cells and supporting immune function."
+    "price": 32,
+    "description": "Master antioxidant detoxifying cells and supporting immune function.",
+    "imageId": "yvpccoj9cfu6nqb3fvzl1nxl",
+    "image": "/images/formulary/rxhere/yvpccoj9cfu6nqb3fvzl1nxl.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/yvpccoj9cfu6nqb3fvzl1nxl.webp"
   },
   {
     "sku": "WL-GSH-02",
@@ -3439,8 +4336,11 @@
     "strength": "600mg/mL",
     "size": "10mL",
     "total": "6000mg",
-    "price": 32.0,
-    "description": "Master antioxidant detoxifying cells and supporting immune function."
+    "price": 32,
+    "description": "Master antioxidant detoxifying cells and supporting immune function.",
+    "imageId": "tjgpm28ipobx5f664v8149z7",
+    "image": "/images/formulary/rxhere/tjgpm28ipobx5f664v8149z7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/tjgpm28ipobx5f664v8149z7.webp"
   },
   {
     "sku": "WL-ODT",
@@ -3450,8 +4350,11 @@
     "strength": "4mg",
     "size": "30 ct",
     "total": "120mg",
-    "price": 10.0,
-    "description": "30-day ondansetron supply for chronic nausea management."
+    "price": 10,
+    "description": "30-day ondansetron supply for chronic nausea management.",
+    "imageId": "z9lluw3u8cxzztn6o1c5oz81",
+    "image": "/images/formulary/rxhere/z9lluw3u8cxzztn6o1c5oz81.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/z9lluw3u8cxzztn6o1c5oz81.webp"
   },
   {
     "sku": "WL-B12",
@@ -3461,8 +4364,11 @@
     "strength": "1000mcg/1mL",
     "size": "30mL",
     "total": "30mg/30mg",
-    "price": 35.0,
-    "description": "Commercial injectable B12 for energy, nerve health, and metabolism."
+    "price": 35,
+    "description": "Commercial injectable B12 for energy, nerve health, and metabolism.",
+    "imageId": "phv5dt23oxe27k3yvwhd2zl0",
+    "image": "/images/formulary/rxhere/phv5dt23oxe27k3yvwhd2zl0.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/phv5dt23oxe27k3yvwhd2zl0.webp"
   },
   {
     "sku": "WL-DOX",
@@ -3473,7 +4379,10 @@
     "size": "each",
     "total": "20mg",
     "price": 0.55,
-    "description": "Tetracycline antibiotic with anti-inflammatory applications."
+    "description": "Tetracycline antibiotic with anti-inflammatory applications.",
+    "imageId": "hiqekns1yggqisbzax4klwnf",
+    "image": "/images/formulary/rxhere/hiqekns1yggqisbzax4klwnf.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/hiqekns1yggqisbzax4klwnf.webp"
   },
   {
     "sku": "WL-DOX-02",
@@ -3484,7 +4393,10 @@
     "size": "each",
     "total": "30mg",
     "price": 0.55,
-    "description": "Tetracycline antibiotic with anti-inflammatory applications."
+    "description": "Tetracycline antibiotic with anti-inflammatory applications.",
+    "imageId": "bmab76nkg21wg7b0jj3rqk78",
+    "image": "/images/formulary/rxhere/bmab76nkg21wg7b0jj3rqk78.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/bmab76nkg21wg7b0jj3rqk78.webp"
   },
   {
     "sku": "WL-DOX-03",
@@ -3495,7 +4407,10 @@
     "size": "each",
     "total": "50mg",
     "price": 0.55,
-    "description": "Tetracycline antibiotic with anti-inflammatory applications."
+    "description": "Tetracycline antibiotic with anti-inflammatory applications.",
+    "imageId": "pkuqgehsxaf6p6gxcbp68685",
+    "image": "/images/formulary/rxhere/pkuqgehsxaf6p6gxcbp68685.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/pkuqgehsxaf6p6gxcbp68685.webp"
   },
   {
     "sku": "WL-DOX-04",
@@ -3506,7 +4421,10 @@
     "size": "each",
     "total": "100mg",
     "price": 0.55,
-    "description": "Tetracycline antibiotic with anti-inflammatory applications."
+    "description": "Tetracycline antibiotic with anti-inflammatory applications.",
+    "imageId": "aptxr9ix09yqngo84b745f02",
+    "image": "/images/formulary/rxhere/aptxr9ix09yqngo84b745f02.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/aptxr9ix09yqngo84b745f02.webp"
   },
   {
     "sku": "WL-MCB",
@@ -3516,8 +4434,11 @@
     "strength": "1mg/mL",
     "size": "10mL",
     "total": "10mg",
-    "price": 25.0,
-    "description": "Active methyl-B12 injection for superior neurological and energy support."
+    "price": 25,
+    "description": "Active methyl-B12 injection for superior neurological and energy support.",
+    "imageId": "bc7biiecuefhnz7zmoe7fau3",
+    "image": "/images/formulary/rxhere/bc7biiecuefhnz7zmoe7fau3.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/bc7biiecuefhnz7zmoe7fau3.webp"
   },
   {
     "sku": "WL-MB",
@@ -3528,7 +4449,10 @@
     "size": "each",
     "total": "25mg",
     "price": 0.95,
-    "description": "Mitochondrial electron carrier (wellness dose) for brain energy and anti-aging."
+    "description": "Mitochondrial electron carrier (wellness dose) for brain energy and anti-aging.",
+    "imageId": "ubtdbxtr9fd0wby3bty3czuf",
+    "image": "/images/formulary/rxhere/ubtdbxtr9fd0wby3bty3czuf.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ubtdbxtr9fd0wby3bty3czuf.webp"
   },
   {
     "sku": "WL-MB-02",
@@ -3539,7 +4463,10 @@
     "size": "each",
     "total": "50mg",
     "price": 1.25,
-    "description": "Mitochondrial electron carrier (wellness dose) for brain energy and anti-aging."
+    "description": "Mitochondrial electron carrier (wellness dose) for brain energy and anti-aging.",
+    "imageId": "va7aqsdazmy1n2awuco9zq8q",
+    "image": "/images/formulary/rxhere/va7aqsdazmy1n2awuco9zq8q.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/va7aqsdazmy1n2awuco9zq8q.webp"
   },
   {
     "sku": "WL-SPR",
@@ -3550,7 +4477,10 @@
     "size": "each",
     "total": "10mg",
     "price": 0.75,
-    "description": "Aldosterone antagonist with anti-androgenic properties for PCOS and acne."
+    "description": "Aldosterone antagonist with anti-androgenic properties for PCOS and acne.",
+    "imageId": "hsa27oket9wrys1yll6irgvs",
+    "image": "/images/formulary/rxhere/hsa27oket9wrys1yll6irgvs.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/hsa27oket9wrys1yll6irgvs.webp"
   },
   {
     "sku": "WL-SPR-02",
@@ -3561,7 +4491,10 @@
     "size": "each",
     "total": "55mg",
     "price": 0.75,
-    "description": "Aldosterone antagonist with anti-androgenic properties for PCOS and acne."
+    "description": "Aldosterone antagonist with anti-androgenic properties for PCOS and acne.",
+    "imageId": "iixywskoxa67qc35ww7d2vhq",
+    "image": "/images/formulary/rxhere/iixywskoxa67qc35ww7d2vhq.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/iixywskoxa67qc35ww7d2vhq.webp"
   },
   {
     "sku": "WL-SPR-03",
@@ -3572,7 +4505,10 @@
     "size": "each",
     "total": "75mg",
     "price": 0.75,
-    "description": "Aldosterone antagonist with anti-androgenic properties for PCOS and acne."
+    "description": "Aldosterone antagonist with anti-androgenic properties for PCOS and acne.",
+    "imageId": "cia1kq8q282vg1nflzuto2ak",
+    "image": "/images/formulary/rxhere/cia1kq8q282vg1nflzuto2ak.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/cia1kq8q282vg1nflzuto2ak.webp"
   },
   {
     "sku": "WL-SPR-04",
@@ -3582,8 +4518,11 @@
     "strength": "115mg",
     "size": "each",
     "total": "115mg",
-    "price": 1.0,
-    "description": "Aldosterone antagonist with anti-androgenic properties for PCOS and acne."
+    "price": 1,
+    "description": "Aldosterone antagonist with anti-androgenic properties for PCOS and acne.",
+    "imageId": "pwfn4fb9ye80p15njwn08gf3",
+    "image": "/images/formulary/rxhere/pwfn4fb9ye80p15njwn08gf3.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/pwfn4fb9ye80p15njwn08gf3.webp"
   },
   {
     "sku": "WL-VD3",
@@ -3593,8 +4532,11 @@
     "strength": "5000IU",
     "size": "each",
     "total": "5000IU",
-    "price": 1.0,
-    "description": "Essential fat-soluble vitamin for immunity, bone density, and hormonal health."
+    "price": 1,
+    "description": "Essential fat-soluble vitamin for immunity, bone density, and hormonal health.",
+    "imageId": "cuemk29nm8z55kgy664lqvn5",
+    "image": "/images/formulary/rxhere/cuemk29nm8z55kgy664lqvn5.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/cuemk29nm8z55kgy664lqvn5.webp"
   },
   {
     "sku": "WL-VD3-02",
@@ -3604,8 +4546,11 @@
     "strength": "10,000IU",
     "size": "each",
     "total": "10,000IU",
-    "price": 1.0,
-    "description": "Essential fat-soluble vitamin for immunity, bone density, and hormonal health."
+    "price": 1,
+    "description": "Essential fat-soluble vitamin for immunity, bone density, and hormonal health.",
+    "imageId": "vhehlfq3suzzbxcgy3v3laqx",
+    "image": "/images/formulary/rxhere/vhehlfq3suzzbxcgy3v3laqx.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/vhehlfq3suzzbxcgy3v3laqx.webp"
   },
   {
     "sku": "WL-VDK",
@@ -3615,8 +4560,11 @@
     "strength": "10,000IU/180mcg",
     "size": "each",
     "total": "10,000IU/180mcg",
-    "price": 1.0,
-    "description": "Synergistic D3+K2 directing calcium to bones and away from arteries."
+    "price": 1,
+    "description": "Synergistic D3+K2 directing calcium to bones and away from arteries.",
+    "imageId": "vhehlfq3suzzbxcgy3v3laqx",
+    "image": "/images/formulary/rxhere/vhehlfq3suzzbxcgy3v3laqx.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/vhehlfq3suzzbxcgy3v3laqx.webp"
   },
   {
     "sku": "WL-CB5",
@@ -3626,8 +4574,11 @@
     "strength": "1mg/ml",
     "size": "10mL",
     "total": "10mg",
-    "price": 15.0,
-    "description": "503B-grade B12 injectable for clinic-administered nutritional support."
+    "price": 15,
+    "description": "503B-grade B12 injectable for clinic-administered nutritional support.",
+    "imageId": "bvktdk2w2seuh2sw9vx3ymug",
+    "image": "/images/formulary/rxhere/bvktdk2w2seuh2sw9vx3ymug.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/bvktdk2w2seuh2sw9vx3ymug.webp"
   },
   {
     "sku": "WL-TOP",
@@ -3637,8 +4588,11 @@
     "strength": "25mg",
     "size": "each",
     "total": "25mg",
-    "price": 1.0,
-    "description": "Anticonvulsant used off-label for weight loss and migraine prevention."
+    "price": 1,
+    "description": "Anticonvulsant used off-label for weight loss and migraine prevention.",
+    "imageId": "xv5yaggnyz52gu9xh9v4v2r6",
+    "image": "/images/formulary/rxhere/xv5yaggnyz52gu9xh9v4v2r6.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/xv5yaggnyz52gu9xh9v4v2r6.webp"
   },
   {
     "sku": "WL-TOP-02",
@@ -3648,8 +4602,11 @@
     "strength": "50mg",
     "size": "each",
     "total": "50mg",
-    "price": 1.0,
-    "description": "Anticonvulsant used off-label for weight loss and migraine prevention."
+    "price": 1,
+    "description": "Anticonvulsant used off-label for weight loss and migraine prevention.",
+    "imageId": "rz1wpzspntvd72tkhj7exn7s",
+    "image": "/images/formulary/rxhere/rz1wpzspntvd72tkhj7exn7s.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/rz1wpzspntvd72tkhj7exn7s.webp"
   },
   {
     "sku": "WL-OMP",
@@ -3659,8 +4616,11 @@
     "strength": "4mg",
     "size": "each",
     "total": "4mg",
-    "price": 1.0,
-    "description": "Proton pump inhibitor for GERD and GLP-1 nausea management."
+    "price": 1,
+    "description": "Proton pump inhibitor for GERD and GLP-1 nausea management.",
+    "imageId": "l4f41penrgrw7e36g5wxui3d",
+    "image": "/images/formulary/rxhere/l4f41penrgrw7e36g5wxui3d.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/l4f41penrgrw7e36g5wxui3d.webp"
   },
   {
     "sku": "WL-OMP-02",
@@ -3670,8 +4630,11 @@
     "strength": "8mg",
     "size": "each",
     "total": "8mg",
-    "price": 1.0,
-    "description": "Proton pump inhibitor for GERD and GLP-1 nausea management."
+    "price": 1,
+    "description": "Proton pump inhibitor for GERD and GLP-1 nausea management.",
+    "imageId": "gp1uzcfhrzsobr1r2e2lyrjc",
+    "image": "/images/formulary/rxhere/gp1uzcfhrzsobr1r2e2lyrjc.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/gp1uzcfhrzsobr1r2e2lyrjc.webp"
   },
   {
     "sku": "WL-ODN",
@@ -3681,8 +4644,11 @@
     "strength": "4mg",
     "size": "each",
     "total": "4mg",
-    "price": 10.0,
-    "description": "5-HT3 antiemetic to manage nausea, especially during GLP-1 therapy."
+    "price": 10,
+    "description": "5-HT3 antiemetic to manage nausea, especially during GLP-1 therapy.",
+    "imageId": "ngh8umv4stax5smy8qt23wu2",
+    "image": "/images/formulary/rxhere/ngh8umv4stax5smy8qt23wu2.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/ngh8umv4stax5smy8qt23wu2.webp"
   },
   {
     "sku": "WL-ODN-02",
@@ -3692,8 +4658,11 @@
     "strength": "8mg",
     "size": "each",
     "total": "8mg",
-    "price": 10.0,
-    "description": "5-HT3 antiemetic to manage nausea, especially during GLP-1 therapy."
+    "price": 10,
+    "description": "5-HT3 antiemetic to manage nausea, especially during GLP-1 therapy.",
+    "imageId": "gekdbrk4udr7l3cqw571e03u",
+    "image": "/images/formulary/rxhere/gekdbrk4udr7l3cqw571e03u.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/gekdbrk4udr7l3cqw571e03u.webp"
   },
   {
     "sku": "WL-MET",
@@ -3703,8 +4672,11 @@
     "strength": "500mg",
     "size": "each",
     "total": "500mg",
-    "price": 1.0,
-    "description": "Biguanide insulin sensitizer for T2D, metabolic syndrome, and longevity protocols."
+    "price": 1,
+    "description": "Biguanide insulin sensitizer for T2D, metabolic syndrome, and longevity protocols.",
+    "imageId": "f0wdca41lbc3sk7398d9uyc7",
+    "image": "/images/formulary/rxhere/f0wdca41lbc3sk7398d9uyc7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/f0wdca41lbc3sk7398d9uyc7.webp"
   },
   {
     "sku": "WL-MET-02",
@@ -3714,8 +4686,11 @@
     "strength": "1000mg",
     "size": "each",
     "total": "1000mg",
-    "price": 1.0,
-    "description": "Biguanide insulin sensitizer for T2D, metabolic syndrome, and longevity protocols."
+    "price": 1,
+    "description": "Biguanide insulin sensitizer for T2D, metabolic syndrome, and longevity protocols.",
+    "imageId": "l03vwnk99l5asd37oaklv9i5",
+    "image": "/images/formulary/rxhere/l03vwnk99l5asd37oaklv9i5.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/l03vwnk99l5asd37oaklv9i5.webp"
   },
   {
     "sku": "WL-PHT",
@@ -3726,7 +4701,10 @@
     "size": "each",
     "total": "37.5mg",
     "price": 0.6,
-    "description": "Sympathomimetic appetite suppressant for short-term obesity management."
+    "description": "Sympathomimetic appetite suppressant for short-term obesity management.",
+    "imageId": "or0fwlw3dj4xtbut3cm98dik",
+    "image": "/images/formulary/rxhere/or0fwlw3dj4xtbut3cm98dik.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/or0fwlw3dj4xtbut3cm98dik.webp"
   },
   {
     "sku": "WL-PTP",
@@ -3736,8 +4714,11 @@
     "strength": "15mg/12.5mg",
     "size": "each",
     "total": "15mg/12.5mg",
-    "price": 1.0,
-    "description": "Combination weight-loss agent reducing appetite and increasing satiety."
+    "price": 1,
+    "description": "Combination weight-loss agent reducing appetite and increasing satiety.",
+    "imageId": "mesnlk1owxphkxm174sy0dcg",
+    "image": "/images/formulary/rxhere/mesnlk1owxphkxm174sy0dcg.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/mesnlk1owxphkxm174sy0dcg.webp"
   },
   {
     "sku": "WL-PTP-02",
@@ -3747,8 +4728,11 @@
     "strength": "30mg/12.5mg",
     "size": "each",
     "total": "30mg/12.5mg",
-    "price": 1.0,
-    "description": "Combination weight-loss agent reducing appetite and increasing satiety."
+    "price": 1,
+    "description": "Combination weight-loss agent reducing appetite and increasing satiety.",
+    "imageId": "mesnlk1owxphkxm174sy0dcg",
+    "image": "/images/formulary/rxhere/mesnlk1owxphkxm174sy0dcg.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/mesnlk1owxphkxm174sy0dcg.webp"
   },
   {
     "sku": "PS-MRS",
@@ -3758,8 +4742,11 @@
     "strength": "1.2mg/2mg/mL",
     "size": "5mL",
     "total": "6mg/10mg",
-    "price": 110.0,
-    "description": "Pre-formulated metabolic stack combining lipolytic and mitochondrial activating peptides."
+    "price": 110,
+    "description": "Pre-formulated metabolic stack combining lipolytic and mitochondrial activating peptides.",
+    "imageId": "y125apck87jq0bceyin39t5h",
+    "image": "/images/formulary/rxhere/y125apck87jq0bceyin39t5h.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/y125apck87jq0bceyin39t5h.webp"
   },
   {
     "sku": "PS-MRS-02",
@@ -3769,8 +4756,11 @@
     "strength": "2.4mg/4mg/mL",
     "size": "5mL",
     "total": "12mg/20mg",
-    "price": 120.0,
-    "description": "Pre-formulated metabolic stack combining lipolytic and mitochondrial activating peptides."
+    "price": 120,
+    "description": "Pre-formulated metabolic stack combining lipolytic and mitochondrial activating peptides.",
+    "imageId": "z2ae0rs0ercxt8qpm214fh7d",
+    "image": "/images/formulary/rxhere/z2ae0rs0ercxt8qpm214fh7d.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/z2ae0rs0ercxt8qpm214fh7d.webp"
   },
   {
     "sku": "PS-VFR",
@@ -3780,8 +4770,11 @@
     "strength": "1.2mg/2mg/3mg/mL",
     "size": "5mL",
     "total": "6mg/10mg/15mg",
-    "price": 110.0,
-    "description": "Triple-peptide visceral fat reduction stack targeting adipose tissue, metabolism, and GH."
+    "price": 110,
+    "description": "Triple-peptide visceral fat reduction stack targeting adipose tissue, metabolism, and GH.",
+    "imageId": "y125apck87jq0bceyin39t5h",
+    "image": "/images/formulary/rxhere/y125apck87jq0bceyin39t5h.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/y125apck87jq0bceyin39t5h.webp"
   },
   {
     "sku": "PS-VFR-02",
@@ -3791,8 +4784,11 @@
     "strength": "2.4mg/4mg/6mg/ml",
     "size": "5mL",
     "total": "12mg/20mg/30mg",
-    "price": 125.0,
-    "description": "Triple-peptide visceral fat reduction stack targeting adipose tissue, metabolism, and GH."
+    "price": 125,
+    "description": "Triple-peptide visceral fat reduction stack targeting adipose tissue, metabolism, and GH.",
+    "imageId": "z2ae0rs0ercxt8qpm214fh7d",
+    "image": "/images/formulary/rxhere/z2ae0rs0ercxt8qpm214fh7d.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/z2ae0rs0ercxt8qpm214fh7d.webp"
   },
   {
     "sku": "PS-WLV",
@@ -3802,8 +4798,11 @@
     "strength": "3mg/3mg/mL",
     "size": "5mL",
     "total": "15mg/15mg",
-    "price": 110.0,
-    "description": "Classic dual-peptide recovery stack for accelerated musculoskeletal repair."
+    "price": 110,
+    "description": "Classic dual-peptide recovery stack for accelerated musculoskeletal repair.",
+    "imageId": "d8grhqth4kqe4nkwaz5aj7j7",
+    "image": "/images/formulary/rxhere/d8grhqth4kqe4nkwaz5aj7j7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/d8grhqth4kqe4nkwaz5aj7j7.webp"
   },
   {
     "sku": "PS-WIC",
@@ -3813,8 +4812,11 @@
     "strength": "3mg/3mg/3mg/mL",
     "size": "5mL",
     "total": "15mg/15mg/15mg",
-    "price": 120.0,
-    "description": "Enhanced repair stack with anti-inflammatory KPV for gut and systemic healing."
+    "price": 120,
+    "description": "Enhanced repair stack with anti-inflammatory KPV for gut and systemic healing.",
+    "imageId": "d8grhqth4kqe4nkwaz5aj7j7",
+    "image": "/images/formulary/rxhere/d8grhqth4kqe4nkwaz5aj7j7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/d8grhqth4kqe4nkwaz5aj7j7.webp"
   },
   {
     "sku": "PS-AWV",
@@ -3824,8 +4826,11 @@
     "strength": "3mg/3mg/3mg/10mg/mL",
     "size": "5mL",
     "total": "15mg/15mg/15mg/50mg",
-    "price": 139.0,
-    "description": "Comprehensive regenerative stack with copper peptide for advanced tissue repair."
+    "price": 139,
+    "description": "Comprehensive regenerative stack with copper peptide for advanced tissue repair.",
+    "imageId": "d8grhqth4kqe4nkwaz5aj7j7",
+    "image": "/images/formulary/rxhere/d8grhqth4kqe4nkwaz5aj7j7.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/d8grhqth4kqe4nkwaz5aj7j7.webp"
   },
   {
     "sku": "PS-GOS",
@@ -3835,8 +4840,11 @@
     "strength": "1.2mg/2mg/mL",
     "size": "5mL",
     "total": "6mg/10mg",
-    "price": 110.0,
-    "description": "Gold-standard GH stack combining GHRH analogue and secretagogue for pulsatile release."
+    "price": 110,
+    "description": "Gold-standard GH stack combining GHRH analogue and secretagogue for pulsatile release.",
+    "imageId": "t1cpl6653zq6k0xqsf1ptx1l",
+    "image": "/images/formulary/rxhere/t1cpl6653zq6k0xqsf1ptx1l.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/t1cpl6653zq6k0xqsf1ptx1l.webp"
   },
   {
     "sku": "PS-GOS-02",
@@ -3846,8 +4854,11 @@
     "strength": "2mg/3mg/mL",
     "size": "5mL",
     "total": "10mg/15mg",
-    "price": 110.0,
-    "description": "Gold-standard GH stack combining GHRH analogue and secretagogue for pulsatile release."
+    "price": 110,
+    "description": "Gold-standard GH stack combining GHRH analogue and secretagogue for pulsatile release.",
+    "imageId": "t1cpl6653zq6k0xqsf1ptx1l",
+    "image": "/images/formulary/rxhere/t1cpl6653zq6k0xqsf1ptx1l.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/t1cpl6653zq6k0xqsf1ptx1l.webp"
   },
   {
     "sku": "PS-NRS",
@@ -3857,8 +4868,11 @@
     "strength": "1mg/2mg/2mg/mL",
     "size": "5mL",
     "total": "5mg/10mg/10mg",
-    "price": 120.0,
-    "description": "Overnight recovery stack combining sleep induction, tissue repair, and GH optimization."
+    "price": 120,
+    "description": "Overnight recovery stack combining sleep induction, tissue repair, and GH optimization.",
+    "imageId": "w90ngj09q69nngszfhrmbqzd",
+    "image": "/images/formulary/rxhere/w90ngj09q69nngszfhrmbqzd.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/w90ngj09q69nngszfhrmbqzd.webp"
   },
   {
     "sku": "PS-IDS",
@@ -3868,8 +4882,11 @@
     "strength": "2mg/5mg/mL",
     "size": "5mL",
     "total": "10mg/25mg",
-    "price": 120.0,
-    "description": "Dual-peptide immune stack for innate and adaptive immune enhancement."
+    "price": 120,
+    "description": "Dual-peptide immune stack for innate and adaptive immune enhancement.",
+    "imageId": "eom8dtcfaewlsz2fg0mhxtz9",
+    "image": "/images/formulary/rxhere/eom8dtcfaewlsz2fg0mhxtz9.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/eom8dtcfaewlsz2fg0mhxtz9.webp"
   },
   {
     "sku": "PS-NGS",
@@ -3879,8 +4896,11 @@
     "strength": "2mg/2mg/2mg/mL",
     "size": "5mL",
     "total": "10mg/10mg/10mg",
-    "price": 120.0,
-    "description": "Triple nootropic stack for synaptic repair, neuroprotection, and cognitive resilience."
+    "price": 120,
+    "description": "Triple nootropic stack for synaptic repair, neuroprotection, and cognitive resilience.",
+    "imageId": "u81vd5bdal7r5kk9ue26w9m2",
+    "image": "/images/formulary/rxhere/u81vd5bdal7r5kk9ue26w9m2.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/u81vd5bdal7r5kk9ue26w9m2.webp"
   },
   {
     "sku": "PS-CES",
@@ -3890,8 +4910,11 @@
     "strength": "1mg/1mg/mL",
     "size": "5mL",
     "total": "5mg/5mg",
-    "price": 129.0,
-    "description": "Anxiolytic-nootropic dual-peptide stack for focus, calm, and brain optimization."
+    "price": 129,
+    "description": "Anxiolytic-nootropic dual-peptide stack for focus, calm, and brain optimization.",
+    "imageId": "e1h32r5jpbpe3dkf6f1xbsu0",
+    "image": "/images/formulary/rxhere/e1h32r5jpbpe3dkf6f1xbsu0.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/e1h32r5jpbpe3dkf6f1xbsu0.webp"
   },
   {
     "sku": "PP-MT2",
@@ -3901,8 +4924,11 @@
     "strength": "10mg/mL",
     "size": "5mL",
     "total": "50mg",
-    "price": 95.0,
-    "description": "Melanocortin agonist stimulating melanin production for tanning and sexual arousal."
+    "price": 95,
+    "description": "Melanocortin agonist stimulating melanin production for tanning and sexual arousal.",
+    "imageId": "y9vjemwug203p3xt475f3pyu",
+    "image": "/images/formulary/rxhere/y9vjemwug203p3xt475f3pyu.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/y9vjemwug203p3xt475f3pyu.webp"
   },
   {
     "sku": "PP-LRS",
@@ -3912,8 +4938,11 @@
     "strength": "10mg/2mg/mL",
     "size": "5mL",
     "total": "50mg/10mg",
-    "price": 110.0,
-    "description": "Longevity stack combining copper peptide with telomerase activator."
+    "price": 110,
+    "description": "Longevity stack combining copper peptide with telomerase activator.",
+    "imageId": "odrrjde6o2s8n46oewcn7pyz",
+    "image": "/images/formulary/rxhere/odrrjde6o2s8n46oewcn7pyz.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/odrrjde6o2s8n46oewcn7pyz.webp"
   },
   {
     "sku": "PP-SYP",
@@ -3923,7 +4952,10 @@
     "strength": "2mg/2mg/50mg/mL",
     "size": "10mL",
     "total": "20mg/20mg/500mg",
-    "price": 85.0,
-    "description": "Nootropic nasal spray combining ginsenoside Rg3, methylcobalamin, and NAD."
+    "price": 85,
+    "description": "Nootropic nasal spray combining ginsenoside Rg3, methylcobalamin, and NAD.",
+    "imageId": "s17xykbt6ka1pakn8coffjr9",
+    "image": "/images/formulary/rxhere/s17xykbt6ka1pakn8coffjr9.webp",
+    "imageSourceUrl": "https://rxhere.qrolic.com/api/uploads/s17xykbt6ka1pakn8coffjr9.webp"
   }
 ]

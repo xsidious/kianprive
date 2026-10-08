@@ -1,0 +1,2198 @@
+[
+  {
+    "sku": "FL-5AM",
+    "imageId": "bdv8csw79j9hzvtlywo77s72",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/bdv8csw79j9hzvtlywo77s72.webp",
+    "medication": "5 Amino 1-MQ"
+  },
+  {
+    "sku": "HR-7KD",
+    "imageId": "vbdh3fyrz5mtxhi3vvkq4xnw",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/vbdh3fyrz5mtxhi3vvkq4xnw.webp",
+    "medication": "7-Keto DHEA SR"
+  },
+  {
+    "sku": "FL-AOD",
+    "imageId": "hxwsliyqhj3tfwjkge6u23mr",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hxwsliyqhj3tfwjkge6u23mr.webp",
+    "medication": "AOD-9604"
+  },
+  {
+    "sku": "FL-AOD-02",
+    "imageId": "xo3zvlq6xuaw38hjhom32g5q",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/xo3zvlq6xuaw38hjhom32g5q.webp",
+    "medication": "AOD-9604"
+  },
+  {
+    "sku": "FL-AOD-03",
+    "imageId": "vmp3u2h7w12w7jfselecwb1k",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/vmp3u2h7w12w7jfselecwb1k.webp",
+    "medication": "AOD-9604"
+  },
+  {
+    "sku": "FL-AOD-M-02",
+    "imageId": "z2ae0rs0ercxt8qpm214fh7d",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/z2ae0rs0ercxt8qpm214fh7d.webp",
+    "medication": "AOD-9604/MOTs-C"
+  },
+  {
+    "sku": "FL-AOD-M",
+    "imageId": "y125apck87jq0bceyin39t5h",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/y125apck87jq0bceyin39t5h.webp",
+    "medication": "AOD-9604/MOTs-C"
+  },
+  {
+    "sku": "PS-MRS",
+    "imageId": "y125apck87jq0bceyin39t5h",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/y125apck87jq0bceyin39t5h.webp",
+    "medication": "AOD-9604/MOTs-C - Metabolic Reset Stack"
+  },
+  {
+    "sku": "PS-MRS-02",
+    "imageId": "z2ae0rs0ercxt8qpm214fh7d",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/z2ae0rs0ercxt8qpm214fh7d.webp",
+    "medication": "AOD-9604/MOTs-C - Metabolic Reset Stack"
+  },
+  {
+    "sku": "FL-AMT",
+    "imageId": "y125apck87jq0bceyin39t5h",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/y125apck87jq0bceyin39t5h.webp",
+    "medication": "AOD-9604/MOTs-C/Tesamorelin"
+  },
+  {
+    "sku": "FL-AMT-02",
+    "imageId": "z2ae0rs0ercxt8qpm214fh7d",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/z2ae0rs0ercxt8qpm214fh7d.webp",
+    "medication": "AOD-9604/MOTs-C/Tesamorelin"
+  },
+  {
+    "sku": "PS-VFR",
+    "imageId": "y125apck87jq0bceyin39t5h",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/y125apck87jq0bceyin39t5h.webp",
+    "medication": "AOD-9604/MOTs-C/Tesamorelin - Visceral Fat Reduction Stack"
+  },
+  {
+    "sku": "PS-VFR-02",
+    "imageId": "z2ae0rs0ercxt8qpm214fh7d",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/z2ae0rs0ercxt8qpm214fh7d.webp",
+    "medication": "AOD-9604/MOTs-C/Tesamorelin - Visceral Fat Reduction Stack"
+  },
+  {
+    "sku": "TR-ARA",
+    "imageId": "n3cf5tlnti4iw2sahgj29eas",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/n3cf5tlnti4iw2sahgj29eas.webp",
+    "medication": "ARA-290"
+  },
+  {
+    "sku": "HR-ANZ",
+    "imageId": "lkgdta43amr68bteq9rg7iyt",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/lkgdta43amr68bteq9rg7iyt.webp",
+    "medication": "Anastrozole"
+  },
+  {
+    "sku": "HR-ANZ-02",
+    "imageId": "ex0qfrlg9vdjbw6mdfn2fffb",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ex0qfrlg9vdjbw6mdfn2fffb.webp",
+    "medication": "Anastrozole"
+  },
+  {
+    "sku": "HR-ANZ-03",
+    "imageId": "nlzr5f4r2w50dlm1np3xnilw",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/nlzr5f4r2w50dlm1np3xnilw.webp",
+    "medication": "Anastrozole"
+  },
+  {
+    "sku": "HR-ANS",
+    "imageId": "krdism5wvblcvar89cfsovah",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/krdism5wvblcvar89cfsovah.webp",
+    "medication": "Anastrozole SR"
+  },
+  {
+    "sku": "HR-ANS-03",
+    "imageId": "lkgdta43amr68bteq9rg7iyt",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/lkgdta43amr68bteq9rg7iyt.webp",
+    "medication": "Anastrozole SR"
+  },
+  {
+    "sku": "HR-ANS-05",
+    "imageId": "ex0qfrlg9vdjbw6mdfn2fffb",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ex0qfrlg9vdjbw6mdfn2fffb.webp",
+    "medication": "Anastrozole SR"
+  },
+  {
+    "sku": "HR-ANS-06",
+    "imageId": "stmv4x79k6lh0257ocn8s8st",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/stmv4x79k6lh0257ocn8s8st.webp",
+    "medication": "Anastrozole SR"
+  },
+  {
+    "sku": "HR-ANS-07",
+    "imageId": "gzfca95lnpvwxy271e2wpadn",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/gzfca95lnpvwxy271e2wpadn.webp",
+    "medication": "Anastrozole SR"
+  },
+  {
+    "sku": "HR-ANS-02",
+    "imageId": "yl7hczp8k56apaul2nbuv1xu",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/yl7hczp8k56apaul2nbuv1xu.webp",
+    "medication": "Anastrozole SR"
+  },
+  {
+    "sku": "HR-ANS-04",
+    "imageId": "n6ws1mx5pc1xe9na59di5ev3",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/n6ws1mx5pc1xe9na59di5ev3.webp",
+    "medication": "Anastrozole SR"
+  },
+  {
+    "sku": "FL-BAM",
+    "imageId": "irork615dema3yx4qq8inavu",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/irork615dema3yx4qq8inavu.webp",
+    "medication": "BAM15"
+  },
+  {
+    "sku": "HR-B28-02",
+    "imageId": "pbwjsju6ra7ilyyajmam7xr3",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/pbwjsju6ra7ilyyajmam7xr3.webp",
+    "medication": "BIEST (20:80)"
+  },
+  {
+    "sku": "HR-B28-03",
+    "imageId": "v1hp9s4a1laaxfw69kgwmz4f",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/v1hp9s4a1laaxfw69kgwmz4f.webp",
+    "medication": "BIEST (20:80)"
+  },
+  {
+    "sku": "HR-B28-04",
+    "imageId": "z742c22bq8nmh9x9l31mui4i",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/z742c22bq8nmh9x9l31mui4i.webp",
+    "medication": "BIEST (20:80)"
+  },
+  {
+    "sku": "HR-B28-05",
+    "imageId": "l1zdgciukdraci9hiuxbzvj7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/l1zdgciukdraci9hiuxbzvj7.webp",
+    "medication": "BIEST (20:80)"
+  },
+  {
+    "sku": "HR-B28-06",
+    "imageId": "e2qap7jlsbc4nroh6p2k073e",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/e2qap7jlsbc4nroh6p2k073e.webp",
+    "medication": "BIEST (20:80)"
+  },
+  {
+    "sku": "HR-B28-07",
+    "imageId": "y78azhf7nws8grqgpwqrx93o",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/y78azhf7nws8grqgpwqrx93o.webp",
+    "medication": "BIEST (20:80)"
+  },
+  {
+    "sku": "HR-B28-08",
+    "imageId": "yih3kha4hlg7l2uqjzweylh3",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/yih3kha4hlg7l2uqjzweylh3.webp",
+    "medication": "BIEST (20:80)"
+  },
+  {
+    "sku": "HR-B28",
+    "imageId": "rywik73q9ziz8jgnav6lcb3z",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/rywik73q9ziz8jgnav6lcb3z.webp",
+    "medication": "BIEST (20:80)"
+  },
+  {
+    "sku": "HR-B28-09",
+    "imageId": "p3i83nvhhxwohv3jqymfpph0",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/p3i83nvhhxwohv3jqymfpph0.webp",
+    "medication": "BIEST (20:80)"
+  },
+  {
+    "sku": "HR-B2V",
+    "imageId": "ial7iwi1sf68xkg2te5ybbex",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ial7iwi1sf68xkg2te5ybbex.webp",
+    "medication": "BIEST (20:80) (VERSABASE)"
+  },
+  {
+    "sku": "HR-B2I",
+    "imageId": "l6lavdujavfkl4z8gnh8j5pw",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/l6lavdujavfkl4z8gnh8j5pw.webp",
+    "medication": "BIEST (20:80) IR"
+  },
+  {
+    "sku": "HR-B55",
+    "imageId": "ti5na93hj1etb4s3xxp2z10k",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ti5na93hj1etb4s3xxp2z10k.webp",
+    "medication": "BIEST (50:50)"
+  },
+  {
+    "sku": "HR-B55-02",
+    "imageId": "f7bsdrs79j56d1mpdazaf7d2",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/f7bsdrs79j56d1mpdazaf7d2.webp",
+    "medication": "BIEST (50:50)"
+  },
+  {
+    "sku": "HR-B55-03",
+    "imageId": "swxwf6pkkor7g5na2sleguyh",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/swxwf6pkkor7g5na2sleguyh.webp",
+    "medication": "BIEST (50:50)"
+  },
+  {
+    "sku": "HR-B55-05",
+    "imageId": "r6uo7wkicpxeeloq46p1hlom",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/r6uo7wkicpxeeloq46p1hlom.webp",
+    "medication": "BIEST (50:50)"
+  },
+  {
+    "sku": "HR-B55-06",
+    "imageId": "xkw0g4y0ki3je0rklhldny3l",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/xkw0g4y0ki3je0rklhldny3l.webp",
+    "medication": "BIEST (50:50)"
+  },
+  {
+    "sku": "HR-B55-07",
+    "imageId": "mkar163rfbdfseu03328lowf",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/mkar163rfbdfseu03328lowf.webp",
+    "medication": "BIEST (50:50)"
+  },
+  {
+    "sku": "HR-B55-08",
+    "imageId": "d9wwpj6lau95knn4twvxdhxf",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/d9wwpj6lau95knn4twvxdhxf.webp",
+    "medication": "BIEST (50:50)"
+  },
+  {
+    "sku": "HR-B55-09",
+    "imageId": "xqe8j2hk3c2uq6czkq7ockcn",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/xqe8j2hk3c2uq6czkq7ockcn.webp",
+    "medication": "BIEST (50:50)"
+  },
+  {
+    "sku": "HR-B55-10",
+    "imageId": "l8or56ivprfqzogt3w2tw3u5",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/l8or56ivprfqzogt3w2tw3u5.webp",
+    "medication": "BIEST (50:50)"
+  },
+  {
+    "sku": "HR-B55-11",
+    "imageId": "xprpmyjtnrlrimq485u4is17",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/xprpmyjtnrlrimq485u4is17.webp",
+    "medication": "BIEST (50:50)"
+  },
+  {
+    "sku": "HR-B55-04",
+    "imageId": "qbvvp2tt0l7e6rasny9uhwk6",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/qbvvp2tt0l7e6rasny9uhwk6.webp",
+    "medication": "BIEST (50:50)"
+  },
+  {
+    "sku": "HR-B55-12",
+    "imageId": "f7bsdrs79j56d1mpdazaf7d2",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/f7bsdrs79j56d1mpdazaf7d2.webp",
+    "medication": "BIEST (50:50)"
+  },
+  {
+    "sku": "HR-B5C",
+    "imageId": "d9wwpj6lau95knn4twvxdhxf",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/d9wwpj6lau95knn4twvxdhxf.webp",
+    "medication": "BIEST (50:50) - CREME DE MENTHE"
+  },
+  {
+    "sku": "HR-B5I",
+    "imageId": "f7bsdrs79j56d1mpdazaf7d2",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/f7bsdrs79j56d1mpdazaf7d2.webp",
+    "medication": "BIEST (50:50) IR"
+  },
+  {
+    "sku": "HR-B5I-02",
+    "imageId": "qbvvp2tt0l7e6rasny9uhwk6",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/qbvvp2tt0l7e6rasny9uhwk6.webp",
+    "medication": "BIEST (50:50) IR"
+  },
+  {
+    "sku": "HR-BPS",
+    "imageId": "t1x4qkbrbnjf8jeyqzdm327j",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/t1x4qkbrbnjf8jeyqzdm327j.webp",
+    "medication": "BIEST 50/50/Progesterone SR"
+  },
+  {
+    "sku": "TR-BPC",
+    "imageId": "gybf2zx4xnjd8thy56bsfz69",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/gybf2zx4xnjd8thy56bsfz69.webp",
+    "medication": "BPC-157"
+  },
+  {
+    "sku": "TR-BPC-02",
+    "imageId": "kc4x239fr8c5kkaiqjj39fgs",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/kc4x239fr8c5kkaiqjj39fgs.webp",
+    "medication": "BPC-157"
+  },
+  {
+    "sku": "TR-BPC-03",
+    "imageId": "wup158kgyraqp2gvqp3shxo8",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/wup158kgyraqp2gvqp3shxo8.webp",
+    "medication": "BPC-157"
+  },
+  {
+    "sku": "TR-BTN",
+    "imageId": "z1ezypphxruhl0j8bg5dsfds",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/z1ezypphxruhl0j8bg5dsfds.webp",
+    "medication": "BPC-157 & TB-500 Nasal Spray"
+  },
+  {
+    "sku": "TR-BPCN",
+    "imageId": "uyuvbo1nk16sey7bwnm933ny",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/uyuvbo1nk16sey7bwnm933ny.webp",
+    "medication": "BPC-157 Nasal Spray"
+  },
+  {
+    "sku": "TR-BKV",
+    "imageId": "d0h4cd5f0xlz2yz31sdidvqf",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/d0h4cd5f0xlz2yz31sdidvqf.webp",
+    "medication": "BPC-157/KPV"
+  },
+  {
+    "sku": "TR-BKP",
+    "imageId": "d0h4cd5f0xlz2yz31sdidvqf",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/d0h4cd5f0xlz2yz31sdidvqf.webp",
+    "medication": "BPC-157/KPV/PEA/Tributyrin"
+  },
+  {
+    "sku": "PS-WLV",
+    "imageId": "d8grhqth4kqe4nkwaz5aj7j7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/d8grhqth4kqe4nkwaz5aj7j7.webp",
+    "medication": "BPC-157/TB-500 - Wolverine Stack"
+  },
+  {
+    "sku": "PS-AWV",
+    "imageId": "d8grhqth4kqe4nkwaz5aj7j7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/d8grhqth4kqe4nkwaz5aj7j7.webp",
+    "medication": "BPC-157/TB-500/KPV/GHK-Cu - Advanced Wolverine Stack"
+  },
+  {
+    "sku": "TR-BT5",
+    "imageId": "d8grhqth4kqe4nkwaz5aj7j7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/d8grhqth4kqe4nkwaz5aj7j7.webp",
+    "medication": "BPC-157/TB500"
+  },
+  {
+    "sku": "TR-BTK",
+    "imageId": "d8grhqth4kqe4nkwaz5aj7j7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/d8grhqth4kqe4nkwaz5aj7j7.webp",
+    "medication": "BPC-157/TB500/KPV"
+  },
+  {
+    "sku": "PS-WIC",
+    "imageId": "d8grhqth4kqe4nkwaz5aj7j7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/d8grhqth4kqe4nkwaz5aj7j7.webp",
+    "medication": "BPC-157/TB500/KPV - Wolverine Inflammation Control Stack"
+  },
+  {
+    "sku": "TR-BTKG",
+    "imageId": "d8grhqth4kqe4nkwaz5aj7j7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/d8grhqth4kqe4nkwaz5aj7j7.webp",
+    "medication": "BPC-157/TB500/KPV/GHK-U"
+  },
+  {
+    "sku": "DM-BLT1",
+    "imageId": "g18n35mnuu2hjrzt0yfc7f25",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/g18n35mnuu2hjrzt0yfc7f25.webp",
+    "medication": "Benzocaine/Lidocaine/Tetracaine (20%/10%/10%)"
+  },
+  {
+    "sku": "DM-BLT2",
+    "imageId": "azlw9gbef28y8ibzzwtysyhk",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/azlw9gbef28y8ibzzwtysyhk.webp",
+    "medication": "Benzocaine/Lidocaine/Tetracaine (20%/6%/4%)"
+  },
+  {
+    "sku": "DM-BLT3",
+    "imageId": "azlw9gbef28y8ibzzwtysyhk",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/azlw9gbef28y8ibzzwtysyhk.webp",
+    "medication": "Benzocaine/Lidocaine/Tetracaine (20%/8%/6%)"
+  },
+  {
+    "sku": "SX-BRM",
+    "imageId": "u4ide95vwrztpmuzszcizfa2",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/u4ide95vwrztpmuzszcizfa2.webp",
+    "medication": "Bremelanotide (PT-141) Nasal Spray"
+  },
+  {
+    "sku": "GH-CJC",
+    "imageId": "t1cpl6653zq6k0xqsf1ptx1l",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/t1cpl6653zq6k0xqsf1ptx1l.webp",
+    "medication": "CJC-1295/Ipamorelin"
+  },
+  {
+    "sku": "GH-CJC-02",
+    "imageId": "t1cpl6653zq6k0xqsf1ptx1l",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/t1cpl6653zq6k0xqsf1ptx1l.webp",
+    "medication": "CJC-1295/Ipamorelin"
+  },
+  {
+    "sku": "PS-GOS",
+    "imageId": "t1cpl6653zq6k0xqsf1ptx1l",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/t1cpl6653zq6k0xqsf1ptx1l.webp",
+    "medication": "CJC-1295/Ipamorelin - Growth Hormone Optimization Stack"
+  },
+  {
+    "sku": "PS-GOS-02",
+    "imageId": "t1cpl6653zq6k0xqsf1ptx1l",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/t1cpl6653zq6k0xqsf1ptx1l.webp",
+    "medication": "CJC-1295/Ipamorelin - Growth Hormone Optimization Stack"
+  },
+  {
+    "sku": "HR-CAB",
+    "imageId": "odzf00z97hxfk5fm7sswpt6p",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/odzf00z97hxfk5fm7sswpt6p.webp",
+    "medication": "Cabergoline"
+  },
+  {
+    "sku": "FL-CAG",
+    "imageId": "dxulw0x4ve2avmfilf2cnpiu",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/dxulw0x4ve2avmfilf2cnpiu.webp",
+    "medication": "Cagrilintide"
+  },
+  {
+    "sku": "DM-CAN",
+    "imageId": "z0ftqtl45q3a2p8vsc59m4ra",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/z0ftqtl45q3a2p8vsc59m4ra.webp",
+    "medication": "CantharidinPlus"
+  },
+  {
+    "sku": "LG-CDG",
+    "imageId": "db62u6i9pi3h4lcxczfnxomc",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/db62u6i9pi3h4lcxczfnxomc.webp",
+    "medication": "Cardiogen"
+  },
+  {
+    "sku": "LG-CTX",
+    "imageId": "gkq4nu3aw09u5e05u5rd72cd",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/gkq4nu3aw09u5e05u5rd72cd.webp",
+    "medication": "Cartalax"
+  },
+  {
+    "sku": "AA-CER",
+    "imageId": "gr5gopsus88y5175vl6zlv6i",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/gr5gopsus88y5175vl6zlv6i.webp",
+    "medication": "Cerebrolysin"
+  },
+  {
+    "sku": "SX-CLX",
+    "imageId": "rc2zo6rjsv4kdy7y9kgza451",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/rc2zo6rjsv4kdy7y9kgza451.webp",
+    "medication": "Climax Cream"
+  },
+  {
+    "sku": "HR-CLO",
+    "imageId": "a2id9b3pde6ccp6g28x2mj6p",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/a2id9b3pde6ccp6g28x2mj6p.webp",
+    "medication": "Clomiphene CITRATE"
+  },
+  {
+    "sku": "HR-CLO-02",
+    "imageId": "xizv8ho8luk5edqdl2k259zd",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/xizv8ho8luk5edqdl2k259zd.webp",
+    "medication": "Clomiphene CITRATE"
+  },
+  {
+    "sku": "WL-B12",
+    "imageId": "phv5dt23oxe27k3yvwhd2zl0",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/phv5dt23oxe27k3yvwhd2zl0.webp",
+    "medication": "Cyanocobalamin (B12) - Commercial"
+  },
+  {
+    "sku": "WL-CB5",
+    "imageId": "bvktdk2w2seuh2sw9vx3ymug",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/bvktdk2w2seuh2sw9vx3ymug.webp",
+    "medication": "Cyanocobalamin B12 503B"
+  },
+  {
+    "sku": "HR-DHS",
+    "imageId": "vbdh3fyrz5mtxhi3vvkq4xnw",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/vbdh3fyrz5mtxhi3vvkq4xnw.webp",
+    "medication": "DHEA SR"
+  },
+  {
+    "sku": "HR-DHS-02",
+    "imageId": "hbx9npjcppsdc6xabf53zt4j",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hbx9npjcppsdc6xabf53zt4j.webp",
+    "medication": "DHEA SR"
+  },
+  {
+    "sku": "HR-DHD",
+    "imageId": "n8ce5prantv2nvyzbj10w5j2",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/n8ce5prantv2nvyzbj10w5j2.webp",
+    "medication": "DHEA SR (DYE-FREE)"
+  },
+  {
+    "sku": "HR-DHP",
+    "imageId": "zo1ux0ztztx8e23711hzrqmd",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/zo1ux0ztztx8e23711hzrqmd.webp",
+    "medication": "DHEA/Pregnenolone"
+  },
+  {
+    "sku": "HR-DHP-02",
+    "imageId": "cx5laks9g1w5jkqk5t6cxsk4",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/cx5laks9g1w5jkqk5t6cxsk4.webp",
+    "medication": "DHEA/Pregnenolone"
+  },
+  {
+    "sku": "SL-DSP",
+    "imageId": "qqv43gzyd48hlf83ptj8k20l",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/qqv43gzyd48hlf83ptj8k20l.webp",
+    "medication": "DSIP"
+  },
+  {
+    "sku": "PS-NRS",
+    "imageId": "w90ngj09q69nngszfhrmbqzd",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/w90ngj09q69nngszfhrmbqzd.webp",
+    "medication": "DSIP/BPC-157/CJC-1295 -Night Repair Stack"
+  },
+  {
+    "sku": "SL-DBC",
+    "imageId": "qe294tprj9a04z388g0466t1",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/qe294tprj9a04z388g0466t1.webp",
+    "medication": "DSIP/BPC/CJC"
+  },
+  {
+    "sku": "AA-DHX",
+    "imageId": "zezd8b1k76h32ugk332aawxc",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/zezd8b1k76h32ugk332aawxc.webp",
+    "medication": "Dihexa"
+  },
+  {
+    "sku": "AA-DHX-02",
+    "imageId": "xmwv8ktrhwmh9987jn1ljv0t",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/xmwv8ktrhwmh9987jn1ljv0t.webp",
+    "medication": "Dihexa"
+  },
+  {
+    "sku": "WL-DOX",
+    "imageId": "hiqekns1yggqisbzax4klwnf",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hiqekns1yggqisbzax4klwnf.webp",
+    "medication": "Doxycycline Hycalate"
+  },
+  {
+    "sku": "WL-DOX-02",
+    "imageId": "bmab76nkg21wg7b0jj3rqk78",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/bmab76nkg21wg7b0jj3rqk78.webp",
+    "medication": "Doxycycline Hycalate"
+  },
+  {
+    "sku": "WL-DOX-04",
+    "imageId": "aptxr9ix09yqngo84b745f02",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/aptxr9ix09yqngo84b745f02.webp",
+    "medication": "Doxycycline Hycalate"
+  },
+  {
+    "sku": "WL-DOX-03",
+    "imageId": "pkuqgehsxaf6p6gxcbp68685",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/pkuqgehsxaf6p6gxcbp68685.webp",
+    "medication": "Doxycycline Hycalate"
+  },
+  {
+    "sku": "HR-EVB",
+    "imageId": "d4girq2efhdheivxj1piw2i8",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/d4girq2efhdheivxj1piw2i8.webp",
+    "medication": "ESTRADIOL (VERSABASE)"
+  },
+  {
+    "sku": "HR-EVB-02",
+    "imageId": "aiqlxanbc1tajcysk3sx9edp",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/aiqlxanbc1tajcysk3sx9edp.webp",
+    "medication": "ESTRADIOL (VERSABASE)"
+  },
+  {
+    "sku": "HR-EVB-03",
+    "imageId": "yqfr64h1chmil7kvw4bs5vsi",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/yqfr64h1chmil7kvw4bs5vsi.webp",
+    "medication": "ESTRADIOL (VERSABASE)"
+  },
+  {
+    "sku": "HR-EVB-04",
+    "imageId": "q9saf9y1f7drz3tcy0k60g3d",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/q9saf9y1f7drz3tcy0k60g3d.webp",
+    "medication": "ESTRADIOL (VERSABASE)"
+  },
+  {
+    "sku": "HR-EDF",
+    "imageId": "q9saf9y1f7drz3tcy0k60g3d",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/q9saf9y1f7drz3tcy0k60g3d.webp",
+    "medication": "ESTRADIOL IR (DYE-FREE) (LACTOSE FREE)"
+  },
+  {
+    "sku": "HR-ESL",
+    "imageId": "e1rqqehg5k1l6s1eqdkeyspu",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/e1rqqehg5k1l6s1eqdkeyspu.webp",
+    "medication": "ESTRADIOL SL - CREME DE MENTHE"
+  },
+  {
+    "sku": "HR-EVC",
+    "imageId": "hi5t3coiih9wxkp384srarbl",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hi5t3coiih9wxkp384srarbl.webp",
+    "medication": "ESTRADIOL Vag. Cream"
+  },
+  {
+    "sku": "HR-EVC-03",
+    "imageId": "at83vxsa4wsb5w3j3j672e9o",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/at83vxsa4wsb5w3j3j672e9o.webp",
+    "medication": "ESTRADIOL Vag. Cream"
+  },
+  {
+    "sku": "HR-EVC-02",
+    "imageId": "i814ouiksx3fj0g7zxspxq4j",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/i814ouiksx3fj0g7zxspxq4j.webp",
+    "medication": "ESTRADIOL Vag. Cream"
+  },
+  {
+    "sku": "HR-EP",
+    "imageId": "xwrbxx7xt5fj5fxw03luvzmd",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/xwrbxx7xt5fj5fxw03luvzmd.webp",
+    "medication": "ESTRADIOL/PROGESTERONE"
+  },
+  {
+    "sku": "HR-EP-02",
+    "imageId": "nkc38el182jtyjxqz3zyty33",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/nkc38el182jtyjxqz3zyty33.webp",
+    "medication": "ESTRADIOL/PROGESTERONE"
+  },
+  {
+    "sku": "HR-ECL",
+    "imageId": "fn7zj633kwcg4phx9saqe4yn",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/fn7zj633kwcg4phx9saqe4yn.webp",
+    "medication": "Enclominphene"
+  },
+  {
+    "sku": "HR-ECL-02",
+    "imageId": "r3q6rexciung1tyrmjzj4gx0",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/r3q6rexciung1tyrmjzj4gx0.webp",
+    "medication": "Enclominphene"
+  },
+  {
+    "sku": "HR-ECC",
+    "imageId": "x9u1b5ot9xd575ead8r4ly1l",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/x9u1b5ot9xd575ead8r4ly1l.webp",
+    "medication": "Enclomiphene CITRATE"
+  },
+  {
+    "sku": "HR-ECC-02",
+    "imageId": "a2id9b3pde6ccp6g28x2mj6p",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/a2id9b3pde6ccp6g28x2mj6p.webp",
+    "medication": "Enclomiphene CITRATE"
+  },
+  {
+    "sku": "HR-ECC-03",
+    "imageId": "xizv8ho8luk5edqdl2k259zd",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/xizv8ho8luk5edqdl2k259zd.webp",
+    "medication": "Enclomiphene CITRATE"
+  },
+  {
+    "sku": "LG-EPN",
+    "imageId": "m9xd6myi8g0fxibrfk1m74at",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/m9xd6myi8g0fxibrfk1m74at.webp",
+    "medication": "Epitalon"
+  },
+  {
+    "sku": "SK-EGC",
+    "imageId": "g5spyxwgk68kas8tgmf87hzt",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/g5spyxwgk68kas8tgmf87hzt.webp",
+    "medication": "Epitalon/GHK-Cu"
+  },
+  {
+    "sku": "LG-EPT",
+    "imageId": "knsjipb6dxzcbhpozm4vww3s",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/knsjipb6dxzcbhpozm4vww3s.webp",
+    "medication": "Epithalon"
+  },
+  {
+    "sku": "HR-EST",
+    "imageId": "yqfr64h1chmil7kvw4bs5vsi",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/yqfr64h1chmil7kvw4bs5vsi.webp",
+    "medication": "Estradiol"
+  },
+  {
+    "sku": "HR-EST-02",
+    "imageId": "oob8g4i0ku4imxsgavpx85uu",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/oob8g4i0ku4imxsgavpx85uu.webp",
+    "medication": "Estradiol"
+  },
+  {
+    "sku": "HR-EST-03",
+    "imageId": "q9saf9y1f7drz3tcy0k60g3d",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/q9saf9y1f7drz3tcy0k60g3d.webp",
+    "medication": "Estradiol"
+  },
+  {
+    "sku": "HR-EST-05",
+    "imageId": "vpwklavslwayjxgni35zd0dh",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/vpwklavslwayjxgni35zd0dh.webp",
+    "medication": "Estradiol"
+  },
+  {
+    "sku": "HR-EST-06",
+    "imageId": "i814ouiksx3fj0g7zxspxq4j",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/i814ouiksx3fj0g7zxspxq4j.webp",
+    "medication": "Estradiol"
+  },
+  {
+    "sku": "HR-EST-07",
+    "imageId": "yqfr64h1chmil7kvw4bs5vsi",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/yqfr64h1chmil7kvw4bs5vsi.webp",
+    "medication": "Estradiol"
+  },
+  {
+    "sku": "HR-EST-08",
+    "imageId": "q9saf9y1f7drz3tcy0k60g3d",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/q9saf9y1f7drz3tcy0k60g3d.webp",
+    "medication": "Estradiol"
+  },
+  {
+    "sku": "HR-EST-09",
+    "imageId": "x87gqiu0xhth2irsnfh0xz2f",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/x87gqiu0xhth2irsnfh0xz2f.webp",
+    "medication": "Estradiol"
+  },
+  {
+    "sku": "HR-EST-04",
+    "imageId": "s7uqle2qzr44tudo7nxf2f6u",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/s7uqle2qzr44tudo7nxf2f6u.webp",
+    "medication": "Estradiol"
+  },
+  {
+    "sku": "HR-EIR",
+    "imageId": "yqfr64h1chmil7kvw4bs5vsi",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/yqfr64h1chmil7kvw4bs5vsi.webp",
+    "medication": "Estradiol IR"
+  },
+  {
+    "sku": "HR-EIR-03",
+    "imageId": "q9saf9y1f7drz3tcy0k60g3d",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/q9saf9y1f7drz3tcy0k60g3d.webp",
+    "medication": "Estradiol IR"
+  },
+  {
+    "sku": "HR-EIR-04",
+    "imageId": "s7uqle2qzr44tudo7nxf2f6u",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/s7uqle2qzr44tudo7nxf2f6u.webp",
+    "medication": "Estradiol IR"
+  },
+  {
+    "sku": "HR-EIR-05",
+    "imageId": "wv3cys69vgm8ho3qf58b63nj",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/wv3cys69vgm8ho3qf58b63nj.webp",
+    "medication": "Estradiol IR"
+  },
+  {
+    "sku": "HR-EIR-02",
+    "imageId": "oob8g4i0ku4imxsgavpx85uu",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/oob8g4i0ku4imxsgavpx85uu.webp",
+    "medication": "Estradiol IR"
+  },
+  {
+    "sku": "HR-EXM",
+    "imageId": "blzlyqruem2xj5t82tgm8ofr",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/blzlyqruem2xj5t82tgm8ofr.webp",
+    "medication": "Exemestane"
+  },
+  {
+    "sku": "AA-FOX",
+    "imageId": "acbv2ew3ggkxnw6z501bp5bz",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/acbv2ew3ggkxnw6z501bp5bz.webp",
+    "medication": "FOXO4"
+  },
+  {
+    "sku": "SK-FIN",
+    "imageId": "o65jwso612j6ff7bdksq8e6f",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/o65jwso612j6ff7bdksq8e6f.webp",
+    "medication": "Finasteride"
+  },
+  {
+    "sku": "SK-FIN-02",
+    "imageId": "uj6iky05tst4tt43stoly40g",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/uj6iky05tst4tt43stoly40g.webp",
+    "medication": "Finasteride"
+  },
+  {
+    "sku": "SK-FM",
+    "imageId": "czi25tnwhrdjho5ogmo5jg2c",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/czi25tnwhrdjho5ogmo5jg2c.webp",
+    "medication": "Finasteride/Minoxidil"
+  },
+  {
+    "sku": "SK-FM-02",
+    "imageId": "ap3huzbgga0wflhakahyb4e2",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ap3huzbgga0wflhakahyb4e2.webp",
+    "medication": "Finasteride/Minoxidil"
+  },
+  {
+    "sku": "SK-FM-03",
+    "imageId": "uj6iky05tst4tt43stoly40g",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/uj6iky05tst4tt43stoly40g.webp",
+    "medication": "Finasteride/Minoxidil"
+  },
+  {
+    "sku": "SK-FM-04",
+    "imageId": "ap3huzbgga0wflhakahyb4e2",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ap3huzbgga0wflhakahyb4e2.webp",
+    "medication": "Finasteride/Minoxidil"
+  },
+  {
+    "sku": "SK-FMT",
+    "imageId": "czi25tnwhrdjho5ogmo5jg2c",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/czi25tnwhrdjho5ogmo5jg2c.webp",
+    "medication": "Finasteride/Minoxidil/Tretinoin"
+  },
+  {
+    "sku": "HR-FOL",
+    "imageId": "qrd655aym3meuezzdluespc7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/qrd655aym3meuezzdluespc7.webp",
+    "medication": "Follistatin"
+  },
+  {
+    "sku": "SK-GHK",
+    "imageId": "odrrjde6o2s8n46oewcn7pyz",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/odrrjde6o2s8n46oewcn7pyz.webp",
+    "medication": "GHK-Cu"
+  },
+  {
+    "sku": "PP-LRS",
+    "imageId": "odrrjde6o2s8n46oewcn7pyz",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/odrrjde6o2s8n46oewcn7pyz.webp",
+    "medication": "GHK-Cu/Epithalon - Longevity & Regeneration Stack"
+  },
+  {
+    "sku": "GH-G2",
+    "imageId": "mfbw9vybmar37yij79s2qj1n",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/mfbw9vybmar37yij79s2qj1n.webp",
+    "medication": "GHRP-2"
+  },
+  {
+    "sku": "GH-G6",
+    "imageId": "p4jq6drt6xjku1yqpf748hop",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/p4jq6drt6xjku1yqpf748hop.webp",
+    "medication": "GHRP-6"
+  },
+  {
+    "sku": "AA-GSH",
+    "imageId": "yvpccoj9cfu6nqb3fvzl1nxl",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/yvpccoj9cfu6nqb3fvzl1nxl.webp",
+    "medication": "Glutathione"
+  },
+  {
+    "sku": "AA-GSH-02",
+    "imageId": "tjgpm28ipobx5f664v8149z7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/tjgpm28ipobx5f664v8149z7.webp",
+    "medication": "Glutathione"
+  },
+  {
+    "sku": "WL-GSH",
+    "imageId": "yvpccoj9cfu6nqb3fvzl1nxl",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/yvpccoj9cfu6nqb3fvzl1nxl.webp",
+    "medication": "Glutathione"
+  },
+  {
+    "sku": "WL-GSH-02",
+    "imageId": "tjgpm28ipobx5f664v8149z7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/tjgpm28ipobx5f664v8149z7.webp",
+    "medication": "Glutathione"
+  },
+  {
+    "sku": "HR-GND",
+    "imageId": "hzyb8igtgdr9sv0dx7bhkvxs",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hzyb8igtgdr9sv0dx7bhkvxs.webp",
+    "medication": "Gonadorelin"
+  },
+  {
+    "sku": "HR-GN5-02",
+    "imageId": "o2yhnybcxoh62h00luw7b4lc",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/o2yhnybcxoh62h00luw7b4lc.webp",
+    "medication": "Gonadorelin 503B"
+  },
+  {
+    "sku": "HR-GN5",
+    "imageId": "l2n3mkhkrpfwx67lb42kowd4",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/l2n3mkhkrpfwx67lb42kowd4.webp",
+    "medication": "Gonadorelin 503B"
+  },
+  {
+    "sku": "HR-HCG",
+    "imageId": "uonz6jbq5cpaq922eefzgsq1",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/uonz6jbq5cpaq922eefzgsq1.webp",
+    "medication": "HCG"
+  },
+  {
+    "sku": "HR-HCC",
+    "imageId": "kwq2dvpdpadivx339eov21ca",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/kwq2dvpdpadivx339eov21ca.webp",
+    "medication": "HCG (Chorionic) - Commercial"
+  },
+  {
+    "sku": "HR-HGH",
+    "imageId": "bpq5ptchgn1xaanp4y4mvuxc",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/bpq5ptchgn1xaanp4y4mvuxc.webp",
+    "medication": "HGH"
+  },
+  {
+    "sku": "DM-HQ10",
+    "imageId": "jus0kxysmzhtlwknzmk1ayv8",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/jus0kxysmzhtlwknzmk1ayv8.webp",
+    "medication": "Hydroquinone 10%"
+  },
+  {
+    "sku": "DM-HQ4A",
+    "imageId": "dxdtuxb1z6fxv1srdabukvwn",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/dxdtuxb1z6fxv1srdabukvwn.webp",
+    "medication": "Hydroquinone 4%/Ascorbic Acid 2%"
+  },
+  {
+    "sku": "DM-HQ4R",
+    "imageId": "dxdtuxb1z6fxv1srdabukvwn",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/dxdtuxb1z6fxv1srdabukvwn.webp",
+    "medication": "Hydroquinone 4%/Retinoic Acid 0.05%/Hydrocortisone 2%"
+  },
+  {
+    "sku": "DM-HQ5B",
+    "imageId": "s4y1x8ttcy2dqp51kux8cxy3",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/s4y1x8ttcy2dqp51kux8cxy3.webp",
+    "medication": "Hydroquinone 5%/Retinoic Acid 0.05%/Hydrocortisone 2.5%/Ascorbic Acid 2%"
+  },
+  {
+    "sku": "DM-HQ5D",
+    "imageId": "g56cg33rwzf7nszkw1u12obs",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/g56cg33rwzf7nszkw1u12obs.webp",
+    "medication": "Hydroquinone 5%/Retinoic Acid 0.1%/Dexamethasone 0.1%"
+  },
+  {
+    "sku": "DM-HQ5A",
+    "imageId": "s4y1x8ttcy2dqp51kux8cxy3",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/s4y1x8ttcy2dqp51kux8cxy3.webp",
+    "medication": "Hydroquinone 5%/Retinoic Acid 0.1%/Hydrocortisone 2.5%/Ascorbic Acid 2%"
+  },
+  {
+    "sku": "DM-HQ6",
+    "imageId": "pahnlnfzf0ug2onn9jtf9qym",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/pahnlnfzf0ug2onn9jtf9qym.webp",
+    "medication": "Hydroquinone 6%"
+  },
+  {
+    "sku": "DM-HQ6A",
+    "imageId": "ehxl3bu8fwkjb7br735mwng7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ehxl3bu8fwkjb7br735mwng7.webp",
+    "medication": "Hydroquinone 6%/Ascorbic Acid 2%/Hydrocortisone 2.5%"
+  },
+  {
+    "sku": "DM-HQ6R",
+    "imageId": "xbykyjwkxmc01otpmzisqp72",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/xbykyjwkxmc01otpmzisqp72.webp",
+    "medication": "Hydroquinone 6%/Retinoic Acid 0.25%/Kojic Acid 4%/Hydrocortisone 0.05%"
+  },
+  {
+    "sku": "DM-HQ6K",
+    "imageId": "s5e3y528gotzge9ze4o0yn2v",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/s5e3y528gotzge9ze4o0yn2v.webp",
+    "medication": "Hydroquinone 6%/Retinoic Acid 0.5%/Kojic Acid 4%"
+  },
+  {
+    "sku": "DM-HQ8",
+    "imageId": "ormvzjgnoyrfjxnfdwydpdsz",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ormvzjgnoyrfjxnfdwydpdsz.webp",
+    "medication": "Hydroquinone 8%"
+  },
+  {
+    "sku": "DM-HQ8K",
+    "imageId": "u36bwd71skfl7hta5ob17fiz",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/u36bwd71skfl7hta5ob17fiz.webp",
+    "medication": "Hydroquinone 8%/Retinoic Acid 0.025%/Kojic Acid 4%/Hydrocortisone 0.05%"
+  },
+  {
+    "sku": "DM-HQ8A",
+    "imageId": "u36bwd71skfl7hta5ob17fiz",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/u36bwd71skfl7hta5ob17fiz.webp",
+    "medication": "Hydroquinone 8%/Retinoic Acid 0.05%/Hydrocortisone 2.5%"
+  },
+  {
+    "sku": "DM-HQ8B",
+    "imageId": "g56cg33rwzf7nszkw1u12obs",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/g56cg33rwzf7nszkw1u12obs.webp",
+    "medication": "Hydroquinone 8%/Retinoic Acid 0.1%/Hydrocortisone 0.1%"
+  },
+  {
+    "sku": "DM-HQ8C",
+    "imageId": "bp0dqzqm357nr4989ext6x5a",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/bp0dqzqm357nr4989ext6x5a.webp",
+    "medication": "Hydroquinone 8%/Retinoic Acid 0.1%/Kojic Acid 4%/Azelaic Acid 15%/Hydrocortisone 1%"
+  },
+  {
+    "sku": "GH-IGF",
+    "imageId": "xy6gjkbpoea1n1t9dm093qhi",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/xy6gjkbpoea1n1t9dm093qhi.webp",
+    "medication": "IGF-LR3"
+  },
+  {
+    "sku": "AN-KET",
+    "imageId": "jwrm0r9b5zf2eqc0ecr985ji",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/jwrm0r9b5zf2eqc0ecr985ji.webp",
+    "medication": "Ketamine"
+  },
+  {
+    "sku": "AN-KET-02",
+    "imageId": "nslu3558u8bwd9unrmecy9ur",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/nslu3558u8bwd9unrmecy9ur.webp",
+    "medication": "Ketamine"
+  },
+  {
+    "sku": "AN-KET-03",
+    "imageId": "m8tjlw5vxbqov7y6j6qghzu7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/m8tjlw5vxbqov7y6j6qghzu7.webp",
+    "medication": "Ketamine"
+  },
+  {
+    "sku": "AN-KET-04",
+    "imageId": "aukjkewl04qoq1jtflx26vpc",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/aukjkewl04qoq1jtflx26vpc.webp",
+    "medication": "Ketamine"
+  },
+  {
+    "sku": "HR-KSP",
+    "imageId": "b1b2lf5f745mwtpqf1ene11w",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/b1b2lf5f745mwtpqf1ene11w.webp",
+    "medication": "Kisspeptin"
+  },
+  {
+    "sku": "DM-KAH",
+    "imageId": "etwk1llsyp2zyrbufon3azfh",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/etwk1llsyp2zyrbufon3azfh.webp",
+    "medication": "Kojic Acid 5%/Ascorbic Acid 2%/Hyaluronic 0.5%"
+  },
+  {
+    "sku": "HR-KYZ",
+    "imageId": "kwt2z3jka26rojtfkr3ovx7f",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/kwt2z3jka26rojtfkr3ovx7f.webp",
+    "medication": "KyzaTrex"
+  },
+  {
+    "sku": "FL-LPB",
+    "imageId": "eho4alz8cpapdjbtia7mqou4",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/eho4alz8cpapdjbtia7mqou4.webp",
+    "medication": "LIPO-B"
+  },
+  {
+    "sku": "IM-LL3",
+    "imageId": "ozoyfzt8uq6xslqao2ovju6f",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ozoyfzt8uq6xslqao2ovju6f.webp",
+    "medication": "LL-37"
+  },
+  {
+    "sku": "IM-LLT",
+    "imageId": "ozoyfzt8uq6xslqao2ovju6f",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ozoyfzt8uq6xslqao2ovju6f.webp",
+    "medication": "LL-37/Thymosin"
+  },
+  {
+    "sku": "PS-IDS",
+    "imageId": "eom8dtcfaewlsz2fg0mhxtz9",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/eom8dtcfaewlsz2fg0mhxtz9.webp",
+    "medication": "LL-37/Thymosin Alpha-1 - Immune Defense Stack"
+  },
+  {
+    "sku": "DM-LPP",
+    "imageId": "wncn136mdb3ntgcwv47qytmu",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/wncn136mdb3ntgcwv47qytmu.webp",
+    "medication": "Lidocaine/Prilocaine/Phenylephrine (23%/10%/0.5%)"
+  },
+  {
+    "sku": "DM-LTC",
+    "imageId": "wncn136mdb3ntgcwv47qytmu",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/wncn136mdb3ntgcwv47qytmu.webp",
+    "medication": "Lidocaine/Tetracaine (23%/7%)"
+  },
+  {
+    "sku": "DM-LTP",
+    "imageId": "niqa9n8lwsoc9qoircmazfwy",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/niqa9n8lwsoc9qoircmazfwy.webp",
+    "medication": "Lidocaine/Tetracaine/Prilocaine (23%/7%/2%)"
+  },
+  {
+    "sku": "HR-T3I",
+    "imageId": "l1h4091zxpr03v4xwfqk7yk7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/l1h4091zxpr03v4xwfqk7yk7.webp",
+    "medication": "Liothyronine (T3) IR"
+  },
+  {
+    "sku": "HR-T3S",
+    "imageId": "l1h4091zxpr03v4xwfqk7yk7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/l1h4091zxpr03v4xwfqk7yk7.webp",
+    "medication": "Liothyronine (T3) SR"
+  },
+  {
+    "sku": "HR-T3S-02",
+    "imageId": "dcpopy1wmtms19nao5o7jgp7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/dcpopy1wmtms19nao5o7jgp7.webp",
+    "medication": "Liothyronine (T3) SR"
+  },
+  {
+    "sku": "HR-T3S-03",
+    "imageId": "q1kndur5r1ioxa4a7ubczxks",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/q1kndur5r1ioxa4a7ubczxks.webp",
+    "medication": "Liothyronine (T3) SR"
+  },
+  {
+    "sku": "FL-LPC",
+    "imageId": "tzrsg488lqqhq3oubo4l14ps",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/tzrsg488lqqhq3oubo4l14ps.webp",
+    "medication": "Lipo-C"
+  },
+  {
+    "sku": "AA-MK6-02",
+    "imageId": "x3qr2p1swhjbbbhz4vm5esd5",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/x3qr2p1swhjbbbhz4vm5esd5.webp",
+    "medication": "MK-677 (Ibutamoren)"
+  },
+  {
+    "sku": "AA-MK6",
+    "imageId": "fhukmx2wfnq0clcrkzseycqw",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/fhukmx2wfnq0clcrkzseycqw.webp",
+    "medication": "MK-677 (Ibutamoren)"
+  },
+  {
+    "sku": "FL-MOT",
+    "imageId": "v09638abj3w4ezfui6lhcwez",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/v09638abj3w4ezfui6lhcwez.webp",
+    "medication": "MOTs-C"
+  },
+  {
+    "sku": "FL-MOT-02",
+    "imageId": "y125apck87jq0bceyin39t5h",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/y125apck87jq0bceyin39t5h.webp",
+    "medication": "MOTs-C"
+  },
+  {
+    "sku": "PP-MT2",
+    "imageId": "y9vjemwug203p3xt475f3pyu",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/y9vjemwug203p3xt475f3pyu.webp",
+    "medication": "Melanotan II (MT-2)"
+  },
+  {
+    "sku": "AA-MEL",
+    "imageId": "ebji9tvnj7m7s8s3vib5dyb4",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ebji9tvnj7m7s8s3vib5dyb4.webp",
+    "medication": "Melatonin II"
+  },
+  {
+    "sku": "WL-MET-02",
+    "imageId": "l03vwnk99l5asd37oaklv9i5",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/l03vwnk99l5asd37oaklv9i5.webp",
+    "medication": "Metformin"
+  },
+  {
+    "sku": "WL-MET",
+    "imageId": "f0wdca41lbc3sk7398d9uyc7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/f0wdca41lbc3sk7398d9uyc7.webp",
+    "medication": "Metformin"
+  },
+  {
+    "sku": "WL-MCB",
+    "imageId": "bc7biiecuefhnz7zmoe7fau3",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/bc7biiecuefhnz7zmoe7fau3.webp",
+    "medication": "Methylcobalamin"
+  },
+  {
+    "sku": "WL-MB",
+    "imageId": "ubtdbxtr9fd0wby3bty3czuf",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ubtdbxtr9fd0wby3bty3czuf.webp",
+    "medication": "Methylene Blue"
+  },
+  {
+    "sku": "WL-MB-02",
+    "imageId": "va7aqsdazmy1n2awuco9zq8q",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/va7aqsdazmy1n2awuco9zq8q.webp",
+    "medication": "Methylene Blue"
+  },
+  {
+    "sku": "AA-MB",
+    "imageId": "eev3oim18f39q4ymabik10cc",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/eev3oim18f39q4ymabik10cc.webp",
+    "medication": "Methylene Blue"
+  },
+  {
+    "sku": "SK-MNX",
+    "imageId": "jzre1oa0p8k2o0t1pt8v2dpn",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/jzre1oa0p8k2o0t1pt8v2dpn.webp",
+    "medication": "Minoxidlil"
+  },
+  {
+    "sku": "WL-NA5",
+    "imageId": "cnyl3gd87w0jhv13i5y6c6bw",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/cnyl3gd87w0jhv13i5y6c6bw.webp",
+    "medication": "NAD Ampule 503B"
+  },
+  {
+    "sku": "AA-NAD",
+    "imageId": "u9adn1zr0fg8ffc3p0hav1o4",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/u9adn1zr0fg8ffc3p0hav1o4.webp",
+    "medication": "NAD+"
+  },
+  {
+    "sku": "AA-NAD-02",
+    "imageId": "waa7dmj3rpbi1j4s6utuoa0a",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/waa7dmj3rpbi1j4s6utuoa0a.webp",
+    "medication": "NAD+"
+  },
+  {
+    "sku": "WL-ND5",
+    "imageId": "u9adn1zr0fg8ffc3p0hav1o4",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/u9adn1zr0fg8ffc3p0hav1o4.webp",
+    "medication": "NAD+ 503B"
+  },
+  {
+    "sku": "WL-ND5-02",
+    "imageId": "hb11v67dyvrzxw22d65t9b7u",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hb11v67dyvrzxw22d65t9b7u.webp",
+    "medication": "NAD+ 503B"
+  },
+  {
+    "sku": "WL-ND5-03",
+    "imageId": "plcvu1bhpumk7j1hoa14afhp",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/plcvu1bhpumk7j1hoa14afhp.webp",
+    "medication": "NAD+ 503B"
+  },
+  {
+    "sku": "AA-NADN",
+    "imageId": "bra706n4l09b0ssvov2pd7do",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/bra706n4l09b0ssvov2pd7do.webp",
+    "medication": "NAD+ Nasal Spray"
+  },
+  {
+    "sku": "AD-NLT",
+    "imageId": "qovxk25ejb5cxnixu8fd14j1",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/qovxk25ejb5cxnixu8fd14j1.webp",
+    "medication": "Naltrexone"
+  },
+  {
+    "sku": "AD-NLT-02",
+    "imageId": "o6jc5mqr6d06gihi5hnh5zw1",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/o6jc5mqr6d06gihi5hnh5zw1.webp",
+    "medication": "Naltrexone"
+  },
+  {
+    "sku": "AD-NLT-03",
+    "imageId": "jn41aonnxgfg419ol81huus3",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/jn41aonnxgfg419ol81huus3.webp",
+    "medication": "Naltrexone"
+  },
+  {
+    "sku": "AD-NLT-05",
+    "imageId": "ljfkw3ko0k7b4mjzldig9zjz",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ljfkw3ko0k7b4mjzldig9zjz.webp",
+    "medication": "Naltrexone"
+  },
+  {
+    "sku": "AD-NLT-06",
+    "imageId": "oq4zjxj75h8ufaykjhmmnwgz",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/oq4zjxj75h8ufaykjhmmnwgz.webp",
+    "medication": "Naltrexone"
+  },
+  {
+    "sku": "AD-NLT-07",
+    "imageId": "qb5p7mk79c32a4mvttf8awql",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/qb5p7mk79c32a4mvttf8awql.webp",
+    "medication": "Naltrexone"
+  },
+  {
+    "sku": "AD-NLT-04",
+    "imageId": "dhbt347a4e4pv3r2gx752n5u",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/dhbt347a4e4pv3r2gx752n5u.webp",
+    "medication": "Naltrexone"
+  },
+  {
+    "sku": "HR-NAN",
+    "imageId": "tmoot17jw9by3yrt0dokgmqh",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/tmoot17jw9by3yrt0dokgmqh.webp",
+    "medication": "Nandrolone DECANOATE"
+  },
+  {
+    "sku": "WL-OMP",
+    "imageId": "l4f41penrgrw7e36g5wxui3d",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/l4f41penrgrw7e36g5wxui3d.webp",
+    "medication": "Omeprazole"
+  },
+  {
+    "sku": "WL-OMP-02",
+    "imageId": "gp1uzcfhrzsobr1r2e2lyrjc",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/gp1uzcfhrzsobr1r2e2lyrjc.webp",
+    "medication": "Omeprazole"
+  },
+  {
+    "sku": "WL-ODN-02",
+    "imageId": "gekdbrk4udr7l3cqw571e03u",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/gekdbrk4udr7l3cqw571e03u.webp",
+    "medication": "Ondansetron"
+  },
+  {
+    "sku": "WL-ODN",
+    "imageId": "ngh8umv4stax5smy8qt23wu2",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ngh8umv4stax5smy8qt23wu2.webp",
+    "medication": "Ondansetron"
+  },
+  {
+    "sku": "AA-ODN",
+    "imageId": "z9lluw3u8cxzztn6o1c5oz81",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/z9lluw3u8cxzztn6o1c5oz81.webp",
+    "medication": "Ondansetron"
+  },
+  {
+    "sku": "WL-ODT",
+    "imageId": "z9lluw3u8cxzztn6o1c5oz81",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/z9lluw3u8cxzztn6o1c5oz81.webp",
+    "medication": "Ondansetron (30-Day)"
+  },
+  {
+    "sku": "HR-OXA",
+    "imageId": "dgp0mh98vs6eutk0ylnvh1kg",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/dgp0mh98vs6eutk0ylnvh1kg.webp",
+    "medication": "Oxandrolone"
+  },
+  {
+    "sku": "HR-OXA-02",
+    "imageId": "o8ippmqjyjs68dmvh4alg0q1",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/o8ippmqjyjs68dmvh4alg0q1.webp",
+    "medication": "Oxandrolone"
+  },
+  {
+    "sku": "HR-OXA-03",
+    "imageId": "pky7398ypgjmfjedubhumna8",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/pky7398ypgjmfjedubhumna8.webp",
+    "medication": "Oxandrolone"
+  },
+  {
+    "sku": "HR-OXA-05",
+    "imageId": "vyzswu8sdjkkzvxs8bdyfdhi",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/vyzswu8sdjkkzvxs8bdyfdhi.webp",
+    "medication": "Oxandrolone"
+  },
+  {
+    "sku": "HR-OXA-06",
+    "imageId": "hrb1joakr7ymvyrkmbzr90d2",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hrb1joakr7ymvyrkmbzr90d2.webp",
+    "medication": "Oxandrolone"
+  },
+  {
+    "sku": "HR-OXA-07",
+    "imageId": "vyzswu8sdjkkzvxs8bdyfdhi",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/vyzswu8sdjkkzvxs8bdyfdhi.webp",
+    "medication": "Oxandrolone"
+  },
+  {
+    "sku": "HR-OXA-08",
+    "imageId": "vyzswu8sdjkkzvxs8bdyfdhi",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/vyzswu8sdjkkzvxs8bdyfdhi.webp",
+    "medication": "Oxandrolone"
+  },
+  {
+    "sku": "HR-OXA-04",
+    "imageId": "hrb1joakr7ymvyrkmbzr90d2",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hrb1joakr7ymvyrkmbzr90d2.webp",
+    "medication": "Oxandrolone"
+  },
+  {
+    "sku": "HR-OXS",
+    "imageId": "hrb1joakr7ymvyrkmbzr90d2",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hrb1joakr7ymvyrkmbzr90d2.webp",
+    "medication": "Oxandrolone SL - Flavorless Troche"
+  },
+  {
+    "sku": "HR-OXS-02",
+    "imageId": "vyzswu8sdjkkzvxs8bdyfdhi",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/vyzswu8sdjkkzvxs8bdyfdhi.webp",
+    "medication": "Oxandrolone SL - Flavorless Troche"
+  },
+  {
+    "sku": "HR-OXT",
+    "imageId": "z2z0upvmz1lzzcstz6w2v33n",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/z2z0upvmz1lzzcstz6w2v33n.webp",
+    "medication": "Oxytocin"
+  },
+  {
+    "sku": "HR-OXT-02",
+    "imageId": "ueyd7s6gtm6vtvfvn30fruop",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ueyd7s6gtm6vtvfvn30fruop.webp",
+    "medication": "Oxytocin"
+  },
+  {
+    "sku": "SX-OXN",
+    "imageId": "rb04isbtfndygvpgcwnocpa1",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/rb04isbtfndygvpgcwnocpa1.webp",
+    "medication": "Oxytocin Nasal Spray"
+  },
+  {
+    "sku": "SX-OXN-02",
+    "imageId": "z2z0upvmz1lzzcstz6w2v33n",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/z2z0upvmz1lzzcstz6w2v33n.webp",
+    "medication": "Oxytocin Nasal Spray"
+  },
+  {
+    "sku": "CM-PPS",
+    "imageId": "u81vd5bdal7r5kk9ue26w9m2",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/u81vd5bdal7r5kk9ue26w9m2.webp",
+    "medication": "PE-22-28/Pinealon/Selank"
+  },
+  {
+    "sku": "PS-NGS",
+    "imageId": "u81vd5bdal7r5kk9ue26w9m2",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/u81vd5bdal7r5kk9ue26w9m2.webp",
+    "medication": "PE-22-28/Pinealon/Selank - Neurogenesis Stack"
+  },
+  {
+    "sku": "SX-PT1",
+    "imageId": "jn6o0ngolpjjefcndc6cktpy",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/jn6o0ngolpjjefcndc6cktpy.webp",
+    "medication": "PT-141"
+  },
+  {
+    "sku": "WL-PHT",
+    "imageId": "or0fwlw3dj4xtbut3cm98dik",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/or0fwlw3dj4xtbut3cm98dik.webp",
+    "medication": "Phentermine"
+  },
+  {
+    "sku": "WL-PTP",
+    "imageId": "mesnlk1owxphkxm174sy0dcg",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/mesnlk1owxphkxm174sy0dcg.webp",
+    "medication": "Phentermine/Topiramate"
+  },
+  {
+    "sku": "WL-PTP-02",
+    "imageId": "mesnlk1owxphkxm174sy0dcg",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/mesnlk1owxphkxm174sy0dcg.webp",
+    "medication": "Phentermine/Topiramate"
+  },
+  {
+    "sku": "CM-PNN",
+    "imageId": "espjd81yrnsb0cf22y862pkm",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/espjd81yrnsb0cf22y862pkm.webp",
+    "medication": "Pinealon Nasal Spray"
+  },
+  {
+    "sku": "HR-PRG",
+    "imageId": "zo1ux0ztztx8e23711hzrqmd",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/zo1ux0ztztx8e23711hzrqmd.webp",
+    "medication": "Pregnenolone IR"
+  },
+  {
+    "sku": "HR-PRO",
+    "imageId": "rd9ro1cl4f8xdtfghq6kr46s",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/rd9ro1cl4f8xdtfghq6kr46s.webp",
+    "medication": "Progesterone"
+  },
+  {
+    "sku": "HR-PRO-03",
+    "imageId": "t1x4qkbrbnjf8jeyqzdm327j",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/t1x4qkbrbnjf8jeyqzdm327j.webp",
+    "medication": "Progesterone"
+  },
+  {
+    "sku": "HR-PRO-02",
+    "imageId": "owzsqmvtyljn18yn7gu721ta",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/owzsqmvtyljn18yn7gu721ta.webp",
+    "medication": "Progesterone"
+  },
+  {
+    "sku": "HR-PIR-02",
+    "imageId": "p3citocsa8crv9lfxfjnndrw",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/p3citocsa8crv9lfxfjnndrw.webp",
+    "medication": "Progesterone IR"
+  },
+  {
+    "sku": "HR-PIR-04",
+    "imageId": "hh7qij9lqutka0tmub1jppjz",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hh7qij9lqutka0tmub1jppjz.webp",
+    "medication": "Progesterone IR"
+  },
+  {
+    "sku": "HR-PIR",
+    "imageId": "rd9ro1cl4f8xdtfghq6kr46s",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/rd9ro1cl4f8xdtfghq6kr46s.webp",
+    "medication": "Progesterone IR"
+  },
+  {
+    "sku": "HR-PIR-03",
+    "imageId": "t1x4qkbrbnjf8jeyqzdm327j",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/t1x4qkbrbnjf8jeyqzdm327j.webp",
+    "medication": "Progesterone IR"
+  },
+  {
+    "sku": "HR-PSR",
+    "imageId": "owzsqmvtyljn18yn7gu721ta",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/owzsqmvtyljn18yn7gu721ta.webp",
+    "medication": "Progesterone SR"
+  },
+  {
+    "sku": "HR-PSR-02",
+    "imageId": "p3citocsa8crv9lfxfjnndrw",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/p3citocsa8crv9lfxfjnndrw.webp",
+    "medication": "Progesterone SR"
+  },
+  {
+    "sku": "HR-PSR-03",
+    "imageId": "hh7qij9lqutka0tmub1jppjz",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hh7qij9lqutka0tmub1jppjz.webp",
+    "medication": "Progesterone SR"
+  },
+  {
+    "sku": "AS-RET",
+    "imageId": "j9tja5jlqkmyy3yw09o20los",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/j9tja5jlqkmyy3yw09o20los.webp",
+    "medication": "Retatrutide"
+  },
+  {
+    "sku": "AS-RET-02",
+    "imageId": "j9tja5jlqkmyy3yw09o20los",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/j9tja5jlqkmyy3yw09o20los.webp",
+    "medication": "Retatrutide"
+  },
+  {
+    "sku": "AS-RET-03",
+    "imageId": "p1xepda1sq728u8drvrfc3wb",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/p1xepda1sq728u8drvrfc3wb.webp",
+    "medication": "Retatrutide"
+  },
+  {
+    "sku": "AS-RET-04",
+    "imageId": "l7wi04c6swte7jqteyd154ww",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/l7wi04c6swte7jqteyd154ww.webp",
+    "medication": "Retatrutide"
+  },
+  {
+    "sku": "AS-RET-05",
+    "imageId": "iab8dmhvbqaf0bwgpsmxu6j2",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/iab8dmhvbqaf0bwgpsmxu6j2.webp",
+    "medication": "Retatrutide"
+  },
+  {
+    "sku": "AS-RET-06",
+    "imageId": "mwh7zl91podyfk4eyit2797z",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/mwh7zl91podyfk4eyit2797z.webp",
+    "medication": "Retatrutide"
+  },
+  {
+    "sku": "AS-RT",
+    "imageId": "p6xx26xlkc9db8marob2ml6h",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/p6xx26xlkc9db8marob2ml6h.webp",
+    "medication": "Retatrutide + Tirzepatide"
+  },
+  {
+    "sku": "AS-RT-02",
+    "imageId": "p6xx26xlkc9db8marob2ml6h",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/p6xx26xlkc9db8marob2ml6h.webp",
+    "medication": "Retatrutide + Tirzepatide"
+  },
+  {
+    "sku": "DM-RA3",
+    "imageId": "g56cg33rwzf7nszkw1u12obs",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/g56cg33rwzf7nszkw1u12obs.webp",
+    "medication": "Retinoic Acid 0.05%/Hyaluronic Acid 0.1%"
+  },
+  {
+    "sku": "DM-RA1",
+    "imageId": "dxdtuxb1z6fxv1srdabukvwn",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/dxdtuxb1z6fxv1srdabukvwn.webp",
+    "medication": "Retinoic Acid 0.05%/Hyaluronic Acid 0.1%/Ascorbic Acid 2%"
+  },
+  {
+    "sku": "DM-RA4",
+    "imageId": "bnkcsg5pnqo70echuxkvcfi8",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/bnkcsg5pnqo70echuxkvcfi8.webp",
+    "medication": "Retinoic Acid 0.05%/Hyaluronic Acid 0.2%"
+  },
+  {
+    "sku": "DM-RA2",
+    "imageId": "bnkcsg5pnqo70echuxkvcfi8",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/bnkcsg5pnqo70echuxkvcfi8.webp",
+    "medication": "Retinoic Acid 0.05%/Hyaluronic Acid 0.2%/Ascorbic Acid 2%"
+  },
+  {
+    "sku": "DM-RA5",
+    "imageId": "g56cg33rwzf7nszkw1u12obs",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/g56cg33rwzf7nszkw1u12obs.webp",
+    "medication": "Retinoic Acid 0.1%/Clindamycin 2%"
+  },
+  {
+    "sku": "DM-RA6",
+    "imageId": "g56cg33rwzf7nszkw1u12obs",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/g56cg33rwzf7nszkw1u12obs.webp",
+    "medication": "Retinoic Acid 0.1%/Hyaluronic Acid 0.5%"
+  },
+  {
+    "sku": "FL-S32",
+    "imageId": "qz1gkb607jyifiqn8nms8lh7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/qz1gkb607jyifiqn8nms8lh7.webp",
+    "medication": "SLU-PP-32"
+  },
+  {
+    "sku": "FL-S33",
+    "imageId": "syz9xuutagq1tp81i240e9jp",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/syz9xuutagq1tp81i240e9jp.webp",
+    "medication": "SLU-PP-33"
+  },
+  {
+    "sku": "FL-S33-02",
+    "imageId": "e6fymivaxz0o50gebs63cj3a",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/e6fymivaxz0o50gebs63cj3a.webp",
+    "medication": "SLU-PP-33"
+  },
+  {
+    "sku": "LG-SS3",
+    "imageId": "htrnwwqb888rfebontru25fo",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/htrnwwqb888rfebontru25fo.webp",
+    "medication": "SS-31"
+  },
+  {
+    "sku": "CM-SLN",
+    "imageId": "uhblo4w6goc36r0m3cbb4az2",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/uhblo4w6goc36r0m3cbb4az2.webp",
+    "medication": "Selank Nasal Spray"
+  },
+  {
+    "sku": "AS-SB12-03",
+    "imageId": "p25genjfmid8wcja3q3dx323",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/p25genjfmid8wcja3q3dx323.webp",
+    "medication": "Semaglutide/B-12"
+  },
+  {
+    "sku": "AS-SB12-04",
+    "imageId": "dv9rw18gutpe56d8hcel5fdo",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/dv9rw18gutpe56d8hcel5fdo.webp",
+    "medication": "Semaglutide/B-12"
+  },
+  {
+    "sku": "AS-SB12-05",
+    "imageId": "y6coxq9sirhhihnlhoiqa3pb",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/y6coxq9sirhhihnlhoiqa3pb.webp",
+    "medication": "Semaglutide/B-12"
+  },
+  {
+    "sku": "AS-SB12",
+    "imageId": "aqddsqnuybs3alx29oh01ax8",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/aqddsqnuybs3alx29oh01ax8.webp",
+    "medication": "Semaglutide/B-12"
+  },
+  {
+    "sku": "AS-SB12-02",
+    "imageId": "rfnrffhegb9uatms2hbu0x7d",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/rfnrffhegb9uatms2hbu0x7d.webp",
+    "medication": "Semaglutide/B-12"
+  },
+  {
+    "sku": "AS-SGY",
+    "imageId": "um3s4pqsq85o8icxdliu8umm",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/um3s4pqsq85o8icxdliu8umm.webp",
+    "medication": "Semaglutide/Glycine"
+  },
+  {
+    "sku": "AS-SGY-02",
+    "imageId": "ppazrjf3enb4f6dmx2snvjwt",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ppazrjf3enb4f6dmx2snvjwt.webp",
+    "medication": "Semaglutide/Glycine"
+  },
+  {
+    "sku": "AS-SGY-03",
+    "imageId": "i7stfbb1p55sb3bhb1j20dd3",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/i7stfbb1p55sb3bhb1j20dd3.webp",
+    "medication": "Semaglutide/Glycine"
+  },
+  {
+    "sku": "AS-SGY-04",
+    "imageId": "wycyo0i8bjr7vqk153nux63g",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/wycyo0i8bjr7vqk153nux63g.webp",
+    "medication": "Semaglutide/Glycine"
+  },
+  {
+    "sku": "AS-SGY-05",
+    "imageId": "ilh5m0q9eebk3nfigvq7wmng",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ilh5m0q9eebk3nfigvq7wmng.webp",
+    "medication": "Semaglutide/Glycine"
+  },
+  {
+    "sku": "CM-SMN",
+    "imageId": "nven739i502ix33ay0w3h38c",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/nven739i502ix33ay0w3h38c.webp",
+    "medication": "Semax Nasal Spray"
+  },
+  {
+    "sku": "CM-SMS",
+    "imageId": "e1h32r5jpbpe3dkf6f1xbsu0",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/e1h32r5jpbpe3dkf6f1xbsu0.webp",
+    "medication": "Semax/Selank"
+  },
+  {
+    "sku": "PS-CES",
+    "imageId": "e1h32r5jpbpe3dkf6f1xbsu0",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/e1h32r5jpbpe3dkf6f1xbsu0.webp",
+    "medication": "Semax/Selank - Cognitive Enhancement Stack"
+  },
+  {
+    "sku": "CM-SSN",
+    "imageId": "ybuzd2h4lrikmo89d711tyxf",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ybuzd2h4lrikmo89d711tyxf.webp",
+    "medication": "Semax/Selank Nasal Spray"
+  },
+  {
+    "sku": "GH-SER",
+    "imageId": "ms1vh9wqply9idqhdrhjw5xe",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ms1vh9wqply9idqhdrhjw5xe.webp",
+    "medication": "Sermorelin"
+  },
+  {
+    "sku": "SX-SLD",
+    "imageId": "dz0i2h4yzkj4yik52rgo3ykx",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/dz0i2h4yzkj4yik52rgo3ykx.webp",
+    "medication": "Sildenafil"
+  },
+  {
+    "sku": "SX-SLD-02",
+    "imageId": "waw86vcgtfxiz88zgvbwzy6u",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/waw86vcgtfxiz88zgvbwzy6u.webp",
+    "medication": "Sildenafil"
+  },
+  {
+    "sku": "SX-SCS",
+    "imageId": "svzhm1akes39j7u1v52avljc",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/svzhm1akes39j7u1v52avljc.webp",
+    "medication": "Sildenafil Citrate SL"
+  },
+  {
+    "sku": "SX-STS",
+    "imageId": "ovawm2xx02qobu1xr2eagf48",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ovawm2xx02qobu1xr2eagf48.webp",
+    "medication": "Sildenafil/Tadalafil SL"
+  },
+  {
+    "sku": "WL-SPR",
+    "imageId": "hsa27oket9wrys1yll6irgvs",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hsa27oket9wrys1yll6irgvs.webp",
+    "medication": "Spironolactone SR"
+  },
+  {
+    "sku": "WL-SPR-02",
+    "imageId": "iixywskoxa67qc35ww7d2vhq",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/iixywskoxa67qc35ww7d2vhq.webp",
+    "medication": "Spironolactone SR"
+  },
+  {
+    "sku": "WL-SPR-04",
+    "imageId": "pwfn4fb9ye80p15njwn08gf3",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/pwfn4fb9ye80p15njwn08gf3.webp",
+    "medication": "Spironolactone SR"
+  },
+  {
+    "sku": "WL-SPR-03",
+    "imageId": "cia1kq8q282vg1nflzuto2ak",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/cia1kq8q282vg1nflzuto2ak.webp",
+    "medication": "Spironolactone SR"
+  },
+  {
+    "sku": "HR-STA",
+    "imageId": "bi42q5xo7gl7u6cur96jiihy",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/bi42q5xo7gl7u6cur96jiihy.webp",
+    "medication": "Stanazolol"
+  },
+  {
+    "sku": "HR-STD",
+    "imageId": "fxao8qyoeri6u38u0emtnb74",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/fxao8qyoeri6u38u0emtnb74.webp",
+    "medication": "Stanazolol (DYE-FREE) (LACTOSE FREE)"
+  },
+  {
+    "sku": "HR-STD-02",
+    "imageId": "kswcy1ev6izmxgv8e1e6mt8f",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/kswcy1ev6izmxgv8e1e6mt8f.webp",
+    "medication": "Stanazolol (DYE-FREE) (LACTOSE FREE)"
+  },
+  {
+    "sku": "HR-STB",
+    "imageId": "zx1armci4debh9ae5bgt18vm",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/zx1armci4debh9ae5bgt18vm.webp",
+    "medication": "Stanazolol SL - BERRY EXP"
+  },
+  {
+    "sku": "PP-SYP",
+    "imageId": "s17xykbt6ka1pakn8coffjr9",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/s17xykbt6ka1pakn8coffjr9.webp",
+    "medication": "Synapsin (Rg3/B12 Methyl/NAD)"
+  },
+  {
+    "sku": "AA-SYN",
+    "imageId": "s17xykbt6ka1pakn8coffjr9",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/s17xykbt6ka1pakn8coffjr9.webp",
+    "medication": "Synapsin : Rg3/NR"
+  },
+  {
+    "sku": "HR-T34",
+    "imageId": "mb8nxxydqyjx5k94vv2ndjum",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/mb8nxxydqyjx5k94vv2ndjum.webp",
+    "medication": "T3/T4 - triiodothyronine/thyroxine"
+  },
+  {
+    "sku": "HR-T34-02",
+    "imageId": "koq140rksfy5ve6c1xyrqwpn",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/koq140rksfy5ve6c1xyrqwpn.webp",
+    "medication": "T3/T4 - triiodothyronine/thyroxine"
+  },
+  {
+    "sku": "HR-T4",
+    "imageId": "ytto5183rlnomi71d03ppgno",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ytto5183rlnomi71d03ppgno.webp",
+    "medication": "T4 - thyroxine (levothyroxine)"
+  },
+  {
+    "sku": "TR-TB5",
+    "imageId": "vqm5jzx2ufje9jbnbo672zpb",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/vqm5jzx2ufje9jbnbo672zpb.webp",
+    "medication": "TB-500"
+  },
+  {
+    "sku": "TR-TB5-02",
+    "imageId": "d8grhqth4kqe4nkwaz5aj7j7",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/d8grhqth4kqe4nkwaz5aj7j7.webp",
+    "medication": "TB-500"
+  },
+  {
+    "sku": "SX-TAD",
+    "imageId": "d6mzlhh1qw9zmuucn95f80pb",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/d6mzlhh1qw9zmuucn95f80pb.webp",
+    "medication": "Tadalafil"
+  },
+  {
+    "sku": "SX-TAD-02",
+    "imageId": "l3vo0ynmili2kog976e5zkpv",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/l3vo0ynmili2kog976e5zkpv.webp",
+    "medication": "Tadalafil"
+  },
+  {
+    "sku": "SX-TSL",
+    "imageId": "psbdrm9l92a1yjbzjh0r5fa9",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/psbdrm9l92a1yjbzjh0r5fa9.webp",
+    "medication": "Tadalafil SL - Berry Explosion"
+  },
+  {
+    "sku": "SX-TAP",
+    "imageId": "pdlj9c0rlty6ncq11b09zmol",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/pdlj9c0rlty6ncq11b09zmol.webp",
+    "medication": "Tadalafil/Apomorphine"
+  },
+  {
+    "sku": "SX-TAP-02",
+    "imageId": "pdlj9c0rlty6ncq11b09zmol",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/pdlj9c0rlty6ncq11b09zmol.webp",
+    "medication": "Tadalafil/Apomorphine"
+  },
+  {
+    "sku": "HR-TAM",
+    "imageId": "hq8puckgrmvd0zl7xql1r66o",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hq8puckgrmvd0zl7xql1r66o.webp",
+    "medication": "Tamoxifen"
+  },
+  {
+    "sku": "HR-TAM-02",
+    "imageId": "c5nn8r21ssl4db6fuqlvt4n2",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/c5nn8r21ssl4db6fuqlvt4n2.webp",
+    "medication": "Tamoxifen"
+  },
+  {
+    "sku": "GH-TSM",
+    "imageId": "icx4hzchzh6gdk9sjrdzryv6",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/icx4hzchzh6gdk9sjrdzryv6.webp",
+    "medication": "Tesamorelin"
+  },
+  {
+    "sku": "GH-TSM-02",
+    "imageId": "red1itvjq1k6b6rv1qi2oia0",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/red1itvjq1k6b6rv1qi2oia0.webp",
+    "medication": "Tesamorelin"
+  },
+  {
+    "sku": "GH-TIP",
+    "imageId": "o7pbq99qjggosxspnh0ff36h",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/o7pbq99qjggosxspnh0ff36h.webp",
+    "medication": "Tesamorelin/Ipamorelin"
+  },
+  {
+    "sku": "AS-TES",
+    "imageId": "kg86v8c5tsx3yj0gil7dwoma",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/kg86v8c5tsx3yj0gil7dwoma.webp",
+    "medication": "Tesofensine"
+  },
+  {
+    "sku": "AS-TES-02",
+    "imageId": "u7jg8wfrbe95xg7sg2r0bi3u",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/u7jg8wfrbe95xg7sg2r0bi3u.webp",
+    "medication": "Tesofensine"
+  },
+  {
+    "sku": "HR-TCC",
+    "imageId": "ihmbnj1b203ru17yf7owx0qr",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ihmbnj1b203ru17yf7owx0qr.webp",
+    "medication": "Testosterone Cream"
+  },
+  {
+    "sku": "HR-TCC-02",
+    "imageId": "vkx1uhghssvq86iryt4qhpd1",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/vkx1uhghssvq86iryt4qhpd1.webp",
+    "medication": "Testosterone Cream"
+  },
+  {
+    "sku": "HR-TCC-03",
+    "imageId": "ihmbnj1b203ru17yf7owx0qr",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ihmbnj1b203ru17yf7owx0qr.webp",
+    "medication": "Testosterone Cream"
+  },
+  {
+    "sku": "HR-TCC-04",
+    "imageId": "r10xn8szvtk4b3jk7brijowh",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/r10xn8szvtk4b3jk7brijowh.webp",
+    "medication": "Testosterone Cream"
+  },
+  {
+    "sku": "HR-TCC-06",
+    "imageId": "sn58cctoji9zscpokytfnrse",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/sn58cctoji9zscpokytfnrse.webp",
+    "medication": "Testosterone Cream"
+  },
+  {
+    "sku": "HR-TCC-07",
+    "imageId": "g285cgvdm5qdcwxz4e7j7x7n",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/g285cgvdm5qdcwxz4e7j7x7n.webp",
+    "medication": "Testosterone Cream"
+  },
+  {
+    "sku": "HR-TCC-05",
+    "imageId": "lnndf1cybspzg5jaf7vubach",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/lnndf1cybspzg5jaf7vubach.webp",
+    "medication": "Testosterone Cream"
+  },
+  {
+    "sku": "HR-TCP",
+    "imageId": "hok50yhrovt7uc9m82qq0asj",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hok50yhrovt7uc9m82qq0asj.webp",
+    "medication": "Testosterone Cypionate"
+  },
+  {
+    "sku": "HR-TCP-02",
+    "imageId": "hok50yhrovt7uc9m82qq0asj",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hok50yhrovt7uc9m82qq0asj.webp",
+    "medication": "Testosterone Cypionate"
+  },
+  {
+    "sku": "HR-TCP-03",
+    "imageId": "umohtqprnvqnemd6jpc35sx4",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/umohtqprnvqnemd6jpc35sx4.webp",
+    "medication": "Testosterone Cypionate"
+  },
+  {
+    "sku": "HR-TCP-04",
+    "imageId": "umohtqprnvqnemd6jpc35sx4",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/umohtqprnvqnemd6jpc35sx4.webp",
+    "medication": "Testosterone Cypionate"
+  },
+  {
+    "sku": "HR-TCP-05",
+    "imageId": "umohtqprnvqnemd6jpc35sx4",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/umohtqprnvqnemd6jpc35sx4.webp",
+    "medication": "Testosterone Cypionate"
+  },
+  {
+    "sku": "HR-TPC",
+    "imageId": "umohtqprnvqnemd6jpc35sx4",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/umohtqprnvqnemd6jpc35sx4.webp",
+    "medication": "Testosterone Cypionate - Commercial"
+  },
+  {
+    "sku": "HR-TCA",
+    "imageId": "nlzr5f4r2w50dlm1np3xnilw",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/nlzr5f4r2w50dlm1np3xnilw.webp",
+    "medication": "Testosterone Cypionate/Anastrozole"
+  },
+  {
+    "sku": "HR-TEN",
+    "imageId": "umohtqprnvqnemd6jpc35sx4",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/umohtqprnvqnemd6jpc35sx4.webp",
+    "medication": "Testosterone Enanthate"
+  },
+  {
+    "sku": "HR-TEN-02",
+    "imageId": "umohtqprnvqnemd6jpc35sx4",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/umohtqprnvqnemd6jpc35sx4.webp",
+    "medication": "Testosterone Enanthate"
+  },
+  {
+    "sku": "HR-TST",
+    "imageId": "ihmbnj1b203ru17yf7owx0qr",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ihmbnj1b203ru17yf7owx0qr.webp",
+    "medication": "Testosterone SR Troche"
+  },
+  {
+    "sku": "HR-TST-02",
+    "imageId": "hok50yhrovt7uc9m82qq0asj",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hok50yhrovt7uc9m82qq0asj.webp",
+    "medication": "Testosterone SR Troche"
+  },
+  {
+    "sku": "HR-TST-03",
+    "imageId": "lnndf1cybspzg5jaf7vubach",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/lnndf1cybspzg5jaf7vubach.webp",
+    "medication": "Testosterone SR Troche"
+  },
+  {
+    "sku": "HR-TST-05",
+    "imageId": "wnezu5wo1qb0xr2lz6gv0s8a",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/wnezu5wo1qb0xr2lz6gv0s8a.webp",
+    "medication": "Testosterone SR Troche"
+  },
+  {
+    "sku": "HR-TST-06",
+    "imageId": "g285cgvdm5qdcwxz4e7j7x7n",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/g285cgvdm5qdcwxz4e7j7x7n.webp",
+    "medication": "Testosterone SR Troche"
+  },
+  {
+    "sku": "HR-TST-04",
+    "imageId": "lsm4im4fn2gxvm9bjt3tl52t",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/lsm4im4fn2gxvm9bjt3tl52t.webp",
+    "medication": "Testosterone SR Troche"
+  },
+  {
+    "sku": "IM-TA1",
+    "imageId": "e4fssb9g0hmbytblait9fyi1",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/e4fssb9g0hmbytblait9fyi1.webp",
+    "medication": "Thymosin Alpha-1 (TA1)"
+  },
+  {
+    "sku": "AS-TB12",
+    "imageId": "hp0rq8lugpjtu0m0h0etqhse",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/hp0rq8lugpjtu0m0h0etqhse.webp",
+    "medication": "Tirzepatide/B-12"
+  },
+  {
+    "sku": "AS-TB12-02",
+    "imageId": "safakkib8j6rya3a4pv51dny",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/safakkib8j6rya3a4pv51dny.webp",
+    "medication": "Tirzepatide/B-12"
+  },
+  {
+    "sku": "AS-TB12-04",
+    "imageId": "ccbrkxq9omhbao4r7uttr77k",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ccbrkxq9omhbao4r7uttr77k.webp",
+    "medication": "Tirzepatide/B-12"
+  },
+  {
+    "sku": "AS-TB12-05",
+    "imageId": "nv8966f5r2gzkt5z3d3irnq5",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/nv8966f5r2gzkt5z3d3irnq5.webp",
+    "medication": "Tirzepatide/B-12"
+  },
+  {
+    "sku": "AS-TB12-03",
+    "imageId": "qpytq9uulfr50pgzyev9n9k6",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/qpytq9uulfr50pgzyev9n9k6.webp",
+    "medication": "Tirzepatide/B-12"
+  },
+  {
+    "sku": "AS-TB12-06",
+    "imageId": "cqjm1z2v0pq3hmctnwey3280",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/cqjm1z2v0pq3hmctnwey3280.webp",
+    "medication": "Tirzepatide/B-12"
+  },
+  {
+    "sku": "AS-TGY",
+    "imageId": "k432z2pf8iek227tsl581xgq",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/k432z2pf8iek227tsl581xgq.webp",
+    "medication": "Tirzepatide/Glycine"
+  },
+  {
+    "sku": "AS-TGY-02",
+    "imageId": "k432z2pf8iek227tsl581xgq",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/k432z2pf8iek227tsl581xgq.webp",
+    "medication": "Tirzepatide/Glycine"
+  },
+  {
+    "sku": "AS-TGY-03",
+    "imageId": "a7clpixermyg5a1f3xf1r209",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/a7clpixermyg5a1f3xf1r209.webp",
+    "medication": "Tirzepatide/Glycine"
+  },
+  {
+    "sku": "AS-TGY-04",
+    "imageId": "mht5tvdk578jqegk2zm7u92g",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/mht5tvdk578jqegk2zm7u92g.webp",
+    "medication": "Tirzepatide/Glycine"
+  },
+  {
+    "sku": "AS-TGY-05",
+    "imageId": "w44x1fqtd9cyo2ucc4fq2nqt",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/w44x1fqtd9cyo2ucc4fq2nqt.webp",
+    "medication": "Tirzepatide/Glycine"
+  },
+  {
+    "sku": "AS-TGY-06",
+    "imageId": "mp921htdrcxuqdm958g5tj27",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/mp921htdrcxuqdm958g5tj27.webp",
+    "medication": "Tirzepatide/Glycine"
+  },
+  {
+    "sku": "WL-TOP",
+    "imageId": "xv5yaggnyz52gu9xh9v4v2r6",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/xv5yaggnyz52gu9xh9v4v2r6.webp",
+    "medication": "Topiramate"
+  },
+  {
+    "sku": "WL-TOP-02",
+    "imageId": "rz1wpzspntvd72tkhj7exn7s",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/rz1wpzspntvd72tkhj7exn7s.webp",
+    "medication": "Topiramate"
+  },
+  {
+    "sku": "SK-TRT",
+    "imageId": "v7h8lw09c97ti1opzj8v9gth",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/v7h8lw09c97ti1opzj8v9gth.webp",
+    "medication": "Tretinoin"
+  },
+  {
+    "sku": "SK-TRT-02",
+    "imageId": "tmyxw4atqb3dpczew63d5mcl",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/tmyxw4atqb3dpczew63d5mcl.webp",
+    "medication": "Tretinoin"
+  },
+  {
+    "sku": "SX-TX1",
+    "imageId": "l1ihowg99mppu2s9vu50cpdq",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/l1ihowg99mppu2s9vu50cpdq.webp",
+    "medication": "Trimix 1 503B"
+  },
+  {
+    "sku": "SX-TX2",
+    "imageId": "ispmyo2ns3cou4bk6wp24a56",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/ispmyo2ns3cou4bk6wp24a56.webp",
+    "medication": "Trimix 2 503B"
+  },
+  {
+    "sku": "SX-VAR",
+    "imageId": "sx84fldlcxomtd3jmzp3ivmt",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/sx84fldlcxomtd3jmzp3ivmt.webp",
+    "medication": "Vardenafil"
+  },
+  {
+    "sku": "WL-VD3",
+    "imageId": "cuemk29nm8z55kgy664lqvn5",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/cuemk29nm8z55kgy664lqvn5.webp",
+    "medication": "Vitamin D3"
+  },
+  {
+    "sku": "WL-VD3-02",
+    "imageId": "vhehlfq3suzzbxcgy3v3laqx",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/vhehlfq3suzzbxcgy3v3laqx.webp",
+    "medication": "Vitamin D3"
+  },
+  {
+    "sku": "WL-VDK",
+    "imageId": "vhehlfq3suzzbxcgy3v3laqx",
+    "imagePublicUrl": "https://rxhere.qrolic.com/api/uploads/vhehlfq3suzzbxcgy3v3laqx.webp",
+    "medication": "Vitamin D3/Vitamin K2"
+  }
+]
