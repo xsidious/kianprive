@@ -37,11 +37,14 @@ export function formularyImageForCategory(category) {
 
 /** Prefer pulled RxHere product photo; fall back to category SVG. */
 export function formularyImageForRow(row) {
-  if (row?.image && String(row.image).startsWith("/images/")) {
+  if (row?.image && String(row.image).startsWith("/images/formulary/rxhere/")) {
     return String(row.image);
   }
   if (row?.imageId) {
     return `/images/formulary/rxhere/${row.imageId}.webp`;
+  }
+  if (row?.image && String(row.image).startsWith("/images/")) {
+    return String(row.image);
   }
   return formularyImageForCategory(row?.category);
 }
