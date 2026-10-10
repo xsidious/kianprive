@@ -13,7 +13,7 @@ const siteName = "KIAN Privé";
 const defaultTitle = "Concierge Wellness in Miami";
 const defaultDescription =
   "Premium concierge wellness in Miami and North Miami Beach — aesthetics, Icoone, peptides, IV therapy, and physician-led care.";
-const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.kianprive.com";
+const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.kianprive.com";
 const defaultImage = "/images/og-default.jpg";
 
 export function getAppUrl() {
@@ -43,7 +43,7 @@ export function buildSeoMetadata(input: SeoInput = {}): Metadata {
   return {
     title: { absolute: title },
     description,
-    metadataBase: new URL(getAppUrl()),
+    metadataBase: (() => { try { return new URL(getAppUrl()); } catch { return new URL("https://www.kianprive.com"); } })(),
     alternates: { canonical: canonicalPath },
     robots: {
       index: !noIndex,

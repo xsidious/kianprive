@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { retreatEvents } from "@/lib/events";
 import { getServiceSlugs } from "@/lib/services/catalog";
 
-const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "https://www.kianprive.com").replace(/\/$/, "");
+const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://www.kianprive.com").replace(/\/$/, "");
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [pages, posts, products] = await Promise.all([
