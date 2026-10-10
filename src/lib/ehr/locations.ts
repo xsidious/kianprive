@@ -123,6 +123,29 @@ export const EHR_LOCATIONS: EhrLocation[] = [
       },
     ],
   },
+  {
+    id: "threefold-strength",
+    label: "Threefold Strength",
+    aliases: ["threefold", "threefold strength", "three fold strength", "threefoldwellness"],
+    clinicians: [
+      {
+        name: "Dr. Carmen Ramirez",
+        role: "medical-director",
+        canPrescribe: true,
+        emails: ["carmen.ramirez@kianprive.com", "carmenramirezmd@yahoo.com", "millenniumedgemed@gmail.com"],
+        partnerCodes: ["CARMENRAM"],
+        aliases: ["carmen ramirez", "dr. carmen ramirez", "carmen teresa ramirez"],
+      },
+      {
+        name: "Shane Shuckerow",
+        role: "medical-advisor",
+        canPrescribe: false,
+        emails: [],
+        partnerCodes: [],
+        aliases: ["shane shuckerow", "shane"],
+      },
+    ],
+  },
 ];
 
 const ROLE_RANK: Record<EhrClinicianRole, number> = {

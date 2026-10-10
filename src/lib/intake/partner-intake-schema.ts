@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const PARTNER_SITES = ["facial-design", "4everglow"] as const;
+export const PARTNER_SITES = ["facial-design", "4everglow", "threefold-strength"] as const;
 export type PartnerSite = (typeof PARTNER_SITES)[number];
 
 /** Distinct intake channels from partner clinics — each maps to a different clinical workflow. */
@@ -17,6 +17,7 @@ export type PartnerIntakeType = (typeof PARTNER_INTAKE_TYPES)[number];
 export const SITE_LABELS: Record<PartnerSite, string> = {
   "facial-design": "Facial Design Studio",
   "4everglow": "4everglow Wellness",
+  "threefold-strength": "Threefold Strength",
 };
 
 export const TYPE_LABELS: Record<PartnerIntakeType, string> = {
@@ -153,7 +154,9 @@ export function authorizePartnerIntake(req: Request, site: PartnerSite) {
   const perSite =
     site === "facial-design"
       ? process.env.FACIAL_DESIGN_INTAKE_SECRET?.trim()
-      : process.env.FOREVERGLOW_INTAKE_SECRET?.trim();
+      : site === "4everglow"
+        ? process.env.FOREVERGLOW_INTAKE_SECRET?.trim()
+        : process.env.THREEFOLD_INTAKE_SECRET?.trim();
 
   const allowed = [shared, perSite].filter(Boolean) as string[];
   return allowed.some((secret) => secret === headerSecret);

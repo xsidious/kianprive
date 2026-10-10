@@ -63,6 +63,16 @@ const statuses = [
   "DECLINED",
 ] as const;
 
+type SourceFilter = "ALL" | "facial-design" | "4everglow" | "threefold-strength" | "kian";
+
+function sourceKey(submission: IntakeSubmission): SourceFilter {
+  const source = submission.payload?.source ?? submission.payload?.site;
+  if (source === "facial-design") return "facial-design";
+  if (source === "4everglow") return "4everglow";
+  if (source === "threefold-strength") return "threefold-strength";
+  return "kian";
+}
+
 function sourceLabel(submission: IntakeSubmission) {
   const source = submission.payload?.source;
   if (source === "wellness-hub") return "Wellness Hub";
@@ -70,11 +80,22 @@ function sourceLabel(submission: IntakeSubmission) {
   if (source === "icoone") return "Icoone";
   if (source === "facial-design") return "Facial Design Studio";
   if (source === "4everglow") return "4everglow Wellness";
+  if (source === "threefold-strength") return "Threefold Strength";
   const siteLabel = submission.payload?.siteLabel;
   const location = submission.payload?.ehrLocationLabel;
   if (typeof location === "string" && location) return `Wellness Tech · ${location}`;
   if (typeof siteLabel === "string" && siteLabel) return siteLabel;
   return "Wellness Tech EHR";
+}
+
+function commissionLabel(submission: IntakeSubmission) {
+  const partner =
+    (typeof submission.payload?.commissionPartner === "string" && submission.payload.commissionPartner) ||
+    (typeof submission.payload?.siteLabel === "string" && submission.payload.siteLabel) ||
+    null;
+  if (partner) return partner;
+  if (submission.referredBy) return submission.referredBy;
+  return sourceLabel(submission);
 }
 
 function payloadText(value: unknown) {
@@ -89,6 +110,7 @@ export default function AdminIntakePage() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [filter, setFilter] = useState<"ALL" | IntakeQueue>("ALL");
+  const [sourceFilter, setSourceFilter] = useState<SourceFilter>("ALL");
   const [modalId, setModalId] = useState<string | null>(null);
 
   async function loadSubmissions() {
@@ -139,27 +161,46 @@ export default function AdminIntakePage() {
     await loadSubmissions();
   }
 
+  const filteredSubmissions = useMemo(() => {
+    if (sourceFilter === "ALL") return submissions;
+    return submissions.filter((item) => sourceKey(item) === sourceFilter);
+  }, [submissions, sourceFilter]);
+
   const grouped = useMemo(() => {
     const buckets: Record<IntakeQueue, IntakeSubmission[]> = {
       IN_REVIEW: [],
       APPROVED: [],
       OTHER: [],
     };
-    for (const submission of submissions) {
+    for (const submission of filteredSubmissions) {
       buckets[intakeQueue(submission.status)].push(submission);
     }
     return buckets;
-  }, [submissions]);
+  }, [filteredSubmissions]);
 
   const visibleQueues = filter === "ALL" ? INTAKE_QUEUES : INTAKE_QUEUES.filter((item) => item.id === filter);
 
   const selected = submissions.find((s) => s.id === modalId) ?? null;
 
   const counts = useMemo(() => {
-    const map: Record<string, number> = { ALL: submissions.length, IN_REVIEW: 0, APPROVED: 0, OTHER: 0 };
-    for (const item of submissions) {
+    const map: Record<string, number> = { ALL: filteredSubmissions.length, IN_REVIEW: 0, APPROVED: 0, OTHER: 0 };
+    for (const item of filteredSubmissions) {
       const queue = intakeQueue(item.status);
       map[queue] = (map[queue] ?? 0) + 1;
+    }
+    return map;
+  }, [filteredSubmissions]);
+
+  const sourceCounts = useMemo(() => {
+    const map: Record<SourceFilter, number> = {
+      ALL: submissions.length,
+      "facial-design": 0,
+      "4everglow": 0,
+      "threefold-strength": 0,
+      kian: 0,
+    };
+    for (const item of submissions) {
+      map[sourceKey(item)] += 1;
     }
     return map;
   }, [submissions]);
@@ -176,12 +217,34 @@ export default function AdminIntakePage() {
         <h1 className={adminTitle}>Clinical Intake</h1>
         <p className={adminMuted}>
           Review site and Wellness Hub submissions. Open any record for the full clinical packet.
+          Partner website is stamped on every intake for commission attribution.
         </p>
       </div>
 
       {message ? <p className="text-sm text-[#1b6568]">{message}</p> : null}
 
       <ClinicalIntakeShare title="Send a customer to clinical intake" />
+
+      <div className="flex flex-wrap gap-2">
+        {(
+          [
+            ["ALL", "All websites"],
+            ["facial-design", "Facial Design Studio"],
+            ["4everglow", "4everglow Wellness"],
+            ["threefold-strength", "Threefold Strength"],
+            ["kian", "KIAN / Wellness Hub"],
+          ] as const
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => setSourceFilter(id)}
+            className={`${adminBtnSoft} ${sourceFilter === id ? "ring-1 ring-[#8a682e66]" : ""}`}
+          >
+            {label} ({sourceCounts[id]})
+          </button>
+        ))}
+      </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
         {INTAKE_QUEUES.map((item) => (
@@ -228,7 +291,12 @@ export default function AdminIntakePage() {
                 </span>
               </div>
               <div className="mt-4 flex flex-wrap gap-2 text-xs text-[#6f6251]">
-                <span className="rounded-full bg-[#fff6e8] px-2.5 py-1 text-[#8f6f3e]">{sourceLabel(submission)}</span>
+                <span className="rounded-full bg-[#fff6e8] px-2.5 py-1 text-[#8f6f3e]">
+                  Website: {sourceLabel(submission)}
+                </span>
+                <span className="rounded-full bg-[#f3efe6] px-2.5 py-1 text-[#6b5428]">
+                  Commission → {commissionLabel(submission)}
+                </span>
                 <span className="rounded-full bg-[#f7f2ea] px-2.5 py-1">{new Date(submission.createdAt).toLocaleString()}</span>
                 {(submission.messageCount ?? 0) > 0 ? (
                   <span className="rounded-full bg-[#eef6f6] px-2.5 py-1 text-[#1b6568]">
@@ -315,11 +383,36 @@ export default function AdminIntakePage() {
               <span className={`rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] ${statusTone(selected.status)}`}>
                 {selected.status.replaceAll("_", " ")}
               </span>
-              <span className={adminBtnSoft}>{sourceLabel(selected)}</span>
+              <span className={adminBtnSoft}>Website: {sourceLabel(selected)}</span>
               <span className="font-mono text-xs tracking-[0.12em] text-[#6f6251]">
                 {selected.publicTrackingToken || selected.id}
               </span>
             </div>
+
+            <section className="rounded-2xl border border-[#efe4d4] bg-[#fffaf3] p-4">
+              <h3 className="font-serif text-lg text-[#1f1a15]">Source & commission</h3>
+              <p className="mt-1 text-sm text-[#6f6251]">
+                Attribute this client to the partner website that submitted the intake.
+              </p>
+              <dl className="mt-3 grid gap-2 text-sm text-[#2b2218] sm:grid-cols-2">
+                <div>
+                  <dt className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Website</dt>
+                  <dd className="mt-1">{sourceLabel(selected)}</dd>
+                </div>
+                <div>
+                  <dt className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Commission partner</dt>
+                  <dd className="mt-1">{commissionLabel(selected)}</dd>
+                </div>
+                <div>
+                  <dt className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Referred by</dt>
+                  <dd className="mt-1">{selected.referredBy || fieldValue(selected, "referredBy") || "—"}</dd>
+                </div>
+                <div>
+                  <dt className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Referral code</dt>
+                  <dd className="mt-1">{fieldValue(selected, "referralCode")}</dd>
+                </div>
+              </dl>
+            </section>
 
             <IntakeMessageThread
               title="Request messages"
