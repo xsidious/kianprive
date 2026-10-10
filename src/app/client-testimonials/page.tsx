@@ -1,3 +1,12 @@
+import type { Metadata } from "next";
+import { buildSeoMetadata } from "@/lib/seo/metadata";
+
+export const metadata: Metadata = buildSeoMetadata({
+  title: "Client Testimonials",
+  description: "Client experiences with KIAN Prive concierge wellness and aesthetics.",
+  canonicalPath: "/client-testimonials",
+});
+
 import Image from "next/image";
 import { Play } from "lucide-react";
 import { CinematicHero } from "@/components/ui/CinematicHero";

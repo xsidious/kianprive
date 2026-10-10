@@ -1,3 +1,12 @@
+import type { Metadata } from "next";
+import { buildSeoMetadata } from "@/lib/seo/metadata";
+
+export const metadata: Metadata = buildSeoMetadata({
+  title: "Icoone Training",
+  description: "Icoone training and education through KIAN Prive.",
+  canonicalPath: "/icoone-training",
+});
+
 import Image from "next/image";
 import { IcooneMediaGallery } from "@/components/services/IcooneMediaGallery";
 import { CinematicHero } from "@/components/ui/CinematicHero";

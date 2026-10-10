@@ -1,3 +1,12 @@
+import type { Metadata } from "next";
+import { buildSeoMetadata } from "@/lib/seo/metadata";
+
+export const metadata: Metadata = buildSeoMetadata({
+  title: "What We Do",
+  description: "Explore KIAN Prive concierge wellness services, aesthetics, and regenerative care in Miami.",
+  canonicalPath: "/what-we-do",
+});
+
 import Link from "next/link";
 import Image from "next/image";
 import { CinematicHero } from "@/components/ui/CinematicHero";

@@ -1,3 +1,12 @@
+import type { Metadata } from "next";
+import { buildSeoMetadata } from "@/lib/seo/metadata";
+
+export const metadata: Metadata = buildSeoMetadata({
+  title: "Payment Policies",
+  description: "Payment policies for KIAN Prive wellness services.",
+  canonicalPath: "/payment-policies",
+});
+
 import {
   KianPrivePaymentPolicies,
   PoliciesPageLinks,

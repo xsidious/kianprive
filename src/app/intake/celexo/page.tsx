@@ -1,11 +1,14 @@
 import { EditorialEyebrow, EditorialSection } from "@/components/ui/editorial-primitives";
 import { CelexoIntakeForm } from "@/components/intake/CelexoIntakeForm";
 
-export const metadata = {
+import { buildSeoMetadata } from "@/lib/seo/metadata";
+
+export const metadata = buildSeoMetadata({
+  noIndex: true,
   title: "Korean Exosome Therapy Intake | KIAN Privé",
   description:
     "Secure Celexo / Korean Exosome Therapy intake for plant-based and Black Label adipose exosome protocols at KIAN Privé.",
-};
+});
 
 export default function CelexoIntakePage() {
   return (

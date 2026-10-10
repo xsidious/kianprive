@@ -4,11 +4,14 @@ import { auth } from "@/lib/auth";
 import { canViewServicePrices } from "@/lib/member-pricing-access";
 import { INTAKE_REVIEW_FEE_USD } from "@/lib/intake/review-fee";
 
-export const metadata = {
+import { buildSeoMetadata } from "@/lib/seo/metadata";
+
+export const metadata = buildSeoMetadata({
+  noIndex: true,
   title: "Peptide & GLP Intake | KIAN Privé",
   description:
     "Secure HIPAA-aware comprehensive therapeutics intake for peptide therapy and GLP receptor agonist programs at KIAN Privé.",
-};
+});
 
 export default async function PeptidesGlpIntakePage() {
   const session = await auth();

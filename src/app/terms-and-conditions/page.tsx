@@ -1,3 +1,12 @@
+import type { Metadata } from "next";
+import { buildSeoMetadata } from "@/lib/seo/metadata";
+
+export const metadata: Metadata = buildSeoMetadata({
+  title: "Terms and Conditions",
+  description: "Terms and conditions for KIAN Prive.",
+  canonicalPath: "/terms-and-conditions",
+});
+
 import Link from "next/link";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 

@@ -1,10 +1,13 @@
 import { EditorialEyebrow, EditorialSection } from "@/components/ui/editorial-primitives";
 import { IcooneIntakeForm } from "@/components/intake/IcooneIntakeForm";
 
-export const metadata = {
+import { buildSeoMetadata } from "@/lib/seo/metadata";
+
+export const metadata = buildSeoMetadata({
+  noIndex: true,
   title: "Icoone Lymphatic Drainage Intake | KIAN Privé",
   description: "Complete the Icoone lymphatic drainage intake before your appointment at KIAN Privé.",
-};
+});
 
 export default function IcooneIntakePage() {
   return (

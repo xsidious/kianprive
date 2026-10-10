@@ -38,10 +38,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${appUrl}/corporate-wellness`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${appUrl}/client-testimonials`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${appUrl}/events-retreats`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${appUrl}/icoone`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${appUrl}/icoone-training`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${appUrl}/payment-policies`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${appUrl}/terms-and-conditions`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${appUrl}/practitioners`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${appUrl}/athletes`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${appUrl}/practitioners-athletes`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${appUrl}/welcome`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
   ];
 
   const cmsRoutes = pages.map((page) => ({
