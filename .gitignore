@@ -49,3 +49,5 @@ vercel-env.copy-paste.txt
 next-env.d.ts
 
 /src/generated/prisma
+
+.vercel

@@ -60,7 +60,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ShopProductPage({ params }: Props) {
   const { slug } = await params;
-  if (slug === "exosomes") redirect("/shop/korean-skincare");
+  if (slug === "exosomes" || slug === "korean-skincare") {
+    redirect("/shop/celexo-refine-bubble-toner");
+  }
 
   const session = await auth();
   const canViewPrices = canViewServicePrices(session?.user);

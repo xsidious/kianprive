@@ -6,7 +6,7 @@ const links: PortalLink[] = [
   { href: "/dashboard", label: "Home", exact: true },
   { href: "/dashboard/orders", label: "Orders" },
   { href: "/dashboard/intake", label: "Clinical intake" },
-  { href: "/dashboard/therapeutics", label: "Peptide therapy" },
+  { href: "/dashboard/therapeutics", label: "GLP therapy" },
   { href: "/dashboard/services", label: "Services" },
   { href: "/dashboard/subscription", label: "Membership" },
   { href: "/dashboard/profile", label: "Profile" },

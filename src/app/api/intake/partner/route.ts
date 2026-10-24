@@ -85,7 +85,11 @@ export async function POST(req: Request) {
         phone: contact.phone,
         dateOfBirth: contact.dateOfBirth,
         programs,
-        referredBy: data.referralCode?.trim() || null,
+        // Always stamp the partner website so admin can attribute commission
+        // to who brought the client (site ± optional referral code).
+        referredBy: data.referralCode?.trim()
+          ? `${SITE_LABELS[data.site]} · ${data.referralCode.trim()}`
+          : SITE_LABELS[data.site],
         assignedPartnerId: assignment.assignedPartnerId,
         userId: existingMember?.id ?? null,
         publicTrackingToken: trackingToken,
@@ -95,6 +99,7 @@ export async function POST(req: Request) {
           source: data.site,
           site: data.site,
           siteLabel: SITE_LABELS[data.site],
+          commissionPartner: SITE_LABELS[data.site],
           type: data.type,
           externalRef: data.externalRef ?? null,
           referralCode: data.referralCode ?? null,

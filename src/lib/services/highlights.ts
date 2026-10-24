@@ -34,7 +34,7 @@ export const serviceHighlights: ServiceHighlight[] = [
   highlightFromService("glp1-peptides", {
     title: "Compound Therapy",
     description:
-      "Physician-guided GLP-1 and peptide compound therapy with secure intake, clinical review, and personalized pathways.",
+      "Physician-guided GLP compound therapy with secure intake, clinical review, and personalized pathways.",
   }),
   highlightFromService("hair-restoration", {
     title: "Hair Restoration",

@@ -12,7 +12,7 @@ type SeoInput = {
 const siteName = "KIAN Privé";
 const defaultTitle = "Concierge Wellness in Miami";
 const defaultDescription =
-  "Premium concierge wellness in Miami and North Miami Beach — aesthetics, Icoone, peptides, IV therapy, and physician-led care.";
+  "Premium concierge wellness in Miami and North Miami Beach — aesthetics, Icoone, GLP therapy, IV therapy, and physician-led care.";
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.kianprive.com";
 const defaultImage = "/images/og-default.jpg";
 

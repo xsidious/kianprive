@@ -17,7 +17,7 @@ import { buildSeoMetadata } from "@/lib/seo/metadata";
 export const metadata: Metadata = buildSeoMetadata({
   title: "Concierge Wellness in Miami",
   description:
-    "Luxury concierge wellness in Miami and North Miami Beach — clinical aesthetics, Icoone, peptides, IV therapy, and physician-led care at our suite or yours.",
+    "Luxury concierge wellness in Miami and North Miami Beach — clinical aesthetics, Icoone, GLP therapy, IV therapy, and physician-led care at our suite or yours.",
   canonicalPath: "/",
   image: "/images/og-default.jpg",
 });

@@ -19,8 +19,8 @@ async function resolveProduct(productIdOrSlug: string) {
   const existing = await findRetailProduct(productIdOrSlug);
   if (existing !== undefined) return existing;
 
-  if (productIdOrSlug === "exosomes") {
-    const renamed = await findRetailProduct("korean-skincare");
+  if (productIdOrSlug === "exosomes" || productIdOrSlug === "korean-skincare") {
+    const renamed = await findRetailProduct("celexo-refine-bubble-toner");
     if (renamed !== undefined) return renamed;
   }
 

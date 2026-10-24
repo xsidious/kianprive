@@ -170,7 +170,7 @@ export const providerVisitMenu = {
     { name: "Lab Draw Only", guest: 50, member: memberFromGuest(50), note: "Plus lab processing and handling fee" },
     { name: "Combined Nurse Visit", guest: 150, member: memberFromGuest(150), note: "Plus lab processing and handling fee" },
   ] satisfies PricedMenuItem[],
-  peptide: [{ name: "Peptide Optimization Consultation", guest: 100, member: memberFromGuest(100) }] satisfies PricedMenuItem[],
+  peptide: [{ name: "GLP Optimization Consultation", guest: 100, member: memberFromGuest(100) }] satisfies PricedMenuItem[],
 };
 
 export const icoonePricedMenu = {

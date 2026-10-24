@@ -202,9 +202,9 @@ export default function ProviderIntakeDetailPage() {
         </p>
         <ol className="list-decimal space-y-1 pl-5">
           <li>Patient completes the forms and checks the medical disclaimer.</li>
-          <li>The chart is stored here and sent to the assigned physician. Only a medical director or supervising physician can prescribe peptides or order labs.</li>
+          <li>The chart is stored here and sent to the assigned physician. Only a medical director or supervising physician can prescribe GLP therapy or order labs.</li>
           <li>The physician reviews the signed attestation that the information is true and correct.</li>
-          <li>Request labs, or approve, build the therapy, and order peptides or medication.</li>
+          <li>Request labs, or approve, build the therapy, and order GLP therapy or medication.</li>
         </ol>
       </section>
 
@@ -212,7 +212,7 @@ export default function ProviderIntakeDetailPage() {
         <IntakeTherapyPicker intakeSubmissionId={id} onSaved={() => void load()} />
       ) : (
         <section className={`${adminPanel} p-5 text-sm text-[#6f6251]`}>
-          You can review this chart. Ordering labs, approving therapy, and prescribing peptides is limited to the medical director or supervising physician.
+          You can review this chart. Ordering labs, approving therapy, and prescribing GLP therapy is limited to the medical director or supervising physician.
         </section>
       )}
 

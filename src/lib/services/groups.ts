@@ -66,7 +66,7 @@ export const serviceMenuCategories: ServiceMenuCategory[] = [
     eyebrow: "COMPOUNDING & PEPTIDES",
     title: "Compound Therapy",
     description:
-      "Physician-supervised compound therapy spanning GLP-1, peptide, and compounded wellness protocols with intake, approval, and personalized treatment planning.",
+      "Physician-supervised compound therapy spanning GLP and compounded wellness protocols with intake, approval, and personalized treatment planning.",
     slugs: ["glp1-peptides"],
   },
 ];

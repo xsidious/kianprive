@@ -59,7 +59,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: cms.seoTitle || "Services Menu",
     description:
       cms.seoDescription ||
-      "Explore KIAN Privé services in Miami — Icoone, peptides, IV therapy, medical aesthetics, blood work, hair restoration, and concierge care.",
+      "Explore KIAN Privé services in Miami — Icoone, GLP therapy, IV therapy, medical aesthetics, blood work, hair restoration, and concierge care.",
     canonicalPath: cms.canonicalUrl?.startsWith("/") ? cms.canonicalUrl : "/services",
     image: cms.seoImage || "/images/og-default.jpg",
     noIndex: Boolean(cms.noIndex),
@@ -88,7 +88,7 @@ const takeHomeProducts = [
   {
     title: "Post-Procedure Serums",
     description:
-      "Growth-factor and peptide formulations that support healing, collagen production and skin renewal after microneedling and regenerative treatments.",
+      "Growth-factor formulations that support healing, collagen production and skin renewal after microneedling and regenerative treatments.",
   },
   {
     title: "Barrier-Repair Creams",
@@ -118,7 +118,7 @@ const takeHomeProducts = [
   {
     title: "Exosome & Skincare",
     description:
-      "Targeted exosome and peptide creams and eye serums that continue the work of injectable protocols at the surface level.",
+      "Targeted exosome creams and eye serums that continue the work of injectable protocols at the surface level.",
   },
   {
     title: "Scalp & Hair Care",
@@ -210,16 +210,16 @@ export default async function ServicesPage() {
       <EditorialSection id="compounding-peptides">
         <SectionHeader
           eyebrow="COMPOUND WELLNESS THERAPY"
-          title="Physician-led peptide and compound therapy."
+          title="Physician-led GLP and compound therapy."
           description={
             canViewPrices
-              ? "Board-certified physicians prescribe personalized protocols from a clinical formulary spanning longevity, recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. These therapies are not sold in the KIAN shop. Peptide optimization consult: $100."
+              ? "Board-certified physicians prescribe personalized protocols from a clinical formulary spanning longevity, recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. These therapies are not sold in the KIAN shop. GLP optimization consult: $100."
               : "Board-certified physicians prescribe personalized protocols from a clinical formulary spanning longevity, recovery, metabolic optimization, aesthetic renewal, immune support, and sexual wellness. These therapies are not sold in the KIAN shop."
           }
         />
         <SectionPhoto
           src={getServiceBySlug("glp1-peptides")?.image ?? "/images/Peptidesandexosomes.jpeg"}
-          alt="Physician-led peptide therapy"
+          alt="Physician-led GLP therapy"
         />
         <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {peptideCategories.map((category) => (
@@ -443,7 +443,7 @@ export default async function ServicesPage() {
       <EditorialSection id="provider-visits">
         <SectionHeader
           eyebrow="PROVIDER VISITS"
-          title="Physician, nurse, and peptide consultations."
+          title="Physician, nurse, and GLP consultations."
         />
         <SectionPhoto
           src={getServiceBySlug("physician-visit")?.image ?? "/images/ConciergeHomevisit.jpeg"}
@@ -475,7 +475,7 @@ export default async function ServicesPage() {
             canViewPrices={canViewPrices}
           />
           <PricedMenuTable
-            title="Peptide optimization"
+            title="GLP optimization"
             items={providerVisitMenu.peptide}
             bookHref={COMPOUND_THERAPY_URL}
             canViewPrices={canViewPrices}

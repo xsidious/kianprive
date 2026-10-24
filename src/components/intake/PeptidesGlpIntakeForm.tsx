@@ -166,7 +166,7 @@ export function PeptidesGlpIntakeForm() {
         <p className="text-xs tracking-[0.2em] text-[#8f6f3e]">SECURE CLINICAL INTAKE</p>
         <h1 className="mt-2 text-3xl text-[#1f1a15] md:text-4xl">Comprehensive Therapeutics Intake</h1>
         <p className="mt-3 max-w-3xl text-sm text-[#6f6251]">
-          Peptide Therapy • GLP-1 / GLP-2 / GLP-3 Receptor Agonist Therapy. This form is strictly confidential and
+          GLP-1 / GLP-2 / GLP-3 Receptor Agonist Therapy. This form is strictly confidential and
           protected under HIPAA guidelines.
           {canViewPrices
             ? ` A $${INTAKE_REVIEW_FEE_USD} physician review fee is required before your intake is sent to the doctor.`
@@ -266,7 +266,7 @@ export function PeptidesGlpIntakeForm() {
           <Field label="Previous weight-loss approaches *">
             <CheckboxGroup options={PREVIOUS_WEIGHT_LOSS_OPTIONS} selected={form.weightHistory.previousApproaches} exclusiveOption="None of the above" onChange={(previousApproaches) => update("weightHistory", { ...form.weightHistory, previousApproaches })} />
           </Field>
-          <Field label="Previous peptide / GLP therapies used *">
+          <Field label="Previous GLP therapies used *">
             <CheckboxGroup
               options={PREVIOUS_THERAPY_OPTIONS}
               selected={form.weightHistory.previousTherapies.map((item) => item.therapy)}
@@ -303,14 +303,14 @@ export function PeptidesGlpIntakeForm() {
           <YesNoField label="Currently pregnant, breastfeeding, or planning pregnancy?" value={form.medicalHistory.pregnantBreastfeedingPlanning} onChange={(pregnantBreastfeedingPlanning) => update("medicalHistory", { ...form.medicalHistory, pregnantBreastfeedingPlanning })} />
           <SectionIntro eyebrow="SECTION 06" title="Contraindications & Safety Screening" />
           <CheckboxGroup options={CONTRAINDICATION_OPTIONS} selected={form.contraindications.items} exclusiveOption="None of the above" onChange={(items) => update("contraindications", { ...form.contraindications, items })} />
-          <YesNoField label="Allergic reaction to medication, supplement, or peptide?" value={form.contraindications.medicationAllergy} onChange={(medicationAllergy) => update("contraindications", { ...form.contraindications, medicationAllergy })} />
+          <YesNoField label="Allergic reaction to medication or supplement?" value={form.contraindications.medicationAllergy} onChange={(medicationAllergy) => update("contraindications", { ...form.contraindications, medicationAllergy })} />
           {form.contraindications.medicationAllergy === "yes" ? <Field label="Substance and reaction"><TextArea value={form.contraindications.medicationAllergyDetail} onChange={(v) => update("contraindications", { ...form.contraindications, medicationAllergyDetail: v })} /></Field> : null}
           <SectionIntro eyebrow="SECTION 07" title="Family History" />
           <CheckboxGroup options={FAMILY_HISTORY_OPTIONS} selected={form.familyHistory} exclusiveOption="None of the above" onChange={(familyHistory) => update("familyHistory", familyHistory)} />
           <SectionIntro eyebrow="SECTION 08" title="Current Medications, Supplements & Allergies" />
           <Field label="Prescription medications *"><TextArea value={form.medications.prescriptions} onChange={(v) => update("medications", { ...form.medications, prescriptions: v })} placeholder="Type None if none" /></Field>
           <Field label="Supplements *"><TextArea value={form.medications.supplements} onChange={(v) => update("medications", { ...form.medications, supplements: v })} placeholder="Type None if none" /></Field>
-          <Field label="Peptides currently in use *"><TextArea value={form.medications.peptidesInUse} onChange={(v) => update("medications", { ...form.medications, peptidesInUse: v })} placeholder="Type None if none" /></Field>
+          <Field label="GLP therapies currently in use *"><TextArea value={form.medications.peptidesInUse} onChange={(v) => update("medications", { ...form.medications, peptidesInUse: v })} placeholder="Type None if none" /></Field>
           <Field label="Hormones / hormone replacement therapy *"><TextArea value={form.medications.hormones} onChange={(v) => update("medications", { ...form.medications, hormones: v })} placeholder="Type None if none" /></Field>
           <Field label="Medication allergies *"><TextArea value={form.medications.medicationAllergies} onChange={(v) => update("medications", { ...form.medications, medicationAllergies: v })} placeholder="Type None if none" /></Field>
           <Field label="Food allergies *"><TextArea value={form.medications.foodAllergies} onChange={(v) => update("medications", { ...form.medications, foodAllergies: v })} placeholder="Type None if none" /></Field>
@@ -412,7 +412,7 @@ export function PeptidesGlpIntakeForm() {
             <input type="checkbox" checked={form.consent.informedConsent} onChange={(e) => update("consent", { ...form.consent, informedConsent: e.target.checked ? true : (false as never) })} className="mt-1" />
             <span>
               Informed consent: I confirm this information is accurate and consent to consultation with a KIAN Privé
-              clinician for peptide and/or GLP receptor agonist therapy. *
+              clinician for GLP receptor agonist therapy. *
             </span>
           </label>
           <label className="flex items-start gap-3 text-sm text-[#4f4335]">

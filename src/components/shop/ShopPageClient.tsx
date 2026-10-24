@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -199,7 +199,7 @@ export function ShopPageClient({
               <div className="mb-4">
                 <MemberPriceNotice />
                 <p className="mt-3 text-sm text-[#6f6251]">
-                  The Peptides category opens after membership approval. Peptide orders are tracked in My Orders once
+                  The Peptides category opens after membership approval. GLP therapy orders are tracked in My Orders once
                   your physician sends the plan.
                 </p>
               </div>
@@ -293,7 +293,7 @@ export function ShopPageClient({
                               Your physician places this order. Track the shipment in My Orders.
                             </p>
                             <Link href="/dashboard/orders?kind=peptides" className={editorialCtaPrimary}>
-                              TRACK PEPTIDE ORDERS
+                              TRACK GLP therapy orders
                             </Link>
                           </>
                         ) : (

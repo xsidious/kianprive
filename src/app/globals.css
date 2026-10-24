@@ -70,6 +70,28 @@ div[class*="rounded-sm border"] {
   backdrop-filter: saturate(120%);
 }
 
+/* Accessibility tab preferences (AccessibilityWidget) */
+html.a11y-large-text {
+  font-size: 118%;
+}
+html.a11y-high-contrast {
+  filter: contrast(1.15);
+}
+html.a11y-high-contrast body {
+  background: #fff;
+  color: #000;
+}
+html.a11y-underline-links a {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+html.a11y-reduce-motion,
+html.a11y-reduce-motion * {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

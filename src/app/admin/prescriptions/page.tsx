@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -86,7 +86,7 @@ export default function AdminPrescriptionsPage() {
   const [therapyIntakeId, setTherapyIntakeId] = useState<string | null>(null);
   const [draft, setDraft] = useState({
     title: "",
-    category: "Peptides",
+    category: "GLP",
     form: "",
     strength: "",
     price: "",
@@ -200,7 +200,7 @@ export default function AdminPrescriptionsPage() {
     const data = (await res.json()) as { error?: string };
     setStatus(res.ok ? "Prescription added to catalog." : data.error || "Could not add prescription.");
     if (res.ok) {
-      setDraft({ title: "", category: "Peptides", form: "", strength: "", price: "", wholesalePrice: "", vendorId: "", sku: "" });
+      setDraft({ title: "", category: "GLP", form: "", strength: "", price: "", wholesalePrice: "", vendorId: "", sku: "" });
       await load();
     }
   }

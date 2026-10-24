@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { PeptideGuidelinesLibrary } from "@/components/partners/PeptideGuidelinesLibrary";
@@ -22,9 +22,19 @@ export default function PartnerGuidelinesPage() {
     const res = await fetch("/api/partner/guidelines");
     if (res.ok) {
       const payload = (await res.json()) as { guidelines: Guideline[] };
-      const library = payload.guidelines.find((g) => g.title === PEPTIDE_LIBRARY_TITLE) ?? null;
+      const library =
+        payload.guidelines.find(
+          (g) =>
+            g.title === PEPTIDE_LIBRARY_TITLE ||
+            g.title === "Peptide Usage Clinical Guidelines",
+        ) ?? null;
       setCover(library);
-      setHasAccess(Boolean(library) || payload.guidelines.some((g) => g.title.startsWith("Peptide Protocol:")));
+      setHasAccess(
+        Boolean(library) ||
+          payload.guidelines.some(
+            (g) => g.title.startsWith("GLP Protocol:") || g.title.startsWith("Peptide Protocol:"),
+          ),
+      );
     }
     setLoading(false);
   }
@@ -55,7 +65,7 @@ export default function PartnerGuidelinesPage() {
         <p className="text-xs tracking-[0.22em] text-[#b78d4b]">LIBRARY</p>
         <h1 className="font-serif text-4xl text-[#1f1a15]">Guidelines</h1>
         <p className="text-[#6f6251]">
-          No guidelines assigned yet. Ask admin to publish the peptide library and grant access.
+          No guidelines assigned yet. Ask admin to publish the GLP library and grant access.
         </p>
       </div>
     );

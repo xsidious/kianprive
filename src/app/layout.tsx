@@ -9,6 +9,7 @@ import { PageAnalyticsTracker } from "@/components/analytics/page-analytics-trac
 import { buildSeoMetadata } from "@/lib/seo/metadata";
 import { getSettingValue } from "@/lib/settings-store";
 import { AppChrome } from "@/components/layout/AppChrome";
+import { UserWayScript } from "@/components/layout/UserWayScript";
 import { PartnerReferralCapture } from "@/components/partners/PartnerReferralCapture";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { localBusinessJsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo/json-ld";
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
   ...buildSeoMetadata({
     title: "Concierge Wellness in Miami",
     description:
-      "Premium concierge wellness in Miami and North Miami Beach — aesthetics, Icoone, peptides, IV therapy, and physician-led care.",
+      "Premium concierge wellness in Miami and North Miami Beach — aesthetics, Icoone, GLP therapy, IV therapy, and physician-led care.",
     canonicalPath: "/",
     image: "/images/og-default.jpg",
   }),
@@ -68,6 +69,7 @@ export default function RootLayout({
           <SpeedInsights />
         </AppSessionProvider>
         <LiveChatScript liveChatPromise={liveChat} />
+        <UserWayScript />
       </body>
     </html>
   );

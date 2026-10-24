@@ -82,7 +82,7 @@ export async function POST(request: Request) {
           trackingUrl: trackingUrl || undefined,
           shippedAt: body.status === "shipped" || body.event === "SHIPPED" ? new Date() : existing.shippedAt,
           deliveredAt: body.status === "delivered" || body.event === "DELIVERED" ? new Date() : existing.deliveredAt,
-          notes: [existing.notes, body.event ? `RxHere ${body.event}` : "", body.reason || ""].filter(Boolean).join(" · ") || null,
+          notes: [existing.notes, body.event ? `Fulfillment ${body.event}` : "", body.reason || ""].filter(Boolean).join(" · ") || null,
         },
       });
     } else {
@@ -95,7 +95,7 @@ export async function POST(request: Request) {
           trackingUrl: trackingUrl || null,
           shippedAt: body.status === "shipped" || body.event === "SHIPPED" ? new Date() : null,
           deliveredAt: body.status === "delivered" || body.event === "DELIVERED" ? new Date() : null,
-          notes: [body.event ? `RxHere ${body.event}` : "", body.reason || ""].filter(Boolean).join(" · ") || null,
+          notes: [body.event ? `Fulfillment ${body.event}` : "", body.reason || ""].filter(Boolean).join(" · ") || null,
         },
       });
     }

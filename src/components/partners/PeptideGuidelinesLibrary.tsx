@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import {
@@ -164,7 +164,7 @@ export function PeptideGuidelinesLibrary({
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search peptide, action, contraindication…"
+          placeholder="Search therapy, action, contraindication…"
           className="w-full rounded-sm border border-[#e4d9c8] bg-white px-4 py-3 text-sm text-[#1f1a15] outline-none focus:border-[#b78d4b]"
         />
         <div className="flex flex-wrap gap-2">
@@ -196,7 +196,7 @@ export function PeptideGuidelinesLibrary({
 
       {!filtered.length ? (
         <p className="rounded-sm border border-[#e4d9c8] bg-white p-6 text-sm text-[#6f6251]">
-          No peptides match this search.
+          No therapies match this search.
         </p>
       ) : null}
 

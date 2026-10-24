@@ -42,12 +42,81 @@ export const PEPTIDE_THERAPY_CATEGORY = "Peptide Therapy";
 /** Client catalog — `id` and `slug` match seeded Prisma product slugs for reliable cart sync. */
 export const catalogProducts: CatalogProduct[] = [
   {
-    id: "exosomes",
-    slug: "korean-skincare",
-    name: "Korean Skincare",
+    id: "celexo-refine-bubble-toner",
+    slug: "celexo-refine-bubble-toner",
+    name: "Celexo Refine Bubble Toner",
     category: "Korean Skincare",
     price: 0,
-    image: "/images/facial-treatments.webp",
+    image: "/images/products/celexo-refine-bubble-toner.jpg",
+    summary: "Gentle exfoliation · Smooth refined skin — 10.14 fl oz micro-bubble toner.",
+    description:
+      "Celexo Refine Bubble Toner is a professional skin-prep toner with a micro-bubble texture for gentle exfoliation and a smoother, refined look after cleanse.\n\nNet 10.14 fl oz. Use after cleansing; dispense onto dry hands, spread gently, and pat remaining formula into skin before the next step in your ritual.",
+  },
+  {
+    id: "celexo-enzyme-powder-wash",
+    slug: "celexo-enzyme-powder-wash",
+    name: "Celexo Enzyme Powder Wash",
+    category: "Korean Skincare",
+    price: 0,
+    image: "/images/products/celexo-enzyme-powder-wash.jpg",
+    summary: "Mildly acidic facial cleanser — enzyme powder wash, net wt. 2.82 oz.",
+    description:
+      "Celexo Enzyme Powder Wash is a mildly acidic facial cleanser that activates into a soft micro-foam to lift impurities while respecting the barrier.\n\nNet wt. 2.82 oz. Mix with water in the palm, work into a foam, massage, and rinse.",
+  },
+  {
+    id: "celexo-post-care-recovery-cream",
+    slug: "celexo-post-care-recovery-cream",
+    name: "Celexo Post Care Recovery Cream",
+    category: "Korean Skincare",
+    price: 0,
+    image: "/images/products/celexo-post-care-recovery-cream.jpg",
+    summary: "Supports skin recovery post-procedure — 1.69 fl oz.",
+    description:
+      "Celexo Post Care Recovery Cream is formulated to support skin recovery after aesthetic procedures and intensive treatments.\n\nNet 1.69 fl oz. Apply a thin layer as directed by your provider — morning, evening, or whenever skin feels dry.",
+  },
+  {
+    id: "celexo-aape-solution-shampoo",
+    slug: "celexo-aape-solution-shampoo",
+    name: "Celexo AAPE Solution Shampoo",
+    category: "Korean Skincare",
+    price: 0,
+    image: "/images/products/celexo-aape-solution-shampoo.jpg",
+    summary: "Scalp-care shampoo with AAPE stem-cell conditioned media — 16.9 fl oz.",
+    description:
+      "Celexo AAPE Solution Shampoo is a Korean scalp-care shampoo featuring human adipose-derived stem cell conditioned media (AAPE) with caffeine support for daily cleansing and scalp conditioning.\n\nNet 16.9 fl oz. Wet hair thoroughly, lather into the scalp, massage, and rinse well.",
+  },
+  {
+    id: "celexo-aape-solution-treatment",
+    slug: "celexo-aape-solution-treatment",
+    name: "Celexo AAPE Solution Treatment",
+    category: "Korean Skincare",
+    price: 0,
+    image: "/images/products/celexo-aape-solution-treatment.jpg",
+    summary: "Leave-in AAPE scalp & hair treatment — 16.9 fl oz.",
+    description:
+      "Celexo AAPE Solution Treatment is a professional leave-in treatment with adipose-derived stem cell conditioned media for scalp and hair conditioning between washes.\n\nNet 16.9 fl oz. Apply to clean damp scalp and hair as directed; do not rinse unless instructed.",
+  },
+  {
+    id: "celexo-aape-scalp-scaler",
+    slug: "celexo-aape-scalp-scaler",
+    name: "Celexo AAPE Solution Scalp Scaler",
+    category: "Korean Skincare",
+    price: 0,
+    image: "/images/products/celexo-aape-scalp-scaler.jpg",
+    summary: "Pre-shampoo scalp scaler — 6.76 fl oz.",
+    description:
+      "Celexo AAPE Solution Scalp Scaler is a pre-shampoo treatment that helps lift buildup and prep the scalp before cleansing.\n\nNet 6.76 fl oz. Apply to dry or damp scalp, massage, leave briefly as directed, then follow with AAPE Solution Shampoo.",
+  },
+  {
+    id: "celexo-aa05-hair-tonic",
+    slug: "celexo-aa05-hair-tonic",
+    name: "Celexo AA05 Solution Hair Tonic",
+    category: "Korean Skincare",
+    price: 0,
+    image: "/images/products/celexo-aa05-hair-tonic.jpg",
+    summary: "Scalp applicator hair tonic — 3.38 fl oz.",
+    description:
+      "Celexo AA05 Solution Hair Tonic is a targeted scalp tonic with a multi-tooth applicator for direct application along the hairline and scalp.\n\nNet 3.38 fl oz. Part hair, apply to the scalp, and massage gently. Use on clean or dry scalp as directed.",
   },
   {
     id: "kian-toner",
@@ -332,8 +401,8 @@ export const catalogProducts: CatalogProduct[] = [
 ];
 
 export function getCatalogProduct(slugOrId: string) {
-  if (slugOrId === "exosomes") {
-    return catalogProducts.find((product) => product.id === "exosomes") ?? null;
+  if (slugOrId === "exosomes" || slugOrId === "korean-skincare") {
+    return catalogProducts.find((product) => product.category === "Korean Skincare") ?? null;
   }
   const direct = catalogProducts.find((product) => product.id === slugOrId || product.slug === slugOrId);
   if (direct) return direct;

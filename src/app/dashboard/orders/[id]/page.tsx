@@ -119,7 +119,7 @@ export default function MemberOrderDetailPage() {
             {order ? (
               <p className="mt-2 text-sm text-[#6f6251]">
                 Placed {new Date(order.createdAt).toLocaleString()}
-                {order.isPeptide ? " · Peptide order" : ""}
+                {order.isPeptide ? " · GLP therapy order" : ""}
               </p>
             ) : null}
           </div>

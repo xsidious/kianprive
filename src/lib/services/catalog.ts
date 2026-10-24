@@ -46,7 +46,7 @@ export const serviceCatalog: ServiceDetail[] = [
     details: [
       "Panels evaluate metabolic, inflammatory, nutrient, hormone, and recovery-related markers based on your goals.",
       "Samples are collected in a professional lab setting; results are reviewed with your KIAN Privé physician.",
-      "Findings are mapped into your ongoing protocol—nutrition, peptides, IV therapy, aesthetics, and recovery support.",
+      "Findings are mapped into your ongoing protocol—nutrition, GLP therapy, IV therapy, aesthetics, and recovery support.",
     ],
     includes: [
       "Comprehensive biomarker panels",
@@ -424,7 +424,7 @@ export const serviceCatalog: ServiceDetail[] = [
     image: "/images/Peptidesandexosomes.jpeg",
     showPeptidesExperience: true,
     description:
-      "Physician-prescribed compound therapy with GLP-1 and peptide protocols. Browse the catalog on Privé Therapeutics. These therapies are not sold in the KIAN retail shop—they are prescribed as part of a wellness plan, including the first order and every refill.",
+      "Physician-prescribed compound therapy with GLP protocols. Browse the catalog on Privé Therapeutics. These therapies are not sold in the KIAN retail shop—they are prescribed as part of a wellness plan, including the first order and every refill.",
     details: [
       "Complete secure intake for physician review of your history, labs, and goals.",
       "If clinically indicated, a KIAN Privé physician prescribes a personalized protocol.",

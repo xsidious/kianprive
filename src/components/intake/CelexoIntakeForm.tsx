@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useState } from "react";
@@ -582,7 +582,7 @@ export function CelexoIntakeForm() {
                 />
               </div>
             ))}
-            <Field label="Supplements or skincare actives currently in use" hint="e.g. Vitamin C, retinol, AHA/BHA, peptides, collagen, NAD+">
+            <Field label="Supplements or skincare actives currently in use" hint="e.g. Vitamin C, retinol, AHA/BHA, collagen, NAD+">
               <TextArea
                 value={form.lifestyle.supplementsActives}
                 onChange={(value) =>

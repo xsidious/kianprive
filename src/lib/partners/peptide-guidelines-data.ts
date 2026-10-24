@@ -20,7 +20,7 @@ export type PeptideGuideline = {
   sideEffects: string[];
 };
 
-export const PEPTIDE_LIBRARY_TITLE = "Peptide Usage Clinical Guidelines";
+export const PEPTIDE_LIBRARY_TITLE = "GLP Usage Clinical Guidelines";
 export const PEPTIDE_LIBRARY_VERSION = "2026.2";
 
 export const PEPTIDE_LIBRARY_INTRO =

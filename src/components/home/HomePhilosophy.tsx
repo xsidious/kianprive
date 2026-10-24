@@ -16,9 +16,9 @@ const sections = [
     label: "Services",
     title: "A journey guided by data",
     body:
-      "We offer a diverse range of services, including weight loss and hormonal optimization through advanced peptide therapies, herbal remedies, and principles of Chinese medicine. Starting with baseline labs, our dedicated physicians and specialists will help guide your journey, ensuring personalized care tailored to your unique needs. From nutrition to IV therapy and beyond, we take a comprehensive approach to your wellness.",
+      "We offer a diverse range of services, including weight loss and hormonal optimization through advanced GLP therapies, herbal remedies, and principles of Chinese medicine. Starting with baseline labs, our dedicated physicians and specialists will help guide your journey, ensuring personalized care tailored to your unique needs. From nutrition to IV therapy and beyond, we take a comprehensive approach to your wellness.",
     items: [
-      { label: "Baseline labs & peptides", icon: "flask" as const },
+      { label: "Baseline labs & GLP therapy", icon: "flask" as const },
       { label: "Herbal & Chinese medicine", icon: "leaf" as const },
       { label: "Nutrition", icon: "bowl" as const },
       { label: "IV therapy", icon: "iv" as const },

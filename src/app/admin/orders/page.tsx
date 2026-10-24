@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -74,7 +74,7 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [status, setStatus] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [catalog, setCatalog] = useState<"all" | "shop" | "peptides">("all");
+  const [catalog, setCatalog] = useState<"all" | "shop" | "GLP">("all");
 
   async function loadOrders() {
     const res = await fetch("/api/admin/commerce/orders");
@@ -177,7 +177,7 @@ export default function AdminOrdersPage() {
 
   const peptideOrders = useMemo(() => orders.filter((order) => orderIncludesPeptides(order.items)), [orders]);
   const visibleOrders = useMemo(() => {
-    if (catalog === "peptides") return peptideOrders;
+    if (catalog === "GLP") return peptideOrders;
     if (catalog === "shop") return orders.filter((order) => !orderIncludesPeptides(order.items));
     return orders;
   }, [catalog, orders, peptideOrders]);
@@ -197,7 +197,7 @@ export default function AdminOrdersPage() {
           [
             ["all", "All orders"],
             ["shop", "Shop"],
-            ["peptides", "Peptides"],
+            ["GLP", "GLP"],
           ] as const
         ).map(([value, label]) => (
           <button
@@ -209,7 +209,7 @@ export default function AdminOrdersPage() {
             }`}
           >
             {label}
-            {value === "peptides" ? ` (${peptideOrders.length})` : ""}
+            {value === "GLP" ? ` (${peptideOrders.length})` : ""}
           </button>
         ))}
       </div>
@@ -220,7 +220,7 @@ export default function AdminOrdersPage() {
           <p className="mt-2 font-serif text-3xl">{orders.length}</p>
         </div>
         <div className={`${adminPanel} p-5`}>
-          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Peptide orders</p>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">GLP therapy orders</p>
           <p className="mt-2 font-serif text-3xl">{peptideOrders.length}</p>
         </div>
         <div className={`${adminPanel} p-5`}>
@@ -245,9 +245,7 @@ export default function AdminOrdersPage() {
                 <p className="font-serif text-xl text-[#1f1a15]">
                   {order.orderNumber}
                   {peptideOrder ? (
-                    <span className="ml-2 align-middle rounded-full bg-[#fff6e8] px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-[#8f6f3e]">
-                      Peptides
-                    </span>
+                    <span className="ml-2 align-middle rounded-full bg-[#fff6e8] px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-[#8f6f3e]">GLP</span>
                   ) : null}
                 </p>
                 <p className="mt-1 text-sm text-[#6f6251]">
@@ -333,7 +331,7 @@ export default function AdminOrdersPage() {
         })}
         {!visibleOrders.length ? (
           <div className={`${adminPanel} p-8 text-sm text-[#6f6251]`}>
-            {catalog === "peptides" ? "No peptide orders yet." : "No orders yet."}
+            {catalog === "GLP" ? "No GLP therapy orders yet." : "No orders yet."}
           </div>
         ) : null}
       </div>

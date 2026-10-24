@@ -121,7 +121,9 @@ async function upsertAccount(row) {
     });
 
     if (isPrimary) {
-      const existing = await prisma.partnerProfile.findUnique({ where: { userId: user.id } });
+      const existing = await prisma.partnerProfile.findUnique({
+        where: { userId_type: { userId: user.id, type: row.partnerType } },
+      });
       let partnerId = existing?.id;
       if (existing) {
         await prisma.partnerProfile.update({

@@ -71,30 +71,31 @@ function buildDescription(row) {
     row.strength ? `Strength: ${row.strength}` : null,
     row.size ? `Size: ${row.size}` : null,
     row.total ? `Total: ${row.total}` : null,
-    `Vendor SKU: ${row.sku}`,
-    "Source: RxHere 503A compounding pharmacy (rxhere.com).",
+    `SKU: ${row.sku}`,
+    "503A compounded · pharmacy fulfillment.",
   ].filter(Boolean);
   bits.push(meta.join(" · "));
   return bits.join("\n\n");
 }
 
 async function ensureRxHereVendor() {
-  const email = (process.env.RXHERE_VENDOR_EMAIL || "info@rxhere.com").trim();
-  const name = (process.env.RXHERE_VENDOR_NAME || "RxHere").trim();
-  const phone = (process.env.RXHERE_VENDOR_PHONE || "(848) 379-4373").trim();
-  const contactName = process.env.RXHERE_VENDOR_CONTACT?.trim() || "RxHere Orders";
+  const email = (process.env.RXHERE_VENDOR_EMAIL || "fulfillment@thewellnesstech.com").trim();
+  const name = (process.env.RXHERE_VENDOR_NAME || "Compounding Pharmacy").trim();
+  const phone = (process.env.RXHERE_VENDOR_PHONE || "").trim();
+  const contactName = process.env.RXHERE_VENDOR_CONTACT?.trim() || "Pharmacy Orders";
 
   const existing = await prisma.vendor.findFirst({
     where: {
       OR: [
         { email: { equals: email, mode: "insensitive" } },
         { name: { equals: name, mode: "insensitive" } },
+        { name: { equals: "RxHere", mode: "insensitive" } },
       ],
     },
   });
 
   const notes =
-    "RxHere 503A compounding pharmacy — Q3 2026 formulary. Licensed in all 50 states. Volume partner discounts may apply. PO via email after patient payment settles. Site: rxhere.com";
+    "503A compounding pharmacy — Q3 2026 formulary. Licensed in all 50 states. Volume partner discounts may apply. PO via email after patient payment settles.";
 
   if (existing) {
     return prisma.vendor.update({
@@ -102,10 +103,10 @@ async function ensureRxHereVendor() {
       data: {
         name,
         email: existing.email || email,
-        phone: existing.phone || phone,
+        phone: existing.phone || phone || null,
         contactName: existing.contactName || contactName,
         paymentMethod: existing.paymentMethod || "ACH",
-        notes: existing.notes?.includes("RxHere") ? existing.notes : notes,
+        notes,
       },
     });
   }

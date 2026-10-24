@@ -8,9 +8,9 @@ import { buildSeoMetadata } from "@/lib/seo/metadata";
 
 export const metadata = buildSeoMetadata({
   noIndex: true,
-  title: "Peptide & GLP Intake | KIAN Privé",
+  title: "GLP Intake | KIAN Privé",
   description:
-    "Secure HIPAA-aware comprehensive therapeutics intake for peptide therapy and GLP receptor agonist programs at KIAN Privé.",
+    "Secure HIPAA-aware comprehensive therapeutics intake for GLP receptor agonist programs at KIAN Privé.",
 });
 
 export default async function PeptidesGlpIntakePage() {
@@ -21,7 +21,7 @@ export default async function PeptidesGlpIntakePage() {
     <div className="-mt-[1px]">
       <EditorialSection>
         <EditorialEyebrow>SECURE INTAKE</EditorialEyebrow>
-        <h1 className="mt-4 font-serif text-3xl text-[#1f1a15] md:text-4xl">Peptide &amp; GLP Intake</h1>
+        <h1 className="mt-4 font-serif text-3xl text-[#1f1a15] md:text-4xl">GLP Intake</h1>
         <p className="mt-3 max-w-3xl text-[#6f6251]">
           {canViewPrices
             ? `Complete this HIPAA-aware therapeutics intake so our physician team can review eligibility and next steps. A $${INTAKE_REVIEW_FEE_USD} medical review fee is collected before the form is sent to the doctor.`

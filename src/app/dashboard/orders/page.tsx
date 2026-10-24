@@ -58,7 +58,7 @@ export default async function MemberOrdersPage({
           <div>
             <h1 className="font-serif text-4xl text-[#1f1a15]">Orders &amp; progress</h1>
             <p className="mt-3 max-w-xl text-[#6f6251]">
-              Track shop and peptide orders, shipping updates, and messages with the team. Peptide orders appear after
+              Track shop and GLP therapy orders, shipping updates, and messages with the team. GLP orders appear after
               your physician sends the plan and you pay.
             </p>
           </div>
@@ -82,7 +82,7 @@ export default async function MemberOrdersPage({
               peptidesOnly ? "bg-[#1f1a15] text-white" : "border border-[#e4d9c8] bg-white text-[#4f4335]"
             }`}
           >
-            Peptides
+            GLP therapy
           </Link>
         </div>
 
@@ -93,7 +93,7 @@ export default async function MemberOrdersPage({
               return (
             <div className={`${editorialPanel} p-8 text-sm text-[#6f6251]`}>
               {peptidesOnly
-                ? "No peptide orders yet. They appear here after your physician sends a plan and you pay."
+                ? "No GLP therapy orders yet. They appear here after your physician sends a plan and you pay."
                 : "No orders yet. Therapy orders appear here after you accept and pay."}
             </div>
               );
@@ -114,7 +114,7 @@ export default async function MemberOrdersPage({
                         <PackageCheck size={14} /> {order.orderNumber}
                         {peptideOrder ? (
                           <span className="rounded-full bg-[#fff6e8] px-2 py-0.5 text-[10px] uppercase tracking-[0.12em]">
-                            Peptides
+                            GLP
                           </span>
                         ) : null}
                       </p>

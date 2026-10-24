@@ -69,6 +69,16 @@ function LoginForm() {
               <h2 className="font-serif text-2xl text-[#1f1a15]">Member Sign In</h2>
               <p className="mt-2 text-sm text-[#6f6251]">Use your approved account credentials to continue.</p>
               <form onSubmit={onSubmit} className="mt-6 space-y-4">
+                <label className="absolute -left-[10000px] h-0 overflow-hidden" aria-hidden="true">
+                  Company website
+                  <input
+                    name="company_website"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    onChange={() => setError("Unable to sign in.")}
+                  />
+                </label>
                 <input
                   className={editorialInput}
                   placeholder="Email"
@@ -76,6 +86,7 @@ function LoginForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  autoComplete="username"
                 />
                 <input
                   className={editorialInput}
@@ -84,6 +95,7 @@ function LoginForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  autoComplete="current-password"
                 />
                 {error ? <p className="text-sm text-red-500">{error}</p> : null}
                 <button type="submit" disabled={loading} className={`w-full ${editorialCtaPrimary}`}>
