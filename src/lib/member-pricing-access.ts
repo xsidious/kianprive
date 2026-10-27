@@ -39,9 +39,9 @@ export function canViewServicePrices(viewer?: PricingViewer): boolean {
 export function memberPricingGateCopy(viewer?: PricingViewer) {
   if (!viewer?.id) {
     return {
-      title: "Member pricing",
+      title: "Sign in to view pricing",
       description:
-        "Service and product pricing is reserved for approved members. Sign in after your account is activated to view rates.",
+        "Product and service prices are only visible when you are signed in with an approved membership.",
       primaryHref: "/login",
       primaryLabel: "Sign in",
       secondaryHref: "/signup",
@@ -52,7 +52,7 @@ export function memberPricingGateCopy(viewer?: PricingViewer) {
   return {
     title: "Approval required",
     description:
-      "Your account is signed in, but pricing unlocks after consultation, onboarding, and membership approval.",
+      "You are signed in, but pricing unlocks after consultation, onboarding, and membership approval.",
     primaryHref: "/signup",
     primaryLabel: "View onboarding steps",
     secondaryHref: "/pricing",
@@ -61,7 +61,7 @@ export function memberPricingGateCopy(viewer?: PricingViewer) {
 }
 
 /** Short inline label when a price would appear for guests. */
-export const MEMBER_PRICING_LABEL = "Member pricing after approval";
+export const MEMBER_PRICING_LABEL = "Sign in to view pricing";
 
 const DOLLAR_AMOUNT =
   /\(\$[\d,]+(?:\.\d{2})?\)|\$[\d,]+(?:\.\d{2})?(?:\/(?:mo|month|session))?|\bfrom\s+\$[\d,]+(?:\.\d{2})?/gi;

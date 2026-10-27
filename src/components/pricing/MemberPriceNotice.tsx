@@ -27,7 +27,7 @@ export function MemberPriceNotice({ compact = false, className = "" }: Props) {
 
   return (
     <div className={`${editorialPanel} p-5 sm:p-6 ${className}`}>
-      <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Member access</p>
+      <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Signed-in pricing</p>
       <h3 className="mt-2 font-serif text-xl text-[#1f1a15]">{copy.title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-[#6f6251]">{copy.description}</p>
       <div className="mt-4 flex flex-wrap gap-2">

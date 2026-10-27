@@ -7,7 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ShieldCheck, Truck } from "lucide-react";
 import { useCart } from "@/components/providers/cart-provider";
 import { useCanViewServicePrices } from "@/hooks/use-can-view-service-prices";
-import { MEMBER_PRICING_LABEL } from "@/lib/member-pricing-access";
+import { MEMBER_PRICING_LABEL, redactPricesFromText } from "@/lib/member-pricing-access";
 import { MemberPriceNotice } from "@/components/pricing/MemberPriceNotice";
 import { CinematicHero } from "@/components/ui/CinematicHero";
 import { pageHeroes } from "@/lib/media/heroes";
@@ -267,7 +267,9 @@ export function ShopPageClient({
                       </Link>
                       )}
                       {product.summary ? (
-                        <p className="mt-2 line-clamp-2 text-sm text-[#6f6251]">{product.summary}</p>
+                        <p className="mt-2 line-clamp-2 text-sm text-[#6f6251]">
+                          {canViewPrices ? product.summary : redactPricesFromText(product.summary)}
+                        </p>
                       ) : null}
                       {prescribed ? (
                         <p className="mt-3 text-sm text-[#8f6f3e]">Physician ordered</p>

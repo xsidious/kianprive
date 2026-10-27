@@ -163,7 +163,7 @@ const products = [
     category: "Korean Skincare",
     price: 80,
     image: "/images/products/celexo-refine-bubble-toner.jpg",
-    description: "Gentle exfoliation · Smooth refined skin. Net 10.14 fl oz (300 ml). MSRP $80.",
+    description: "Gentle exfoliation · Smooth refined skin. Net 10.14 fl oz (300 ml).",
   },
   {
     slug: "celexo-enzyme-powder-wash",
@@ -172,7 +172,7 @@ const products = [
     category: "Korean Skincare",
     price: 80,
     image: "/images/products/celexo-enzyme-powder-wash.jpg",
-    description: "Mildly acidic facial cleanser. Net wt. 2.82 oz (80 g). MSRP $80.",
+    description: "Mildly acidic facial cleanser. Net wt. 2.82 oz (80 g).",
   },
   {
     slug: "celexo-post-care-recovery-cream",
@@ -181,7 +181,16 @@ const products = [
     category: "Korean Skincare",
     price: 70,
     image: "/images/products/celexo-post-care-recovery-cream.jpg",
-    description: "Supports skin recovery post-procedure. Net 1.69 fl oz (50 ml). MSRP $70.",
+    description: "Supports skin recovery post-procedure. Net 1.69 fl oz (50 ml).",
+  },
+  {
+    slug: "celexo-post-care-calming-cream",
+    title: "Celexo Post Care Calming Cream",
+    sku: "CELEXO-POST-CARE-CALMING",
+    category: "Korean Skincare",
+    price: 80,
+    image: "/images/products/celexo-post-care-calming-cream.jpg",
+    description: "10% D-Panthenol & 1.5 billion Cica exosomes. Net 3.38 fl oz (100 ml).",
   },
   {
     slug: "celexo-aape-solution-shampoo",
@@ -190,7 +199,7 @@ const products = [
     category: "Korean Skincare",
     price: 80,
     image: "/images/products/celexo-aape-solution-shampoo.jpg",
-    description: "Scalp-care shampoo with AAPE conditioned media. Net 16.9 fl oz (500 ml). MSRP $80.",
+    description: "Scalp-care shampoo with AAPE conditioned media. Net 16.9 fl oz (500 ml).",
   },
   {
     slug: "celexo-aape-solution-treatment",
@@ -199,7 +208,7 @@ const products = [
     category: "Korean Skincare",
     price: 76,
     image: "/images/products/celexo-aape-solution-treatment.jpg",
-    description: "Leave-in AAPE scalp and hair treatment. Net 16.9 fl oz (500 ml). MSRP $76.",
+    description: "Leave-in AAPE scalp and hair treatment. Net 16.9 fl oz (500 ml).",
   },
   {
     slug: "celexo-aape-scalp-scaler",
@@ -208,7 +217,7 @@ const products = [
     category: "Korean Skincare",
     price: 50,
     image: "/images/products/celexo-aape-scalp-scaler.jpg",
-    description: "Pre-shampoo scalp scaler. Net 6.76 fl oz (200 ml). MSRP $50.",
+    description: "Pre-shampoo scalp scaler. Net 6.76 fl oz (200 ml).",
   },
   {
     slug: "celexo-aa05-hair-tonic",
@@ -217,7 +226,7 @@ const products = [
     category: "Korean Skincare",
     price: 70,
     image: "/images/products/celexo-aa05-hair-tonic.jpg",
-    description: "Scalp applicator hair tonic. Net 3.38 fl oz (100 ml). MSRP $70.",
+    description: "Scalp applicator hair tonic. Net 3.38 fl oz (100 ml).",
   },
 ];
 

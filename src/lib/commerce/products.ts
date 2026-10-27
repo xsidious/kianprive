@@ -48,7 +48,7 @@ export const catalogProducts: CatalogProduct[] = [
     category: "Korean Skincare",
     price: 80,
     image: "/images/products/celexo-refine-bubble-toner.jpg",
-    summary: "Gentle exfoliation · Smooth refined skin — 10.14 fl oz (300 ml). MSRP $80.",
+    summary: "Gentle exfoliation · Smooth refined skin — 10.14 fl oz (300 ml).",
     description:
       "Celexo Refine Bubble Toner is a professional skin-prep toner with a micro-bubble texture for gentle exfoliation and a smoother, refined look after cleanse.\n\nNet 10.14 fl oz (300 ml). Use after cleansing; dispense onto dry hands, spread gently, and pat remaining formula into skin before the next step in your ritual.",
   },
@@ -59,7 +59,7 @@ export const catalogProducts: CatalogProduct[] = [
     category: "Korean Skincare",
     price: 80,
     image: "/images/products/celexo-enzyme-powder-wash.jpg",
-    summary: "Mildly acidic facial cleanser — 2.82 oz (80 g). MSRP $80.",
+    summary: "Mildly acidic facial cleanser — 2.82 oz (80 g).",
     description:
       "Celexo Enzyme Powder Wash is a mildly acidic facial cleanser that activates into a soft micro-foam to lift impurities while respecting the barrier.\n\nNet wt. 2.82 oz (80 g). Mix with water in the palm, work into a foam, massage, and rinse.",
   },
@@ -70,9 +70,20 @@ export const catalogProducts: CatalogProduct[] = [
     category: "Korean Skincare",
     price: 70,
     image: "/images/products/celexo-post-care-recovery-cream.jpg",
-    summary: "Supports skin recovery post-procedure — 1.69 fl oz (50 ml). MSRP $70.",
+    summary: "Supports skin recovery post-procedure — 1.69 fl oz (50 ml).",
     description:
       "Celexo Post Care Recovery Cream is formulated to support skin recovery after aesthetic procedures and intensive treatments.\n\nNet 1.69 fl oz (50 ml). Apply a thin layer as directed by your provider — morning, evening, or whenever skin feels dry.",
+  },
+  {
+    id: "celexo-post-care-calming-cream",
+    slug: "celexo-post-care-calming-cream",
+    name: "Celexo Post Care Calming Cream",
+    category: "Korean Skincare",
+    price: 80,
+    image: "/images/products/celexo-post-care-calming-cream.jpg",
+    summary: "10% D-Panthenol & 1.5 billion Cica exosomes — 3.38 fl oz (100 ml).",
+    description:
+      "Celexo Post Care Calming Cream supports skin relief after procedures with 10% D-Panthenol and 1.5 billion Cica exosomes.\n\nNet 3.38 fl oz (100 ml). Apply a thin layer to clean skin as directed by your provider.",
   },
   {
     id: "celexo-aape-solution-shampoo",
@@ -81,7 +92,7 @@ export const catalogProducts: CatalogProduct[] = [
     category: "Korean Skincare",
     price: 80,
     image: "/images/products/celexo-aape-solution-shampoo.jpg",
-    summary: "Scalp-care shampoo with AAPE stem-cell conditioned media — 16.9 fl oz (500 ml). MSRP $80.",
+    summary: "Scalp-care shampoo with AAPE stem-cell conditioned media — 16.9 fl oz (500 ml).",
     description:
       "Celexo AAPE Solution Shampoo is a Korean scalp-care shampoo featuring human adipose-derived stem cell conditioned media (AAPE) with caffeine support for daily cleansing and scalp conditioning.\n\nNet 16.9 fl oz (500 ml). Wet hair thoroughly, lather into the scalp, massage, and rinse well.",
   },
@@ -92,7 +103,7 @@ export const catalogProducts: CatalogProduct[] = [
     category: "Korean Skincare",
     price: 76,
     image: "/images/products/celexo-aape-solution-treatment.jpg",
-    summary: "Leave-in AAPE scalp & hair treatment — 16.9 fl oz (500 ml). MSRP $76.",
+    summary: "Leave-in AAPE scalp & hair treatment — 16.9 fl oz (500 ml).",
     description:
       "Celexo AAPE Solution Treatment is a professional leave-in treatment with adipose-derived stem cell conditioned media for scalp and hair conditioning between washes.\n\nNet 16.9 fl oz (500 ml). Apply to clean damp scalp and hair as directed; do not rinse unless instructed.",
   },
@@ -103,7 +114,7 @@ export const catalogProducts: CatalogProduct[] = [
     category: "Korean Skincare",
     price: 50,
     image: "/images/products/celexo-aape-scalp-scaler.jpg",
-    summary: "Pre-shampoo scalp scaler — 6.76 fl oz (200 ml). MSRP $50.",
+    summary: "Pre-shampoo scalp scaler — 6.76 fl oz (200 ml).",
     description:
       "Celexo AAPE Solution Scalp Scaler is a pre-shampoo treatment that helps lift buildup and prep the scalp before cleansing.\n\nNet 6.76 fl oz (200 ml). Apply to dry or damp scalp, massage, leave briefly as directed, then follow with AAPE Solution Shampoo.",
   },
@@ -114,7 +125,7 @@ export const catalogProducts: CatalogProduct[] = [
     category: "Korean Skincare",
     price: 70,
     image: "/images/products/celexo-aa05-hair-tonic.jpg",
-    summary: "Scalp applicator hair tonic — 3.38 fl oz (100 ml). MSRP $70.",
+    summary: "Scalp applicator hair tonic — 3.38 fl oz (100 ml).",
     description:
       "Celexo AAPE Solution Hair Tonic is a targeted scalp tonic with a multi-tooth applicator for direct application along the hairline and scalp.\n\nNet 3.38 fl oz (100 ml). Part hair, apply to the scalp, and massage gently. Use on clean or dry scalp as directed.",
   },

@@ -109,7 +109,11 @@ export default async function ShopProductPage({ params }: Props) {
           <EditorialEyebrow>{retail.category.toUpperCase()}</EditorialEyebrow>
           <h1 className="mt-4 font-serif text-3xl text-[#1f1a15] md:text-4xl">{retail.name}</h1>
 
-          {retail.summary ? <p className="mt-4 text-lg text-[#4f4335]">{retail.summary}</p> : null}
+          {retail.summary ? (
+            <p className="mt-4 text-lg text-[#4f4335]">
+              {canViewPrices ? retail.summary : redactPricesFromText(retail.summary)}
+            </p>
+          ) : null}
 
           {paragraphs.length ? (
             <div className="mt-4 space-y-3 text-[15px] leading-relaxed text-[#5f5344]">
