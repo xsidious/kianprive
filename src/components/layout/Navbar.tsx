@@ -64,8 +64,23 @@ export function Navbar() {
     return () => document.removeEventListener("mousedown", onPointerDown);
   }, []);
 
+  useEffect(() => {
+    if (!mobileOpen) {
+      document.body.removeAttribute("data-mobile-nav-open");
+      document.body.style.removeProperty("overflow");
+      return;
+    }
+    document.body.setAttribute("data-mobile-nav-open", "true");
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.removeAttribute("data-mobile-nav-open");
+      document.body.style.overflow = previous;
+    };
+  }, [mobileOpen]);
+
   return (
-    <header className="sticky top-0 z-40 border-b border-[#e8dfd0] bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-[70] border-b border-[#e8dfd0] bg-white/95 backdrop-blur">
       <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-2 px-4 py-3 sm:gap-3 sm:px-6 sm:py-4">
         <div className="flex items-center">
           <Link href="/" className="relative flex shrink-0 items-center">
@@ -278,8 +293,8 @@ export function Navbar() {
       </div>
 
       {mobileOpen ? (
-        <div className="border-t border-[#e8dfd0] bg-white px-4 py-4 sm:hidden">
-          <div className="grid gap-1">
+        <div className="fixed inset-x-0 bottom-0 top-[4.75rem] z-[70] overflow-y-auto overscroll-contain border-t border-[#e8dfd0] bg-white px-4 py-4 pb-[max(2rem,env(safe-area-inset-bottom))] sm:hidden">
+          <div className="mx-auto grid max-w-lg gap-1 pb-8">
             <Link
               href="/book-online"
               onClick={() => setMobileOpen(false)}

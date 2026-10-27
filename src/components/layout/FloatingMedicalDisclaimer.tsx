@@ -8,7 +8,7 @@ export function FloatingMedicalDisclaimer() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-24 right-6 z-50 max-w-xs">
+    <div className="mobile-chrome-float fixed bottom-24 right-6 z-50 max-w-xs">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}

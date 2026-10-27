@@ -63,7 +63,7 @@ export function AccessibilityWidget() {
   }
 
   return (
-    <div className="fixed bottom-6 left-4 z-[60] sm:left-6">
+    <div className="mobile-chrome-float fixed bottom-6 left-4 z-[60] sm:left-6">
       <button
         type="button"
         aria-expanded={open}
