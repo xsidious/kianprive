@@ -32,6 +32,11 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Keep floating chrome from covering the mobile nav panel. */
+body[data-mobile-nav-open="true"] .mobile-chrome-float {
+  display: none !important;
+}
+
 ::selection {
   background: #e7d2ac;
   color: #1f1a15;
