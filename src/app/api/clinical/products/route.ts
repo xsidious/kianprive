@@ -17,7 +17,7 @@ export async function GET(req: Request) {
   }
 
   const role = session.user.role;
-  if (!canAccessAdmin(role) && !canAccessProviderPortal(role)) {
+  if (!canAccessAdmin(role) && !canAccessProviderPortal(role, session.user.portals)) {
     return NextResponse.json({ error: "Clinical catalog is limited to the care team." }, { status: 403 });
   }
 

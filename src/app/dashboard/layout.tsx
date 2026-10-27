@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { getPortalHomeForRole } from "@/lib/auth-redirect";
+import { canAccessMemberDashboard } from "@/lib/rbac";
 import { MemberPortalNav } from "@/components/portal/MemberPortalNav";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -9,11 +10,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
     redirect("/login?callbackUrl=/dashboard");
   }
 
-  const home = getPortalHomeForRole(session.user.role);
-  if (home !== "/dashboard") {
-    redirect(home);
+  if (!canAccessMemberDashboard(session.user.role, session.user.portals)) {
+    redirect(getPortalHomeForRole(session.user.role));
   }
-  if (session.user.memberOnboardingComplete === false) {
+  if (
+    session.user.memberOnboardingComplete === false &&
+    (session.user.role === "MEMBER" || session.user.role === "GUEST")
+  ) {
     redirect("/onboarding");
   }
 

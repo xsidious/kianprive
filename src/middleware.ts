@@ -5,8 +5,10 @@ import { getPortalHomeForRole } from "@/lib/auth-redirect";
 import {
   canAccessAdmin,
   canAccessAmbassadorPortal,
+  canAccessMemberDashboard,
   canAccessPartnerPortal,
   canAccessProviderPortal,
+  type PortalKind,
 } from "@/lib/rbac";
 import { applySecurityHeaders, clientIp, rateLimit } from "@/lib/anti-bot";
 
@@ -79,6 +81,7 @@ export async function middleware(req: NextRequest) {
   }
 
   const role = token.role as string | undefined;
+  const portals = (Array.isArray(token.portals) ? token.portals : []) as PortalKind[];
   const roleHome = getPortalHomeForRole(role);
 
   if (
@@ -91,7 +94,8 @@ export async function middleware(req: NextRequest) {
     return res;
   }
 
-  if (isMemberDashboard && roleHome !== "/dashboard") {
+  // Dual-role: allow member dashboard for providers/partners who also shop as patients.
+  if (isMemberDashboard && !canAccessMemberDashboard(role, portals)) {
     res = NextResponse.redirect(new URL(roleHome, req.url));
     applySecurityHeaders(res.headers);
     return res;
@@ -103,37 +107,34 @@ export async function middleware(req: NextRequest) {
     return res;
   }
 
-  if (isProviderRoute && !canAccessProviderPortal(role as never)) {
+  if (isProviderRoute && !canAccessProviderPortal(role, portals)) {
     res = NextResponse.redirect(new URL(roleHome, req.url));
     applySecurityHeaders(res.headers);
     return res;
   }
 
-  if (isAmbassadorRoute && !canAccessAmbassadorPortal(role as never)) {
+  if (isAmbassadorRoute && !canAccessAmbassadorPortal(role, portals)) {
     res = NextResponse.redirect(new URL(roleHome, req.url));
     applySecurityHeaders(res.headers);
     return res;
   }
 
   if (isPartnerRoute) {
-    if (!canAccessPartnerPortal(role as never)) {
+    if (!canAccessPartnerPortal(role, portals)) {
       res = NextResponse.redirect(new URL(roleHome, req.url));
       applySecurityHeaders(res.headers);
       return res;
     }
-    if (role === "AMBASSADOR") {
+    // Ambassadors without a partner profile should use /ambassador.
+    if ((role === "AMBASSADOR" || portals.includes("ambassador")) && !portals.includes("partner") && role !== "PARTNER") {
       res = NextResponse.redirect(new URL("/ambassador", req.url));
       applySecurityHeaders(res.headers);
       return res;
     }
-    if (role === "PROVIDER") {
-      res = NextResponse.redirect(new URL("/provider", req.url));
-      applySecurityHeaders(res.headers);
-      return res;
-    }
+    // Do not force providers away from /partner when they also have a partner profile.
   }
 
-  if (isAdminRoute && !canAccessAdmin(role as never)) {
+  if (isAdminRoute && !canAccessAdmin(role)) {
     res = NextResponse.redirect(new URL(roleHome, req.url));
     applySecurityHeaders(res.headers);
     return res;

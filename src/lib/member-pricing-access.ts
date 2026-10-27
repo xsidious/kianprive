@@ -10,6 +10,7 @@ export type PricingViewer = {
   id?: string;
   role?: Role | string | null;
   subscriptionStatus?: string | null;
+  portals?: Array<"partner" | "ambassador" | "practitioner"> | null;
 } | null | undefined;
 
 /** Approved members and staff can see service and shop pricing on the public site. */
@@ -17,11 +18,12 @@ export function canViewServicePrices(viewer?: PricingViewer): boolean {
   if (!viewer?.id) return false;
 
   const role = viewer.role;
+  const portals = viewer.portals;
   if (
     canAccessAdmin(role as Role) ||
-    canAccessPartnerPortal(role as Role) ||
-    canAccessProviderPortal(role as Role) ||
-    canAccessAmbassadorPortal(role as Role)
+    canAccessPartnerPortal(role, portals) ||
+    canAccessProviderPortal(role, portals) ||
+    canAccessAmbassadorPortal(role, portals)
   ) {
     return true;
   }

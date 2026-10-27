@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { PackageCheck } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { getPortalHomeForRole } from "@/lib/auth-redirect";
+import { canAccessMemberDashboard } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { orderIncludesPeptides } from "@/lib/commerce/peptide-orders";
 import { patientOrderProgress } from "@/lib/orders/progress";
@@ -28,9 +29,8 @@ export default async function MemberOrdersPage({
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  const roleHome = getPortalHomeForRole(session.user.role);
-  if (roleHome !== "/dashboard") {
-    redirect(roleHome);
+  if (!canAccessMemberDashboard(session.user.role, session.user.portals)) {
+    redirect(getPortalHomeForRole(session.user.role));
   }
 
   const { kind } = await searchParams;

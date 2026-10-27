@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { BadgeDollarSign, CalendarCheck2, CircleUserRound, Crown, FileText, MessageCircleMore, PackageCheck, Pill } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { getPortalHomeForRole } from "@/lib/auth-redirect";
+import { canAccessMemberDashboard } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { splitBookingNotes } from "@/lib/admin/booking-display";
 import { patientOrderProgress } from "@/lib/orders/progress";
@@ -22,9 +23,8 @@ export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  const roleHome = getPortalHomeForRole(session.user.role);
-  if (roleHome !== "/dashboard") {
-    redirect(roleHome);
+  if (!canAccessMemberDashboard(session.user.role, session.user.portals)) {
+    redirect(getPortalHomeForRole(session.user.role));
   }
   const email = session.user.email?.trim();
   const [sub, orders, bookings] = await Promise.all([

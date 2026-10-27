@@ -184,7 +184,15 @@ export function Navbar() {
                   <Link href={portalHome} className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                     {portalLabel}
                   </Link>
-                  {data.user.role === "MEMBER" || data.user.role === "GUEST" ? (
+                  {portalHome !== "/dashboard" ? (
+                    <Link href="/dashboard" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
+                      Member dashboard
+                    </Link>
+                  ) : null}
+                  {data.user.role === "MEMBER" ||
+                  data.user.role === "GUEST" ||
+                  data.user.role === "PROVIDER" ||
+                  data.user.portals?.includes("practitioner") ? (
                     <>
                       <Link href="/dashboard/profile" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
                         Profile

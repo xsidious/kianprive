@@ -1,6 +1,12 @@
 import { Role } from "@prisma/client";
+import type { PortalKind } from "@/lib/rbac";
+import {
+  canAccessAmbassadorPortal,
+  canAccessPartnerPortal,
+  canAccessProviderPortal,
+} from "@/lib/rbac";
 
-/** Primary home after login for each role. */
+/** Primary home after login for each role (first stop — portals still reachable). */
 export function getPortalHomeForRole(role?: Role | string | null) {
   switch (role) {
     case Role.ADMIN:
@@ -50,14 +56,43 @@ export function getPortalLabelForRole(role?: Role | string | null) {
   }
 }
 
-/** Resolve post-login destination, respecting safe callback URLs. */
+function pathAllowedForUser(
+  path: string,
+  role: Role | string | null | undefined,
+  portals?: PortalKind[] | null,
+) {
+  if (path.startsWith("/admin")) {
+    return (
+      role === Role.ADMIN ||
+      role === "ADMIN" ||
+      role === Role.OPERATIONS ||
+      role === "OPERATIONS" ||
+      role === Role.EDITOR ||
+      role === "EDITOR"
+    );
+  }
+  if (path.startsWith("/partner")) return canAccessPartnerPortal(role, portals);
+  if (path.startsWith("/ambassador")) return canAccessAmbassadorPortal(role, portals);
+  if (path.startsWith("/provider")) return canAccessProviderPortal(role, portals);
+  if (path.startsWith("/dashboard")) return true;
+  return true;
+}
+
+/** Resolve post-login destination, respecting safe callback URLs and dual portal access. */
 export function resolvePostLoginPath(
   role: Role | string | null | undefined,
   callbackUrl?: string | null,
-  flags?: { mustSetPassword?: boolean; memberOnboardingComplete?: boolean },
+  flags?: {
+    mustSetPassword?: boolean;
+    memberOnboardingComplete?: boolean;
+    portals?: PortalKind[] | null;
+  },
 ) {
   if (flags?.mustSetPassword) return "/welcome";
-  if (flags?.memberOnboardingComplete === false && (role === Role.MEMBER || role === Role.GUEST || role === "MEMBER" || role === "GUEST")) {
+  if (
+    flags?.memberOnboardingComplete === false &&
+    (role === Role.MEMBER || role === Role.GUEST || role === "MEMBER" || role === "GUEST")
+  ) {
     return "/onboarding";
   }
 
@@ -65,26 +100,8 @@ export function resolvePostLoginPath(
   if (!callbackUrl) return home;
   if (!callbackUrl.startsWith("/") || callbackUrl.startsWith("//")) return home;
 
-  if (role === Role.ADMIN || role === Role.OPERATIONS || role === Role.EDITOR || role === "ADMIN" || role === "OPERATIONS" || role === "EDITOR") {
-    return callbackUrl.startsWith("/admin") ? callbackUrl : home;
+  if (pathAllowedForUser(callbackUrl, role, flags?.portals)) {
+    return callbackUrl;
   }
-  if (role === Role.PARTNER || role === "PARTNER") {
-    return callbackUrl.startsWith("/partner") ? callbackUrl : home;
-  }
-  if (role === Role.AMBASSADOR || role === "AMBASSADOR") {
-    return callbackUrl.startsWith("/ambassador") ? callbackUrl : home;
-  }
-  if (role === Role.PROVIDER || role === "PROVIDER") {
-    return callbackUrl.startsWith("/provider") ? callbackUrl : home;
-  }
-
-  if (
-    callbackUrl.startsWith("/admin") ||
-    callbackUrl.startsWith("/partner") ||
-    callbackUrl.startsWith("/ambassador") ||
-    callbackUrl.startsWith("/provider")
-  ) {
-    return home;
-  }
-  return callbackUrl;
+  return home;
 }
