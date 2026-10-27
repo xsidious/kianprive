@@ -44,6 +44,29 @@ function SignedInContextBar() {
       >
         {portalLabel}
       </Link>
+      {portalHome !== "/dashboard" ? (
+        <>
+          <span className="mx-2 text-[#c4c4c4]">|</span>
+          <Link
+            href="/dashboard"
+            className="font-medium text-[#1b5e20] underline decoration-[#2e7d3240] underline-offset-2 hover:decoration-[#1b5e20]"
+          >
+            Member dashboard
+          </Link>
+        </>
+      ) : null}
+      {(data.user.portals?.includes("practitioner") || data.user.role === "PROVIDER") &&
+      portalHome !== "/provider" ? (
+        <>
+          <span className="mx-2 text-[#c4c4c4]">|</span>
+          <Link
+            href="/provider"
+            className="font-medium text-[#1b5e20] underline decoration-[#2e7d3240] underline-offset-2 hover:decoration-[#1b5e20]"
+          >
+            Practitioner portal
+          </Link>
+        </>
+      ) : null}
       <span className="mx-2 text-[#c4c4c4]">|</span>
       <Link href="/" className="text-[#5f5344] underline decoration-[#b78d4b55] underline-offset-2 hover:text-[#3b3024]">
         Website
