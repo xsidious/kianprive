@@ -293,7 +293,8 @@ export function Navbar() {
           )}
         </div>
 
-        <div className="flex items-center gap-0.5 lg:hidden">
+        <div className="flex items-center justify-end gap-0.5 justify-self-end lg:hidden">
+          <AccessibilityWidget />
           <button
             type="button"
             onClick={openCart}
@@ -307,7 +308,6 @@ export function Navbar() {
               </span>
             ) : null}
           </button>
-          <AccessibilityWidget />
           <button
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
