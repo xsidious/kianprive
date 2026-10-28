@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { ChevronDown, LogOut, Menu, ShoppingBag, X } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { AccessibilityWidget } from "@/components/layout/AccessibilityWidget";
 import { useCart } from "@/components/providers/cart-provider";
 import { getPortalHomeForRole, getPortalLabelForRole } from "@/lib/auth-redirect";
 import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
@@ -51,12 +53,17 @@ export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [portalReady, setPortalReady] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
   const { itemCount, openCart, hydrated } = useCart();
   const displayCount = hydrated ? itemCount : 0;
   const initials = (data?.user?.name ?? data?.user?.email ?? "M").slice(0, 1).toUpperCase();
   const portalHome = getPortalHomeForRole(data?.user?.role);
   const portalLabel = getPortalLabelForRole(data?.user?.role);
+
+  useEffect(() => {
+    setPortalReady(true);
+  }, []);
 
   useEffect(() => {
     function onPointerDown(event: MouseEvent) {
@@ -86,6 +93,15 @@ export function Navbar() {
       document.body.removeAttribute("data-mobile-nav-open");
       document.body.style.overflow = previous;
     };
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setMobileOpen(false);
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
   }, [mobileOpen]);
 
   return (
@@ -159,6 +175,7 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center justify-end gap-2 lg:flex">
+          <AccessibilityWidget />
           <button
             type="button"
             onClick={openCart}
@@ -277,6 +294,7 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-1 lg:hidden">
+          <AccessibilityWidget />
           <button
             type="button"
             onClick={openCart}
@@ -302,231 +320,234 @@ export function Navbar() {
         </div>
       </div>
 
-      {mobileOpen ? (
-        <div
-          className="fixed inset-0 z-[80] flex flex-col lg:hidden"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Navigation menu"
-        >
-          <div
-            className="absolute inset-0 bg-[#1f1a15]/45 backdrop-blur-[2px]"
-            onClick={() => setMobileOpen(false)}
-            aria-hidden
-          />
+      {portalReady && mobileOpen
+        ? createPortal(
+            <div
+              className="fixed inset-0 z-[200] flex flex-col lg:hidden"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation menu"
+            >
+              <div
+                className="absolute inset-0 bg-[#1f1a15]/50"
+                onClick={() => setMobileOpen(false)}
+                aria-hidden
+              />
 
-          <div
-            className="relative z-[1] flex h-[100dvh] max-h-[100dvh] w-full flex-col overflow-hidden bg-[#fdf9f2] shadow-[0_24px_80px_-28px_rgba(31,26,21,0.55)]"
-            style={{
-              backgroundImage:
-                "radial-gradient(900px 420px at 0% 0%, #f7ecda 0%, transparent 55%), radial-gradient(700px 360px at 100% 0%, #f1e6d4 0%, transparent 50%)",
-            }}
-          >
-            <div className="shrink-0 border-b border-[#e8dfd0]/90 bg-white/80 px-4 pb-3 pt-[max(0.85rem,env(safe-area-inset-top))] backdrop-blur-md">
-              <div className="flex items-center justify-between gap-3">
-                <Link href="/" onClick={() => setMobileOpen(false)} className="relative flex shrink-0 items-center">
-                  <Image
-                    src={LOGO_SRC}
-                    alt="KIAN Privé"
-                    width={148}
-                    height={120}
-                    className="h-11 w-auto object-contain"
-                    priority
-                  />
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => setMobileOpen(false)}
-                  className="inline-flex h-11 w-11 items-center justify-center rounded-sm border border-[#e4d9c8] bg-white text-[#3b3024]"
-                  aria-label="Close menu"
-                >
-                  <X size={18} aria-hidden />
-                </button>
-              </div>
-            </div>
-
-            <nav className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-2">
-              <div className="mx-auto flex max-w-lg flex-col pb-6">
-                <Link href="/" onClick={() => setMobileOpen(false)} className={mobileNavLinkClass}>
-                  Home
-                </Link>
-                <Link href="/book-online" onClick={() => setMobileOpen(false)} className={mobileNavLinkClass}>
-                  Book Online
-                </Link>
-
-                <p className={mobileSectionLabelClass}>What We Do</p>
-                <div className="grid gap-0.5 rounded-sm border border-[#e8dfd0] bg-white/70 p-1.5">
-                  {whatWeDoLinks.map((link) =>
-                    "external" in link && link.external ? (
-                      <TherapeuticsAnchor key={link.href} href={link.href} className={mobileNavLinkClass}>
-                        {link.label}
-                      </TherapeuticsAnchor>
-                    ) : (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        onClick={() => setMobileOpen(false)}
-                        className={mobileNavLinkClass}
-                      >
-                        {link.label}
-                      </Link>
-                    ),
-                  )}
-                </div>
-
-                <p className={mobileSectionLabelClass}>Icoone</p>
-                <div className="grid gap-0.5 rounded-sm border border-[#e8dfd0] bg-white/70 p-1.5">
-                  {icooneLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setMobileOpen(false)}
-                      className={mobileNavLinkClass}
-                    >
-                      {link.label}
+              <div
+                className="relative z-[1] flex h-[100dvh] max-h-[100dvh] w-full flex-col overflow-hidden bg-[#fdf9f2]"
+                style={{
+                  backgroundImage:
+                    "radial-gradient(900px 420px at 0% 0%, #f7ecda 0%, transparent 55%), radial-gradient(700px 360px at 100% 0%, #f1e6d4 0%, transparent 50%)",
+                }}
+              >
+                <div className="shrink-0 border-b border-[#e8dfd0] bg-white px-4 pb-3 pt-[max(0.85rem,env(safe-area-inset-top))]">
+                  <div className="flex items-center justify-between gap-3">
+                    <Link href="/" onClick={() => setMobileOpen(false)} className="relative flex shrink-0 items-center">
+                      <Image
+                        src={LOGO_SRC}
+                        alt="KIAN Privé"
+                        width={148}
+                        height={120}
+                        className="h-11 w-auto object-contain"
+                        priority
+                      />
                     </Link>
-                  ))}
-                </div>
-
-                <p className={mobileSectionLabelClass}>Explore</p>
-                <div className="grid gap-0.5">
-                  {links.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
+                    <button
+                      type="button"
                       onClick={() => setMobileOpen(false)}
-                      className={mobileNavLinkClass}
+                      className="inline-flex h-11 w-11 items-center justify-center rounded-sm border border-[#e4d9c8] bg-white text-[#3b3024]"
+                      aria-label="Close menu"
                     >
-                      {link.label}
-                    </Link>
-                  ))}
+                      <X size={18} aria-hidden />
+                    </button>
+                  </div>
                 </div>
 
-                {data?.user ? (
-                  <>
-                    <p className={mobileSectionLabelClass}>My Account</p>
+                <nav className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-2">
+                  <div className="mx-auto flex max-w-lg flex-col pb-6">
+                    <Link href="/" onClick={() => setMobileOpen(false)} className={mobileNavLinkClass}>
+                      Home
+                    </Link>
+                    <Link href="/book-online" onClick={() => setMobileOpen(false)} className={mobileNavLinkClass}>
+                      Book Online
+                    </Link>
+
+                    <p className={mobileSectionLabelClass}>What We Do</p>
                     <div className="grid gap-0.5 rounded-sm border border-[#e8dfd0] bg-white/70 p-1.5">
-                      <div className="mb-1 rounded-sm bg-[#fffaf2] px-3 py-2.5">
-                        <p className="text-sm text-[#1f1a15]">{data.user.name ?? "Member"}</p>
-                        <p className="truncate text-xs text-[#6f6251]">{data.user.email}</p>
-                      </div>
-                      <Link
-                        href={portalHome}
-                        onClick={() => setMobileOpen(false)}
-                        className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
-                      >
-                        {portalLabel}
-                      </Link>
-                      {portalHome !== "/dashboard" ? (
-                        <Link
-                          href="/dashboard"
-                          onClick={() => setMobileOpen(false)}
-                          className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
-                        >
-                          Member dashboard
-                        </Link>
-                      ) : null}
-                      {(data.user.role === "MEMBER" ||
-                        data.user.role === "GUEST" ||
-                        data.user.role === "PROVIDER" ||
-                        data.user.portals?.includes("practitioner")) && (
-                        <>
+                      {whatWeDoLinks.map((link) =>
+                        "external" in link && link.external ? (
+                          <TherapeuticsAnchor key={link.href} href={link.href} className={mobileNavLinkClass}>
+                            {link.label}
+                          </TherapeuticsAnchor>
+                        ) : (
                           <Link
-                            href="/dashboard/profile"
+                            key={link.href}
+                            href={link.href}
                             onClick={() => setMobileOpen(false)}
-                            className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
+                            className={mobileNavLinkClass}
                           >
-                            Profile
+                            {link.label}
                           </Link>
-                          <Link
-                            href="/dashboard/subscription"
-                            onClick={() => setMobileOpen(false)}
-                            className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
-                          >
-                            Subscription
-                          </Link>
-                          <Link
-                            href="/dashboard/services"
-                            onClick={() => setMobileOpen(false)}
-                            className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
-                          >
-                            My Services
-                          </Link>
-                        </>
+                        ),
                       )}
-                      {data.user.portals?.includes("partner") || data.user.role === "PARTNER" ? (
-                        <Link
-                          href="/partner"
-                          onClick={() => setMobileOpen(false)}
-                          className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
-                        >
-                          Partner Portal
-                        </Link>
-                      ) : null}
-                      {data.user.portals?.includes("ambassador") || data.user.role === "AMBASSADOR" ? (
-                        <Link
-                          href="/ambassador"
-                          onClick={() => setMobileOpen(false)}
-                          className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
-                        >
-                          Ambassador Portal
-                        </Link>
-                      ) : null}
-                      {data.user.portals?.includes("practitioner") || data.user.role === "PROVIDER" ? (
-                        <Link
-                          href="/provider"
-                          onClick={() => setMobileOpen(false)}
-                          className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
-                        >
-                          Practitioner Portal
-                        </Link>
-                      ) : null}
-                      {data.user.role === "ADMIN" ||
-                      data.user.role === "OPERATIONS" ||
-                      data.user.role === "EDITOR" ? (
-                        <Link
-                          href="/admin"
-                          onClick={() => setMobileOpen(false)}
-                          className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
-                        >
-                          Admin Dashboard
-                        </Link>
-                      ) : null}
-                      <button
-                        type="button"
-                        onClick={() => signOut({ callbackUrl: "/" })}
-                        className="mt-1 inline-flex items-center justify-center gap-2 rounded-sm border border-[#e8dfd0] px-3 py-2.5 text-sm text-[#3b3024] hover:bg-[#faf6f0]"
-                      >
-                        <LogOut size={14} />
-                        Logout
-                      </button>
                     </div>
-                  </>
-                ) : null}
-              </div>
-            </nav>
 
-            <div className="shrink-0 border-t border-[#e8dfd0] bg-white/90 px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-md">
-              <div className="mx-auto grid max-w-lg grid-cols-2 gap-2">
-                <Link
-                  href="/book-online"
-                  onClick={() => setMobileOpen(false)}
-                  className="rounded-sm bg-[#8a682e] px-4 py-3.5 text-center font-serif text-[11px] uppercase tracking-[0.16em] text-white transition hover:bg-[#735624]"
-                >
-                  Book Online
-                </Link>
-                <Link
-                  href={data?.user ? portalHome : "/login"}
-                  onClick={() => setMobileOpen(false)}
-                  className="rounded-sm border border-[#8a682e] bg-white px-4 py-3.5 text-center font-serif text-[11px] uppercase tracking-[0.16em] text-[#3b3024] transition hover:bg-[#faf6f0]"
-                >
-                  {data?.user ? portalLabel : "Members"}
-                </Link>
+                    <p className={mobileSectionLabelClass}>Icoone</p>
+                    <div className="grid gap-0.5 rounded-sm border border-[#e8dfd0] bg-white/70 p-1.5">
+                      {icooneLinks.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          onClick={() => setMobileOpen(false)}
+                          className={mobileNavLinkClass}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+
+                    <p className={mobileSectionLabelClass}>Explore</p>
+                    <div className="grid gap-0.5">
+                      {links.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          onClick={() => setMobileOpen(false)}
+                          className={mobileNavLinkClass}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+
+                    {data?.user ? (
+                      <>
+                        <p className={mobileSectionLabelClass}>My Account</p>
+                        <div className="grid gap-0.5 rounded-sm border border-[#e8dfd0] bg-white/70 p-1.5">
+                          <div className="mb-1 rounded-sm bg-[#fffaf2] px-3 py-2.5">
+                            <p className="text-sm text-[#1f1a15]">{data.user.name ?? "Member"}</p>
+                            <p className="truncate text-xs text-[#6f6251]">{data.user.email}</p>
+                          </div>
+                          <Link
+                            href={portalHome}
+                            onClick={() => setMobileOpen(false)}
+                            className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
+                          >
+                            {portalLabel}
+                          </Link>
+                          {portalHome !== "/dashboard" ? (
+                            <Link
+                              href="/dashboard"
+                              onClick={() => setMobileOpen(false)}
+                              className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
+                            >
+                              Member dashboard
+                            </Link>
+                          ) : null}
+                          {(data.user.role === "MEMBER" ||
+                            data.user.role === "GUEST" ||
+                            data.user.role === "PROVIDER" ||
+                            data.user.portals?.includes("practitioner")) && (
+                            <>
+                              <Link
+                                href="/dashboard/profile"
+                                onClick={() => setMobileOpen(false)}
+                                className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
+                              >
+                                Profile
+                              </Link>
+                              <Link
+                                href="/dashboard/subscription"
+                                onClick={() => setMobileOpen(false)}
+                                className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
+                              >
+                                Subscription
+                              </Link>
+                              <Link
+                                href="/dashboard/services"
+                                onClick={() => setMobileOpen(false)}
+                                className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
+                              >
+                                My Services
+                              </Link>
+                            </>
+                          )}
+                          {data.user.portals?.includes("partner") || data.user.role === "PARTNER" ? (
+                            <Link
+                              href="/partner"
+                              onClick={() => setMobileOpen(false)}
+                              className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
+                            >
+                              Partner Portal
+                            </Link>
+                          ) : null}
+                          {data.user.portals?.includes("ambassador") || data.user.role === "AMBASSADOR" ? (
+                            <Link
+                              href="/ambassador"
+                              onClick={() => setMobileOpen(false)}
+                              className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
+                            >
+                              Ambassador Portal
+                            </Link>
+                          ) : null}
+                          {data.user.portals?.includes("practitioner") || data.user.role === "PROVIDER" ? (
+                            <Link
+                              href="/provider"
+                              onClick={() => setMobileOpen(false)}
+                              className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
+                            >
+                              Practitioner Portal
+                            </Link>
+                          ) : null}
+                          {data.user.role === "ADMIN" ||
+                          data.user.role === "OPERATIONS" ||
+                          data.user.role === "EDITOR" ? (
+                            <Link
+                              href="/admin"
+                              onClick={() => setMobileOpen(false)}
+                              className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
+                            >
+                              Admin Dashboard
+                            </Link>
+                          ) : null}
+                          <button
+                            type="button"
+                            onClick={() => signOut({ callbackUrl: "/" })}
+                            className="mt-1 inline-flex items-center justify-center gap-2 rounded-sm border border-[#e8dfd0] px-3 py-2.5 text-sm text-[#3b3024] hover:bg-[#faf6f0]"
+                          >
+                            <LogOut size={14} />
+                            Logout
+                          </button>
+                        </div>
+                      </>
+                    ) : null}
+                  </div>
+                </nav>
+
+                <div className="shrink-0 border-t border-[#e8dfd0] bg-white px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
+                  <div className="mx-auto grid max-w-lg grid-cols-2 gap-2">
+                    <Link
+                      href="/book-online"
+                      onClick={() => setMobileOpen(false)}
+                      className="rounded-sm bg-[#8a682e] px-4 py-3.5 text-center font-serif text-[11px] uppercase tracking-[0.16em] text-white transition hover:bg-[#735624]"
+                    >
+                      Book Online
+                    </Link>
+                    <Link
+                      href={data?.user ? portalHome : "/login"}
+                      onClick={() => setMobileOpen(false)}
+                      className="rounded-sm border border-[#8a682e] bg-white px-4 py-3.5 text-center font-serif text-[11px] uppercase tracking-[0.16em] text-[#3b3024] transition hover:bg-[#faf6f0]"
+                    >
+                      {data?.user ? portalLabel : "Members"}
+                    </Link>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
+            </div>,
+            document.body,
+          )
+        : null}
     </header>
   );
 }

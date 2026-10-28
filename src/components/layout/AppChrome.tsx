@@ -8,7 +8,6 @@ import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { FloatingWhatsAppButton } from "@/components/layout/FloatingWhatsAppButton";
 import { FloatingMedicalDisclaimer } from "@/components/layout/FloatingMedicalDisclaimer";
-import { AccessibilityWidget } from "@/components/layout/AccessibilityWidget";
 import { getPortalHomeForRole, getPortalLabelForRole } from "@/lib/auth-redirect";
 
 const CartDrawer = dynamic(
@@ -106,7 +105,6 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
       <main className="flex-1 bg-[var(--bg)]">{children}</main>
       <Footer />
       <CartDrawer />
-      <AccessibilityWidget />
       <FloatingMedicalDisclaimer />
       <FloatingWhatsAppButton />
     </>

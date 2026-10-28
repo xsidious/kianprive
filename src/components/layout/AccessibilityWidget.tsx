@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 
 const STORAGE_KEY = "kian-a11y-prefs";
@@ -27,8 +27,13 @@ function applyPrefs(prefs: Prefs) {
   root.classList.toggle("a11y-reduce-motion", prefs.reduceMotion);
 }
 
-export function AccessibilityWidget() {
+type Props = {
+  className?: string;
+};
+
+export function AccessibilityWidget({ className = "" }: Props) {
   const panelId = useId();
+  const rootRef = useRef<HTMLDivElement | null>(null);
   const [open, setOpen] = useState(false);
   const [prefs, setPrefs] = useState<Prefs>(defaults);
 
@@ -43,6 +48,25 @@ export function AccessibilityWidget() {
       /* ignore */
     }
   }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    function onPointerDown(event: MouseEvent) {
+      if (!rootRef.current) return;
+      if (!rootRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
 
   function update(next: Prefs) {
     setPrefs(next);
@@ -63,13 +87,24 @@ export function AccessibilityWidget() {
   }
 
   return (
-    <div className="mobile-chrome-float fixed bottom-6 left-4 z-[60] sm:left-6">
+    <div ref={rootRef} className={`relative ${className}`.trim()}>
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={panelId}
+        aria-label="Accessibility options"
+        title="Accessibility"
+        onClick={() => setOpen((v) => !v)}
+        className="inline-flex h-10 w-10 items-center justify-center rounded-sm border border-[#8a682e66] bg-[#1f1a15] text-base leading-none text-[#f6f1e7] transition hover:bg-[#3b3024] sm:h-11 sm:w-11"
+      >
+        <span aria-hidden>♿</span>
+      </button>
       {open ? (
         <div
           id={panelId}
           role="dialog"
           aria-label="Accessibility options"
-          className="mb-2 w-[min(100vw-2rem,20rem)] rounded-sm border border-[#b78d4b44] bg-[#fffaf2] p-4 text-sm text-[#3b3024] shadow-[0_18px_40px_-28px_rgba(0,0,0,0.45)]"
+          className="absolute right-0 top-[calc(100%+10px)] z-[90] w-[min(calc(100vw-2rem),20rem)] rounded-sm border border-[#b78d4b44] bg-[#fffaf2] p-4 text-sm text-[#3b3024] shadow-[0_18px_40px_-28px_rgba(0,0,0,0.45)]"
         >
           <p className="text-xs tracking-[0.16em] text-[#7a5c32]">DISPLAY OPTIONS</p>
           <ul className="mt-3 space-y-2">
@@ -107,17 +142,6 @@ export function AccessibilityWidget() {
           </div>
         </div>
       ) : null}
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-controls={panelId}
-        aria-label="Accessibility options"
-        title="Accessibility"
-        onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-11 w-11 items-center justify-center rounded-sm border border-[#8a682e66] bg-[#1f1a15] text-lg leading-none text-[#f6f1e7] shadow-[0_18px_40px_-28px_rgba(0,0,0,0.55)]"
-      >
-        <span aria-hidden>♿</span>
-      </button>
     </div>
   );
 }
