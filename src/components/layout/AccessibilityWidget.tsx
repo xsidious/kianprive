@@ -95,7 +95,7 @@ export function AccessibilityWidget({ className = "" }: Props) {
         aria-label="Accessibility options"
         title="Accessibility"
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-10 w-10 items-center justify-center rounded-sm border border-[#8a682e66] bg-[#1f1a15] text-base leading-none text-[#f6f1e7] transition hover:bg-[#3b3024] sm:h-11 sm:w-11"
+        className="inline-flex h-10 w-10 items-center justify-center text-lg leading-none text-[#3b3024] transition hover:text-[#8a682e] sm:h-11 sm:w-11"
       >
         <span aria-hidden>♿</span>
       </button>

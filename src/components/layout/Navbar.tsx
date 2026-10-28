@@ -175,7 +175,6 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center justify-end gap-2 lg:flex">
-          <AccessibilityWidget />
           <button
             type="button"
             onClick={openCart}
@@ -189,6 +188,7 @@ export function Navbar() {
               </span>
             ) : null}
           </button>
+          <AccessibilityWidget />
           <Link
             href="/book-online"
             className="rounded-sm bg-[#8a682e] px-4 py-2 font-serif text-[11px] uppercase tracking-[0.16em] text-white transition hover:bg-[#735624]"
@@ -293,12 +293,11 @@ export function Navbar() {
           )}
         </div>
 
-        <div className="flex items-center gap-1 lg:hidden">
-          <AccessibilityWidget />
+        <div className="flex items-center gap-0.5 lg:hidden">
           <button
             type="button"
             onClick={openCart}
-            className="relative inline-flex h-11 w-11 items-center justify-center text-[#3b3024]"
+            className="relative inline-flex h-11 w-11 items-center justify-center text-[#3b3024] transition hover:text-[#8a682e]"
             aria-label="Open cart"
           >
             <ShoppingBag size={18} aria-hidden />
@@ -308,10 +307,11 @@ export function Navbar() {
               </span>
             ) : null}
           </button>
+          <AccessibilityWidget />
           <button
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
-            className="inline-flex h-11 w-11 items-center justify-center text-[#3b3024]"
+            className="inline-flex h-11 w-11 items-center justify-center text-[#3b3024] transition hover:text-[#8a682e]"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
           >
