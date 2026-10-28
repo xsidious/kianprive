@@ -64,24 +64,12 @@ export function AccessibilityWidget() {
 
   return (
     <div className="mobile-chrome-float fixed bottom-6 left-4 z-[60] sm:left-6">
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => setOpen((v) => !v)}
-        className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-[#8a682e66] bg-[#1f1a15] px-4 py-2.5 text-[11px] tracking-[0.14em] text-[#f6f1e7] shadow-[0_18px_40px_-28px_rgba(0,0,0,0.55)]"
-      >
-        <span aria-hidden className="text-base leading-none">
-          ♿
-        </span>
-        Accessibility
-      </button>
       {open ? (
         <div
           id={panelId}
           role="dialog"
           aria-label="Accessibility options"
-          className="mt-2 w-[min(100vw-2rem,20rem)] rounded-sm border border-[#b78d4b44] bg-[#fffaf2] p-4 text-sm text-[#3b3024] shadow-[0_18px_40px_-28px_rgba(0,0,0,0.45)]"
+          className="mb-2 w-[min(100vw-2rem,20rem)] rounded-sm border border-[#b78d4b44] bg-[#fffaf2] p-4 text-sm text-[#3b3024] shadow-[0_18px_40px_-28px_rgba(0,0,0,0.45)]"
         >
           <p className="text-xs tracking-[0.16em] text-[#7a5c32]">DISPLAY OPTIONS</p>
           <ul className="mt-3 space-y-2">
@@ -119,6 +107,17 @@ export function AccessibilityWidget() {
           </div>
         </div>
       ) : null}
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={panelId}
+        aria-label="Accessibility options"
+        title="Accessibility"
+        onClick={() => setOpen((v) => !v)}
+        className="inline-flex h-11 w-11 items-center justify-center rounded-sm border border-[#8a682e66] bg-[#1f1a15] text-lg leading-none text-[#f6f1e7] shadow-[0_18px_40px_-28px_rgba(0,0,0,0.55)]"
+      >
+        <span aria-hidden>♿</span>
+      </button>
     </div>
   );
 }

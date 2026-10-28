@@ -225,7 +225,7 @@ export function ServiceCardsWithModal({
               </div>
               <div>
                 <p className={`text-xs tracking-[0.2em] ${isPriorityGroup ? "text-[#1f6f75]" : "text-[#8f6f3e]"}`}>
-                  {label} {String(index + 1).padStart(2, "0")}
+                  {label}
                 </p>
                 <h3 className="mt-2 text-2xl text-[#2b2218]">{service.title}</h3>
                 {service.partnerLogo ? (

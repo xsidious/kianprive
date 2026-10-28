@@ -1,6 +1,5 @@
 const sections = [
   {
-    number: "01",
     label: "Philosophy",
     title: "Rooted in lived experience",
     body:
@@ -12,7 +11,6 @@ const sections = [
     ],
   },
   {
-    number: "02",
     label: "Services",
     title: "A journey guided by data",
     body:
@@ -25,7 +23,6 @@ const sections = [
     ],
   },
   {
-    number: "03",
     label: "Method",
     title: "Beyond superficial aesthetics",
     body:
@@ -37,7 +34,6 @@ const sections = [
     ],
   },
   {
-    number: "04",
     label: "Invitation",
     title: "Become part of the family",
     body:
@@ -166,7 +162,7 @@ export function HomePhilosophy() {
       <div className="mt-14 space-y-16 sm:mt-16 sm:space-y-20">
         {sections.map((section) => (
           <article
-            key={section.number}
+            key={section.label}
             className="grid gap-8 sm:grid-cols-[minmax(10rem,0.42fr)_minmax(0,1fr)] sm:gap-10 md:gap-14"
           >
             <ul className="space-y-5 sm:pt-1">
@@ -181,9 +177,7 @@ export function HomePhilosophy() {
             </ul>
 
             <div>
-              <p className="text-[11px] uppercase tracking-[0.22em] text-[#b78d4b]">
-                {section.number} — {section.label}
-              </p>
+              <p className="text-[11px] uppercase tracking-[0.22em] text-[#b78d4b]">{section.label}</p>
               <h3 className="mt-3 font-serif text-2xl text-[#2b241c] sm:text-[1.75rem]">{section.title}</h3>
               <p className="mt-4 max-w-xl text-[15px] leading-[1.75] text-[#6a5d4e]">{section.body}</p>
             </div>

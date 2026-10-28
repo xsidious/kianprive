@@ -22,8 +22,9 @@ export default function AccessibilityPage() {
           target and continue improving pages as we update the site.
         </p>
         <p>
-          Use the <strong className="font-medium text-[#3b3024]">Accessibility</strong> tab on any page to enlarge text,
-          increase contrast, underline links, or reduce motion. Those preferences stay on this device.
+          Use the <strong className="font-medium text-[#3b3024]">Accessibility</strong> icon (♿) at the bottom of any
+          page to enlarge text, increase contrast, underline links, or reduce motion. Those preferences stay on this
+          device.
         </p>
         <p>
           If you need help using this site, booking care, or receiving information in an alternate format, contact us:

@@ -71,15 +71,12 @@ export default function Home() {
         <EditorialEyebrow>WHY KIAN PRIVÉ</EditorialEyebrow>
         <h2 className="mt-4 font-serif text-3xl text-[#1f1a15] md:text-4xl">Why clients choose us</h2>
         <ul className="mt-8 grid gap-4 md:grid-cols-2">
-          {whyClientsChooseUs.map((reason, index) => (
+          {whyClientsChooseUs.map((reason) => (
             <li
               key={reason}
               className="rounded-sm border border-[#e4d9c8] border-l-[#c9a86a] border-l-2 bg-[#fffcf7] p-5 sm:p-6"
             >
-              <span className="text-[11px] tracking-[0.18em] text-[#b78d4b]">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <p className="mt-2 text-[15px] leading-relaxed text-[#4f4335]">{reason}</p>
+              <p className="text-[15px] leading-relaxed text-[#4f4335]">{reason}</p>
             </li>
           ))}
         </ul>
