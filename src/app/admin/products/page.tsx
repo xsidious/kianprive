@@ -88,6 +88,7 @@ export default function AdminProductsPage() {
   const [shipping, setShipping] = useState<ShippingDefaults | null>(null);
   const [pricing, setPricing] = useState<PricingDefaults | null>(null);
   const [calcProductId, setCalcProductId] = useState<string | null>(null);
+  const [rxhereSyncing, setRxhereSyncing] = useState(false);
   const [draft, setDraft] = useState({
     title: "",
     slug: "",
@@ -255,6 +256,39 @@ export default function AdminProductsPage() {
     if (response.ok) await loadProducts();
   }
 
+  async function syncRxHereCatalog() {
+    if (
+      !window.confirm(
+        "Pull the live Rx Here formulary into KIAN clinical products? Existing Rx Here items will be updated; new ones will be added.",
+      )
+    ) {
+      return;
+    }
+    setRxhereSyncing(true);
+    setStatus("Syncing Rx Here catalog…");
+    try {
+      const response = await fetch("/api/admin/rxhere/sync-catalog", { method: "POST" });
+      const data = (await response.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+        created?: number;
+        updated?: number;
+        totalRemote?: number;
+        priced?: number;
+      };
+      if (!response.ok || !data.ok) {
+        setStatus(data.error || "Rx Here catalog sync failed. Check RXHERE_API_KEY.");
+        return;
+      }
+      setStatus(
+        `Rx Here sync complete · ${data.totalRemote ?? 0} remote · ${data.created ?? 0} new · ${data.updated ?? 0} updated · ${data.priced ?? 0} with prices.`,
+      );
+      await loadProducts();
+    } finally {
+      setRxhereSyncing(false);
+    }
+  }
+
   const activeCount = useMemo(() => products.filter((p) => p.status === "ACTIVE").length, [products]);
   const clinicalCount = useMemo(
     () => products.filter((p) => p.catalogKind === "CLINICAL").length,
@@ -296,6 +330,14 @@ export default function AdminProductsPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            className={adminBtnSoft}
+            disabled={rxhereSyncing}
+            onClick={() => void syncRxHereCatalog()}
+          >
+            {rxhereSyncing ? "Syncing Rx Here…" : "Sync Rx Here catalog"}
+          </button>
           <Link href="/shop" className={adminBtnGhost}>
             Preview shop
           </Link>

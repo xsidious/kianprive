@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/therapy-subscriptions",
       "schedule": "0 14 * * *"
+    },
+    {
+      "path": "/api/cron/distribution-status",
+      "schedule": "*/20 * * * *"
     }
   ]
 }

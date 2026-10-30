@@ -479,6 +479,10 @@ model Order {
   authorizeNetTransId  String?      @unique
   /** Wellness Tech Distribution order created from this paid KIAN order. */
   distributionOrderId  String?
+  /** Latest distribution / pharmacy pipeline status (e.g. compounding, shipped). */
+  distributionStatus   String?
+  /** Rx Here order id when known (from WT callback or Rx Here webhook). */
+  rxhereOrderId        String?
   distributionSyncError String?     @db.Text
   paymentToken         String?      @unique
   paymentTokenExpiresAt DateTime?

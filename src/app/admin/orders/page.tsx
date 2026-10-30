@@ -7,6 +7,7 @@ import { OrderMessageThread, type OrderThreadMessage } from "@/components/orders
 import {
   adminBtnGhost,
   adminBtnPrimary,
+  adminBtnSoft,
   adminEyebrow,
   adminInput,
   adminMuted,
@@ -43,6 +44,8 @@ type Order = {
   createdAt?: string;
   authorizeNetTransId?: string | null;
   distributionOrderId?: string | null;
+  distributionStatus?: string | null;
+  rxhereOrderId?: string | null;
   distributionSyncError?: string | null;
   shippingAddress?: Record<string, string> | null;
   notes?: string | null;
@@ -75,12 +78,35 @@ export default function AdminOrdersPage() {
   const [status, setStatus] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [catalog, setCatalog] = useState<"all" | "shop" | "GLP">("all");
+  const [syncingDistribution, setSyncingDistribution] = useState(false);
 
   async function loadOrders() {
     const res = await fetch("/api/admin/commerce/orders");
     if (!res.ok) return;
     const payload = (await res.json()) as { orders: Order[] };
     setOrders(payload.orders);
+  }
+
+  async function refreshDistributionStatuses() {
+    setSyncingDistribution(true);
+    setStatus("Refreshing pharmacy / shipping status…");
+    try {
+      const res = await fetch("/api/admin/orders/sync-distribution", { method: "POST" });
+      const data = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        checked?: number;
+        updated?: number;
+        error?: string;
+      };
+      if (!res.ok || !data.ok) {
+        setStatus(data.error || "Could not refresh distribution status.");
+        return;
+      }
+      setStatus(`Distribution sync · checked ${data.checked ?? 0} · updated ${data.updated ?? 0}.`);
+      await loadOrders();
+    } finally {
+      setSyncingDistribution(false);
+    }
   }
 
   useEffect(() => {
@@ -184,10 +210,22 @@ export default function AdminOrdersPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className={adminEyebrow}>Commerce</p>
-        <h1 className={adminTitle}>Orders</h1>
-        <p className={adminMuted}>Review line items, customer details, payments, and fulfillment in one organized view.</p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className={adminEyebrow}>Commerce</p>
+          <h1 className={adminTitle}>Orders</h1>
+          <p className={adminMuted}>
+            Review line items, payments, and live pharmacy shipping (Wellness Tech → Rx Here).
+          </p>
+        </div>
+        <button
+          type="button"
+          className={adminBtnSoft}
+          disabled={syncingDistribution}
+          onClick={() => void refreshDistributionStatuses()}
+        >
+          {syncingDistribution ? "Refreshing…" : "Refresh shipping status"}
+        </button>
       </div>
 
       {status ? <p className="text-sm text-[#1b6568]">{status}</p> : null}
@@ -271,7 +309,9 @@ export default function AdminOrdersPage() {
                 ) : null}
                 {order.distributionOrderId ? (
                   <p className="mt-1 text-xs text-[#1b6568]">
-                    Sent to Wellness Tech Distribution · {order.distributionOrderId}
+                    Wellness Tech · {order.distributionOrderId}
+                    {order.distributionStatus ? ` · ${order.distributionStatus}` : ""}
+                    {order.rxhereOrderId ? ` · Rx Here ${order.rxhereOrderId}` : ""}
                   </p>
                 ) : order.distributionSyncError ? (
                   <p className="mt-1 text-xs text-[#8a4b3c]">

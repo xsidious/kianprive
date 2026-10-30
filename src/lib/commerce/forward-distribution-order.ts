@@ -28,7 +28,7 @@ function splitName(full: string) {
 function rxhereSku(item: {
   sku: string | null;
   product: {
-    sku: string;
+    sku: string | null;
     source: string | null;
     externalId: string | null;
     vendorOffers: { vendorSku: string | null }[];
@@ -149,6 +149,26 @@ export async function forwardPaidOrderToWellnessTech(orderId: string) {
   const provider = order.therapyProposal?.providerPartner || order.partner;
   const providerParts = splitName(provider?.displayName || "KIAN Privé Clinician");
 
+  const shipMeta =
+    order.shippingAddress && typeof order.shippingAddress === "object"
+      ? (order.shippingAddress as Record<string, unknown>)
+      : {};
+  const destinationRaw = String(shipMeta.destinationType || shipMeta.shippingDestinationType || "").toLowerCase();
+  const shippingDestinationType =
+    destinationRaw === "provider_clinic" ||
+    destinationRaw === "clinic" ||
+    destinationRaw === "practitioner" ||
+    destinationRaw === "office"
+      ? "provider_clinic"
+      : "patient_direct";
+  const shipToKind =
+    destinationRaw === "practitioner" || destinationRaw === "provider"
+      ? "practitioner"
+      : shippingDestinationType === "provider_clinic"
+        ? "clinic"
+        : "patient";
+
+
   const patient = {
     firstName: named.firstName,
     lastName: named.lastName,
@@ -220,6 +240,17 @@ export async function forwardPaidOrderToWellnessTech(orderId: string) {
         email,
         partnerSite: "kian-prive",
         shippingMethod: "2_DAY",
+        shippingDestinationType,
+        shipToKind,
+        provider: provider
+          ? {
+              external_id: provider.id,
+              name: provider.displayName || provider.legalName || "Clinic",
+              kind: "clinic",
+              phone: provider.phone || undefined,
+              npi: provider.npi || undefined,
+            }
+          : undefined,
         lines: sendable.map((line) => ({
           sku: line.sku,
           qty: line.qty,
@@ -234,6 +265,7 @@ export async function forwardPaidOrderToWellnessTech(orderId: string) {
         kianIntakeId: intake?.id || null,
         notes: [
           `KIAN Privé order ${order.orderNumber}`,
+          `Ship to: ${shipToKind} (${shippingDestinationType})`,
           intake ? `Intake ${intake.id}` : "",
           missingSku.length ? `Lines without a SKU were not sent: ${missingSku.join(", ")}` : "",
           order.notes || "",
@@ -256,6 +288,7 @@ export async function forwardPaidOrderToWellnessTech(orderId: string) {
       ok?: boolean;
       error?: string;
       orderId?: string;
+      rxhereOrderId?: string;
       warning?: string;
     };
 
@@ -269,6 +302,8 @@ export async function forwardPaidOrderToWellnessTech(orderId: string) {
       where: { id: order.id },
       data: {
         distributionOrderId: data.orderId,
+        rxhereOrderId: data.rxhereOrderId || undefined,
+        distributionStatus: "submitted",
         distributionSyncError: data.warning || null,
       },
     });
