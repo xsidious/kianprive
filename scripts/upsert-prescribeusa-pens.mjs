@@ -22,7 +22,8 @@ const pens = [
 ];
 
 const wholesale = 199;
-const retail = 299;
+/** Customer-facing catalog price stays 0 — admin sets invoice/therapy sell price. */
+const retail = 0;
 const prisma = new PrismaClient();
 
 async function main() {
@@ -76,7 +77,7 @@ async function main() {
     });
     upserted += 1;
   }
-  console.log(`Upserted ${upserted} PrescribeUSA pens into KIAN (wholesale $${wholesale}, retail $${retail}).`);
+  console.log(`Upserted ${upserted} PrescribeUSA pens into KIAN (wholesale $${wholesale}, customer price hidden).`);
 }
 
 main()

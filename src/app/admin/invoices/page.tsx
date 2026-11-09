@@ -43,6 +43,7 @@ type Patient = {
   email: string;
   phone: string;
   status: string;
+  source?: "intake" | "user";
 };
 
 type Invoice = {
@@ -128,10 +129,18 @@ export default function AdminInvoicesPage() {
   }, [searchParams, patients]);
 
   function applyPatient(patient: Patient) {
-    setIntakeId(patient.id);
+    setIntakeId(patient.source === "user" ? "" : patient.id);
     setFullName(patient.fullName);
     setEmail(patient.email);
     setPhone(patient.phone);
+  }
+
+  function clearPatient() {
+    setIntakeId("");
+    setFullName("");
+    setEmail("");
+    setPhone("");
+    setPatientSearch("");
   }
 
   const filteredPatients = useMemo(() => {
@@ -213,6 +222,8 @@ export default function AdminInvoicesPage() {
         phone,
         notes,
         intakeSubmissionId: intakeId || null,
+        createUser: true,
+        createIntake: true,
         send: true,
         items: lines,
       }),
@@ -223,6 +234,7 @@ export default function AdminInvoicesPage() {
     if (res.ok) {
       setLines([]);
       setNotes("");
+      clearPatient();
       await load();
     }
   }
@@ -244,36 +256,50 @@ export default function AdminInvoicesPage() {
         <p className={adminEyebrow}>Billing</p>
         <h1 className={adminTitle}>Patient invoices</h1>
         <p className={adminMuted}>
-          Pick a patient from intake or enter manually, add products with vendor cost and your sell price, then email a
-          pay link. Profit is calculated from the best vendor quote on each product.
+          Pick an existing intake or member, or enter a new client. Full catalog (clinical + shop) is available — set the
+          patient price on each line, then email a pay link. Profit uses the best vendor quote.
         </p>
       </div>
 
       {status ? <p className="text-sm text-[#1b6568]">{status}</p> : null}
 
       <section className={`${adminPanel} space-y-4 p-5`}>
-        <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">1 · Patient</p>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">1 · Patient</p>
+          <button type="button" className={adminBtnGhost} onClick={clearPatient}>
+            New client
+          </button>
+        </div>
         <input
           className={adminInput}
-          placeholder="Search patients from intake…"
+          placeholder="Search intake or member accounts…"
           value={patientSearch}
           onChange={(e) => setPatientSearch(e.target.value)}
         />
         <div className="max-h-36 space-y-1 overflow-auto rounded-xl border border-[#efe4d4] bg-[#fffaf3] p-2">
-          {filteredPatients.slice(0, 12).map((patient) => (
+          {filteredPatients.slice(0, 16).map((patient) => (
             <button
               key={patient.id}
               type="button"
               onClick={() => applyPatient(patient)}
               className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm ${
-                intakeId === patient.id ? "bg-[#fff6e8] text-[#8f6f3e]" : "hover:bg-white"
+                (intakeId && intakeId === patient.id) || (!intakeId && email === patient.email)
+                  ? "bg-[#fff6e8] text-[#8f6f3e]"
+                  : "hover:bg-white"
               }`}
             >
-              <span>{patient.fullName}</span>
+              <span>
+                {patient.fullName}
+                <span className="ml-2 text-[10px] uppercase tracking-[0.12em] text-[#8f6f3e]">
+                  {patient.source === "user" ? "member" : "intake"}
+                </span>
+              </span>
               <span className="text-xs text-[#6f6251]">{patient.email}</span>
             </button>
           ))}
-          {!filteredPatients.length ? <p className="p-2 text-sm text-[#6f6251]">No patients match.</p> : null}
+          {!filteredPatients.length ? (
+            <p className="p-2 text-sm text-[#6f6251]">No match — enter name and email below to add a new client.</p>
+          ) : null}
         </div>
         <div className="grid gap-3 md:grid-cols-3">
           <input className={adminInput} placeholder="Patient name *" value={fullName} onChange={(e) => setFullName(e.target.value)} />

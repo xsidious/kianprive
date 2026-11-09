@@ -36,23 +36,35 @@ export function applyGlpNaming(text: string | null | undefined) {
 }
 
 async function ensureRxHereVendor() {
-  const email = (process.env.RXHERE_VENDOR_EMAIL || "fulfillment@thewellnesstech.com").trim();
-  const name = (process.env.RXHERE_VENDOR_NAME || "Compounding Pharmacy").trim();
-  const phone = (process.env.RXHERE_VENDOR_PHONE || "").trim() || null;
-  const contactName = process.env.RXHERE_VENDOR_CONTACT?.trim() || "Pharmacy Orders";
+  const email = (
+    process.env.EVENTIDE_VENDOR_EMAIL ||
+    process.env.RXHERE_VENDOR_EMAIL ||
+    "fulfillment@thewellnesstech.com"
+  ).trim();
+  const name = (
+    process.env.EVENTIDE_VENDOR_NAME ||
+    process.env.RXHERE_VENDOR_NAME ||
+    "Eventide Wellness Collective"
+  ).trim();
+  const phone = (process.env.EVENTIDE_VENDOR_PHONE || process.env.RXHERE_VENDOR_PHONE || "").trim() || null;
+  const contactName =
+    process.env.EVENTIDE_VENDOR_CONTACT?.trim() ||
+    process.env.RXHERE_VENDOR_CONTACT?.trim() ||
+    "Pharmacy Orders";
 
   const existing = await prisma.vendor.findFirst({
     where: {
       OR: [
         { email: { equals: email, mode: "insensitive" } },
         { name: { equals: name, mode: "insensitive" } },
+        { name: { equals: "Eventide Wellness Collective", mode: "insensitive" } },
         { name: { equals: "RxHere", mode: "insensitive" } },
       ],
     },
   });
 
   const notes =
-    "Live Rx Here formulary sync. Licensed compounding. Orders flow KIAN → Wellness Tech → Rx Here.";
+    "Live Eventide formulary sync (VitaRelay). Orders flow KIAN → Wellness Tech → Eventide.";
 
   if (existing) {
     return prisma.vendor.update({
@@ -124,7 +136,7 @@ function productDescription(row: RxHereCatalogProduct) {
 
 export async function syncRxHereCatalog(options?: { activateNew?: boolean }) {
   if (!rxhereConfigured()) {
-    return { ok: false as const, error: "RXHERE_API_KEY is not configured on this environment." };
+    return { ok: false as const, error: "EVENTIDE_API_KEY is not configured on this environment." };
   }
 
   const catalog = await fetchAllCatalog();
@@ -145,11 +157,11 @@ export async function syncRxHereCatalog(options?: { activateNew?: boolean }) {
       continue;
     }
 
-    const externalId = `rxhere:${row.id}`;
+    const externalId = `eventide:${row.id}`;
     const vendorSku = row.id;
     const title = productTitle(row);
     const slugBase = row.slug || row.id;
-    const slug = `rxhere-${slugify(slugBase)}`.slice(0, 70);
+    const slug = `eventide-${slugify(slugBase)}`.slice(0, 70);
     const isRx = Boolean(row.requires_prescription) || row.type === "503a";
     const catalogKind = row.type === "rnd" && !isRx ? "RETAIL" : "CLINICAL";
     const category = applyGlpNaming(row.category_label || row.category || "Compounded") || "Compounded";
@@ -157,7 +169,14 @@ export async function syncRxHereCatalog(options?: { activateNew?: boolean }) {
     const strength = [...(row.strengths || []), row.volume].filter(Boolean).join(" · ") || null;
     const featuredImage = absoluteAssetUrl(row.image_urls?.[0]);
     const wholesale = prices.get(row.id) ?? null;
-    const sellPrice = wholesale != null ? money(wholesale * PATIENT_MARKUP) : null;
+    // Clinical compounds stay unpriced for customers; admin sets invoice/therapy sell price.
+    // Retail (rare RUO) may keep a suggested markup for the shop.
+    const sellPrice =
+      catalogKind === "CLINICAL"
+        ? 0
+        : wholesale != null
+          ? money(wholesale * PATIENT_MARKUP)
+          : null;
 
     const existing = await prisma.product.findUnique({ where: { externalId } });
 
@@ -194,7 +213,14 @@ export async function syncRxHereCatalog(options?: { activateNew?: boolean }) {
         source: "RXHERE",
         catalogKind,
         isPrescription: isRx,
-        ...(wholesale != null ? { wholesalePrice: wholesale, price: sellPrice ?? undefined } : {}),
+        ...(wholesale != null
+          ? {
+              wholesalePrice: wholesale,
+              ...(catalogKind === "CLINICAL" ? { price: 0 } : { price: sellPrice ?? undefined }),
+            }
+          : catalogKind === "CLINICAL"
+            ? { price: 0 }
+            : {}),
         ...(featuredImage ? { featuredImage } : {}),
         sku: vendorSku.slice(0, 64),
         vendorId: vendor.id,

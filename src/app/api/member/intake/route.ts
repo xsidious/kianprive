@@ -59,7 +59,7 @@ export async function GET() {
               quantity: true,
               unitPrice: true,
               titleSnapshot: true,
-              product: { select: { title: true, price: true } },
+              product: { select: { title: true } },
             },
           },
           order: {
@@ -141,15 +141,13 @@ export async function GET() {
               providerName: proposal.providerPartner.displayName,
               notes: proposal.notes,
               items: proposal.items.map((item) => {
-                const unit =
-                  item.unitPrice != null
-                    ? Number(item.unitPrice)
-                    : Number(item.product.price);
+                const unit = item.unitPrice != null ? Number(item.unitPrice) : null;
                 return {
                   title: item.titleSnapshot || item.product.title,
                   quantity: item.quantity,
-                  unitPrice: unit,
-                  lineTotal: unit * item.quantity,
+                  ...(unit != null && unit > 0
+                    ? { unitPrice: unit, lineTotal: unit * item.quantity }
+                    : {}),
                 };
               }),
               billing:

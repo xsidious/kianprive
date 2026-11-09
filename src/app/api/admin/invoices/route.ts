@@ -14,6 +14,8 @@ const createSchema = z.object({
   phone: z.string().max(40).optional().nullable(),
   notes: z.string().max(4000).optional().nullable(),
   intakeSubmissionId: z.string().optional().nullable(),
+  createUser: z.boolean().optional().default(true),
+  createIntake: z.boolean().optional().default(true),
   send: z.boolean().optional().default(true),
   items: z
     .array(
@@ -84,7 +86,7 @@ export async function GET() {
   const guard = await requireAdminAccess();
   if (!guard.ok) return guard.response;
 
-  const [orders, intakes, products, vendors, shipping, pricing] = await Promise.all([
+  const [orders, intakes, members, products, vendors, shipping, pricing] = await Promise.all([
     prisma.order.findMany({
       where: {
         OR: [{ orderNumber: { startsWith: "KP-INV-" } }, { orderNumber: { startsWith: "KP-THERAPY-" } }, { paymentToken: { not: null } }],
@@ -95,8 +97,14 @@ export async function GET() {
     }),
     prisma.therapeuticsIntakeSubmission.findMany({
       orderBy: { createdAt: "desc" },
-      take: 40,
+      take: 80,
       select: { id: true, fullName: true, email: true, phone: true, status: true },
+    }),
+    prisma.user.findMany({
+      where: { role: { in: ["MEMBER", "GUEST"] } },
+      orderBy: { updatedAt: "desc" },
+      take: 120,
+      select: { id: true, name: true, email: true, role: true },
     }),
     prisma.product.findMany({
       where: { status: "ACTIVE" },
@@ -111,6 +119,28 @@ export async function GET() {
     getPricingConfig(),
   ]);
 
+  const intakeEmails = new Set(intakes.map((row) => row.email.toLowerCase()));
+  const patients = [
+    ...intakes.map((row) => ({
+      id: row.id,
+      fullName: row.fullName,
+      email: row.email,
+      phone: row.phone,
+      status: row.status,
+      source: "intake" as const,
+    })),
+    ...members
+      .filter((row) => row.email && !intakeEmails.has(row.email.toLowerCase()))
+      .map((row) => ({
+        id: `user:${row.id}`,
+        fullName: row.name || row.email,
+        email: row.email,
+        phone: "",
+        status: row.role,
+        source: "user" as const,
+      })),
+  ];
+
   return NextResponse.json({
     invoices: orders.map((order) =>
       serializeInvoice({
@@ -118,7 +148,7 @@ export async function GET() {
         paymentUrl: order.paymentToken ? `/pay/${order.paymentToken}` : null,
       }),
     ),
-    patients: intakes,
+    patients,
     products: products.map((product) => serializeProductWithVendorPricing(product, shipping, pricing)),
     categories: [...new Set(products.map((product) => product.category).filter(Boolean))] as string[],
     vendors,

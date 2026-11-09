@@ -22,7 +22,6 @@ export async function listMemberPeptideProducts(): Promise<CatalogProduct[]> {
       category: true,
       description: true,
       featuredImage: true,
-      price: true,
       form: true,
       strength: true,
     },
@@ -38,7 +37,8 @@ export async function listMemberPeptideProducts(): Promise<CatalogProduct[]> {
         slug: row.slug,
         name: row.title,
         category: PEPTIDES_MEMBER_CATEGORY,
-        price: Number(row.price),
+        // Clinical compounds are physician-ordered — never expose catalog prices to members.
+        price: 0,
         image,
         summary: summary || undefined,
         description: row.description || undefined,

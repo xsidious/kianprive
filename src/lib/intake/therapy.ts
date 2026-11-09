@@ -7,59 +7,82 @@ import { intervalLabel, resolveIntervalDays } from "@/lib/commerce/therapy-billi
 import { syncTherapySubscriptionForProposal } from "@/lib/commerce/therapy-subscriptions";
 import { notifyPartnerTherapySent } from "@/lib/intake/partner-status-sync";
 
+const proposalInclude = {
+  items: {
+    include: {
+      product: {
+        select: {
+          id: true,
+          title: true,
+          category: true,
+          featuredImage: true,
+          price: true,
+          isPrescription: true,
+        },
+      },
+    },
+    orderBy: { createdAt: "asc" as const },
+  },
+  providerPartner: { select: { id: true, displayName: true, partnerCode: true } },
+  subscription: {
+    select: {
+      id: true,
+      status: true,
+      interval: true,
+      intervalDays: true,
+      amount: true,
+      nextChargeAt: true,
+      lastChargedAt: true,
+      cardLast4: true,
+    },
+  },
+  order: {
+    select: {
+      id: true,
+      orderNumber: true,
+      subtotal: true,
+      total: true,
+      shippingTotal: true,
+      paymentStatus: true,
+      status: true,
+      fulfillments: {
+        orderBy: { createdAt: "desc" as const },
+        take: 3,
+        select: { carrier: true, trackingNumber: true, trackingUrl: true, status: true },
+      },
+    },
+  },
+} as const;
+
+/** Prefer an open DRAFT/SENT plan; otherwise the latest non-declined proposal. */
 export async function getProposalForIntake(intakeSubmissionId: string) {
+  const open = await prisma.intakeTherapyProposal.findFirst({
+    where: {
+      intakeSubmissionId,
+      status: { in: ["DRAFT", "SENT"] },
+    },
+    include: proposalInclude,
+    orderBy: { updatedAt: "desc" },
+  });
+  if (open) return open;
   return prisma.intakeTherapyProposal.findFirst({
     where: {
       intakeSubmissionId,
       status: { in: ["DRAFT", "SENT", "ACCEPTED", "PAID"] },
     },
-    include: {
-      items: {
-        include: {
-          product: {
-            select: {
-              id: true,
-              title: true,
-              category: true,
-              featuredImage: true,
-              price: true,
-              isPrescription: true,
-            },
-          },
-        },
-        orderBy: { createdAt: "asc" },
-      },
-      providerPartner: { select: { id: true, displayName: true, partnerCode: true } },
-      subscription: {
-        select: {
-          id: true,
-          status: true,
-          interval: true,
-          intervalDays: true,
-          amount: true,
-          nextChargeAt: true,
-          lastChargedAt: true,
-          cardLast4: true,
-        },
-      },
-      order: {
-        select: {
-          id: true,
-          orderNumber: true,
-          subtotal: true,
-          total: true,
-          shippingTotal: true,
-          paymentStatus: true,
-          status: true,
-          fulfillments: {
-            orderBy: { createdAt: "desc" },
-            take: 3,
-            select: { carrier: true, trackingNumber: true, trackingUrl: true, status: true },
-          },
-        },
-      },
-    },
+    include: proposalInclude,
     orderBy: { updatedAt: "desc" },
+  });
+}
+
+export async function listProposalsForIntake(intakeSubmissionId: string) {
+  return prisma.intakeTherapyProposal.findMany({
+    where: {
+      intakeSubmissionId,
+      status: { in: ["DRAFT", "SENT", "ACCEPTED", "PAID", "DECLINED"] },
+    },
+    include: proposalInclude,
+    orderBy: { createdAt: "desc" },
   });
 }
 
@@ -70,7 +93,10 @@ export function serializeProposal(
   const includePrices = opts?.includePrices ?? false;
   const includePayTotal = opts?.includePayTotal ?? includePrices;
   const items = proposal.items.map((item) => {
-    const unit = item.unitPrice != null ? Number(item.unitPrice) : Number(item.product.price);
+    // Never fall back to catalog Product.price for customers — only invoice/unit snapshots.
+    const snapshot = item.unitPrice != null ? Number(item.unitPrice) : null;
+    const unit =
+      includePrices && snapshot == null ? Number(item.product.price) : snapshot ?? 0;
     return {
       id: item.id,
       productId: item.productId,
@@ -81,12 +107,14 @@ export function serializeProposal(
       isPrescription: item.product.isPrescription,
       unitPrice: includePrices ? unit : undefined,
       lineTotal: includePrices ? unit * item.quantity : undefined,
-      priced: unit > 0,
+      priced: (snapshot != null ? snapshot : includePrices ? unit : 0) > 0,
     };
   });
   const unpriced = items.filter((i) => !i.priced).length;
   const computedSubtotal = proposal.items.reduce((sum, item) => {
-    const unit = item.unitPrice != null ? Number(item.unitPrice) : Number(item.product.price);
+    const snapshot = item.unitPrice != null ? Number(item.unitPrice) : null;
+    const unit =
+      includePrices && snapshot == null ? Number(item.product.price) : snapshot ?? 0;
     return sum + unit * item.quantity;
   }, 0);
   const orderShipping =
@@ -154,6 +182,8 @@ export async function upsertTherapyProposal(input: {
   persistCatalogPrices?: boolean;
   billingInterval?: TherapyBillingInterval;
   intervalDays?: number | null;
+  /** When true, always create a new proposal (do not overwrite an open DRAFT/SENT). */
+  forceNew?: boolean;
 }) {
   if (!input.items.length) {
     throw new Error("Add at least one therapy product.");
@@ -196,12 +226,15 @@ export async function upsertTherapyProposal(input: {
     }
   }
 
-  const existing = await prisma.intakeTherapyProposal.findFirst({
-    where: {
-      intakeSubmissionId: input.intakeSubmissionId,
-      status: { in: ["DRAFT", "SENT"] },
-    },
-  });
+  const existing = input.forceNew
+    ? null
+    : await prisma.intakeTherapyProposal.findFirst({
+        where: {
+          intakeSubmissionId: input.intakeSubmissionId,
+          status: { in: ["DRAFT", "SENT"] },
+        },
+        orderBy: { updatedAt: "desc" },
+      });
 
   const proposal = await prisma.$transaction(async (tx) => {
     const base =
