@@ -73,9 +73,18 @@ export default function AdminCommercePage() {
     if (response.ok) await loadAll();
   }
 
-  async function deleteOrder(id: string) {
-    const response = await fetch(`/api/admin/commerce/orders/${id}`, { method: "DELETE" });
-    setStatus(response.ok ? "Order deleted." : "Failed to delete order.");
+  async function deleteOrder(order: Order) {
+    if (
+      order.paymentStatus === "PAID" ||
+      order.paymentStatus === "PARTIALLY_REFUNDED" ||
+      order.paymentStatus === "REFUNDED"
+    ) {
+      setStatus("Paid orders cannot be deleted.");
+      return;
+    }
+    const response = await fetch(`/api/admin/commerce/orders/${order.id}`, { method: "DELETE" });
+    const payload = (await response.json().catch(() => ({}))) as { error?: string };
+    setStatus(response.ok ? "Order deleted." : payload.error || "Failed to delete order.");
     if (response.ok) await loadAll();
   }
 
@@ -186,7 +195,11 @@ export default function AdminCommercePage() {
                 </label>
                 <div className="flex gap-2">
                   <button onClick={() => void saveOrder(order)} className="rounded-sm border border-[#b78d4b80] px-3 py-1.5 text-xs text-[#3b3024]">Save Order</button>
-                  <button onClick={() => void deleteOrder(order.id)} className="rounded-sm border border-[#d07b7b80] px-3 py-1.5 text-xs text-[#7c2c2c]">Delete Order</button>
+                  {order.paymentStatus === "PAID" ||
+                  order.paymentStatus === "PARTIALLY_REFUNDED" ||
+                  order.paymentStatus === "REFUNDED" ? null : (
+                    <button onClick={() => void deleteOrder(order)} className="rounded-sm border border-[#d07b7b80] px-3 py-1.5 text-xs text-[#7c2c2c]">Delete Order</button>
+                  )}
                 </div>
               </div>
             </article>

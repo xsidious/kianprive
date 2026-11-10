@@ -59,10 +59,16 @@ function SignedInContextBar() {
         <>
           <span className="mx-2 text-[#c4c4c4]">|</span>
           <Link
-            href="/provider"
+            href={
+              data.user.role === "ADMIN" || data.user.role === "OPERATIONS" || data.user.role === "EDITOR"
+                ? "/admin/providers"
+                : "/provider"
+            }
             className="font-medium text-[#1b5e20] underline decoration-[#2e7d3240] underline-offset-2 hover:decoration-[#1b5e20]"
           >
-            Practitioner portal
+            {data.user.role === "ADMIN" || data.user.role === "OPERATIONS" || data.user.role === "EDITOR"
+              ? "Practitioners"
+              : "Practitioner portal"}
           </Link>
         </>
       ) : null}

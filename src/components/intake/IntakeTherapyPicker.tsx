@@ -27,9 +27,22 @@ type TherapyLine = {
   unitPrice: number;
 };
 
+type PriorProposal = {
+  id: string;
+  status?: string;
+  items?: Array<{ title?: string; quantity?: number; unitPrice?: number }>;
+  total?: number;
+  order?: { orderNumber?: string; paymentStatus?: string } | null;
+  billingLabel?: string;
+  sentAt?: string | null;
+  paidAt?: string | null;
+};
+
 type Props = {
   intakeSubmissionId: string;
   allowPricing?: boolean;
+  /** Start in "new plan" mode (do not preload the open proposal). */
+  startFresh?: boolean;
   onSaved?: () => void;
 };
 
@@ -99,7 +112,12 @@ function TherapyOrderSummary({
   );
 }
 
-export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, onSaved }: Props) {
+export function IntakeTherapyPicker({
+  intakeSubmissionId,
+  allowPricing = false,
+  startFresh = false,
+  onSaved,
+}: Props) {
   const [products, setProducts] = useState<ClinicalProduct[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [category, setCategory] = useState("All");
@@ -116,6 +134,11 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
   const [saving, setSaving] = useState(false);
   const [shipping, setShipping] = useState("35");
   const [priceTouched, setPriceTouched] = useState<Record<string, boolean>>({});
+  const [forceNew, setForceNew] = useState(startFresh);
+  const [priorProposals, setPriorProposals] = useState<PriorProposal[]>([]);
+  const [currentStatus, setCurrentStatus] = useState<string | null>(null);
+  const [canAssignAnother, setCanAssignAnother] = useState(false);
+  const [reloadToken, setReloadToken] = useState(0);
 
   useEffect(() => {
     void (async () => {
@@ -135,9 +158,11 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
       let persistedShipping = false;
       if (proposalRes.ok) {
         const data = (await proposalRes.json()) as {
+          canAssignAnother?: boolean;
+          proposals?: PriorProposal[];
           proposal?: {
             notes?: string | null;
-            items?: Array<{ productId: string; quantity: number; unitPrice?: number }>;
+            items?: Array<{ productId: string; quantity: number; unitPrice?: number; title?: string }>;
             status?: string;
             billingInterval?: string;
             intervalDays?: number;
@@ -145,7 +170,13 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
             order?: { id?: string } | null;
           } | null;
         };
-        if (data.proposal) {
+        setPriorProposals(data.proposals ?? []);
+        setCanAssignAnother(Boolean(data.canAssignAnother));
+        const openIsEditable =
+          data.proposal?.status === "DRAFT" || data.proposal?.status === "SENT";
+        const shouldPreload = !startFresh && !forceNew && openIsEditable && data.proposal;
+        if (data.proposal?.status) setCurrentStatus(data.proposal.status);
+        if (shouldPreload && data.proposal) {
           setNotes(data.proposal.notes ?? "");
           setBillingInterval(data.proposal.billingInterval ?? "ONE_TIME");
           if (data.proposal.intervalDays) setCustomDays(String(data.proposal.intervalDays));
@@ -169,7 +200,15 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
           }
           setTherapy(lines);
           setPriceTouched(touched);
-          if (data.proposal.status) setStatus(`Current proposal: ${data.proposal.status}`);
+          setStatus(`Editing open proposal: ${data.proposal.status}`);
+        } else if (data.proposal && (forceNew || startFresh)) {
+          setStatus(
+            `Creating a new therapy plan. Prior plan stays as ${data.proposal.status}.`,
+          );
+        } else if (data.proposal?.status === "PAID" || data.proposal?.status === "ACCEPTED") {
+          setStatus(
+            `Latest therapy is ${data.proposal.status}. Use “Assign another therapy” to create a new plan.`,
+          );
         }
       }
       if (shippingRes && shippingRes.ok && !persistedShipping) {
@@ -179,7 +218,25 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
       }
       setLoading(false);
     })();
-  }, [intakeSubmissionId]);
+    // forceNew intentionally omitted — assign-another clears cart locally without full reload
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [intakeSubmissionId, allowPricing, startFresh, reloadToken]);
+
+  function startAnotherTherapy() {
+    setForceNew(true);
+    setTherapy([]);
+    setPriceTouched({});
+    setNotes("");
+    setBillingInterval("ONE_TIME");
+    setCustomDays("28");
+    setActiveId(null);
+    setStatus("New therapy plan — prior proposals are kept. Save draft or send to patient.");
+  }
+
+  function cancelNewPlan() {
+    setForceNew(false);
+    setReloadToken((n) => n + 1);
+  }
 
   const filtered = useMemo(() => {
     return products.filter((p) => {
@@ -338,6 +395,7 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
         notes,
         items,
         send,
+        forceNew,
         billingInterval,
         intervalDays: billingInterval === "CUSTOM" ? Number(customDays) : undefined,
         shippingTotal: allowPricing ? shippingTotal : 0,
@@ -352,6 +410,8 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
     if (allowPricing && data.proposal?.shippingTotal != null) {
       setShipping(String(data.proposal.shippingTotal));
     }
+    if (data.proposal?.status) setCurrentStatus(data.proposal.status);
+    setForceNew(false);
     const payUrl =
       data.proposal?.order?.paymentUrl ??
       (data.paymentUrl as string | undefined);
@@ -370,20 +430,73 @@ export function IntakeTherapyPicker({ intakeSubmissionId, allowPricing = false, 
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Therapy plan</p>
-          <h3 className="mt-1 font-serif text-xl text-[#1f1a15]">Build therapy</h3>
+          <h3 className="mt-1 font-serif text-xl text-[#1f1a15]">
+            {forceNew ? "Assign another therapy" : "Build therapy"}
+          </h3>
           <p className="mt-1 text-sm text-[#6f6251]">
-            {allowPricing
-              ? "Default patient price uses the best vendor landed cost plus your margin settings (Shipping page). Override any line as needed."
-              : "Click a product card → set quantity → Add to therapy. Prices stay hidden for providers."}
+            {forceNew
+              ? "This creates a separate therapy proposal and pay link. Earlier plans stay on the intake."
+              : allowPricing
+                ? "Default patient price uses the best vendor landed cost plus your margin settings (Shipping page). Override any line as needed."
+                : "Click a product card → set quantity → Add to therapy. Prices stay hidden for providers."}
+          </p>
+          {currentStatus ? (
+            <p className="mt-2 text-xs uppercase tracking-[0.12em] text-[#8f6f3e]">
+              Open / latest status: {currentStatus}
+              {forceNew ? " · new plan mode" : ""}
+            </p>
+          ) : null}
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {(canAssignAnother || priorProposals.length > 0) && !forceNew ? (
+            <button
+              type="button"
+              onClick={startAnotherTherapy}
+              className="rounded-sm border border-[#b78d4b80] bg-white px-3 py-2 text-xs uppercase tracking-[0.12em] text-[#8f6f3e]"
+            >
+              Assign another therapy
+            </button>
+          ) : null}
+          {forceNew ? (
+            <button
+              type="button"
+              onClick={cancelNewPlan}
+              className="rounded-sm border border-[#b78d4b35] bg-transparent px-3 py-2 text-xs uppercase tracking-[0.12em] text-[#6f6251]"
+            >
+              Cancel new plan
+            </button>
+          ) : null}
+          <p className="rounded-full bg-white px-3 py-1 text-sm text-[#8f6f3e]">
+            {therapy.length} in therapy
+            {allowPricing && patientTotal > 0
+              ? ` · $${patientTotal.toFixed(2)}${shippingTotal > 0 ? " incl. shipping" : ""}`
+              : ""}
           </p>
         </div>
-        <p className="rounded-full bg-white px-3 py-1 text-sm text-[#8f6f3e]">
-          {therapy.length} in therapy
-          {allowPricing && patientTotal > 0
-            ? ` · $${patientTotal.toFixed(2)}${shippingTotal > 0 ? " incl. shipping" : ""}`
-            : ""}
-        </p>
       </div>
+
+      {priorProposals.length > 1 || (priorProposals.length === 1 && forceNew) ? (
+        <div className="rounded-lg border border-[#efe4d4] bg-white/70 p-3">
+          <p className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Prior therapy plans</p>
+          <ul className="mt-2 space-y-2 text-sm text-[#4f4335]">
+            {priorProposals.map((p) => (
+              <li key={p.id} className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#efe4d4] pb-2 last:border-0 last:pb-0">
+                <span>
+                  <span className="uppercase tracking-[0.1em] text-[#8f6f3e]">{p.status}</span>
+                  {p.order?.orderNumber ? ` · ${p.order.orderNumber}` : ""}
+                  {p.order?.paymentStatus ? ` · ${p.order.paymentStatus}` : ""}
+                  {p.billingLabel ? ` · ${p.billingLabel}` : ""}
+                </span>
+                <span className="text-[#6f6251]">
+                  {(p.items ?? []).slice(0, 3).map((i) => i.title).filter(Boolean).join(", ") || "—"}
+                  {(p.items?.length ?? 0) > 3 ? "…" : ""}
+                  {typeof p.total === "number" && p.total > 0 ? ` · $${p.total.toFixed(2)}` : ""}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
 
       <div className="flex flex-wrap gap-2">
         <input

@@ -8,7 +8,12 @@ export async function GET() {
   if (!guard.ok) return guard.response;
   return NextResponse.json({
     configured: rxhereConfigured(),
-    hasKey: Boolean(process.env.RXHERE_API_KEY || process.env.RXHERE_LIVE_API_KEY || process.env.VITARELAY_API_KEY),
+    hasKey: Boolean(
+      process.env.EVENTIDE_API_KEY ||
+        process.env.VITARELAY_API_KEY ||
+        process.env.RXHERE_API_KEY ||
+        process.env.RXHERE_LIVE_API_KEY,
+    ),
   });
 }
 

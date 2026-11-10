@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -40,6 +40,7 @@ type Order = {
   subtotal?: number | string;
   shippingTotal?: number | string;
   taxTotal?: number | string;
+  discountTotal?: number | string;
   total?: number | string;
   createdAt?: string;
   authorizeNetTransId?: string | null;
@@ -73,18 +74,75 @@ const orderStatuses = ["PENDING", "PAID", "PROCESSING", "FULFILLED", "DELIVERED"
 const paymentStatuses = ["UNPAID", "PAID", "PARTIALLY_REFUNDED", "REFUNDED", "FAILED"] as const;
 const fulfillmentStatuses = ["UNFULFILLED", "PROCESSING", "PARTIALLY_FULFILLED", "FULFILLED", "DELIVERED"] as const;
 
+function paymentAmountPaid(order: Order) {
+  const paidStatuses = new Set(["PAID", "CAPTURED", "SETTLED", "SUCCEEDED", "SUCCESS"]);
+  const fromPayments = (order.payments ?? [])
+    .filter((pay) => paidStatuses.has(String(pay.status || "").toUpperCase()))
+    .reduce((sum, pay) => sum + Number(pay.amount ?? 0), 0);
+  if (fromPayments > 0) return fromPayments;
+  return Number(order.total ?? 0);
+}
+
+function orderSubtotal(order: Order) {
+  const stored = Number(order.subtotal ?? 0);
+  if (stored > 0) return stored;
+  return (order.items ?? []).reduce((sum, item) => sum + Number(item.lineTotal ?? 0), 0);
+}
+
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [status, setStatus] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [catalog, setCatalog] = useState<"all" | "shop" | "GLP">("all");
+  const [catalog, setCatalog] = useState<"all" | "shop" | "therapy" | "GLP">("all");
+  const [query, setQuery] = useState("");
   const [syncingDistribution, setSyncingDistribution] = useState(false);
+  const [retryingId, setRetryingId] = useState<string | null>(null);
 
   async function loadOrders() {
     const res = await fetch("/api/admin/commerce/orders");
-    if (!res.ok) return;
+    if (!res.ok) {
+      const payload = (await res.json().catch(() => ({}))) as { error?: string };
+      setStatus(
+        res.status === 401 || res.status === 403
+          ? "Not authorized to load orders — sign in again as admin."
+          : payload.error || `Failed to load orders (${res.status}).`,
+      );
+      return;
+    }
     const payload = (await res.json()) as { orders: Order[] };
     setOrders(payload.orders);
+    setStatus(`Loaded ${payload.orders.length} order(s).`);
+  }
+
+  async function retryDistribution(orderId: string) {
+    setRetryingId(orderId);
+    setStatus("Retrying Wellness Tech → Rx Here…");
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}/retry-distribution`, { method: "POST" });
+      const data = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+        order?: {
+          distributionOrderId?: string | null;
+          distributionStatus?: string | null;
+          rxhereOrderId?: string | null;
+          distributionSyncError?: string | null;
+        };
+      };
+      if (!res.ok || !data.ok) {
+        setStatus(data.error || "Pharmacy retry failed.");
+        await loadOrders();
+        return;
+      }
+      setStatus(
+        data.order?.rxhereOrderId
+          ? `Pharmacy accepted · Eventide ${data.order.rxhereOrderId}`
+          : "Sent to Wellness Tech. Waiting on pharmacy id.",
+      );
+      await loadOrders();
+    } finally {
+      setRetryingId(null);
+    }
   }
 
   async function refreshDistributionStatuses() {
@@ -163,7 +221,23 @@ export default function AdminOrdersPage() {
     setSelectedId(null);
   }
 
+  function isPaidOrder(order: Order) {
+    return (
+      order.paymentStatus === "PAID" ||
+      order.paymentStatus === "PARTIALLY_REFUNDED" ||
+      order.paymentStatus === "REFUNDED" ||
+      Boolean(order.authorizeNetTransId) ||
+      (order.payments ?? []).some((p) => p.status === "PAID")
+    );
+  }
+
   async function deleteOrder(order: Order) {
+    if (isPaidOrder(order)) {
+      setStatus(
+        `Order ${order.orderNumber} was paid and cannot be deleted. Keep the record — cancel/refund instead if needed.`,
+      );
+      return;
+    }
     if (
       !window.confirm(
         `Are you sure you want to delete the order ${order.orderNumber}?\n\nThis cannot be undone.`,
@@ -172,7 +246,12 @@ export default function AdminOrdersPage() {
       return;
     }
     const response = await fetch(`/api/admin/commerce/orders/${order.id}`, { method: "DELETE" });
-    setStatus(response.ok ? `Order ${order.orderNumber} deleted.` : "Failed to delete order.");
+    const payload = (await response.json().catch(() => ({}))) as { error?: string };
+    setStatus(
+      response.ok
+        ? `Order ${order.orderNumber} deleted.`
+        : payload.error || "Failed to delete order.",
+    );
     if (response.ok) {
       if (selectedId === order.id) setSelectedId(null);
       await loadOrders();
@@ -197,16 +276,50 @@ export default function AdminOrdersPage() {
   }
 
   const paidTotal = useMemo(
-    () => orders.filter((o) => o.paymentStatus === "PAID").reduce((sum, o) => sum + Number(o.total ?? 0), 0),
+    () => orders.filter((o) => o.paymentStatus === "PAID").reduce((sum, o) => sum + paymentAmountPaid(o), 0),
     [orders],
   );
 
   const peptideOrders = useMemo(() => orders.filter((order) => orderIncludesPeptides(order.items)), [orders]);
+  const therapyOrders = useMemo(
+    () =>
+      orders.filter(
+        (order) =>
+          order.orderNumber.startsWith("KP-THERAPY-") ||
+          Boolean(order.therapyProposal) ||
+          Boolean(order.intakeSubmission) ||
+          order.items?.some((item) => (item.product?.catalogKind || "").toUpperCase() === "CLINICAL"),
+      ),
+    [orders],
+  );
   const visibleOrders = useMemo(() => {
-    if (catalog === "GLP") return peptideOrders;
-    if (catalog === "shop") return orders.filter((order) => !orderIncludesPeptides(order.items));
-    return orders;
-  }, [catalog, orders, peptideOrders]);
+    let list = orders;
+    if (catalog === "GLP") list = peptideOrders;
+    else if (catalog === "therapy") list = therapyOrders;
+    else if (catalog === "shop") {
+      list = orders.filter(
+        (order) => !orderIncludesPeptides(order.items) && !order.orderNumber.startsWith("KP-THERAPY-"),
+      );
+    }
+    const q = query.trim().toLowerCase();
+    if (!q) return list;
+    return list.filter((order) => {
+      const hay = [
+        order.orderNumber,
+        order.email,
+        order.phone,
+        order.authorizeNetTransId,
+        order.distributionOrderId,
+        order.rxhereOrderId,
+        order.partner?.displayName,
+        ...(order.items ?? []).map((i) => i.title),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return hay.includes(q);
+    });
+  }, [catalog, orders, peptideOrders, therapyOrders, query]);
 
   return (
     <div className="space-y-6">
@@ -215,7 +328,7 @@ export default function AdminOrdersPage() {
           <p className={adminEyebrow}>Commerce</p>
           <h1 className={adminTitle}>Orders</h1>
           <p className={adminMuted}>
-            Review line items, payments, and live pharmacy shipping (Wellness Tech → Rx Here).
+            Review line items, payments, and live pharmacy shipping (Wellness Tech → Eventide).
           </p>
         </div>
         <button
@@ -230,14 +343,15 @@ export default function AdminOrdersPage() {
 
       {status ? <p className="text-sm text-[#1b6568]">{status}</p> : null}
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {(
           [
-            ["all", "All orders"],
-            ["shop", "Shop"],
-            ["GLP", "GLP"],
+            ["all", "All orders", orders.length],
+            ["therapy", "Therapy", therapyOrders.length],
+            ["shop", "Shop", null],
+            ["GLP", "GLP", peptideOrders.length],
           ] as const
-        ).map(([value, label]) => (
+        ).map(([value, label, count]) => (
           <button
             key={value}
             type="button"
@@ -247,9 +361,15 @@ export default function AdminOrdersPage() {
             }`}
           >
             {label}
-            {value === "GLP" ? ` (${peptideOrders.length})` : ""}
+            {count != null ? ` (${count})` : ""}
           </button>
         ))}
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search order #, email, AuthNet ID…"
+          className={`${adminInput} ml-auto min-w-[220px] max-w-sm`}
+        />
       </div>
 
       <div className="grid gap-3 sm:grid-cols-4">
@@ -258,8 +378,8 @@ export default function AdminOrdersPage() {
           <p className="mt-2 font-serif text-3xl">{orders.length}</p>
         </div>
         <div className={`${adminPanel} p-5`}>
-          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">GLP therapy orders</p>
-          <p className="mt-2 font-serif text-3xl">{peptideOrders.length}</p>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Therapy / clinical</p>
+          <p className="mt-2 font-serif text-3xl">{therapyOrders.length}</p>
         </div>
         <div className={`${adminPanel} p-5`}>
           <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Paid revenue</p>
@@ -302,7 +422,7 @@ export default function AdminOrdersPage() {
                 ) : null}
                 {order.paymentStatus === "PAID" ? (
                   <p className="mt-1 font-mono text-[11px] text-[#1b6568]">
-                    Paid {money(order.total)}
+                    Paid in full {money(paymentAmountPaid(order))}
                     {order.authorizeNetTransId ? ` · ID ${order.authorizeNetTransId}` : ""}
                     {order.payments?.[0]?.provider ? ` · ${order.payments[0].provider}` : ""}
                   </p>
@@ -311,15 +431,27 @@ export default function AdminOrdersPage() {
                   <p className="mt-1 text-xs text-[#1b6568]">
                     Wellness Tech · {order.distributionOrderId}
                     {order.distributionStatus ? ` · ${order.distributionStatus}` : ""}
-                    {order.rxhereOrderId ? ` · Rx Here ${order.rxhereOrderId}` : ""}
+                    {order.rxhereOrderId ? ` · Eventide ${order.rxhereOrderId}` : ""}
                   </p>
-                ) : order.distributionSyncError ? (
+                ) : null}
+                {order.distributionSyncError ? (
                   <p className="mt-1 text-xs text-[#8a4b3c]">
-                    Wellness Tech: {order.distributionSyncError}
+                    Pharmacy sync: {order.distributionSyncError}
                   </p>
                 ) : null}
               </div>
               <div className="flex flex-wrap gap-2">
+                {order.paymentStatus === "PAID" &&
+                (!order.distributionOrderId || !order.rxhereOrderId || order.distributionSyncError) ? (
+                  <button
+                    type="button"
+                    className={adminBtnSoft}
+                    disabled={retryingId === order.id}
+                    onClick={() => void retryDistribution(order.id)}
+                  >
+                    {retryingId === order.id ? "Retrying…" : "Retry pharmacy send"}
+                  </button>
+                ) : null}
                 <span className={`rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] ${statusTone(order.paymentStatus)}`}>
                   {order.paymentStatus}
                 </span>
@@ -352,18 +484,27 @@ export default function AdminOrdersPage() {
             </div>
 
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-              <p className="font-serif text-2xl text-[#1f1a15]">{money(order.total)}</p>
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">
+                  {order.paymentStatus === "PAID" ? "Paid in full" : "Order total"}
+                </p>
+                <p className="font-serif text-2xl text-[#1f1a15]">
+                  {money(order.paymentStatus === "PAID" ? paymentAmountPaid(order) : order.total)}
+                </p>
+              </div>
               <div className="flex flex-wrap gap-2">
                 <button type="button" className={adminBtnPrimary} onClick={() => setSelectedId(order.id)}>
                   View order
                 </button>
-                <button
-                  type="button"
-                  className="rounded-sm border border-[#d07b7b80] px-4 py-2 text-sm text-[#7c2c2c] hover:bg-[#fdeeee]"
-                  onClick={() => void deleteOrder(order)}
-                >
-                  Delete
-                </button>
+                {!isPaidOrder(order) ? (
+                  <button
+                    type="button"
+                    className="rounded-sm border border-[#d07b7b80] px-4 py-2 text-sm text-[#7c2c2c] hover:bg-[#fdeeee]"
+                    onClick={() => void deleteOrder(order)}
+                  >
+                    Delete
+                  </button>
+                ) : null}
               </div>
             </div>
           </article>
@@ -371,7 +512,13 @@ export default function AdminOrdersPage() {
         })}
         {!visibleOrders.length ? (
           <div className={`${adminPanel} p-8 text-sm text-[#6f6251]`}>
-            {catalog === "GLP" ? "No GLP therapy orders yet." : "No orders yet."}
+            {query.trim()
+              ? `No orders match “${query.trim()}”. Try All orders or clear search.`
+              : catalog === "GLP"
+                ? "No GLP peptide orders yet."
+                : catalog === "therapy"
+                  ? "No therapy / clinical orders yet."
+                  : "No orders yet."}
           </div>
         ) : null}
       </div>
@@ -476,10 +623,15 @@ export default function AdminOrdersPage() {
               </section>
             ) : null}
 
-            <section className="rounded-2xl border border-[#efe4d4] bg-[#fffaf3] p-4 text-sm">
-              <h3 className="font-serif text-lg text-[#1f1a15]">Payment (admin only)</h3>
-              <p className="mt-2 text-[#2b2218]">
-                Status: <strong>{selected.paymentStatus}</strong> · Amount: <strong>{money(selected.total)}</strong>
+            <section className="rounded-2xl border border-[#efe4d4] bg-[#fffaf3] p-4">
+              <p className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">
+                {selected.paymentStatus === "PAID" ? "Paid in full" : "Order total"}
+              </p>
+              <p className="mt-1 font-serif text-3xl text-[#1f1a15]">
+                {money(selected.paymentStatus === "PAID" ? paymentAmountPaid(selected) : selected.total)}
+              </p>
+              <p className="mt-2 text-sm text-[#2b2218]">
+                Payment status: <strong>{selected.paymentStatus}</strong>
               </p>
               {selected.authorizeNetTransId ? (
                 <p className="mt-1 font-mono text-xs text-[#1b6568]">Payment ID: {selected.authorizeNetTransId}</p>
@@ -492,6 +644,42 @@ export default function AdminOrdersPage() {
                     : ""}
                 </p>
               ))}
+            </section>
+
+            <section className="space-y-2">
+              <h3 className="font-serif text-lg text-[#1f1a15]">Product breakdown</h3>
+              {(selected.items ?? []).map((item) => (
+                <div key={item.id} className="flex items-center gap-3 rounded-2xl border border-[#efe4d4] bg-white p-3">
+                  <div className="relative h-16 w-16 overflow-hidden rounded-xl bg-[#efe4d4]">
+                    {item.product?.featuredImage ? (
+                      <Image src={item.product.featuredImage} alt={item.title} fill className="object-cover" unoptimized />
+                    ) : null}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[#1f1a15]">{item.title}</p>
+                    <p className="text-xs text-[#6f6251]">
+                      {item.sku ? `SKU ${item.sku} · ` : ""}Qty {item.quantity} · {money(item.unitPrice)} each
+                    </p>
+                  </div>
+                  <p className="font-medium text-[#1f1a15]">{money(item.lineTotal)}</p>
+                </div>
+              ))}
+              {(selected.items?.length ?? 0) === 0 ? (
+                <p className="text-sm text-[#6f6251]">No line items on this order.</p>
+              ) : null}
+            </section>
+
+            <section className="grid gap-2 rounded-2xl border border-[#efe4d4] bg-[#fffaf3] p-4 text-sm">
+              <div className="flex justify-between"><span>Products subtotal</span><span>{money(orderSubtotal(selected))}</span></div>
+              <div className="flex justify-between"><span>Shipping</span><span>{money(selected.shippingTotal)}</span></div>
+              <div className="flex justify-between"><span>Tax</span><span>{money(selected.taxTotal)}</span></div>
+              {Number(selected.discountTotal ?? 0) > 0 ? (
+                <div className="flex justify-between"><span>Discount</span><span>-{money(selected.discountTotal)}</span></div>
+              ) : null}
+              <div className="flex justify-between border-t border-[#e5d7c2] pt-2 font-medium">
+                <span>{selected.paymentStatus === "PAID" ? "Paid in full" : "Total"}</span>
+                <span>{money(selected.paymentStatus === "PAID" ? paymentAmountPaid(selected) : selected.total)}</span>
+              </div>
             </section>
 
             {(selected.fulfillments?.length ?? 0) > 0 ? (
@@ -516,33 +704,6 @@ export default function AdminOrdersPage() {
                 </ul>
               </section>
             ) : null}
-
-            <section className="space-y-2">
-              <h3 className="font-serif text-lg text-[#1f1a15]">Products</h3>
-              {(selected.items ?? []).map((item) => (
-                <div key={item.id} className="flex items-center gap-3 rounded-2xl border border-[#efe4d4] bg-white p-3">
-                  <div className="relative h-16 w-16 overflow-hidden rounded-xl bg-[#efe4d4]">
-                    {item.product?.featuredImage ? (
-                      <Image src={item.product.featuredImage} alt={item.title} fill className="object-cover" unoptimized />
-                    ) : null}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[#1f1a15]">{item.title}</p>
-                    <p className="text-xs text-[#6f6251]">
-                      {item.sku ? `SKU ${item.sku} · ` : ""}Qty {item.quantity} · {money(item.unitPrice)} each
-                    </p>
-                  </div>
-                  <p className="font-medium text-[#1f1a15]">{money(item.lineTotal)}</p>
-                </div>
-              ))}
-            </section>
-
-            <section className="grid gap-2 rounded-2xl border border-[#efe4d4] bg-[#fffaf3] p-4 text-sm">
-              <div className="flex justify-between"><span>Subtotal</span><span>{money(selected.subtotal)}</span></div>
-              <div className="flex justify-between"><span>Shipping</span><span>{money(selected.shippingTotal)}</span></div>
-              <div className="flex justify-between"><span>Tax</span><span>{money(selected.taxTotal)}</span></div>
-              <div className="flex justify-between border-t border-[#e5d7c2] pt-2 font-medium"><span>Total</span><span>{money(selected.total)}</span></div>
-            </section>
 
             <form
               className="grid gap-2 rounded-2xl border border-[#efe4d4] p-4 md:grid-cols-2"
@@ -584,13 +745,17 @@ export default function AdminOrdersPage() {
               <button type="button" className={adminBtnGhost} onClick={() => setSelectedId(null)}>
                 Close
               </button>
-              <button
-                type="button"
-                className="rounded-sm border border-[#d07b7b80] px-4 py-2 text-sm text-[#7c2c2c] hover:bg-[#fdeeee]"
-                onClick={() => void deleteOrder(selected)}
-              >
-                Delete order
-              </button>
+              {!isPaidOrder(selected) ? (
+                <button
+                  type="button"
+                  className="rounded-sm border border-[#d07b7b80] px-4 py-2 text-sm text-[#7c2c2c] hover:bg-[#fdeeee]"
+                  onClick={() => void deleteOrder(selected)}
+                >
+                  Delete order
+                </button>
+              ) : (
+                <p className="text-xs text-[#6f6251]">Paid orders cannot be deleted.</p>
+              )}
             </div>
           </div>
         ) : null}

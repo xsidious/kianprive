@@ -259,13 +259,13 @@ export default function AdminProductsPage() {
   async function syncRxHereCatalog() {
     if (
       !window.confirm(
-        "Pull the live Rx Here formulary into KIAN clinical products? Existing Rx Here items will be updated; new ones will be added.",
+        "Pull the live Eventide formulary into KIAN clinical products? Existing Eventide items will be updated; new ones will be added.",
       )
     ) {
       return;
     }
     setRxhereSyncing(true);
-    setStatus("Syncing Rx Here catalog…");
+    setStatus("Syncing Eventide catalog…");
     try {
       const response = await fetch("/api/admin/rxhere/sync-catalog", { method: "POST" });
       const data = (await response.json().catch(() => ({}))) as {
@@ -277,11 +277,11 @@ export default function AdminProductsPage() {
         priced?: number;
       };
       if (!response.ok || !data.ok) {
-        setStatus(data.error || "Rx Here catalog sync failed. Check RXHERE_API_KEY.");
+        setStatus(data.error || "Eventide catalog sync failed. Check EVENTIDE_API_KEY.");
         return;
       }
       setStatus(
-        `Rx Here sync complete · ${data.totalRemote ?? 0} remote · ${data.created ?? 0} new · ${data.updated ?? 0} updated · ${data.priced ?? 0} with prices.`,
+        `Eventide sync complete · ${data.totalRemote ?? 0} remote · ${data.created ?? 0} new · ${data.updated ?? 0} updated · ${data.priced ?? 0} with prices.`,
       );
       await loadProducts();
     } finally {
@@ -336,7 +336,7 @@ export default function AdminProductsPage() {
             disabled={rxhereSyncing}
             onClick={() => void syncRxHereCatalog()}
           >
-            {rxhereSyncing ? "Syncing Rx Here…" : "Sync Rx Here catalog"}
+            {rxhereSyncing ? "Syncing Eventide…" : "Sync Eventide catalog"}
           </button>
           <Link href="/shop" className={adminBtnGhost}>
             Preview shop

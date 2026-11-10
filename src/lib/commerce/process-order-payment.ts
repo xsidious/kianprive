@@ -107,13 +107,24 @@ export async function processOrderCardPayment(input: {
           };
         });
         const subtotal = lineItems.reduce((s, i) => s + i.lineTotal, 0);
+        const shippingTotal = Math.max(0, Number(order.shippingTotal) || 0);
+        const taxTotal = Math.max(0, Number(order.taxTotal) || 0);
+        const discountTotal = Math.max(0, Number(order.discountTotal) || 0);
+        // Keep what was charged (order.total at charge time) and never drop shipping/tax.
+        const total = Math.max(
+          Number(order.total) || 0,
+          subtotal + shippingTotal + taxTotal - discountTotal,
+        );
         await tx.orderItem.deleteMany({ where: { orderId: order.id } });
         await tx.order.update({
           where: { id: order.id },
           data: {
             items: { create: lineItems },
             subtotal,
-            total: subtotal,
+            shippingTotal,
+            taxTotal,
+            discountTotal,
+            total,
             paymentStatus: "PAID",
             status: "PAID",
             fulfillmentStatus: "PROCESSING",

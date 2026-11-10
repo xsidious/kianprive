@@ -58,6 +58,50 @@ export async function DELETE(_: Request, { params }: Params) {
   if (!guard.ok) return guard.response;
   const { id } = await params;
 
+  const existing = await prisma.order.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      orderNumber: true,
+      paymentStatus: true,
+      authorizeNetTransId: true,
+      stripePaymentIntentId: true,
+      payments: { select: { id: true, status: true }, take: 5 },
+    },
+  });
+  if (!existing) {
+    return NextResponse.json({ error: "Order not found." }, { status: 404 });
+  }
+
+  // Never hard-delete paid / charged orders — clients rely on these records.
+  const hasPaidPayment = existing.payments.some((p) => p.status === "PAID");
+  if (
+    existing.paymentStatus === PaymentStatus.PAID ||
+    existing.paymentStatus === PaymentStatus.PARTIALLY_REFUNDED ||
+    existing.paymentStatus === PaymentStatus.REFUNDED ||
+    hasPaidPayment ||
+    Boolean(existing.authorizeNetTransId || existing.stripePaymentIntentId)
+  ) {
+    await writeAuditLog({
+      userId: guard.userId,
+      action: "commerce.order.delete_blocked",
+      entityType: "Order",
+      entityId: id,
+      metadata: {
+        orderNumber: existing.orderNumber,
+        paymentStatus: existing.paymentStatus,
+        reason: "Paid orders cannot be deleted.",
+      },
+    });
+    return NextResponse.json(
+      {
+        error:
+          "This order was paid and cannot be deleted. Cancel or refund it instead — the record must stay in the database.",
+      },
+      { status: 409 },
+    );
+  }
+
   const order = await prisma.order.delete({ where: { id } });
   await writeAuditLog({
     userId: guard.userId,

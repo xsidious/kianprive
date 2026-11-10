@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -56,6 +56,7 @@ type IntakeRow = {
   createdAt: string;
   provider: string;
   hasTherapy: boolean;
+  therapyCount?: number;
   therapy: {
     id: string;
     status: string;
@@ -274,6 +275,11 @@ export default function AdminPrescriptionsPage() {
                   >
                     {row.hasTherapy ? row.therapy?.order?.paymentStatus || row.therapy?.status : "No therapy"}
                   </span>
+                  {(row.therapyCount ?? 0) > 1 ? (
+                    <span className="rounded-full bg-[#fff8ee] px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-[#8f6f3e]">
+                      {row.therapyCount} plans
+                    </span>
+                  ) : null}
                 </div>
               </div>
               {row.hasTherapy && row.therapy ? (
@@ -292,13 +298,18 @@ export default function AdminPrescriptionsPage() {
                       {row.therapy.billing.interval.replace(/_/g, " ").toLowerCase()} · {row.therapy.billing.status}
                     </p>
                   ) : null}
+                  {(row.therapyCount ?? 0) > 1 ? (
+                    <p className="mt-2 text-xs text-[#6f6251]">
+                      Showing latest open plan. Open therapy to assign another without replacing prior plans.
+                    </p>
+                  ) : null}
                 </>
               ) : (
                 <p className="mt-3 text-sm text-[#6f6251]">No therapy assigned yet. Create prescriptions from this intake.</p>
               )}
               <div className="mt-4 flex flex-wrap gap-2">
                 <button type="button" className={adminBtnPrimary} onClick={() => setTherapyIntakeId(row.id)}>
-                  {row.hasTherapy ? "Edit therapy" : "Create therapy"}
+                  {row.hasTherapy ? "Edit / assign therapy" : "Create therapy"}
                 </button>
                 <Link href={`/admin/intake?open=${row.id}`} className={adminBtnGhost}>
                   View intake
@@ -422,7 +433,7 @@ export default function AdminPrescriptionsPage() {
       <AdminModal
         open={Boolean(therapyIntake)}
         title={therapyIntake?.fullName ?? "Therapy"}
-        eyebrow={therapyIntake?.hasTherapy ? "Edit prescription" : "Create prescription"}
+        eyebrow={therapyIntake?.hasTherapy ? "Therapy plans" : "Create prescription"}
         wide
         onClose={() => setTherapyIntakeId(null)}
       >

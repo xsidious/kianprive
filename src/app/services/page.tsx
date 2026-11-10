@@ -288,12 +288,12 @@ export default async function ServicesPage() {
           <p className="mt-2 max-w-3xl text-sm text-[#5f5344]">
             Complete the intake before your appointment. The clinician records height, weight, and the protocol at the visit.
           </p>
-          <Link
+              <Link
             href="/intake/icoone"
             className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded-sm bg-[#b78d4b] px-5 text-[11px] tracking-[0.16em] text-white transition hover:bg-[#a67d42]"
-          >
+              >
             START ICOONE INTAKE
-          </Link>
+              </Link>
         </div>
       </EditorialSection>
 

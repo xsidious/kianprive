@@ -26,8 +26,15 @@ export default async function ProviderLayout({ children }: { children: React.Rea
     redirect("/login");
   }
 
-  if (session.user.role === Role.ADMIN) {
-    redirect("/admin/providers");
+  // Staff manage practitioners under /admin/providers. Never send them into the
+  // live practitioner dashboard (or bounce them to /admin/providers from here),
+  // which made admin "Orders" clicks look like they opened Practitioners.
+  if (
+    session.user.role === Role.ADMIN ||
+    session.user.role === Role.OPERATIONS ||
+    session.user.role === Role.EDITOR
+  ) {
+    redirect("/admin");
   }
 
   const partner = await prisma.partnerProfile.findFirst({ where: profileWhere(session.user.id, "practitioner") });

@@ -1,11 +1,12 @@
 /**
- * Rx Here / VitaRelay public practice API client.
- * Catalog reads work with a practice key. Distributor order writes need a distributor-scoped key.
+ * Eventide Wellness Collective (VitaRelay Practice API) client.
+ * Catalog + order status use the practice key. Fulfillment writes go through Wellness Tech.
  */
 
 const PRACTICE_BASE =
+  process.env.EVENTIDE_API_BASE_URL?.replace(/\/$/, "") ||
   process.env.RXHERE_API_BASE_URL?.replace(/\/$/, "") ||
-  "https://portal.rxhere.com/api/public/practice/v1";
+  "https://vitarelay.com/api/public/practice/v1";
 
 const VITARELAY_BASE =
   process.env.VITARELAY_API_BASE_URL?.replace(/\/$/, "") || "https://vitarelay.com/api/public/v1";
@@ -36,9 +37,10 @@ type CatalogPage = {
 
 function apiKey() {
   return (
+    process.env.EVENTIDE_API_KEY?.trim() ||
+    process.env.VITARELAY_API_KEY?.trim() ||
     process.env.RXHERE_API_KEY?.trim() ||
     process.env.RXHERE_LIVE_API_KEY?.trim() ||
-    process.env.VITARELAY_API_KEY?.trim() ||
     ""
   );
 }
@@ -49,7 +51,7 @@ export function rxhereConfigured() {
 
 async function getJson<T>(url: string): Promise<{ ok: true; data: T } | { ok: false; status: number; error: string }> {
   const key = apiKey();
-  if (!key) return { ok: false, status: 0, error: "RXHERE_API_KEY is not configured." };
+  if (!key) return { ok: false, status: 0, error: "EVENTIDE_API_KEY is not configured." };
 
   try {
     const res = await fetch(url, {
@@ -76,7 +78,7 @@ async function getJson<T>(url: string): Promise<{ ok: true; data: T } | { ok: fa
     return {
       ok: false,
       status: 0,
-      error: error instanceof Error ? error.message : "Network error talking to Rx Here.",
+      error: error instanceof Error ? error.message : "Network error talking to Eventide.",
     };
   }
 }

@@ -7,6 +7,7 @@ import { canAccessAdmin } from "@/lib/rbac";
 import { accessForPartner } from "@/lib/ehr/locations";
 import {
   getProposalForIntake,
+  listProposalsForIntake,
   serializeProposal,
   upsertTherapyProposal,
 } from "@/lib/intake/therapy";
@@ -15,6 +16,8 @@ const bodySchema = z.object({
   intakeSubmissionId: z.string().min(1),
   notes: z.string().max(4000).optional().nullable(),
   send: z.boolean().optional().default(false),
+  /** Create a new therapy plan instead of editing the open DRAFT/SENT. */
+  forceNew: z.boolean().optional().default(false),
   billingInterval: z
     .enum([
       "ONE_TIME",
@@ -83,15 +86,21 @@ export async function GET(req: Request) {
     // allow assigned or unassigned claim flow elsewhere; still readable if provider has queue access
   }
 
-  const proposal = await getProposalForIntake(intakeSubmissionId);
+  const [proposal, proposals] = await Promise.all([
+    getProposalForIntake(intakeSubmissionId),
+    listProposalsForIntake(intakeSubmissionId),
+  ]);
+  const priceOpts = {
+    includePrices: isAdmin,
+    // Member may see pay total only for Accept & Pay CTA
+    includePayTotal: isAdmin || isMember,
+  };
   return NextResponse.json({
-    proposal: proposal
-      ? serializeProposal(proposal, {
-          includePrices: isAdmin,
-          // Member may see pay total only for Accept & Pay CTA
-          includePayTotal: isAdmin || isMember,
-        })
-      : null,
+    proposal: proposal ? serializeProposal(proposal, priceOpts) : null,
+    proposals: proposals.map((row) => serializeProposal(row, priceOpts)),
+    canAssignAnother: proposals.some((row) =>
+      ["SENT", "ACCEPTED", "PAID", "DRAFT"].includes(row.status),
+    ),
   });
 }
 
@@ -158,6 +167,7 @@ export async function POST(req: Request) {
       persistCatalogPrices: false,
       billingInterval: parsed.data.billingInterval as TherapyBillingInterval,
       intervalDays: parsed.data.intervalDays,
+      forceNew: parsed.data.forceNew,
     });
 
     let paymentUrl: string | null = null;

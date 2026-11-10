@@ -64,7 +64,7 @@ export async function GET() {
         assignedPartner: { select: { displayName: true } },
         therapyProposals: {
           orderBy: { updatedAt: "desc" },
-          take: 1,
+          take: 8,
           include: {
             items: {
               include: { product: { select: { id: true, title: true, isPrescription: true, price: true } } },
@@ -123,7 +123,11 @@ export async function GET() {
     shipping,
     pricing,
     intakes: intakes.map((intake) => {
-      const proposal = intake.therapyProposals[0] ?? null;
+      const open =
+        intake.therapyProposals.find((p) => p.status === "DRAFT" || p.status === "SENT") ??
+        intake.therapyProposals[0] ??
+        null;
+      const proposal = open;
       const items =
         proposal?.items.map((item) => ({
           id: item.id,
@@ -140,6 +144,7 @@ export async function GET() {
         createdAt: intake.createdAt,
         provider: proposal?.providerPartner.displayName || intake.assignedPartner?.displayName || "Unassigned",
         hasTherapy: Boolean(proposal && items.length),
+        therapyCount: intake.therapyProposals.length,
         therapy: proposal
           ? {
               id: proposal.id,

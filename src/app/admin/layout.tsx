@@ -29,11 +29,11 @@ export default async function AdminLayout({
           <div className="flex gap-1.5 overflow-x-auto pb-2 lg:hidden">
             {[
               { href: "/admin", label: "Home" },
+              { href: "/admin/orders", label: "Orders" },
               { href: "/admin/intake", label: "Intake" },
               { href: "/admin/products", label: "Products" },
-              { href: "/admin/orders", label: "Orders" },
-              { href: "/admin/ambassadors", label: "Ambassadors" },
               { href: "/admin/providers", label: "Practitioners" },
+              { href: "/admin/ambassadors", label: "Ambassadors" },
               { href: "/admin/consultations", label: "Consults" },
               { href: "/admin/seo", label: "SEO" },
               { href: "/admin/analytics", label: "Analytics" },

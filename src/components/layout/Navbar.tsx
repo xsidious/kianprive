@@ -263,8 +263,17 @@ export function Navbar() {
                     </Link>
                   ) : null}
                   {data.user.portals?.includes("practitioner") || data.user.role === "PROVIDER" ? (
-                    <Link href="/provider" className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]">
-                      Practitioner Portal
+                    <Link
+                      href={
+                        data.user.role === "ADMIN" || data.user.role === "OPERATIONS" || data.user.role === "EDITOR"
+                          ? "/admin/providers"
+                          : "/provider"
+                      }
+                      className="block rounded-sm px-3 py-2 text-sm text-[#4f4335] hover:bg-[#fffaf2]"
+                    >
+                      {data.user.role === "ADMIN" || data.user.role === "OPERATIONS" || data.user.role === "EDITOR"
+                        ? "Practitioners"
+                        : "Practitioner Portal"}
                     </Link>
                   ) : null}
                   {data.user.role === "ADMIN" || data.user.role === "OPERATIONS" || data.user.role === "EDITOR" ? (
@@ -493,11 +502,21 @@ export function Navbar() {
                           ) : null}
                           {data.user.portals?.includes("practitioner") || data.user.role === "PROVIDER" ? (
                             <Link
-                              href="/provider"
+                              href={
+                                data.user.role === "ADMIN" ||
+                                data.user.role === "OPERATIONS" ||
+                                data.user.role === "EDITOR"
+                                  ? "/admin/providers"
+                                  : "/provider"
+                              }
                               onClick={() => setMobileOpen(false)}
                               className="rounded-sm px-3 py-2.5 text-sm text-[#4f4335] hover:bg-[#faf6f0]"
                             >
-                              Practitioner Portal
+                              {data.user.role === "ADMIN" ||
+                              data.user.role === "OPERATIONS" ||
+                              data.user.role === "EDITOR"
+                                ? "Practitioners"
+                                : "Practitioner Portal"}
                             </Link>
                           ) : null}
                           {data.user.role === "ADMIN" ||
