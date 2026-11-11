@@ -6,6 +6,7 @@ import {
   DEFAULT_SHIPPING_CONFIG,
   type ShippingConfig,
 } from "@/lib/commerce/shipping";
+import { calculateSalesTax } from "@/lib/commerce/tax";
 
 export type CartItem = {
   id: string;
@@ -24,6 +25,7 @@ type CartContextValue = {
   hydrated: boolean;
   itemCount: number;
   subtotal: number;
+  tax: number;
   shipping: number;
   total: number;
   shippingConfig: ShippingConfig;
@@ -116,8 +118,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<CartContextValue>(() => {
     const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
     const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const tax = calculateSalesTax(
+      items.map((item) => ({
+        category: item.category,
+        amount: item.price * item.quantity,
+      })),
+    );
     const shipping = calculateShipping(subtotal, shippingConfig);
-    const total = subtotal + shipping;
+    const total = subtotal + tax + shipping;
 
     return {
       items,
@@ -125,6 +133,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       hydrated,
       itemCount,
       subtotal,
+      tax,
       shipping,
       total,
       shippingConfig,

@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getCatalogProduct } from "@/lib/commerce/products";
 import { calculateShipping, getShippingConfig } from "@/lib/commerce/shipping";
+import { calculateSalesTax } from "@/lib/commerce/tax";
 import { stripe } from "@/lib/stripe";
 
 async function findRetailProduct(idOrSlug: string) {
@@ -152,13 +153,20 @@ export async function replaceCartItems(input: {
 export async function recalculateCartTotals(cartId: string) {
   const cart = await prisma.cart.findUnique({
     where: { id: cartId },
-    include: { items: true },
+    include: { items: { include: { product: true } } },
   });
   if (!cart) throw new Error("Cart not found");
 
   const subtotal = cart.items.reduce((sum, item) => sum.add(item.lineTotal), new Prisma.Decimal(0));
   const discountTotal = new Prisma.Decimal(0);
-  const taxTotal = new Prisma.Decimal(0);
+  const taxTotal = new Prisma.Decimal(
+    calculateSalesTax(
+      cart.items.map((item) => ({
+        category: item.product.category,
+        amount: Number(item.lineTotal),
+      })),
+    ),
+  );
   const total = subtotal.sub(discountTotal).add(taxTotal);
 
   return prisma.cart.update({
@@ -222,7 +230,7 @@ export async function createOrderFromCart(
     input.shippingTotal ??
       calculateShipping(subtotalNumber, await getShippingConfig()),
   );
-  const orderTotal = cart.subtotal.add(shippingTotal);
+  const orderTotal = cart.subtotal.add(cart.taxTotal).add(shippingTotal);
   const orderNumber = `KP-${Date.now()}`;
 
   const order = await prisma.order.create({
@@ -284,6 +292,17 @@ export async function createStripeCheckoutForOrder(orderId: string) {
     },
     quantity: item.quantity,
   }));
+
+  if (Number(order.taxTotal) > 0) {
+    lineItems.push({
+      price_data: {
+        currency: order.currency.toLowerCase(),
+        product_data: { name: "Sales tax (7%)" },
+        unit_amount: Math.round(Number(order.taxTotal) * 100),
+      },
+      quantity: 1,
+    });
+  }
 
   if (Number(order.shippingTotal) > 0) {
     lineItems.push({

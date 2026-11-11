@@ -14,7 +14,7 @@ import { readPartnerReferralClient } from "@/lib/partner-referral";
 
 function CheckoutForm() {
   const router = useRouter();
-  const { items, subtotal, shipping, total, clearCart } = useCart();
+  const { items, subtotal, tax, shipping, total, clearCart } = useCart();
   const { canViewPrices } = useCanViewServicePrices();
   const searchParams = useSearchParams();
   const canceled = searchParams.get("canceled");
@@ -31,6 +31,7 @@ function CheckoutForm() {
     orderId: string;
     orderNumber: string;
     total: number;
+    taxTotal: number;
     cartId: string;
   } | null>(null);
 
@@ -70,6 +71,7 @@ function CheckoutForm() {
         orderId?: string;
         orderNumber?: string;
         total?: number;
+        taxTotal?: number;
         cartId?: string;
         error?: string;
       };
@@ -82,6 +84,7 @@ function CheckoutForm() {
         orderId: payload.orderId,
         orderNumber: payload.orderNumber,
         total: Number(payload.total ?? total),
+        taxTotal: Number(payload.taxTotal ?? tax),
         cartId: payload.cartId || cartId,
       };
       setPendingOrder(order);
@@ -273,6 +276,12 @@ function CheckoutForm() {
                   <span>Subtotal</span>
                   <span>${subtotal.toFixed(2)}</span>
                 </div>
+                {(pendingOrder?.taxTotal ?? tax) > 0 ? (
+                  <div className="flex justify-between">
+                    <span>Sales tax (7%)</span>
+                    <span>${(pendingOrder?.taxTotal ?? tax).toFixed(2)}</span>
+                  </div>
+                ) : null}
                 <div className="flex justify-between">
                   <span>Shipping</span>
                   <span>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>

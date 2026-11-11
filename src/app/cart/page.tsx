@@ -12,7 +12,7 @@ import { MemberPriceNotice } from "@/components/pricing/MemberPriceNotice";
 import { catalogProducts } from "@/lib/commerce/products";
 
 export default function CartPage() {
-  const { items, subtotal, shipping, total, updateQuantity, removeItem, addItem, shippingConfig } = useCart();
+  const { items, subtotal, tax, shipping, total, updateQuantity, removeItem, addItem, shippingConfig } = useCart();
   const { canViewPrices } = useCanViewServicePrices();
   const threshold = Math.max(shippingConfig.freeThreshold, 0.01);
   const amountToFreeShipping = shippingConfig.alwaysFree
@@ -112,6 +112,12 @@ export default function CartPage() {
                     <span>Subtotal</span>
                     <span>${subtotal.toFixed(2)}</span>
                   </div>
+                  {tax > 0 ? (
+                    <div className="flex justify-between">
+                      <span>Sales tax (7%)</span>
+                      <span>${tax.toFixed(2)}</span>
+                    </div>
+                  ) : null}
                   <div className="flex justify-between">
                     <span>Shipping</span>
                     <span>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
