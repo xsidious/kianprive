@@ -146,6 +146,27 @@ export const EHR_LOCATIONS: EhrLocation[] = [
       },
     ],
   },
+  {
+    id: "hope-and-haven",
+    label: "Hope & Haven International",
+    aliases: [
+      "hope-and-haven",
+      "hope and haven",
+      "hope & haven",
+      "hopeandhaven",
+      "hope and haven international",
+    ],
+    clinicians: [
+      {
+        name: "Dr. Carmen Ramirez",
+        role: "medical-director",
+        canPrescribe: true,
+        emails: ["carmen.ramirez@kianprive.com", "carmenramirezmd@yahoo.com", "millenniumedgemed@gmail.com"],
+        partnerCodes: ["CARMENRAM"],
+        aliases: ["carmen ramirez", "dr. carmen ramirez", "carmen teresa ramirez"],
+      },
+    ],
+  },
 ];
 
 const ROLE_RANK: Record<EhrClinicianRole, number> = {

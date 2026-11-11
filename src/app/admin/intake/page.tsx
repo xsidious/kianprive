@@ -63,13 +63,20 @@ const statuses = [
   "DECLINED",
 ] as const;
 
-type SourceFilter = "ALL" | "facial-design" | "4everglow" | "threefold-strength" | "kian";
+type SourceFilter =
+  | "ALL"
+  | "facial-design"
+  | "4everglow"
+  | "threefold-strength"
+  | "hope-and-haven"
+  | "kian";
 
 function sourceKey(submission: IntakeSubmission): SourceFilter {
   const source = submission.payload?.source ?? submission.payload?.site;
   if (source === "facial-design") return "facial-design";
   if (source === "4everglow") return "4everglow";
   if (source === "threefold-strength") return "threefold-strength";
+  if (source === "hope-and-haven") return "hope-and-haven";
   return "kian";
 }
 
@@ -81,6 +88,7 @@ function sourceLabel(submission: IntakeSubmission) {
   if (source === "facial-design") return "Facial Design Studio";
   if (source === "4everglow") return "4everglow Wellness";
   if (source === "threefold-strength") return "Threefold Strength";
+  if (source === "hope-and-haven") return "Hope & Haven International";
   const siteLabel = submission.payload?.siteLabel;
   const location = submission.payload?.ehrLocationLabel;
   if (typeof location === "string" && location) return `Wellness Tech · ${location}`;
@@ -197,6 +205,7 @@ export default function AdminIntakePage() {
       "facial-design": 0,
       "4everglow": 0,
       "threefold-strength": 0,
+      "hope-and-haven": 0,
       kian: 0,
     };
     for (const item of submissions) {
@@ -232,6 +241,7 @@ export default function AdminIntakePage() {
             ["facial-design", "Facial Design Studio"],
             ["4everglow", "4everglow Wellness"],
             ["threefold-strength", "Threefold Strength"],
+            ["hope-and-haven", "Hope & Haven International"],
             ["kian", "KIAN / Wellness Hub"],
           ] as const
         ).map(([id, label]) => (

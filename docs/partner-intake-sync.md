@@ -1,4 +1,4 @@
-# Partner clinic intake sync (4everglow + Facial Design)
+# Partner clinic intake sync (4everglow + Facial Design + Threefold + Hope & Haven)
 
 ## Flow
 
@@ -14,6 +14,10 @@ FACIAL_DESIGN_WEBHOOK_URL=https://facial-design-production-host
 FACIAL_DESIGN_WEBHOOK_SECRET=shared-secret
 FOREVERGLOW_WEBHOOK_URL=https://4everglow-production-host
 FOREVERGLOW_WEBHOOK_SECRET=shared-secret
+THREEFOLD_WEBHOOK_URL=https://threefoldstrength.com
+THREEFOLD_WEBHOOK_SECRET=shared-secret
+HOPE_AND_HAVEN_WEBHOOK_URL=https://hope-and-haven.vercel.app
+HOPE_AND_HAVEN_WEBHOOK_SECRET=shared-secret
 ```
 
 Optional fallback: `PARTNER_WEBHOOK_SECRET` if per-site secrets are unset.
@@ -30,7 +34,7 @@ Partner apps must set `KIAN_WEBHOOK_SECRET` to the matching secret and expose `P
 ## Formulary products (RxHere)
 
 - **KIAN** holds the clinical catalog (`CLINICAL` products). Import: `node scripts/import-rxhere-formulary.mjs`. Patient `price` = **2×** RxHere sheet price; `wholesalePrice` = sheet price. Default clinical/shop shipping flat rate is **$35**. Category placeholder images under `/images/formulary/*.svg`.
-- **4everglow / Facial Design** do **not** get the full formulary. After therapy is assigned, KIAN webhooks send **payment amount + therapy line items** only.
+- **Partner sites** do **not** get the full formulary. After therapy is assigned, KIAN webhooks send **payment amount + therapy line items** only.
 - **Wellness Tech** syncs the same JSON with **2× markup** on partner catalog prices (`WT_FORMULARY_MARKUP` in `formulary-sync.ts`). Run: `npm run db:sync-formulary`. Same markup applies to KIAN-forwarded and practitioner orders.
 
 ## Clinical chart mirror (KIAN → Wellness Tech)

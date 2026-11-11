@@ -50,13 +50,17 @@ function partnerWebhookConfig(site: PartnerSite): { url: string; secret: string 
       ? process.env.FACIAL_DESIGN_WEBHOOK_URL?.trim()
       : site === "4everglow"
         ? process.env.FOREVERGLOW_WEBHOOK_URL?.trim()
-        : process.env.THREEFOLD_WEBHOOK_URL?.trim();
+        : site === "hope-and-haven"
+          ? process.env.HOPE_AND_HAVEN_WEBHOOK_URL?.trim()
+          : process.env.THREEFOLD_WEBHOOK_URL?.trim();
   const secret =
     site === "facial-design"
       ? process.env.FACIAL_DESIGN_WEBHOOK_SECRET?.trim() || process.env.PARTNER_WEBHOOK_SECRET?.trim()
       : site === "4everglow"
         ? process.env.FOREVERGLOW_WEBHOOK_SECRET?.trim() || process.env.PARTNER_WEBHOOK_SECRET?.trim()
-        : process.env.THREEFOLD_WEBHOOK_SECRET?.trim() || process.env.PARTNER_WEBHOOK_SECRET?.trim();
+        : site === "hope-and-haven"
+          ? process.env.HOPE_AND_HAVEN_WEBHOOK_SECRET?.trim() || process.env.PARTNER_WEBHOOK_SECRET?.trim()
+          : process.env.THREEFOLD_WEBHOOK_SECRET?.trim() || process.env.PARTNER_WEBHOOK_SECRET?.trim();
 
   if (!url || !secret) return null;
   return { url: url.replace(/\/$/, ""), secret };

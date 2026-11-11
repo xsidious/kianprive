@@ -19,7 +19,7 @@ import { physicianReviewForConditions } from "@/lib/intake/medical-review";
  * from Facial Design Studio and 4everglow partner Next.js sites.
  *
  * Auth: `x-partner-intake-secret` or `Authorization: Bearer …`
- * Secrets: PARTNER_INTAKE_SECRET and/or FACIAL_DESIGN_INTAKE_SECRET / FOREVERGLOW_INTAKE_SECRET
+ * Secrets: PARTNER_INTAKE_SECRET and/or per-site *_INTAKE_SECRET (Facial / 4everglow / Threefold / Hope & Haven)
  */
 export async function POST(req: Request) {
   let body: unknown;
