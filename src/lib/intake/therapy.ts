@@ -445,6 +445,13 @@ export async function upsertTherapyProposal(input: {
     });
   }
 
+  try {
+    const { voidSyncIntakeToWellnessTechHub } = await import("@/lib/wellness-tech/hub-sync");
+    voidSyncIntakeToWellnessTechHub(input.intakeSubmissionId);
+  } catch {
+    // Hub sync is best-effort.
+  }
+
   return getProposalForIntake(input.intakeSubmissionId);
 }
 

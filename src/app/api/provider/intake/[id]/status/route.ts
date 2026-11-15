@@ -126,6 +126,13 @@ export async function POST(req: Request, { params }: Params) {
     return row;
   });
 
+  try {
+    const { voidSyncIntakeToWellnessTechHub } = await import("@/lib/wellness-tech/hub-sync");
+    voidSyncIntakeToWellnessTechHub(id);
+  } catch (syncError) {
+    console.warn("[intake/status] WT hub sync skipped:", syncError);
+  }
+
   const note = parsed.data.statusNote?.trim();
   if (note) {
     try {

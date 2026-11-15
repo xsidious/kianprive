@@ -145,6 +145,13 @@ export async function POST(req: Request) {
     console.error("[intake/partner] Notification email failed:", emailError);
   }
 
+  try {
+    const { voidSyncIntakeToWellnessTechHub } = await import("@/lib/wellness-tech/hub-sync");
+    voidSyncIntakeToWellnessTechHub(submission.id);
+  } catch (syncError) {
+    console.warn("[intake/partner] WT hub sync skipped:", syncError);
+  }
+
   return NextResponse.json({
     ok: true,
     referenceId: referenceCode,
