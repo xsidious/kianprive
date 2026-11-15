@@ -12,10 +12,16 @@ export function patientOrderProgress(input: {
   status: OrderStatus | string;
   paymentStatus: PaymentStatus | string;
   fulfillmentStatus: FulfillmentStatus | string;
+  /** VitaRelay / WT distribution status when known (compounding, shipped, …). */
+  distributionStatus?: string | null;
 }): PatientOrderProgress {
   const payment = String(input.paymentStatus);
   const fulfillment = String(input.fulfillmentStatus);
   const status = String(input.status);
+  const distribution = String(input.distributionStatus || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[.\s]+/g, "_");
 
   if (payment === "FAILED") {
     return {
@@ -44,10 +50,10 @@ export function patientOrderProgress(input: {
     };
   }
 
-  if (fulfillment === "FULFILLED" || status === "FULFILLED") {
+  if (fulfillment === "FULFILLED" || status === "FULFILLED" || distribution === "shipped") {
     return {
-      label: "Fulfilled",
-      detail: "Your order has been fulfilled and shipped.",
+      label: "Shipped",
+      detail: "Your order is on the way.",
       step: 3,
       tone: "shipped",
     };
@@ -62,12 +68,27 @@ export function patientOrderProgress(input: {
     };
   }
 
-  if (status === "CANCELED" || status === "REFUNDED" || payment === "REFUNDED") {
+  if (status === "CANCELED" || status === "REFUNDED" || payment === "REFUNDED" || distribution === "cancelled") {
     return {
-      label: status === "CANCELED" ? "Canceled" : "Refunded",
+      label: status === "CANCELED" || distribution === "cancelled" ? "Canceled" : "Refunded",
       detail: "Contact concierge if you have questions about this order.",
       step: 1,
       tone: "issue",
+    };
+  }
+
+  if (
+    distribution === "compounding" ||
+    distribution === "verified" ||
+    distribution === "fulfilled" ||
+    distribution === "processing" ||
+    distribution === "ready_to_ship"
+  ) {
+    return {
+      label: "Pharmacy compounding",
+      detail: "Your prescription is being prepared at the pharmacy.",
+      step: 2,
+      tone: "paid",
     };
   }
 

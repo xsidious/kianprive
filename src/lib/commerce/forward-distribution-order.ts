@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { buildClinicalChartPackage } from "@/lib/commerce/clinical-chart-package";
+import { resolvePartnerSiteFromPayload } from "@/lib/intake/partner-status-sync";
 
 type ShipAddress = Record<string, string | null | undefined>;
 
@@ -124,6 +125,7 @@ async function retryWellnessTechPharmacySubmit(
   kianOrderId: string,
   distributionOrderId: string,
   externalRef: string,
+  partnerSite = "kian-prive",
 ) {
   const base = (process.env.WT_API_URL || process.env.WELLNESS_TECH_API_URL || "").replace(/\/$/, "");
   const secret = process.env.WT_PARTNER_ORDER_SECRET?.trim();
@@ -139,7 +141,7 @@ async function retryWellnessTechPharmacySubmit(
       headers: {
         "Content-Type": "application/json",
         "x-wt-partner-secret": secret,
-        "x-wt-partner-site": "kian-prive",
+        "x-wt-partner-site": partnerSite,
       },
       body: JSON.stringify({ orderId: distributionOrderId, externalRef }),
     });
@@ -233,10 +235,12 @@ export async function forwardPaidOrderToWellnessTech(
   if (order.distributionOrderId) {
     // Already on Wellness Tech — if pharmacy never got it (502 / on_hold), ask WT to resubmit.
     if (!order.rxhereOrderId) {
+      const retrySite = resolvePartnerSiteFromPayload(order.intakeSubmission?.payload) || "kian-prive";
       const retried = await retryWellnessTechPharmacySubmit(
         order.id,
         order.distributionOrderId,
         order.orderNumber,
+        retrySite,
       );
       if (retried.ok) return retried;
       // Retry route missing / stale WT id → clear and create a fresh partner order.
@@ -366,6 +370,8 @@ export async function forwardPaidOrderToWellnessTech(
   }
 
   const named = splitName(intake?.fullName || ship?.name || order.user?.name || "Patient");
+  // Partner clinic intakes carry site on payload; native KIAN stays kian-prive.
+  const partnerSite = resolvePartnerSiteFromPayload(intake?.payload) || "kian-prive";
   const provider = order.therapyProposal?.providerPartner || order.partner;
   const providerParts = splitName(
     provider?.displayName ||
@@ -410,6 +416,19 @@ export async function forwardPaidOrderToWellnessTech(
     address: payloadAddress(ship, profile),
   };
 
+  const providerDea =
+    (provider as { deaNumber?: string | null } | null)?.deaNumber ||
+    process.env.EVENTIDE_PRESCRIBER_DEA ||
+    process.env.VITARELAY_PRESCRIBER_DEA ||
+    "";
+  const providerLicenseState =
+    (provider as { licenseState?: string | null } | null)?.licenseState ||
+    process.env.EVENTIDE_PRESCRIBER_LICENSE_STATE ||
+    "FL";
+  const providerLicenseNumber =
+    (provider as { licenseNumber?: string | null } | null)?.licenseNumber ||
+    process.env.EVENTIDE_PRESCRIBER_LICENSE_NUMBER ||
+    "84581";
   const prescriber = {
     firstName: providerParts.firstName,
     lastName: providerParts.lastName,
@@ -421,8 +440,9 @@ export async function forwardPaidOrderToWellnessTech(
       "1023022357",
     practiceName: provider?.legalName || "KIAN Privé",
     phone: provider?.phone || undefined,
-    licenseState: process.env.EVENTIDE_PRESCRIBER_LICENSE_STATE || "FL",
-    licenseNumber: process.env.EVENTIDE_PRESCRIBER_LICENSE_NUMBER || "84581",
+    licenseState: providerLicenseState,
+    licenseNumber: providerLicenseNumber,
+    deaNumber: providerDea || undefined,
   };
 
   const clinicalChart = buildClinicalChartPackage({
@@ -469,12 +489,12 @@ export async function forwardPaidOrderToWellnessTech(
       headers: {
         "Content-Type": "application/json",
         "x-wt-partner-secret": secret,
-        "x-wt-partner-site": "kian-prive",
+        "x-wt-partner-site": partnerSite,
       },
       body: JSON.stringify({
         externalRef: order.orderNumber,
         email,
-        partnerSite: "kian-prive",
+        partnerSite,
         shippingMethod: "2_DAY",
         shippingDestinationType,
         shipToKind,
@@ -502,6 +522,7 @@ export async function forwardPaidOrderToWellnessTech(
         kianIntakeId: intake?.id || null,
         notes: [
           `KIAN Privé order ${order.orderNumber}`,
+          `Clinic site: ${partnerSite}`,
           `Ship to: ${shipToKind} (${shippingDestinationType})`,
           intake ? `Intake ${intake.id}` : "",
           missingSku.length ? `Lines without a SKU were not sent: ${missingSku.join(", ")}` : "",

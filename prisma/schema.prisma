@@ -371,6 +371,8 @@ model Product {
   category       String?
   subcategory    String?
   isPrescription Boolean       @default(false)
+  controlledSubstance Boolean  @default(false)
+  productClass   String?
   catalogKind    ProductCatalogKind @default(RETAIL)
   externalId     String?       @unique
   wholesalePrice Decimal?      @db.Decimal(10, 2)
@@ -378,6 +380,7 @@ model Product {
   strength       String?
   deliveryMethod String?
   source         String?
+  lastSyncedAt   DateTime?
   featuredImage  String?
   galleryImages  String[]      @default([])
   hasVariants    Boolean       @default(false)
@@ -481,9 +484,10 @@ model Order {
   distributionOrderId  String?
   /** Latest distribution / pharmacy pipeline status (e.g. compounding, shipped). */
   distributionStatus   String?
-  /** Rx Here order id when known (from WT callback or Rx Here webhook). */
+  /** VitaRelay / WT pharmacy order id when known. */
   rxhereOrderId        String?
   distributionSyncError String?     @db.Text
+  lastDistributionWebhookAt DateTime?
   paymentToken         String?      @unique
   paymentTokenExpiresAt DateTime?
   items                OrderItem[]
@@ -685,6 +689,10 @@ model PartnerProfile {
   phone                        String?
   avatarUrl                    String?
   npi                          String?
+  /** DEA for controlled-substance VitaRelay placement (plaintext stored for partner ops; treat as PHI). */
+  deaNumber                    String?
+  licenseState                 String?
+  licenseNumber                String?
   credentialsTitle             String?
   partnerCode                  String           @unique
   taxId                        String?

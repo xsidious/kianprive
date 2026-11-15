@@ -259,13 +259,13 @@ export default function AdminProductsPage() {
   async function syncRxHereCatalog() {
     if (
       !window.confirm(
-        "Pull the live Eventide formulary into KIAN clinical products? Existing Eventide items will be updated; new ones will be added.",
+        "Pull the live VitaRelay formulary into KIAN clinical products? Existing VitaRelay items will be updated; new ones will be added.",
       )
     ) {
       return;
     }
     setRxhereSyncing(true);
-    setStatus("Syncing Eventide catalog…");
+    setStatus("Syncing VitaRelay catalog…");
     try {
       const response = await fetch("/api/admin/rxhere/sync-catalog", { method: "POST" });
       const data = (await response.json().catch(() => ({}))) as {
@@ -277,11 +277,11 @@ export default function AdminProductsPage() {
         priced?: number;
       };
       if (!response.ok || !data.ok) {
-        setStatus(data.error || "Eventide catalog sync failed. Check EVENTIDE_API_KEY.");
+        setStatus(data.error || "VitaRelay catalog sync failed. Check VITARELAY_API_KEY / EVENTIDE_API_KEY.");
         return;
       }
       setStatus(
-        `Eventide sync complete · ${data.totalRemote ?? 0} remote · ${data.created ?? 0} new · ${data.updated ?? 0} updated · ${data.priced ?? 0} with prices.`,
+        `VitaRelay sync complete · ${data.totalRemote ?? 0} remote · ${data.created ?? 0} new · ${data.updated ?? 0} updated · ${data.priced ?? 0} with prices.`,
       );
       await loadProducts();
     } finally {
@@ -336,7 +336,7 @@ export default function AdminProductsPage() {
             disabled={rxhereSyncing}
             onClick={() => void syncRxHereCatalog()}
           >
-            {rxhereSyncing ? "Syncing Eventide…" : "Sync Eventide catalog"}
+            {rxhereSyncing ? "Syncing VitaRelay…" : "Sync VitaRelay catalog"}
           </button>
           <Link href="/shop" className={adminBtnGhost}>
             Preview shop

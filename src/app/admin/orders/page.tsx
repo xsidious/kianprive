@@ -116,7 +116,7 @@ export default function AdminOrdersPage() {
 
   async function retryDistribution(orderId: string) {
     setRetryingId(orderId);
-    setStatus("Retrying Wellness Tech → Rx Here…");
+    setStatus("Retrying Wellness Tech → VitaRelay…");
     try {
       const res = await fetch(`/api/admin/orders/${orderId}/retry-distribution`, { method: "POST" });
       const data = (await res.json().catch(() => ({}))) as {
@@ -136,7 +136,7 @@ export default function AdminOrdersPage() {
       }
       setStatus(
         data.order?.rxhereOrderId
-          ? `Pharmacy accepted · Eventide ${data.order.rxhereOrderId}`
+          ? `Pharmacy accepted · VitaRelay ${data.order.rxhereOrderId}`
           : "Sent to Wellness Tech. Waiting on pharmacy id.",
       );
       await loadOrders();
@@ -164,6 +164,33 @@ export default function AdminOrdersPage() {
       await loadOrders();
     } finally {
       setSyncingDistribution(false);
+    }
+  }
+
+  async function refreshOneDistribution(orderId: string) {
+    setRetryingId(orderId);
+    setStatus("Refreshing VitaRelay status…");
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}/refresh-distribution`, { method: "POST" });
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      setStatus(res.ok && data.ok ? "Status refreshed from Wellness Tech / VitaRelay." : data.error || "Refresh failed.");
+      await loadOrders();
+    } finally {
+      setRetryingId(null);
+    }
+  }
+
+  async function cancelDistribution(orderId: string) {
+    if (!window.confirm("Cancel this order with VitaRelay before it ships?")) return;
+    setRetryingId(orderId);
+    setStatus("Cancelling with VitaRelay…");
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}/cancel-distribution`, { method: "POST" });
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      setStatus(res.ok && data.ok ? "Cancellation requested." : data.error || "Cancel failed.");
+      await loadOrders();
+    } finally {
+      setRetryingId(null);
     }
   }
 
@@ -431,7 +458,7 @@ export default function AdminOrdersPage() {
                   <p className="mt-1 text-xs text-[#1b6568]">
                     Wellness Tech · {order.distributionOrderId}
                     {order.distributionStatus ? ` · ${order.distributionStatus}` : ""}
-                    {order.rxhereOrderId ? ` · Eventide ${order.rxhereOrderId}` : ""}
+                    {order.rxhereOrderId ? ` · VitaRelay ${order.rxhereOrderId}` : ""}
                   </p>
                 ) : null}
                 {order.distributionSyncError ? (
@@ -450,6 +477,29 @@ export default function AdminOrdersPage() {
                     onClick={() => void retryDistribution(order.id)}
                   >
                     {retryingId === order.id ? "Retrying…" : "Retry pharmacy send"}
+                  </button>
+                ) : null}
+                {order.distributionOrderId ? (
+                  <button
+                    type="button"
+                    className={adminBtnSoft}
+                    disabled={retryingId === order.id}
+                    onClick={() => void refreshOneDistribution(order.id)}
+                  >
+                    Refresh status
+                  </button>
+                ) : null}
+                {order.distributionOrderId &&
+                order.status !== "DELIVERED" &&
+                order.status !== "CANCELED" &&
+                order.fulfillmentStatus !== "DELIVERED" ? (
+                  <button
+                    type="button"
+                    className={adminBtnSoft}
+                    disabled={retryingId === order.id}
+                    onClick={() => void cancelDistribution(order.id)}
+                  >
+                    Cancel before ship
                   </button>
                 ) : null}
                 <span className={`rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] ${statusTone(order.paymentStatus)}`}>

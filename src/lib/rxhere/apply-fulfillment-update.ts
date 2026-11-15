@@ -29,6 +29,15 @@ const STATUS_MAP: Record<
   ready_to_ship: { order: "PROCESSING", fulfillment: "PROCESSING" },
   "ready to ship": { order: "PROCESSING", fulfillment: "PROCESSING" },
   paid: { order: "PROCESSING", fulfillment: "PROCESSING" },
+  invoiced: { order: "PROCESSING", fulfillment: "PROCESSING" },
+  order_paid: { order: "PROCESSING", fulfillment: "PROCESSING" },
+  order_invoiced: { order: "PROCESSING", fulfillment: "PROCESSING" },
+  order_fulfilled: { order: "FULFILLED", fulfillment: "FULFILLED" },
+  order_shipped: { order: "FULFILLED", fulfillment: "FULFILLED" },
+  order_delivered: { order: "DELIVERED", fulfillment: "DELIVERED" },
+  order_cancelled: { order: "CANCELED" },
+  order_canceled: { order: "CANCELED" },
+  order_exception: { order: "PROCESSING", fulfillment: "PROCESSING" },
   fulfilled: { order: "FULFILLED", fulfillment: "FULFILLED" },
   shipped: { order: "FULFILLED", fulfillment: "FULFILLED" },
   delivered: { order: "DELIVERED", fulfillment: "DELIVERED" },
@@ -84,6 +93,7 @@ export async function applyDistributionFulfillmentUpdate(input: DistributionStat
       ...(input.rxhereOrderId ? { rxhereOrderId: input.rxhereOrderId } : {}),
       ...(nextDistributionStatus ? { distributionStatus: nextDistributionStatus } : {}),
       distributionSyncError: input.reason || null,
+      lastDistributionWebhookAt: new Date(),
     },
   });
 

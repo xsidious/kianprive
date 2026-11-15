@@ -4,6 +4,7 @@
  */
 
 const PRACTICE_BASE =
+  process.env.VITARELAY_PRACTICE_API_BASE_URL?.replace(/\/$/, "") ||
   process.env.EVENTIDE_API_BASE_URL?.replace(/\/$/, "") ||
   process.env.RXHERE_API_BASE_URL?.replace(/\/$/, "") ||
   "https://vitarelay.com/api/public/practice/v1";
@@ -37,8 +38,8 @@ type CatalogPage = {
 
 function apiKey() {
   return (
-    process.env.EVENTIDE_API_KEY?.trim() ||
     process.env.VITARELAY_API_KEY?.trim() ||
+    process.env.EVENTIDE_API_KEY?.trim() ||
     process.env.RXHERE_API_KEY?.trim() ||
     process.env.RXHERE_LIVE_API_KEY?.trim() ||
     ""

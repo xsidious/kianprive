@@ -128,7 +128,7 @@ function productDescription(row: RxHereCatalogProduct) {
     row.strengths?.length ? `Strength: ${row.strengths.join(", ")}` : null,
     row.volume ? `Volume: ${row.volume}` : null,
     row.controlled_substance ? "Controlled substance" : null,
-    `Rx Here id: ${row.id}`,
+    `VitaRelay id: ${row.id}`,
   ].filter(Boolean);
   bits.push(meta.join(" · "));
   return bits.join("\n\n");
@@ -162,13 +162,17 @@ export async function syncRxHereCatalog(options?: { activateNew?: boolean }) {
     const title = productTitle(row);
     const slugBase = row.slug || row.id;
     const slug = `eventide-${slugify(slugBase)}`.slice(0, 70);
-    const isRx = Boolean(row.requires_prescription) || row.type === "503a";
+    const isRx = Boolean(row.requires_prescription) || row.type === "503a" || row.type === "503b";
+    const productClass =
+      row.type === "503b" ? "503B" : row.type === "rnd" ? "RND" : "503A";
     const catalogKind = row.type === "rnd" && !isRx ? "RETAIL" : "CLINICAL";
     const category = applyGlpNaming(row.category_label || row.category || "Compounded") || "Compounded";
     const form = row.dosage_form || null;
     const strength = [...(row.strengths || []), row.volume].filter(Boolean).join(" · ") || null;
     const featuredImage = absoluteAssetUrl(row.image_urls?.[0]);
     const wholesale = prices.get(row.id) ?? null;
+    const controlledSubstance = Boolean(row.controlled_substance);
+    const syncedAt = new Date();
     // Clinical compounds stay unpriced for customers; admin sets invoice/therapy sell price.
     // Retail (rare RUO) may keep a suggested markup for the shop.
     const sellPrice =
@@ -193,7 +197,9 @@ export async function syncRxHereCatalog(options?: { activateNew?: boolean }) {
         deliveryMethod: form,
         source: "RXHERE",
         catalogKind,
+        productClass,
         isPrescription: isRx,
+        controlledSubstance,
         wholesalePrice: wholesale,
         price: sellPrice ?? 0,
         featuredImage,
@@ -202,6 +208,7 @@ export async function syncRxHereCatalog(options?: { activateNew?: boolean }) {
         inventoryQty: 100,
         trackInventory: false,
         vendorId: vendor.id,
+        lastSyncedAt: syncedAt,
       },
       update: {
         title,
@@ -212,7 +219,10 @@ export async function syncRxHereCatalog(options?: { activateNew?: boolean }) {
         deliveryMethod: form,
         source: "RXHERE",
         catalogKind,
+        productClass,
         isPrescription: isRx,
+        controlledSubstance,
+        lastSyncedAt: syncedAt,
         ...(wholesale != null
           ? {
               wholesalePrice: wholesale,
