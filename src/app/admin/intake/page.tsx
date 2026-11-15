@@ -88,7 +88,7 @@ function sourceLabel(submission: IntakeSubmission) {
   if (source === "facial-design") return "Facial Design Studio";
   if (source === "4everglow") return "4everglow Wellness";
   if (source === "threefold-strength") return "Threefold Strength";
-  if (source === "hope-and-haven") return "Hope & Haven International";
+  if (source === "hope-and-haven") return "Hope & Haven (referral — not a clinic)";
   const siteLabel = submission.payload?.siteLabel;
   const location = submission.payload?.ehrLocationLabel;
   if (typeof location === "string" && location) return `Wellness Tech · ${location}`;
@@ -241,7 +241,7 @@ export default function AdminIntakePage() {
             ["facial-design", "Facial Design Studio"],
             ["4everglow", "4everglow Wellness"],
             ["threefold-strength", "Threefold Strength"],
-            ["hope-and-haven", "Hope & Haven International"],
+            ["hope-and-haven", "Hope & Haven (referral)"],
             ["kian", "KIAN / Wellness Hub"],
           ] as const
         ).map(([id, label]) => (

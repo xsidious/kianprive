@@ -151,6 +151,17 @@ export async function GET(request: Request) {
     hub: "wellness-tech",
     environment: process.env.VERCEL_ENV || process.env.NODE_ENV || "unknown",
     fetchedAt: new Date().toISOString(),
+    /** Ops facts for Hub Control / Alycia questions */
+    capabilities: {
+      telemedicine: true,
+      telemedicineNote:
+        "Physician telemedicine bookings + consults on KIAN. Not a standalone multi-state IDN marketplace.",
+      bloodwork: true,
+      bloodworkNote: "Comprehensive bloodwork / lab panels bookable; intakes support NEEDS_LABS.",
+      therapyProposals: true,
+      paymentProcessing: true,
+      pharmacyFulfillment: "wellness-tech → VitaRelay/Eventide",
+    },
     usersTotal,
     usersByRole,
     partnersActive,

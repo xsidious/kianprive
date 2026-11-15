@@ -8,7 +8,7 @@ export const PARTNER_SITES = [
 ] as const;
 export type PartnerSite = (typeof PARTNER_SITES)[number];
 
-/** Distinct intake channels from partner clinics — each maps to a different clinical workflow. */
+/** Distinct intake channels from partner sites — each maps to a different clinical workflow. */
 export const PARTNER_INTAKE_TYPES = [
   "booking",
   "peptide_intake",
@@ -23,7 +23,7 @@ export const SITE_LABELS: Record<PartnerSite, string> = {
   "facial-design": "Facial Design Studio",
   "4everglow": "4everglow Wellness",
   "threefold-strength": "Threefold Strength",
-  "hope-and-haven": "Hope & Haven International",
+  "hope-and-haven": "Hope & Haven (referral — not a clinic)",
 };
 
 export const TYPE_LABELS: Record<PartnerIntakeType, string> = {

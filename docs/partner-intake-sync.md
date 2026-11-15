@@ -1,16 +1,26 @@
-# Partner clinic intake sync (4everglow + Facial Design + Threefold + Hope & Haven)
+# Partner intake sync (4everglow + Facial Design + Threefold + Hope & Haven)
+
+## Routing rules (ops — Alycia)
+
+| Site | Kind | Notes |
+|---|---|---|
+| KIAN Privé | Processor | Telemedicine, bloodwork/labs, therapy, payment. Paid Rx → Wellness Tech → VitaRelay. |
+| Facial Design Studio | Clinic via KIAN | Goes through KIAN first, then WT fulfillment. |
+| Threefold Strength | Clinic via KIAN | Goes through KIAN first, then WT fulfillment. |
+| 4everglow | Own MD + telehealth OOS | Has their own doctor on site; out-of-state patients use telehealth. Intakes still process on KIAN. |
+| Hope & Haven International | **Not a clinic** | Referral / program partner. Patients are processed by KIAN — do not label as a clinic. |
 
 ## Flow
 
-1. Partner clinic (Facial Design, 4everglow, Threefold, Hope & Haven) saves intake locally and posts to KIAN `POST /api/intake/partner` with `site`.
+1. Partner site (Facial Design, 4everglow, Threefold) or referral partner (Hope & Haven) posts intake to KIAN `POST /api/intake/partner` with `site`.
 2. Provider sends therapy via `upsertTherapyProposal` → KIAN emails patient + calls `notifyPartnerTherapySent`.
 3. Patient pays on `/pay/{token}` → `processOrderCardPayment` → `notifyPartnerTherapyPaid` → `forwardPaidOrderToWellnessTech` with the originating `partnerSite`.
-4. Wellness Tech creates the order under **that clinic’s own Organization** and places it on VitaRelay Practice API.
-5. VitaRelay status → WT webhook → KIAN `/api/webhooks/wellness-tech-order` → partner clinic webhook.
+4. Wellness Tech creates the order under **that partner’s Organization** and places it on VitaRelay Practice API.
+5. VitaRelay status → WT webhook → KIAN `/api/webhooks/wellness-tech-order` → partner webhook.
 
-## Clinic tenancy on Wellness Tech
+## Partner tenancy on Wellness Tech
 
-Each clinic is its own practice org (Portal → Orders / Patients scoped by `orgId`):
+Each partner is its own practice org for portal scoping (Portal → Orders / Patients by `orgId`). Hope & Haven remains an org for order attribution only — it is **not** a clinic:
 
 | Site key | WT Organization slug |
 |---|---|

@@ -28,6 +28,9 @@ export type EhrLocation = {
   label: string;
   aliases: string[];
   clinicians: EhrClinician[];
+  /** Ops note — Hope & Haven is not a clinic; 4everglow has own MD + OOS telehealth. */
+  routingNote?: string;
+  isClinic?: boolean;
 };
 
 export const EHR_LOCATIONS: EhrLocation[] = [
@@ -58,6 +61,8 @@ export const EHR_LOCATIONS: EhrLocation[] = [
     id: "facial-aesthetics",
     label: "Facial aesthetics",
     aliases: ["facial aesthetics", "facial-design", "facial design", "facial design studio"],
+    isClinic: true,
+    routingNote: "Partner clinic (Facial Design Studio) — goes through KIAN Privé first.",
     clinicians: [
       {
         name: "Dr. Karl Rayan",
@@ -103,7 +108,9 @@ export const EHR_LOCATIONS: EhrLocation[] = [
   {
     id: "4everglow",
     label: "4EverGlow",
-    aliases: ["4everglow", "4ever glow", "foreverglow", "4 ever glow"],
+    aliases: ["4everglow", "4ever glow", "foreverglow", "4 ever glow", "forever glow"],
+    isClinic: true,
+    routingNote: "Own doctor on site; out-of-state patients use telehealth. Network MD listed for KIAN charting.",
     clinicians: [
       {
         name: "Dr. Carmen Ramirez",
@@ -127,6 +134,8 @@ export const EHR_LOCATIONS: EhrLocation[] = [
     id: "threefold-strength",
     label: "Threefold Strength",
     aliases: ["threefold", "threefold strength", "three fold strength", "threefoldwellness"],
+    isClinic: true,
+    routingNote: "Partner clinic — goes through KIAN Privé first.",
     clinicians: [
       {
         name: "Dr. Carmen Ramirez",
@@ -156,6 +165,8 @@ export const EHR_LOCATIONS: EhrLocation[] = [
       "hopeandhaven",
       "hope and haven international",
     ],
+    isClinic: false,
+    routingNote: "Not a clinic — referral / program partner. Patients processed by KIAN Privé.",
     clinicians: [
       {
         name: "Dr. Carmen Ramirez",
