@@ -373,11 +373,6 @@ export async function forwardPaidOrderToWellnessTech(
   // Partner clinic intakes carry site on payload; native KIAN stays kian-prive.
   const partnerSite = resolvePartnerSiteFromPayload(intake?.payload) || "kian-prive";
   const provider = order.therapyProposal?.providerPartner || order.partner;
-  const providerParts = splitName(
-    provider?.displayName ||
-      process.env.EVENTIDE_PRESCRIBER_NAME ||
-      "Carmen Ramirez",
-  );
 
   const shipMeta =
     order.shippingAddress && typeof order.shippingAddress === "object"
@@ -416,33 +411,12 @@ export async function forwardPaidOrderToWellnessTech(
     address: payloadAddress(ship, profile),
   };
 
-  const providerDea =
-    (provider as { deaNumber?: string | null } | null)?.deaNumber ||
-    process.env.EVENTIDE_PRESCRIBER_DEA ||
-    process.env.VITARELAY_PRESCRIBER_DEA ||
-    "";
-  const providerLicenseState =
-    (provider as { licenseState?: string | null } | null)?.licenseState ||
-    process.env.EVENTIDE_PRESCRIBER_LICENSE_STATE ||
-    "FL";
-  const providerLicenseNumber =
-    (provider as { licenseNumber?: string | null } | null)?.licenseNumber ||
-    process.env.EVENTIDE_PRESCRIBER_LICENSE_NUMBER ||
-    "84581";
-  const prescriber = {
-    firstName: providerParts.firstName,
-    lastName: providerParts.lastName,
-    title: provider?.credentialsTitle || "MD",
-    npiNumber:
-      provider?.npi ||
-      process.env.EVENTIDE_PRESCRIBER_NPI ||
-      process.env.LAB_ORDERING_PHYSICIAN_NPI ||
-      "1023022357",
-    practiceName: provider?.legalName || "KIAN Privé",
+  // Eventide physicians issue the Rx. KIAN/partner clinicians are referring clinics only.
+  const referringProvider = {
+    externalId: provider?.id || partnerSite || "kian-prive",
+    name: provider?.displayName || provider?.legalName || "KIAN Privé",
+    kind: "tele_clinic" as const,
     phone: provider?.phone || undefined,
-    licenseState: providerLicenseState,
-    licenseNumber: providerLicenseNumber,
-    deaNumber: providerDea || undefined,
   };
 
   const clinicalChart = buildClinicalChartPackage({
@@ -498,15 +472,13 @@ export async function forwardPaidOrderToWellnessTech(
         shippingMethod: "2_DAY",
         shippingDestinationType,
         shipToKind,
-        provider: provider
-          ? {
-              external_id: provider.id,
-              name: provider.displayName || provider.legalName || "Clinic",
-              kind: "clinic",
-              phone: provider.phone || undefined,
-              npi: provider.npi || undefined,
-            }
-          : undefined,
+        provider: {
+          external_id: referringProvider.externalId,
+          name: referringProvider.name,
+          kind: "tele_clinic",
+          phone: referringProvider.phone,
+        },
+        referringProvider,
         lines: sendable.map((line) => ({
           sku: line.sku,
           platformProductId: line.platformProductId,
@@ -517,7 +489,6 @@ export async function forwardPaidOrderToWellnessTech(
           sig: line.sig,
         })),
         patient,
-        prescriber,
         clinicalChart,
         kianIntakeId: intake?.id || null,
         notes: [
