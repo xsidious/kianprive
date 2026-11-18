@@ -241,7 +241,7 @@ class SitesMap(Flowable):
         boxes = [
             (0.0, "KIAN Privé", "Main hub", "Bookings · intakes · shop\npayments · staff portals"),
             (0.35, "Threefold", "Partner clinic site", "Local forms & booking\nsend patients into KIAN"),
-            (0.70, "Wellness Tech", "Pharmacy / wholesale", "Receives paid Rx orders\nsends to RxHere / RxCore"),
+            (0.70, "Wellness Tech", "Pharmacy / wholesale", "Receives paid Rx orders\nsends to Eventide / RxCore"),
         ]
         bw = self._width * 0.28
         for frac, title, role, blurb in boxes:
@@ -460,7 +460,7 @@ def build():
                 ("3. Patient pays on KIAN", "Card charged with Authorize.net"),
                 ("4. KIAN marks order paid", "Commissions and partner notifications fire"),
                 ("5. Order sent to Wellness Tech", "Includes chart details needed for the pharmacy"),
-                ("6. Pharmacy fulfills (RxHere)", "Status updates flow back toward KIAN / partners"),
+                ("6. Pharmacy fulfills (Eventide)", "Status updates flow back toward KIAN / partners"),
             ],
             content_w,
         )
@@ -526,7 +526,7 @@ def build():
                 ["Where do clinical forms go?", "Always into KIAN’s intake inbox"],
                 ["Who creates the Rx order?", "Provider / admin from the intake chart"],
                 ["Where does the patient pay?", "Always on KIAN (pay link or shop checkout)"],
-                ["Who fills the pharmacy order?", "Wellness Tech → RxHere / RxCore"],
+                ["Who fills the pharmacy order?", "Wellness Tech → Eventide / RxCore"],
                 ["Can partners see status?", "Yes — KIAN notifies partner sites when therapy is owed or paid"],
             ],
             [2.2 * inch, 4.9 * inch],

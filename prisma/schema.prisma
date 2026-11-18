@@ -485,7 +485,7 @@ model Order {
   /** Latest distribution / pharmacy pipeline status (e.g. compounding, shipped). */
   distributionStatus   String?
   /** VitaRelay / WT pharmacy order id when known. */
-  rxhereOrderId        String?
+  eventideOrderId        String?
   distributionSyncError String?     @db.Text
   lastDistributionWebhookAt DateTime?
   paymentToken         String?      @unique

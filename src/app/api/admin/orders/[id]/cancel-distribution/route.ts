@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdminAccess } from "@/lib/admin-guard";
 import { writeAuditLog } from "@/lib/ops/audit";
-import { applyDistributionFulfillmentUpdate } from "@/lib/rxhere/apply-fulfillment-update";
+import { applyDistributionFulfillmentUpdate } from "@/lib/eventide/apply-fulfillment-update";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -20,7 +20,7 @@ export async function POST(_: Request, { params }: Params) {
       id: true,
       orderNumber: true,
       distributionOrderId: true,
-      rxhereOrderId: true,
+      eventideOrderId: true,
       status: true,
       fulfillmentStatus: true,
     },
@@ -63,7 +63,7 @@ export async function POST(_: Request, { params }: Params) {
     status: "cancelled",
     event: "order.cancelled",
     distributionStatus: "cancelled",
-    rxhereOrderId: order.rxhereOrderId || undefined,
+    eventideOrderId: order.eventideOrderId || undefined,
   });
 
   await writeAuditLog({

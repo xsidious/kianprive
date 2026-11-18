@@ -88,7 +88,9 @@ export default function AdminProductsPage() {
   const [shipping, setShipping] = useState<ShippingDefaults | null>(null);
   const [pricing, setPricing] = useState<PricingDefaults | null>(null);
   const [calcProductId, setCalcProductId] = useState<string | null>(null);
-  const [rxhereSyncing, setRxhereSyncing] = useState(false);
+  const [eventideSyncing, setEventideSyncing] = useState(false);
+  const [prescribeUsaSyncing, setPrescribeUsaSyncing] = useState(false);
+  const [vendorFilter, setVendorFilter] = useState<"ALL" | "EVENTIDE" | "PRESCRIBEUSA">("ALL");
   const [draft, setDraft] = useState({
     title: "",
     slug: "",
@@ -256,18 +258,22 @@ export default function AdminProductsPage() {
     if (response.ok) await loadProducts();
   }
 
-  async function syncRxHereCatalog() {
+  async function syncEventideCatalog() {
     if (
       !window.confirm(
-        "Pull the live VitaRelay formulary into KIAN clinical products? Existing VitaRelay items will be updated; new ones will be added.",
+        "Pull the live Eventide/VitaRelay formulary into KIAN clinical products? Existing Eventide items will be updated; new ones will be added under Eventide · categories.",
       )
     ) {
       return;
     }
-    setRxhereSyncing(true);
-    setStatus("Syncing VitaRelay catalog…");
+    setEventideSyncing(true);
+    setStatus("Syncing Eventide catalog…");
     try {
-      const response = await fetch("/api/admin/rxhere/sync-catalog", { method: "POST" });
+      const response = await fetch("/api/admin/eventide/sync-catalog", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vendor: "eventide" }),
+      });
       const data = (await response.json().catch(() => ({}))) as {
         ok?: boolean;
         error?: string;
@@ -277,15 +283,45 @@ export default function AdminProductsPage() {
         priced?: number;
       };
       if (!response.ok || !data.ok) {
-        setStatus(data.error || "VitaRelay catalog sync failed. Check VITARELAY_API_KEY / EVENTIDE_API_KEY.");
+        setStatus(data.error || "Eventide catalog sync failed. Check VITARELAY_API_KEY / EVENTIDE_API_KEY.");
         return;
       }
       setStatus(
-        `VitaRelay sync complete · ${data.totalRemote ?? 0} remote · ${data.created ?? 0} new · ${data.updated ?? 0} updated · ${data.priced ?? 0} with prices.`,
+        `Eventide sync complete · ${data.totalRemote ?? 0} remote · ${data.created ?? 0} new · ${data.updated ?? 0} updated · ${data.priced ?? 0} with prices.`,
       );
       await loadProducts();
     } finally {
-      setRxhereSyncing(false);
+      setEventideSyncing(false);
+    }
+  }
+
+  async function syncPrescribeUsa() {
+    if (!window.confirm("Sync PrescribeUSA pens into KIAN under PrescribeUSA categories?")) return;
+    setPrescribeUsaSyncing(true);
+    setStatus("Syncing PrescribeUSA catalog…");
+    try {
+      const response = await fetch("/api/admin/eventide/sync-catalog", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vendor: "prescribeusa" }),
+      });
+      const data = (await response.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+        created?: number;
+        updated?: number;
+        totalRemote?: number;
+      };
+      if (!response.ok || !data.ok) {
+        setStatus(data.error || "PrescribeUSA sync failed.");
+        return;
+      }
+      setStatus(
+        `PrescribeUSA sync complete · ${data.totalRemote ?? 0} pens · ${data.created ?? 0} new · ${data.updated ?? 0} updated.`,
+      );
+      await loadProducts();
+    } finally {
+      setPrescribeUsaSyncing(false);
     }
   }
 
@@ -311,12 +347,14 @@ export default function AdminProductsPage() {
     return products.filter((p) => {
       const kind = p.catalogKind || "RETAIL";
       if (catalogFilter !== "ALL" && kind !== catalogFilter) return false;
+      if (vendorFilter === "EVENTIDE" && !String(p.category || "").startsWith("Eventide")) return false;
+      if (vendorFilter === "PRESCRIBEUSA" && !String(p.category || "").startsWith("PrescribeUSA")) return false;
       if (categoryFilter !== "All" && p.category !== categoryFilter) return false;
       if (!search.trim()) return true;
       const hay = `${p.title} ${p.slug} ${p.sku ?? ""} ${p.category ?? ""}`.toLowerCase();
       return hay.includes(search.trim().toLowerCase());
     });
-  }, [products, catalogFilter, categoryFilter, search]);
+  }, [products, catalogFilter, categoryFilter, vendorFilter, search]);
 
   return (
     <div className="space-y-6">
@@ -333,10 +371,18 @@ export default function AdminProductsPage() {
           <button
             type="button"
             className={adminBtnSoft}
-            disabled={rxhereSyncing}
-            onClick={() => void syncRxHereCatalog()}
+            disabled={eventideSyncing || prescribeUsaSyncing}
+            onClick={() => void syncEventideCatalog()}
           >
-            {rxhereSyncing ? "Syncing VitaRelay…" : "Sync VitaRelay catalog"}
+            {eventideSyncing ? "Syncing Eventide…" : "Sync Eventide catalog"}
+          </button>
+          <button
+            type="button"
+            className={adminBtnSoft}
+            disabled={eventideSyncing || prescribeUsaSyncing}
+            onClick={() => void syncPrescribeUsa()}
+          >
+            {prescribeUsaSyncing ? "Syncing PrescribeUSA…" : "Sync PrescribeUSA"}
           </button>
           <Link href="/shop" className={adminBtnGhost}>
             Preview shop
@@ -384,6 +430,23 @@ export default function AdminProductsPage() {
             }`}
           >
             {kind === "ALL" ? "All" : kind === "RETAIL" ? "Retail shop" : "Clinical"}
+          </button>
+        ))}
+        {(["ALL", "EVENTIDE", "PRESCRIBEUSA"] as const).map((vendor) => (
+          <button
+            key={vendor}
+            type="button"
+            onClick={() => {
+              setVendorFilter(vendor);
+              setCategoryFilter("All");
+            }}
+            className={`rounded-full border px-3 py-1.5 text-xs uppercase tracking-[0.12em] ${
+              vendorFilter === vendor
+                ? "border-[#5c6b4a] bg-[#5c6b4a] text-white"
+                : "border-[#d8cbb5] text-[#6f6251]"
+            }`}
+          >
+            {vendor === "ALL" ? "All vendors" : vendor === "EVENTIDE" ? "Eventide" : "PrescribeUSA"}
           </button>
         ))}
         <input

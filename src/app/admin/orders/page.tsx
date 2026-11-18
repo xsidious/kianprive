@@ -46,7 +46,7 @@ type Order = {
   authorizeNetTransId?: string | null;
   distributionOrderId?: string | null;
   distributionStatus?: string | null;
-  rxhereOrderId?: string | null;
+  eventideOrderId?: string | null;
   distributionSyncError?: string | null;
   shippingAddress?: Record<string, string> | null;
   notes?: string | null;
@@ -125,7 +125,7 @@ export default function AdminOrdersPage() {
         order?: {
           distributionOrderId?: string | null;
           distributionStatus?: string | null;
-          rxhereOrderId?: string | null;
+          eventideOrderId?: string | null;
           distributionSyncError?: string | null;
         };
       };
@@ -135,8 +135,8 @@ export default function AdminOrdersPage() {
         return;
       }
       setStatus(
-        data.order?.rxhereOrderId
-          ? `Pharmacy accepted · VitaRelay ${data.order.rxhereOrderId}`
+        data.order?.eventideOrderId
+          ? `Pharmacy accepted · VitaRelay ${data.order.eventideOrderId}`
           : "Sent to Wellness Tech. Waiting on pharmacy id.",
       );
       await loadOrders();
@@ -337,7 +337,7 @@ export default function AdminOrdersPage() {
         order.phone,
         order.authorizeNetTransId,
         order.distributionOrderId,
-        order.rxhereOrderId,
+        order.eventideOrderId,
         order.partner?.displayName,
         ...(order.items ?? []).map((i) => i.title),
       ]
@@ -458,7 +458,7 @@ export default function AdminOrdersPage() {
                   <p className="mt-1 text-xs text-[#1b6568]">
                     Wellness Tech · {order.distributionOrderId}
                     {order.distributionStatus ? ` · ${order.distributionStatus}` : ""}
-                    {order.rxhereOrderId ? ` · VitaRelay ${order.rxhereOrderId}` : ""}
+                    {order.eventideOrderId ? ` · VitaRelay ${order.eventideOrderId}` : ""}
                   </p>
                 ) : null}
                 {order.distributionSyncError ? (
@@ -469,7 +469,7 @@ export default function AdminOrdersPage() {
               </div>
               <div className="flex flex-wrap gap-2">
                 {order.paymentStatus === "PAID" &&
-                (!order.distributionOrderId || !order.rxhereOrderId || order.distributionSyncError) ? (
+                (!order.distributionOrderId || !order.eventideOrderId || order.distributionSyncError) ? (
                   <button
                     type="button"
                     className={adminBtnSoft}

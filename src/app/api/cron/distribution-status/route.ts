@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { syncOpenDistributionStatuses } from "@/lib/rxhere/sync-distribution-status";
+import { syncOpenDistributionStatuses } from "@/lib/eventide/sync-distribution-status";
 
 function cronAuthorized(req: Request) {
   const secret = process.env.CRON_SECRET;

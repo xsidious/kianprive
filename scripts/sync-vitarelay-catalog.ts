@@ -1,7 +1,7 @@
-import { syncRxHereCatalog } from "../src/lib/rxhere/sync-catalog";
+import { syncEventideCatalog } from "../src/lib/eventide/sync-catalog";
 
 async function main() {
-  const result = await syncRxHereCatalog({ activateNew: true });
+  const result = await syncEventideCatalog({ activateNew: true });
   console.log(JSON.stringify(result, null, 2));
   if (!result.ok) process.exit(1);
 }

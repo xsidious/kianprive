@@ -58,7 +58,7 @@ Partner apps must set `KIAN_WEBHOOK_SECRET` to the matching secret and expose `P
 
 ## Formulary products (VitaRelay Practice API)
 
-- **KIAN** holds the clinical catalog (`CLINICAL` products). Live sync: Admin → Products → **Sync VitaRelay catalog** (`POST /api/admin/rxhere/sync-catalog`). Persists `productClass` (503A/503B/RND), `controlledSubstance`, wholesale `price_cents`, and `lastSyncedAt`. Fallback import: `node scripts/import-rxhere-formulary.mjs`. Patient sell `price` stays admin-set for clinical; retail RUO may use markup. Default clinical/shop shipping flat rate is **$35**.
+- **KIAN** holds the clinical catalog (`CLINICAL` products). Live sync: Admin → Products → **Sync VitaRelay catalog** (`POST /api/admin/eventide/sync-catalog`). Persists `productClass` (503A/503B/RND), `controlledSubstance`, wholesale `price_cents`, and `lastSyncedAt`. Fallback import: `node scripts/import-eventide-formulary.mjs`. Patient sell `price` stays admin-set for clinical; retail RUO may use markup. Default clinical/shop shipping flat rate is **$35**.
 - **Partner sites** do **not** get the full formulary. After therapy is assigned, KIAN webhooks send **payment amount + therapy line items** only.
 - **Wellness Tech** syncs the same Practice API catalog (class, controlled flag, practice wholesale). Admin → Formulary → **Sync VitaRelay catalog**. Clinic sell price = VitaRelay wholesale × **`WT_FORMULARY_MARKUP` (1.2 = 20%)**.
 - Status loop: VitaRelay webhooks → WT `/api/webhooks/eventide` → KIAN `/api/webhooks/wellness-tech-order`. Poll backup: WT `GET /api/cron/vitarelay-poll` or order **Refresh from VitaRelay**.

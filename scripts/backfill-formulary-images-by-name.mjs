@@ -1,11 +1,11 @@
 /**
- * Fill missing RxHere product photos by matching medication / product name.
+ * Fill missing Eventide product photos by matching medication / product name.
  *
  * Rules:
  * 1) Prefer an exact medication-name match that already has a webp.
  * 2) Else match a related medication (shared primary ingredient / stack component).
  * 3) Propagate that photo to every SKU with the same medication name.
- * 4) Update scripts/data/rxhere-formulary.json and Product.featuredImage in DB.
+ * 4) Update scripts/data/eventide-formulary.json and Product.featuredImage in DB.
  *
  * Usage: node scripts/backfill-formulary-images-by-name.mjs
  */
@@ -16,8 +16,8 @@ import { PrismaClient } from "@prisma/client";
 import { formularyImageForCategory } from "./formulary-image-map.mjs";
 
 const prisma = new PrismaClient();
-const FORMULARY = resolve("scripts/data/rxhere-formulary.json");
-const SKU_IMAGES = resolve("scripts/data/rxhere-sku-images.json");
+const FORMULARY = resolve("scripts/data/eventide-formulary.json");
+const SKU_IMAGES = resolve("scripts/data/eventide-sku-images.json");
 
 function normName(value) {
   return String(value || "")
@@ -38,11 +38,11 @@ function primaryToken(name) {
 }
 
 function localPath(imageId) {
-  return `/images/formulary/rxhere/${imageId}.webp`;
+  return `/images/formulary/eventide/${imageId}.webp`;
 }
 
 function isWebpPath(path) {
-  return Boolean(path && String(path).includes("/images/formulary/rxhere/") && String(path).endsWith(".webp"));
+  return Boolean(path && String(path).includes("/images/formulary/eventide/") && String(path).endsWith(".webp"));
 }
 
 function scoreMatch(need, have) {
@@ -87,7 +87,7 @@ async function main() {
 
   // Also pull current DB webp paths as donors (title/sku).
   const dbProducts = await prisma.product.findMany({
-    where: { source: "RXHERE", catalogKind: "CLINICAL" },
+    where: { source: "eventide", catalogKind: "CLINICAL" },
     select: { id: true, sku: true, title: true, featuredImage: true, category: true },
   });
   for (const product of dbProducts) {
@@ -132,7 +132,7 @@ async function main() {
       if (row.image !== donor.image || row.imageId !== donor.imageId) {
         row.image = donor.image;
         row.imageId = donor.imageId;
-        row.imageSourceUrl = `https://rxhere.qrolic.com/api/uploads/${donor.imageId}.webp`;
+        row.imageSourceUrl = `https://vitarelay.com/api/uploads/${donor.imageId}.webp`;
         jsonFilled += 1;
       } else {
         jsonUnchanged += 1;
@@ -166,10 +166,10 @@ async function main() {
   }
 
   const stillSvg = await prisma.product.count({
-    where: { source: "RXHERE", featuredImage: { contains: ".svg" } },
+    where: { source: "eventide", featuredImage: { contains: ".svg" } },
   });
   const webp = await prisma.product.count({
-    where: { source: "RXHERE", featuredImage: { contains: ".webp" } },
+    where: { source: "eventide", featuredImage: { contains: ".webp" } },
   });
 
   console.log(

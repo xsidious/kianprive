@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdminAccess } from "@/lib/admin-guard";
 import { writeAuditLog } from "@/lib/ops/audit";
-import { applyDistributionFulfillmentUpdate } from "@/lib/rxhere/apply-fulfillment-update";
+import { applyDistributionFulfillmentUpdate } from "@/lib/eventide/apply-fulfillment-update";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -18,7 +18,7 @@ export async function POST(_: Request, { params }: Params) {
       id: true,
       orderNumber: true,
       distributionOrderId: true,
-      rxhereOrderId: true,
+      eventideOrderId: true,
     },
   });
   if (!order) return NextResponse.json({ ok: false, error: "Order not found." }, { status: 404 });
@@ -44,7 +44,7 @@ export async function POST(_: Request, { params }: Params) {
     trackingNumber?: string | null;
     carrier?: string | null;
     trackingUrl?: string | null;
-    rxhereOrderId?: string | null;
+    eventideOrderId?: string | null;
     error?: string;
   };
   if (!res.ok || !data.ok) {
@@ -60,7 +60,7 @@ export async function POST(_: Request, { params }: Params) {
     trackingNumber: data.trackingNumber,
     carrier: data.carrier,
     trackingUrl: data.trackingUrl,
-    rxhereOrderId: data.rxhereOrderId || undefined,
+    eventideOrderId: data.eventideOrderId || undefined,
     distributionStatus: data.status,
   });
 

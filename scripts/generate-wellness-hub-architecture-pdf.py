@@ -139,7 +139,7 @@ class HubDiagram(Flowable):
         c.roundRect(self._w * 0.22, 8, self._w * 0.56, 30, 5, fill=1, stroke=0)
         c.setFillColor(colors.white)
         c.setFont("Helvetica-Bold", 9)
-        c.drawCentredString(mid, 22, "Partner Pharmacy  (RxHere / RxCore)")
+        c.drawCentredString(mid, 22, "Partner Pharmacy  (Eventide / RxCore)")
         c.setFont("Helvetica", 7)
         c.drawCentredString(mid, 12, "Fulfills compounds at wholesale · ships to patient / clinic")
 
@@ -159,7 +159,7 @@ class MoneyFlow(Flowable):
             ("1. Patient pays", "Full retail price\non Wellness Hub"),
             ("2. Hub keeps margin", "Retail − wholesale\n− fees − partner share"),
             ("3. Hub owes pharmacy", "Wholesale cost\nfrom price sheet"),
-            ("4. Pay RxHere", "ACH / PO settlement\nat wholesale"),
+            ("4. Pay Eventide", "ACH / PO settlement\nat wholesale"),
         ]
         n = len(steps)
         gap = 14
@@ -307,7 +307,7 @@ def build():
             "<b>Goal in one sentence:</b> Every partner brand (KIAN Privé, Threefold Strength, "
             "4everglow, Facial Design, and others) sends patients and orders into <b>Wellness Hub</b>. "
             "Wellness Hub is the only system that takes payment, owns the clinical chart, and pays "
-            "the partner pharmacy (RxHere) at wholesale.",
+            "the partner pharmacy (Eventide) at wholesale.",
             s,
         )
     )
@@ -329,7 +329,7 @@ def build():
                 ["Partner websites", "Brand + marketing + local booking UI. Capture interest. Do NOT charge for Rx."],
                 ["Partner providers", "Review charts and build therapy plans inside Wellness Hub (or via Hub API)."],
                 ["Wellness Hub", "Central system: intakes, orders, payments, catalog, status, commissions."],
-                ["Partner pharmacy (RxHere)", "Compound and ship. Paid by Hub at wholesale after the order is funded."],
+                ["Partner pharmacy (Eventide)", "Compound and ship. Paid by Hub at wholesale after the order is funded."],
             ],
             [1.7 * inch, 5.5 * inch],
             s,
@@ -383,7 +383,7 @@ def build():
                 ("C. Partner provider reviews in Hub", "Builds therapy proposal from the shared formulary"),
                 ("D. Patient pays on Wellness Hub", "Authorize.net (or chosen gateway) — Hub is merchant of record"),
                 ("E. Hub creates fulfillment job", "Chart + Rx lines + ship-to + wholesale costs attached"),
-                ("F. Hub submits to RxHere", "Partner pharmacy compounds / ships"),
+                ("F. Hub submits to Eventide", "Partner pharmacy compounds / ships"),
                 ("G. Status returns to Hub → partners", "Partner sites show paid / shipped without handling money"),
             ],
             w,
@@ -395,7 +395,7 @@ def build():
     story.append(
         Paragraph(
             "This is the clean settlement model. The patient always pays retail to Wellness Hub. "
-            "Hub later pays RxHere only the wholesale amount from the distribution price sheet.",
+            "Hub later pays Eventide only the wholesale amount from the distribution price sheet.",
             s["body"],
         )
     )
@@ -407,7 +407,7 @@ def build():
             [
                 ["Example", "Amount"],
                 ["Patient pays Hub for a therapy line (retail / MSRP)", "$80.00"],
-                ["Wholesale cost on price sheet (what Hub owes RxHere)", "$40.00"],
+                ["Wholesale cost on price sheet (what Hub owes Eventide)", "$40.00"],
                 ["Card fees + ops (illustrative)", "$3.00"],
                 ["Optional partner / provider commission", "$8.00"],
                 ["Hub margin before other costs", "$29.00"],
@@ -437,7 +437,7 @@ def build():
                 ["Partner provider", "Wellness Hub provider portal", "Review intake, sign, send therapy"],
                 ["Partner clinic / brand", "Own website + Hub partner portal", "Send leads, see status & earnings"],
                 ["Hub admin / ops", "Wellness Hub admin", "Catalog, partners, exceptions, payouts"],
-                ["Pharmacy (RxHere)", "RxHere systems", "Compound, ship, send status"],
+                ["Pharmacy (Eventide)", "Eventide systems", "Compound, ship, send status"],
             ],
             [1.4 * inch, 2.2 * inch, 3.6 * inch],
             s,
@@ -489,9 +489,9 @@ def build():
                 ["Must configure", "Why it matters"],
                 ["One Hub domain + API keys per partner site", "Trusted intake + webhook identity"],
                 ["One payment merchant on Hub (Authorize.net)", "Patients always pay the same trusted checkout"],
-                ["Master formulary with retail + wholesale", "Correct patient charge and RxHere cost"],
+                ["Master formulary with retail + wholesale", "Correct patient charge and Eventide cost"],
                 ["Provider accounts attached to Hub (not only brand sites)", "Charts reviewed in one place"],
-                ["RxHere credentials on Hub (or Hub→WT service)", "Automated pharmacy submit after PAID"],
+                ["Eventide credentials on Hub (or Hub→WT service)", "Automated pharmacy submit after PAID"],
                 ["Wholesale payable ledger + ACH process", "Pay pharmacy without guessing margins"],
                 ["Partner revenue-share rules", "Automatic commissions after payment"],
                 ["Status webhooks back to every brand", "Partners stay informed without owning fulfillment"],
@@ -511,8 +511,8 @@ def build():
                 ["Central brain", "Mostly KIAN Privé", "Wellness Hub"],
                 ["Patient pays where?", "KIAN pay links / shop", "Always Wellness Hub"],
                 ["Partner intakes land where?", "KIAN partner API", "Hub intake API"],
-                ["Pharmacy path", "KIAN → Wellness Tech → RxHere", "Hub → RxHere (WT optional as worker)"],
-                ["Wholesale settlement", "Vendor PO / manual ACH to WT", "Hub pays RxHere at wholesale"],
+                ["Pharmacy path", "KIAN → Wellness Tech → Eventide", "Hub → Eventide (WT optional as worker)"],
+                ["Wholesale settlement", "Vendor PO / manual ACH to WT", "Hub pays Eventide at wholesale"],
                 ["Brand sites", "Mix of local + KIAN dependence", "Front doors only + Hub APIs"],
             ],
             [1.5 * inch, 2.85 * inch, 2.85 * inch],
@@ -527,7 +527,7 @@ def build():
                 ("Phase 1 — Name the hub and freeze the contract", "Confirm Wellness Hub is MoR + chart owner"),
                 ("Phase 2 — Partner intake cutover", "Threefold / 4everglow / Facial Design / KIAN → Hub API"),
                 ("Phase 3 — Payment cutover", "Move /pay links and Authorize.net merchant to Hub"),
-                ("Phase 4 — Pharmacy + wholesale automation", "PAID → RxHere submit + wholesale payable"),
+                ("Phase 4 — Pharmacy + wholesale automation", "PAID → Eventide submit + wholesale payable"),
                 ("Phase 5 — Provider portal on Hub", "Dual-role providers work charts in Hub"),
                 ("Phase 6 — Brand cleanup", "KIAN/partners become fronts; Hub is the ops home"),
             ],
@@ -540,8 +540,8 @@ def build():
         callout_box(
             "<b>Decision we need from you before building:</b> Confirm that <b>Wellness Hub</b> "
             "(not KIAN Privé) will be the single system that (1) receives all intakes, "
-            "(2) charges every patient for therapy/Rx, (3) sends paid orders to RxHere, and "
-            "(4) pays RxHere at wholesale. Partner websites remain brands and lead sources. "
+            "(2) charges every patient for therapy/Rx, (3) sends paid orders to Eventide, and "
+            "(4) pays Eventide at wholesale. Partner websites remain brands and lead sources. "
             "If you confirm, the next step is a phased build plan with owners and cutover dates.",
             s,
         )
@@ -550,7 +550,7 @@ def build():
     story.append(Spacer(1, 0.2 * inch))
     story.append(
         Paragraph(
-            "Remember the picture: <b>Partner sites → Wellness Hub (pay + chart) → RxHere (fulfill at wholesale) → status back to partners.</b>",
+            "Remember the picture: <b>Partner sites → Wellness Hub (pay + chart) → Eventide (fulfill at wholesale) → status back to partners.</b>",
             s["body"],
         )
     )

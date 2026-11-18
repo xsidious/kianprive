@@ -1,4 +1,4 @@
-/** Map RxHere formulary category / product image → public image path. */
+/** Map Eventide formulary category / product image → public image path. */
 
 const CATEGORY_SLUGS = {
   "appetite suppressant": "appetite-suppressant",
@@ -35,13 +35,13 @@ export function formularyImageForCategory(category) {
   return `/images/formulary/${slug}.svg`;
 }
 
-/** Prefer pulled RxHere product photo; fall back to category SVG. */
+/** Prefer pulled Eventide product photo; fall back to category SVG. */
 export function formularyImageForRow(row) {
-  if (row?.image && String(row.image).startsWith("/images/formulary/rxhere/")) {
+  if (row?.image && String(row.image).startsWith("/images/formulary/eventide/")) {
     return String(row.image);
   }
   if (row?.imageId) {
-    return `/images/formulary/rxhere/${row.imageId}.webp`;
+    return `/images/formulary/eventide/${row.imageId}.webp`;
   }
   if (row?.image && String(row.image).startsWith("/images/")) {
     return String(row.image);

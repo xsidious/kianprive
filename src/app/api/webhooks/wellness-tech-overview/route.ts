@@ -104,7 +104,7 @@ export async function GET(request: Request) {
         fulfillmentStatus: true,
         distributionStatus: true,
         distributionOrderId: true,
-        rxhereOrderId: true,
+        eventideOrderId: true,
         total: true,
         createdAt: true,
         intakeSubmissionId: true,
@@ -140,7 +140,7 @@ export async function GET(request: Request) {
 
   const distributionPending = recentOrders.filter((o) => {
     const s = String(o.distributionStatus || "").toLowerCase();
-    if (!(o.distributionOrderId || o.rxhereOrderId)) return o.paymentStatus === "PAID";
+    if (!(o.distributionOrderId || o.eventideOrderId)) return o.paymentStatus === "PAID";
     return !["delivered", "cancelled", "canceled"].includes(s);
   }).length;
 
@@ -222,7 +222,7 @@ export async function GET(request: Request) {
         fulfillmentStatus: row.fulfillmentStatus,
         distributionStatus: row.distributionStatus,
         distributionOrderId: row.distributionOrderId,
-        rxhereOrderId: row.rxhereOrderId,
+        eventideOrderId: row.eventideOrderId,
         totalCents: moneyCents(row.total),
         trackingNumber: row.fulfillments[0]?.trackingNumber || null,
         intakeId: row.intakeSubmissionId,

@@ -6,7 +6,7 @@ import { forwardPaidOrderToWellnessTech } from "@/lib/commerce/forward-distribut
 
 type Params = { params: Promise<{ id: string }> };
 
-/** Re-push a paid order to Wellness Tech / RxHere when pharmacy submit previously failed. */
+/** Re-push a paid order to Wellness Tech / Eventide when pharmacy submit previously failed. */
 export async function POST(_: Request, { params }: Params) {
   const guard = await requireAdminAccess();
   if (!guard.ok) return guard.response;
@@ -19,7 +19,7 @@ export async function POST(_: Request, { params }: Params) {
       orderNumber: true,
       paymentStatus: true,
       distributionOrderId: true,
-      rxhereOrderId: true,
+      eventideOrderId: true,
       distributionSyncError: true,
     },
   });
@@ -44,7 +44,7 @@ export async function POST(_: Request, { params }: Params) {
     select: {
       distributionOrderId: true,
       distributionStatus: true,
-      rxhereOrderId: true,
+      eventideOrderId: true,
       distributionSyncError: true,
     },
   });

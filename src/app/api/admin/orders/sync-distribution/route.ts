@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdminAccess } from "@/lib/admin-guard";
-import { syncOpenDistributionStatuses } from "@/lib/rxhere/sync-distribution-status";
+import { syncOpenDistributionStatuses } from "@/lib/eventide/sync-distribution-status";
 
 export async function POST() {
   const guard = await requireAdminAccess();

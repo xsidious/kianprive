@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import crypto from "node:crypto";
-import { applyDistributionFulfillmentUpdate } from "@/lib/rxhere/apply-fulfillment-update";
+import { applyDistributionFulfillmentUpdate } from "@/lib/eventide/apply-fulfillment-update";
 
 /**
  * Eventide Wellness Collective (VitaRelay) outbound webhooks.
@@ -75,7 +75,7 @@ function webhookSecret() {
   return (
     process.env.EVENTIDE_WEBHOOK_SECRET?.trim() ||
     process.env.VITARELAY_WEBHOOK_SECRET?.trim() ||
-    process.env.RXHERE_WEBHOOK_SECRET?.trim() ||
+    process.env.EVENTIDE_WEBHOOK_SECRET?.trim() ||
     ""
   );
 }
@@ -163,7 +163,7 @@ export async function POST(request: Request) {
     carrier: order?.fulfillment?.tracking_carrier || payload.data?.tracking_carrier,
     trackingUrl: order?.fulfillment?.tracking_url || payload.data?.tracking_url,
     event: type,
-    rxhereOrderId: order?.id || payload.data?.order_id,
+    eventideOrderId: order?.id || payload.data?.order_id,
     distributionStatus: order?.status || statusFromEvent,
   });
 

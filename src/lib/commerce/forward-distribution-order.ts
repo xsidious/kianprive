@@ -77,14 +77,14 @@ function eventidePlatformId(item: {
   };
 }) {
   const external = item.product.externalId?.trim() || "";
-  const stripped = external.replace(/^(rxhere:|eventide:|vitarelay:)/i, "");
+  const stripped = external.replace(/^(eventide:|vitarelay:)/i, "");
   if (isUuid(stripped)) return stripped;
   if (isUuid(item.sku || "")) return (item.sku || "").trim();
   if (isUuid(item.product.sku || "")) return (item.product.sku || "").trim();
   return undefined;
 }
 
-function rxhereSku(item: {
+function eventideSku(item: {
   sku: string | null;
   product: {
     sku: string | null;
@@ -98,11 +98,9 @@ function rxhereSku(item: {
   const offerSku = item.product.vendorOffers.find((offer) => offer.vendorSku)?.vendorSku?.trim();
   if (offerSku) return offerSku;
   const external = item.product.externalId?.trim() || "";
-  if (external.toLowerCase().startsWith("rxhere:")) return external.slice("rxhere:".length);
   if (external.toLowerCase().startsWith("eventide:")) return external.slice("eventide:".length);
-  const sku = (item.sku || item.product.sku || "").trim();
-  if (sku.toUpperCase().startsWith("RXH-")) return sku.slice(4);
-  return sku;
+  if (external.toLowerCase().startsWith("vitarelay:")) return external.slice("vitarelay:".length);
+  return (item.sku || item.product.sku || "").trim();
 }
 
 function payloadAddress(ship: ReturnType<typeof shipTo>, profile?: {
@@ -149,7 +147,7 @@ async function retryWellnessTechPharmacySubmit(
       ok?: boolean;
       error?: string;
       orderId?: string;
-      rxhereOrderId?: string;
+      eventideOrderId?: string;
       status?: string;
       duplicate?: boolean;
     };
@@ -169,7 +167,7 @@ async function retryWellnessTechPharmacySubmit(
     await prisma.order.update({
       where: { id: kianOrderId },
       data: {
-        rxhereOrderId: data.rxhereOrderId || undefined,
+        eventideOrderId: data.eventideOrderId || undefined,
         distributionStatus: data.status || "submitted",
         distributionSyncError: null,
       },
@@ -177,7 +175,7 @@ async function retryWellnessTechPharmacySubmit(
     return {
       ok: true as const,
       orderId: distributionOrderId,
-      rxhereOrderId: data.rxhereOrderId,
+      eventideOrderId: data.eventideOrderId,
       retried: true as const,
       duplicate: Boolean(data.duplicate),
     };
@@ -192,7 +190,7 @@ async function retryWellnessTechPharmacySubmit(
 
 /**
  * After KIAN collects payment, place the same product lines on Wellness Tech Distribution.
- * Wellness Tech submits 503A lines to the RxHere Partner API. Payment on KIAN is not rolled back if this fails.
+ * Wellness Tech submits 503A lines to the Eventide / VitaRelay Practice API. Payment on KIAN is not rolled back if this fails.
  */
 export async function forwardPaidOrderToWellnessTech(
   orderId: string,
@@ -234,7 +232,7 @@ export async function forwardPaidOrderToWellnessTech(
   if (!order) return { ok: false as const, error: "Order not found." };
   if (order.distributionOrderId) {
     // Already on Wellness Tech — if pharmacy never got it (502 / on_hold), ask WT to resubmit.
-    if (!order.rxhereOrderId) {
+    if (!order.eventideOrderId) {
       const retrySite = resolvePartnerSiteFromPayload(order.intakeSubmission?.payload) || "kian-prive";
       const retried = await retryWellnessTechPharmacySubmit(
         order.id,
@@ -304,7 +302,7 @@ export async function forwardPaidOrderToWellnessTech(
       const platformProductId = eventidePlatformId(item);
       // WT catalog is keyed by local SKU (e.g. AA-GSH); Eventide UUID goes as platformProductId.
       const catalogSku = (item.product.sku || item.sku || "").trim();
-      const sku = catalogSku || rxhereSku(item);
+      const sku = catalogSku || eventideSku(item);
       return {
         sku,
         platformProductId: platformProductId || (isUuid(sku) ? sku : undefined),
@@ -517,7 +515,7 @@ export async function forwardPaidOrderToWellnessTech(
       ok?: boolean;
       error?: string;
       orderId?: string;
-      rxhereOrderId?: string;
+      eventideOrderId?: string;
       warning?: string;
     };
 
@@ -531,15 +529,15 @@ export async function forwardPaidOrderToWellnessTech(
       where: { id: order.id },
       data: {
         distributionOrderId: data.orderId,
-        rxhereOrderId: data.rxhereOrderId || undefined,
-        distributionStatus: data.rxhereOrderId ? "submitted" : data.warning ? "on_hold" : "submitted",
-        distributionSyncError: data.warning || (data.rxhereOrderId ? null : "Sent to Wellness Tech; waiting on Eventide pharmacy id."),
+        eventideOrderId: data.eventideOrderId || undefined,
+        distributionStatus: data.eventideOrderId ? "submitted" : data.warning ? "on_hold" : "submitted",
+        distributionSyncError: data.warning || (data.eventideOrderId ? null : "Sent to Wellness Tech; waiting on Eventide pharmacy id."),
       },
     });
     return {
       ok: true as const,
       orderId: data.orderId,
-      rxhereOrderId: data.rxhereOrderId,
+      eventideOrderId: data.eventideOrderId,
       warning: data.warning,
     };
   } catch (error) {

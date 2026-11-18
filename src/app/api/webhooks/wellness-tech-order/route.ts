@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { timingSafeEqual } from "crypto";
-import { applyDistributionFulfillmentUpdate } from "@/lib/rxhere/apply-fulfillment-update";
+import { applyDistributionFulfillmentUpdate } from "@/lib/eventide/apply-fulfillment-update";
 
 function secretOk(header: string | null) {
   const expected =
@@ -27,6 +27,8 @@ export async function POST(request: Request) {
     trackingUrl?: string;
     event?: string;
     reason?: string;
+    eventideOrderId?: string;
+    /** @deprecated one-release read alias */
     rxhereOrderId?: string;
     orderId?: string;
   } | null;
@@ -43,7 +45,7 @@ export async function POST(request: Request) {
     trackingUrl: body.trackingUrl,
     event: body.event,
     reason: body.reason,
-    rxhereOrderId: body.rxhereOrderId || body.orderId,
+    eventideOrderId: body.eventideOrderId || body.rxhereOrderId || body.orderId,
     distributionStatus: body.status,
   });
 
