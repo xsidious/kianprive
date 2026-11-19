@@ -56,6 +56,8 @@ model BookingRequest {
   timezone          String?       @default("America/New_York")
   notes             String?
   partnerNotes      String?
+  /** Origin of the booking: "patient" (public) or "provider_portal". */
+  source            String?       @default("patient")
   patientDateOfBirth String?
   labPrescriptionSentAt DateTime?
   medicalReviewPaidAt DateTime?
@@ -640,6 +642,62 @@ model AuditLog {
 
   @@index([entityType, entityId])
   @@index([action, createdAt])
+}
+
+enum ChartNoteVisibility {
+  CLINICAL
+  CLIENT
+}
+
+enum PatientFileVisibility {
+  CLINICAL
+  CLIENT
+}
+
+/** Longitudinal chart notes for a patient (keyed by email / userId). */
+model PatientChartNote {
+  id                 String              @id @default(cuid())
+  patientEmail       String
+  patientUserId      String?
+  visibility         ChartNoteVisibility
+  body               String              @db.Text
+  intakeSubmissionId String?
+  bookingId          String?
+  authorUserId       String?
+  authorPartnerId    String?
+  archivedAt         DateTime?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  @@index([patientEmail, visibility, createdAt])
+  @@index([patientUserId, visibility, createdAt])
+  @@index([authorPartnerId, createdAt])
+  @@index([intakeSubmissionId])
+  @@index([bookingId])
+}
+
+/** Patient files and pictures (Blob URL + optional legacy data URL). */
+model PatientFile {
+  id                 String                @id @default(cuid())
+  patientEmail       String
+  patientUserId      String?
+  visibility         PatientFileVisibility @default(CLINICAL)
+  fileName           String?
+  mimeType           String?
+  url                String                @db.Text
+  storageKey         String?
+  intakeSubmissionId String?
+  bookingId          String?
+  partnerId          String?
+  uploadedByUserId   String?
+  archivedAt         DateTime?
+  createdAt          DateTime              @default(now())
+
+  @@index([patientEmail, visibility, createdAt])
+  @@index([patientUserId, visibility, createdAt])
+  @@index([partnerId, createdAt])
+  @@index([intakeSubmissionId])
+  @@index([bookingId])
 }
 
 model Account {

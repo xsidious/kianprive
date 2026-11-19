@@ -129,6 +129,9 @@ export default async function DashboardPage() {
           <Link className={`inline-flex items-center gap-2 ${editorialCtaSecondary}`} href="/dashboard/services">
             <CalendarCheck2 size={16} /> MY SERVICES
           </Link>
+          <Link className={`inline-flex items-center gap-2 ${editorialCtaSecondary}`} href="/dashboard/chart">
+            <FileText size={16} /> CARE NOTES
+          </Link>
           <Link className={editorialCtaPrimary} href="/icoone-training">
             GO TO ICOONE TRAINING
           </Link>

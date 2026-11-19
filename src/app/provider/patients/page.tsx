@@ -119,13 +119,19 @@ export default function ProviderPatientsPage() {
                     <dt className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Medications</dt>
                     <dd>{patient.medications || "—"}</dd>
                   </div>
-                  {patient.intakeId ? (
-                    <div className="sm:col-span-2">
+                  <div className="sm:col-span-2 flex flex-wrap gap-4">
+                    <Link
+                      href={`/provider/patients/${encodeURIComponent(patient.email.trim().toLowerCase())}`}
+                      className="text-sm text-[#8f6f3e] underline"
+                    >
+                      Open patient chart →
+                    </Link>
+                    {patient.intakeId ? (
                       <Link href={`/provider/intake/${patient.intakeId}`} className="text-sm text-[#8f6f3e] underline">
                         Open assigned intake →
                       </Link>
-                    </div>
-                  ) : null}
+                    ) : null}
+                  </div>
                 </dl>
               ) : null}
             </article>
