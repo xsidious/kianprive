@@ -1,16 +1,55 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { getPortalHomeForRole } from "@/lib/auth-redirect";
-import {
-  canAccessAdmin,
-  canAccessAmbassadorPortal,
-  canAccessMemberDashboard,
-  canAccessPartnerPortal,
-  canAccessProviderPortal,
-  type PortalKind,
-} from "@/lib/rbac";
 import { applySecurityHeaders, clientIp, rateLimit } from "@/lib/anti-bot";
+
+/** Edge-safe role checks — do not import @prisma/client (blows past 1MB Edge limit). */
+type PortalKind = "partner" | "ambassador" | "practitioner";
+
+function canAccessAdmin(role?: string | null) {
+  return role === "ADMIN" || role === "OPERATIONS" || role === "EDITOR";
+}
+
+function canAccessPartnerPortal(role?: string | null, portals?: PortalKind[] | null) {
+  if (role === "PARTNER" || role === "ADMIN") return true;
+  if (role === "AMBASSADOR" || role === "PROVIDER") return true;
+  return Boolean(portals?.includes("partner"));
+}
+
+function canAccessAmbassadorPortal(role?: string | null, portals?: PortalKind[] | null) {
+  if (role === "AMBASSADOR" || role === "ADMIN") return true;
+  return Boolean(portals?.includes("ambassador"));
+}
+
+function canAccessProviderPortal(role?: string | null, portals?: PortalKind[] | null) {
+  if (role === "PROVIDER" || role === "ADMIN") return true;
+  return Boolean(portals?.includes("practitioner"));
+}
+
+function canAccessMemberDashboard(role?: string | null, portals?: PortalKind[] | null) {
+  if (!role && !portals?.length) return false;
+  if (canAccessAdmin(role)) return false;
+  if (role === "MEMBER" || role === "GUEST") return true;
+  if (role === "PROVIDER" || role === "PARTNER" || role === "AMBASSADOR") return true;
+  return Boolean(portals?.length);
+}
+
+function getPortalHomeForRole(role?: string | null) {
+  switch (role) {
+    case "ADMIN":
+    case "OPERATIONS":
+    case "EDITOR":
+      return "/admin";
+    case "PARTNER":
+      return "/partner";
+    case "AMBASSADOR":
+      return "/ambassador";
+    case "PROVIDER":
+      return "/provider";
+    default:
+      return "/dashboard";
+  }
+}
 
 const adminPaths = ["/admin"];
 const partnerPaths = ["/partner"];
@@ -23,7 +62,6 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const ip = clientIp(req);
 
-  // Rate-limit auth + public intake/contact surfaces
   if (
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/api/intake") ||
@@ -94,7 +132,6 @@ export async function middleware(req: NextRequest) {
     return res;
   }
 
-  // Dual-role: allow member dashboard for providers/partners who also shop as patients.
   if (isMemberDashboard && !canAccessMemberDashboard(role, portals)) {
     res = NextResponse.redirect(new URL(roleHome, req.url));
     applySecurityHeaders(res.headers);
@@ -125,13 +162,15 @@ export async function middleware(req: NextRequest) {
       applySecurityHeaders(res.headers);
       return res;
     }
-    // Ambassadors without a partner profile should use /ambassador.
-    if ((role === "AMBASSADOR" || portals.includes("ambassador")) && !portals.includes("partner") && role !== "PARTNER") {
+    if (
+      (role === "AMBASSADOR" || portals.includes("ambassador")) &&
+      !portals.includes("partner") &&
+      role !== "PARTNER"
+    ) {
       res = NextResponse.redirect(new URL("/ambassador", req.url));
       applySecurityHeaders(res.headers);
       return res;
     }
-    // Do not force providers away from /partner when they also have a partner profile.
   }
 
   if (isAdminRoute && !canAccessAdmin(role)) {
