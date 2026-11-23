@@ -342,9 +342,17 @@ function TrackIntakeForm() {
                 </div>
               ) : null}
               {result.therapy.order?.paymentStatus === "PAID" ? (
-                <p className="mt-3 text-sm text-[#1b6568]">
-                  Paid — order {result.therapy.order.orderNumber}. Fulfillment is in progress.
-                </p>
+                <div className="mt-3 space-y-2">
+                  <p className="text-sm text-[#1b6568]">
+                    Paid — order {result.therapy.order.orderNumber}. Preparing to ship.
+                  </p>
+                  <Link
+                    href="/dashboard/orders"
+                    className="inline-flex rounded-full border border-[#8f6f3e] px-4 py-2 text-sm text-[#8f6f3e]"
+                  >
+                    View in Orders
+                  </Link>
+                </div>
               ) : null}
             </div>
           ) : null}

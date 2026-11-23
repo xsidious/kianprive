@@ -6,6 +6,7 @@ import { sendInvoiceEmail } from "@/lib/commerce/invoices";
 import { intervalLabel, resolveIntervalDays } from "@/lib/commerce/therapy-billing";
 import { syncTherapySubscriptionForProposal } from "@/lib/commerce/therapy-subscriptions";
 import { notifyPartnerTherapySent } from "@/lib/intake/partner-status-sync";
+import { orderPaymentUrl } from "@/lib/commerce/payment-link";
 
 const proposalInclude = {
   items: {
@@ -45,6 +46,7 @@ const proposalInclude = {
       shippingTotal: true,
       paymentStatus: true,
       status: true,
+      paymentToken: true,
       fulfillments: {
         orderBy: { createdAt: "desc" as const },
         take: 3,
@@ -161,6 +163,10 @@ export function serializeProposal(
           fulfillments: proposal.order.fulfillments,
           // Amounts only for admin or member pay CTA
           total: includePrices || showPayTotal ? orderTotal : undefined,
+          paymentUrl:
+            proposal.order.paymentStatus === "UNPAID" && proposal.order.paymentToken
+              ? orderPaymentUrl(proposal.order.paymentToken)
+              : null,
         }
       : null,
     items,
@@ -295,48 +301,51 @@ export async function upsertTherapyProposal(input: {
     const shippingTotal = Math.max(0, Number(input.shippingTotal) || 0);
     const total = subtotal + shippingTotal;
 
-    if (orderId) {
-      await tx.orderItem.deleteMany({ where: { orderId } });
-      await tx.order.update({
-        where: { id: orderId },
-        data: {
-          partnerId: input.providerPartnerId,
-          intakeSubmissionId: input.intakeSubmissionId,
-          email: intake?.email,
-          phone: intake?.phone,
-          userId: intake?.userId ?? undefined,
-          status: "PENDING",
-          paymentStatus: "UNPAID",
-          subtotal,
-          shippingTotal,
-          total,
-          notes: input.notes ?? `Therapy proposal for ${intake?.fullName ?? "patient"}`,
-          items: { create: lineItems },
-        },
-      });
-    } else {
-      const order = await tx.order.create({
-        data: {
-          orderNumber: `KP-THERAPY-${Date.now()}`,
-          partnerId: input.providerPartnerId,
-          intakeSubmissionId: input.intakeSubmissionId,
-          email: intake?.email,
-          phone: intake?.phone,
-          userId: intake?.userId ?? undefined,
-          status: "PENDING",
-          paymentStatus: "UNPAID",
-          fulfillmentStatus: "UNFULFILLED",
-          subtotal,
-          shippingTotal,
-          total,
-          notes: input.notes ?? `Therapy proposal for ${intake?.fullName ?? "patient"}`,
-          items: { create: lineItems },
-        },
-      });
-      orderId = order.id;
-    }
-
+    // Only create/sync the commerce Order when sending to the patient.
+    // Draft plans stay on the proposal so unpaid drafts do not clutter Orders.
     if (input.send) {
+      if (orderId) {
+        await tx.orderItem.deleteMany({ where: { orderId } });
+        await tx.order.update({
+          where: { id: orderId },
+          data: {
+            partnerId: input.providerPartnerId,
+            intakeSubmissionId: input.intakeSubmissionId,
+            email: intake?.email,
+            phone: intake?.phone,
+            userId: intake?.userId ?? undefined,
+            status: "PENDING",
+            paymentStatus: "UNPAID",
+            fulfillmentStatus: "UNFULFILLED",
+            subtotal,
+            shippingTotal,
+            total,
+            notes: input.notes ?? `Therapy plan for ${intake?.fullName ?? "patient"}`,
+            items: { create: lineItems },
+          },
+        });
+      } else {
+        const order = await tx.order.create({
+          data: {
+            orderNumber: `KP-THERAPY-${Date.now()}`,
+            partnerId: input.providerPartnerId,
+            intakeSubmissionId: input.intakeSubmissionId,
+            email: intake?.email,
+            phone: intake?.phone,
+            userId: intake?.userId ?? undefined,
+            status: "PENDING",
+            paymentStatus: "UNPAID",
+            fulfillmentStatus: "UNFULFILLED",
+            subtotal,
+            shippingTotal,
+            total,
+            notes: input.notes ?? `Therapy plan for ${intake?.fullName ?? "patient"}`,
+            items: { create: lineItems },
+          },
+        });
+        orderId = order.id;
+      }
+
       return tx.intakeTherapyProposal.update({
         where: { id: base.id },
         data: {
@@ -357,7 +366,6 @@ export async function upsertTherapyProposal(input: {
         status: "DRAFT",
         notes: input.notes ?? null,
         providerPartnerId: input.providerPartnerId,
-        orderId,
         billingInterval,
         intervalDays,
       },

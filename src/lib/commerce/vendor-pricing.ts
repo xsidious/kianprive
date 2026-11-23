@@ -81,8 +81,9 @@ export async function syncProductFromBestOffer(productId: string) {
 
   const serialized = offers.map(serializeOffer);
   const best = pickBestOffer(serialized);
-  const outbound = shipping.alwaysFree ? 0 : shipping.flatRate;
-  const suggested = best ? suggestedRetailPrice({ landedCost: best.landedCost, pricing, outboundShipping: outbound }) : null;
+  const suggested = best
+    ? suggestedRetailPrice({ landedCost: best.landedCost, pricing, outboundShipping: 0 })
+    : null;
 
   const product = best
     ? await prisma.product.update({
@@ -127,9 +128,11 @@ export function serializeProductWithVendorPricing<
       vendor?: { id: string; name: string } | null;
     }>;
   },
->(product: T, shipping: { alwaysFree: boolean; flatRate: number }, pricing: PricingConfig) {
+>(product: T, _shipping: { alwaysFree: boolean; flatRate: number }, pricing: PricingConfig) {
+  // `_shipping` kept for call-site compatibility; flat-rate ship is billed on the order, not per SKU suggest.
   const offers = (product.vendorOffers ?? []).map(serializeOffer);
-  if (!offers.length && product.vendorId && product.wholesalePrice != null) {
+  const wholesale = product.wholesalePrice != null ? Number(product.wholesalePrice) : 0;
+  if (!offers.length && product.vendorId && wholesale > 0) {
     offers.push({
       id: `legacy-${product.id}`,
       productId: product.id,
@@ -137,18 +140,32 @@ export function serializeProductWithVendorPricing<
       vendorName: product.vendor?.name ?? "",
       vendorSku: product.sku ?? null,
       notes: null,
-      unitCost: Number(product.wholesalePrice),
+      unitCost: wholesale,
       shippingCost: 0,
-      landedCost: Number(product.wholesalePrice),
+      landedCost: wholesale,
     });
   }
-  const best = pickBestOffer(offers);
-  const outbound = shipping.alwaysFree ? 0 : shipping.flatRate;
+  let best = pickBestOffer(offers);
+  // Placeholder $0 Eventide (etc.) offers used to win — fall back to catalog wholesale.
+  if (!best && wholesale > 0) {
+    best = {
+      id: `wholesale-${product.id}`,
+      productId: product.id,
+      vendorId: product.vendorId ?? "wholesale",
+      vendorName: product.vendor?.name ?? "Catalog cost",
+      vendorSku: product.sku ?? null,
+      notes: null,
+      unitCost: wholesale,
+      shippingCost: 0,
+      landedCost: wholesale,
+    };
+  }
+  // Unit suggestions must not include the whole-cart flat shipping rate (see suggestedRetailPrice).
   const suggestedPrice = best
-    ? suggestedRetailPrice({ landedCost: best.landedCost, pricing, outboundShipping: outbound })
+    ? suggestedRetailPrice({ landedCost: best.landedCost, pricing, outboundShipping: 0 })
     : null;
   const retail = Number(product.price);
-  const landed = best?.landedCost ?? (product.wholesalePrice != null ? Number(product.wholesalePrice) : 0);
+  const landed = best?.landedCost ?? (wholesale > 0 ? wholesale : 0);
   const profitPerUnit = retail > 0 && landed > 0 ? roundMoney(retail - landed) : null;
 
   return {
@@ -156,9 +173,9 @@ export function serializeProductWithVendorPricing<
     price: retail,
     wholesalePrice: product.wholesalePrice != null ? Number(product.wholesalePrice) : null,
     vendorOffers: offers,
-    bestVendor: best,
+    bestVendor: best && best.id.startsWith("wholesale-") ? null : best,
     suggestedPrice,
-    landedCost: best?.landedCost ?? null,
+    landedCost: landed > 0 ? landed : null,
     profitPerUnit,
   };
 }

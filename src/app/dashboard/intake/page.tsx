@@ -113,11 +113,13 @@ export default function MemberIntakePage() {
           <p className="text-[10px] uppercase tracking-[0.22em] text-[#8f6f3e]">Members</p>
           <h1 className="mt-2 font-serif text-3xl text-[#1f1a15]">My clinical intake</h1>
           <p className="mt-2 text-sm text-[#6f6251]">
-            Track Provider Connect / Wellness Hub requests, review recommended therapy, and reply when the clinical
-            team asks for more.
+            Submit → physician reviews → therapy pay link → order ships. Paid therapy also appears under Orders.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <Link href="/dashboard/orders" className="rounded-full border border-[#d8cbb5] px-4 py-2 text-sm text-[#6f6251]">
+            Orders
+          </Link>
           <Link href="/dashboard" className="rounded-full border border-[#d8cbb5] px-4 py-2 text-sm text-[#6f6251]">
             Dashboard
           </Link>
@@ -128,6 +130,38 @@ export default function MemberIntakePage() {
 
       {loading ? <p className="mt-8 text-sm text-[#6f6251]">Loading…</p> : null}
       {error ? <p className="mt-8 text-sm text-red-700">{error}</p> : null}
+
+      {!loading &&
+      intakes.some(
+        (r) => r.therapy?.order && r.therapy.order.paymentStatus !== "PAID" && typeof r.therapy.order.total === "number",
+      ) ? (
+        <div className="mt-6 rounded-2xl border border-[#b78d4b80] bg-[#fffaf3] p-5">
+          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Action needed</p>
+          <h2 className="mt-1 font-serif text-2xl text-[#1f1a15]">Your therapy plan is ready to pay</h2>
+          <p className="mt-2 text-sm text-[#6f6251]">
+            Open the intake below, review the recommended products, then accept and pay. After payment you can track
+            shipping in Orders.
+          </p>
+          <button
+            type="button"
+            className="mt-4 rounded-full bg-[#b78d4b] px-5 py-2.5 text-sm text-white"
+            onClick={() => {
+              const row = intakes.find(
+                (r) =>
+                  r.therapy?.order &&
+                  r.therapy.order.paymentStatus !== "PAID" &&
+                  typeof r.therapy.order.total === "number",
+              );
+              if (row) {
+                setOpenId(row.id);
+                document.getElementById(`intake-${row.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }
+            }}
+          >
+            Go to payment
+          </button>
+        </div>
+      ) : null}
 
       {!loading && !error && intakes.length === 0 ? (
         <div className="mt-8 rounded-2xl border border-[#e7dcc8] bg-[#fcfaf6] p-6 text-sm text-[#6f6251]">
@@ -142,7 +176,7 @@ export default function MemberIntakePage() {
 
       <ul className="mt-8 space-y-4">
         {intakes.map((row) => (
-          <li key={row.id} className="space-y-4 rounded-2xl border border-[#e7dcc8] bg-white p-5">
+          <li id={`intake-${row.id}`} key={row.id} className="space-y-4 rounded-2xl border border-[#e7dcc8] bg-white p-5">
             <div>
               <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">{row.statusLabel}</p>
               <h2 className="mt-1 font-serif text-xl text-[#1f1a15]">{row.fullName}</h2>
@@ -193,9 +227,20 @@ export default function MemberIntakePage() {
             {row.therapy ? (
               <div className="rounded-xl border border-[#efe4d4] bg-[#fffaf3] p-4">
                 <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">
-                  Recommended therapy · {row.therapy.status}
+                  {row.therapy.order?.paymentStatus === "PAID"
+                    ? "Therapy paid · shipping next"
+                    : row.therapy.order
+                      ? "Therapy ready — pay to ship"
+                      : `Recommended therapy · ${row.therapy.status}`}
                 </p>
                 <p className="mt-1 text-sm text-[#6f6251]">From {row.therapy.providerName}</p>
+                {row.therapy.order?.paymentStatus === "PAID" && row.therapy.order.id ? (
+                  <p className="mt-2 text-sm">
+                    <Link href={`/dashboard/orders/${row.therapy.order.id}`} className="text-[#8f6f3e] underline">
+                      View order {row.therapy.order.orderNumber}
+                    </Link>
+                  </p>
+                ) : null}
                 {row.therapy.notes ? (
                   <p className="mt-2 text-sm text-[#1f1a15]">{row.therapy.notes}</p>
                 ) : null}

@@ -5,6 +5,7 @@ import { getPortalHomeForRole } from "@/lib/auth-redirect";
 import { canAccessAdmin } from "@/lib/rbac";
 import { AdminSidebarNav } from "@/components/admin/AdminSidebarNav";
 import { PortalSignOut } from "@/components/auth/PortalSignOut";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { adminShell } from "@/components/admin/ui";
 
 export default async function AdminLayout({
@@ -21,9 +22,14 @@ export default async function AdminLayout({
     <div className={`${adminShell} lg:grid lg:grid-cols-[272px_1fr]`}>
       <aside className="border-b border-[#e5d7c2]/80 bg-white/75 backdrop-blur-md lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r">
         <div className="border-b border-[#e5d7c2]/80 px-5 py-6">
-          <p className="text-[10px] tracking-[0.22em] text-[#8f6f3e]">KIAN PRIVÉ</p>
-          <p className="mt-1 font-serif text-3xl text-[#1f1a15]">Admin</p>
-          <p className="mt-1 truncate text-xs text-[#6f6251]">{session.user.email}</p>
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-[10px] tracking-[0.22em] text-[#8f6f3e]">KIAN PRIVÉ</p>
+              <p className="mt-1 font-serif text-3xl text-[#1f1a15]">Admin</p>
+              <p className="mt-1 truncate text-xs text-[#6f6251]">{session.user.email}</p>
+            </div>
+            <NotificationBell />
+          </div>
         </div>
         <div className="px-3 py-3 lg:flex-1 lg:overflow-y-auto">
           <div className="flex gap-1.5 overflow-x-auto pb-2 lg:hidden">

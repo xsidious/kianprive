@@ -42,10 +42,19 @@ export default async function MemberOrdersPage({
         { userId: session.user.id },
         ...(email ? [{ email: { equals: email, mode: "insensitive" as const } }] : []),
       ],
+      // Hide empty approve-draft shells; real therapy orders are KP-THERAPY-* once sent.
+      NOT: {
+        AND: [
+          { orderNumber: { startsWith: "KP-INTAKE-" } },
+          { paymentStatus: "UNPAID" },
+          { items: { none: {} } },
+        ],
+      },
     },
     orderBy: { createdAt: "desc" },
     include: {
       items: { select: { quantity: true, title: true, product: { select: { category: true } } } },
+      therapyProposal: { select: { id: true, status: true } },
       _count: { select: { messages: true } },
     },
   });
@@ -58,8 +67,8 @@ export default async function MemberOrdersPage({
           <div>
             <h1 className="font-serif text-4xl text-[#1f1a15]">Orders &amp; progress</h1>
             <p className="mt-3 max-w-xl text-[#6f6251]">
-              Track shop and GLP therapy orders, shipping updates, and messages with the team. GLP orders appear after
-              your physician sends the plan and you pay.
+              Shop purchases and therapy (after your physician sends a plan). Pay from My intake; paid therapy shows
+              here for shipping updates.
             </p>
           </div>
           <Link href="/dashboard" className={editorialCtaSecondary}>
@@ -101,20 +110,36 @@ export default async function MemberOrdersPage({
             return visible.map((order) => {
               const progress = patientOrderProgress(order);
               const peptideOrder = orderIncludesPeptides(order.items);
+              const therapyOrder =
+                Boolean(order.therapyProposal) || order.orderNumber.startsWith("KP-THERAPY-");
+              const awaitingPay = therapyOrder && order.paymentStatus === "UNPAID";
               const itemCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
               return (
                 <Link
                   key={order.id}
-                  href={`/dashboard/orders/${order.id}`}
+                  href={
+                    awaitingPay
+                      ? `/dashboard/intake`
+                      : `/dashboard/orders/${order.id}`
+                  }
                   className={`${editorialPanel} block p-5 transition hover:border-[#d4c4a8]`}
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <p className="inline-flex items-center gap-2 text-xs tracking-[0.14em] text-[#8f6f3e]">
                         <PackageCheck size={14} /> {order.orderNumber}
-                        {peptideOrder ? (
+                        {therapyOrder ? (
+                          <span className="rounded-full bg-[#fff6e8] px-2 py-0.5 text-[10px] uppercase tracking-[0.12em]">
+                            Therapy
+                          </span>
+                        ) : peptideOrder ? (
                           <span className="rounded-full bg-[#fff6e8] px-2 py-0.5 text-[10px] uppercase tracking-[0.12em]">
                             GLP
+                          </span>
+                        ) : null}
+                        {awaitingPay ? (
+                          <span className="rounded-full bg-[#1f1a15] px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-white">
+                            Pay now
                           </span>
                         ) : null}
                       </p>

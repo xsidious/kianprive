@@ -12,6 +12,7 @@ import { activateTherapySubscriptionFromPayment } from "@/lib/commerce/therapy-s
 import { forwardPaidOrderToWellnessTech } from "@/lib/commerce/forward-distribution-order";
 import { formatChargeDate, intervalLabel } from "@/lib/commerce/therapy-billing";
 import { notifyPartnerTherapyPaid } from "@/lib/intake/partner-status-sync";
+import { intakeTrackUrl, publicAppBaseUrl } from "@/lib/intake/tracking";
 
 type OpaqueData = { dataDescriptor: string; dataValue: string };
 
@@ -224,6 +225,39 @@ export async function processOrderCardPayment(input: {
     });
   }
 
+  try {
+    const { createUserNotification, notifyUserByEmail, notifyClinicalStaff } = await import(
+      "@/lib/notifications"
+    );
+    const payHref = order.id ? `/dashboard/orders/${order.id}` : "/dashboard/orders";
+    if (order.userId) {
+      await createUserNotification({
+        userId: order.userId,
+        type: "PAYMENT_RECEIVED",
+        title: `Payment received — ${order.orderNumber}`,
+        body: "Your order is paid and preparing to ship. Track progress in Orders.",
+        href: payHref,
+      });
+    } else {
+      await notifyUserByEmail(order.email || order.intakeSubmission?.email, {
+        type: "PAYMENT_RECEIVED",
+        title: `Payment received — ${order.orderNumber}`,
+        body: "Your order is paid and preparing to ship. Track progress in Orders.",
+        href: payHref,
+      });
+    }
+    await notifyClinicalStaff({
+      intakeSubmissionId: order.intakeSubmissionId,
+      partnerId: order.partnerId,
+      type: "PAYMENT_RECEIVED",
+      title: `Therapy paid — ${order.orderNumber}`,
+      body: "Patient payment received. Fulfill from Orders → Paid — ready to ship.",
+      href: "/admin/orders",
+    });
+  } catch (err) {
+    console.error("[process-order-payment] in-app notify failed:", err);
+  }
+
   const providerEmail = order.partner?.user?.email;
   if (providerEmail) {
     await sendTransactionalEmail({
@@ -272,10 +306,19 @@ export async function processOrderCardPayment(input: {
       activated && activated.status === "ACTIVE"
         ? `This therapy bills ${intervalLabel(activated.interval, activated.intervalDays)}. Next charge: ${nextCharge ?? "scheduled"}.`
         : null;
+    const trackEmail = order.email || order.intakeSubmission?.email || null;
+    const trackRef =
+      order.intakeSubmission?.publicTrackingToken || order.intakeSubmission?.id || null;
+    const trackUrl =
+      trackRef != null
+        ? intakeTrackUrl({ referenceCode: trackRef, email: trackEmail })
+        : `${publicAppBaseUrl()}/track-intake`;
     const content = buildPaymentConfirmationEmail({
       orderNumber: order.orderNumber,
       total: Number(order.total),
       refillNote,
+      trackUrl,
+      ordersUrl: `${publicAppBaseUrl()}/dashboard/orders`,
     });
     await sendTransactionalEmail({
       to: (order.email || order.intakeSubmission?.email) as string,

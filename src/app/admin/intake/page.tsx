@@ -517,6 +517,13 @@ export default function AdminIntakePage() {
               </div>
             </div>
 
+            <div className="rounded-xl border border-[#efe4d4] bg-[#fffaf3] p-3 text-sm text-[#6f6251]">
+              <p className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Workflow</p>
+              <p className="mt-1">
+                Build therapy → <strong>Send therapy + pay link</strong> → patient pays → order appears under Orders
+                (Paid — ready to ship) for fulfillment.
+              </p>
+            </div>
             <IntakeTherapyPicker
               intakeSubmissionId={selected.id}
               allowPricing

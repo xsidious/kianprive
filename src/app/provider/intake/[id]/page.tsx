@@ -55,7 +55,7 @@ export default function ProviderIntakeDetailPage() {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [statusNote, setStatusNote] = useState("");
-  const [createOrderDraft, setCreateOrderDraft] = useState(true);
+  const [createOrderDraft, setCreateOrderDraft] = useState(false);
   const [canPrescribe, setCanPrescribe] = useState(true);
   const [signerName, setSignerName] = useState("Assigned physician");
   const [savedSignature, setSavedSignature] = useState<string | null>(null);
@@ -193,23 +193,76 @@ export default function ProviderIntakeDetailPage() {
 
       {message ? <p className="text-sm text-[#1b6568]">{message}</p> : null}
 
-      <section className={`${adminPanel} space-y-2 p-5 text-sm text-[#5f5344]`}>
-        <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Wellness Tech EHR</p>
-        <p>
-          This chart is copied into the central Wellness Tech record
-          {field(payload, "ehrLocationLabel") !== "—" ? ` from ${field(payload, "ehrLocationLabel")}` : ""}. Assigned
-          physician: {field(payload, "assignedProvider")}.
-        </p>
-        <ol className="list-decimal space-y-1 pl-5">
-          <li>Patient completes the forms and checks the medical disclaimer.</li>
-          <li>The chart is stored here and sent to the assigned physician. Only a medical director or supervising physician can prescribe GLP therapy or order labs.</li>
-          <li>The physician reviews the signed attestation that the information is true and correct.</li>
-          <li>Request labs, or approve, build the therapy, and order GLP therapy or medication.</li>
+      <section className={`${adminPanel} space-y-3 p-5 text-sm text-[#5f5344]`}>
+        <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Care workflow</p>
+        <ol className="grid gap-2 sm:grid-cols-4">
+          {[
+            { n: "1", t: "Review intake", d: "Confirm history & signature" },
+            { n: "2", t: "Set status", d: "Approve, labs, or follow-up" },
+            { n: "3", t: "Send therapy", d: "Build plan → patient gets pay link" },
+            { n: "4", t: "Ship after pay", d: "Paid orders appear in Orders" },
+          ].map((step) => (
+            <li key={step.n} className="rounded-lg border border-[#efe4d4] bg-[#fffaf3] px-3 py-2.5">
+              <p className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Step {step.n}</p>
+              <p className="mt-1 font-medium text-[#1f1a15]">{step.t}</p>
+              <p className="mt-0.5 text-xs text-[#6f6251]">{step.d}</p>
+            </li>
+          ))}
         </ol>
+        <p className="text-xs text-[#8a7d6c]">
+          Chart syncs to Wellness Tech
+          {field(payload, "ehrLocationLabel") !== "—" ? ` (${field(payload, "ehrLocationLabel")})` : ""}. Assigned:{" "}
+          {field(payload, "assignedProvider")}. Only a medical director / supervising physician can send therapy.
+        </p>
+      </section>
+
+      <section className={`${adminPanel} space-y-4 p-5`}>
+        <div>
+          <h2 className="font-serif text-xl text-[#1f1a15]">1 · Clinical decision</h2>
+          <p className="mt-1 text-sm text-[#6f6251]">
+            Current status: <strong>{submission.status}</strong>. Set status first, then build and send therapy below.
+            Patients are emailed when status changes.
+          </p>
+        </div>
+        <label className="block text-xs uppercase tracking-[0.16em] text-[#8f6f3e]">
+          Note with status change (optional)
+          <textarea
+            value={statusNote}
+            onChange={(e) => setStatusNote(e.target.value)}
+            rows={3}
+            className="mt-1.5 w-full rounded-lg border border-[#e0d4c0] bg-white px-3 py-2 text-sm text-[#1f1a15]"
+            placeholder="Optional note included when you change status…"
+          />
+        </label>
+        <label className="flex items-center gap-2 text-sm text-[#6f6251]">
+          <input
+            type="checkbox"
+            checked={createOrderDraft}
+            onChange={(e) => setCreateOrderDraft(e.target.checked)}
+            className="accent-[#8f6f3e]"
+          />
+          Also create empty KP-INTAKE draft on approve (usually leave off — therapy send creates the real order)
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {STATUS_ACTIONS.filter((action) => canPrescribe || (action.value !== "NEEDS_LABS" && action.value !== "APPROVED")).map((action) => (
+            <button
+              key={action.value}
+              type="button"
+              disabled={busy}
+              onClick={() => void setClinicalStatus(action.value)}
+              className={action.value === "APPROVED" ? adminBtnPrimary : adminBtnGhost}
+            >
+              {action.label}
+            </button>
+          ))}
+        </div>
       </section>
 
       {canPrescribe ? (
-        <IntakeTherapyPicker intakeSubmissionId={id} onSaved={() => void load()} />
+        <div className="space-y-2">
+          <p className="px-1 text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">2 · Therapy plan</p>
+          <IntakeTherapyPicker intakeSubmissionId={id} onSaved={() => void load()} />
+        </div>
       ) : (
         <section className={`${adminPanel} p-5 text-sm text-[#6f6251]`}>
           You can review this chart. Ordering labs, approving therapy, and prescribing GLP therapy is limited to the medical director or supervising physician.
@@ -245,48 +298,6 @@ export default function ProviderIntakeDetailPage() {
           return data.message;
         }}
       />
-
-      <section className={`${adminPanel} space-y-4 p-5`}>
-        <div>
-          <h2 className="font-serif text-xl text-[#1f1a15]">Clinical decision</h2>
-          <p className="mt-1 text-sm text-[#6f6251]">
-            Current status: <strong>{submission.status}</strong>. Approve creates an order draft and emails the
-            patient. Needs labs / decline also notify the patient with your note (saved into the message thread).
-          </p>
-        </div>
-        <label className="block text-xs uppercase tracking-[0.16em] text-[#8f6f3e]">
-          Note with status change (optional)
-          <textarea
-            value={statusNote}
-            onChange={(e) => setStatusNote(e.target.value)}
-            rows={3}
-            className="mt-1.5 w-full rounded-lg border border-[#e0d4c0] bg-white px-3 py-2 text-sm text-[#1f1a15]"
-            placeholder="Optional note included when you change status…"
-          />
-        </label>
-        <label className="flex items-center gap-2 text-sm text-[#6f6251]">
-          <input
-            type="checkbox"
-            checked={createOrderDraft}
-            onChange={(e) => setCreateOrderDraft(e.target.checked)}
-            className="accent-[#8f6f3e]"
-          />
-          Create unpaid order draft when approving (links intake → database order)
-        </label>
-        <div className="flex flex-wrap gap-2">
-          {STATUS_ACTIONS.filter((action) => canPrescribe || (action.value !== "NEEDS_LABS" && action.value !== "APPROVED")).map((action) => (
-            <button
-              key={action.value}
-              type="button"
-              disabled={busy}
-              onClick={() => void setClinicalStatus(action.value)}
-              className={action.value === "APPROVED" ? adminBtnPrimary : adminBtnGhost}
-            >
-              {action.label}
-            </button>
-          ))}
-        </div>
-      </section>
 
       <section className={`${adminPanel} grid gap-3 p-5 sm:grid-cols-2`}>
         <p className="text-sm"><span className="text-[#8f6f3e]">DOB:</span> {submission.dateOfBirth}</p>

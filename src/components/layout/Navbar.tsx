@@ -12,6 +12,7 @@ import { useCart } from "@/components/providers/cart-provider";
 import { getPortalHomeForRole, getPortalLabelForRole } from "@/lib/auth-redirect";
 import { PRIVETHERAPEUTICS_URL } from "@/lib/privetherapeutics";
 import { TherapeuticsAnchor } from "@/components/site/TherapeuticsAnchor";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 const LOGO_SRC = "/images/kian-prive-logo.png";
 
@@ -175,6 +176,7 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center justify-end gap-2 lg:flex">
+          <NotificationBell />
           <button
             type="button"
             onClick={openCart}
@@ -303,6 +305,7 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center justify-end gap-0.5 justify-self-end lg:hidden">
+          <NotificationBell />
           <AccessibilityWidget />
           <button
             type="button"

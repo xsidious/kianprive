@@ -1,6 +1,7 @@
 "use client";
 
 import { PortalNavList, type PortalLink } from "@/components/portal/PortalNav";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 const links: PortalLink[] = [
   { href: "/dashboard", label: "Home", exact: true },
@@ -21,6 +22,7 @@ export function MemberPortalNav({ name }: { name?: string | null }) {
             <p className="text-[10px] uppercase tracking-[0.22em] text-[#8f6f3e]">Member portal</p>
             <p className="font-serif text-2xl text-[#1f1a15]">{name?.trim() || "Welcome back"}</p>
           </div>
+          <NotificationBell />
         </div>
         <PortalNavList links={links} layout="row" />
       </div>

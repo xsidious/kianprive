@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { profileWhere } from "@/lib/network-profile";
 import { PortalSignOut } from "@/components/auth/PortalSignOut";
 import { PortalNavList } from "@/components/portal/PortalNav";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 const links = [
   { href: "/provider", label: "Overview" },
@@ -46,11 +47,16 @@ export default async function ProviderLayout({ children }: { children: React.Rea
     <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,#fff9f0_0%,#f4ebe0_45%,#ebe1d4_100%)] lg:grid lg:grid-cols-[260px_1fr]">
       <aside className="border-b border-[#e5d7c2]/80 bg-white/75 backdrop-blur-md lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-b-0 lg:border-r">
         <div className="border-b border-[#e5d7c2]/80 px-5 py-6">
-          <p className="text-[10px] tracking-[0.22em] text-[#8f6f3e]">KIAN PRIVÉ</p>
-          <p className="mt-1 font-serif text-3xl text-[#1f1a15]">Practitioner</p>
-          <p className="mt-2 truncate text-sm text-[#1f1a15]">{partner.displayName}</p>
-          <p className="mt-1 text-[11px] tracking-[0.12em] text-[#8f6f3e]">CODE {partner.partnerCode}</p>
-          {partner.specialty ? <p className="mt-1 text-xs text-[#6f6251]">{partner.specialty}</p> : null}
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-[10px] tracking-[0.22em] text-[#8f6f3e]">KIAN PRIVÉ</p>
+              <p className="mt-1 font-serif text-3xl text-[#1f1a15]">Practitioner</p>
+              <p className="mt-2 truncate text-sm text-[#1f1a15]">{partner.displayName}</p>
+              <p className="mt-1 text-[11px] tracking-[0.12em] text-[#8f6f3e]">CODE {partner.partnerCode}</p>
+              {partner.specialty ? <p className="mt-1 text-xs text-[#6f6251]">{partner.specialty}</p> : null}
+            </div>
+            <NotificationBell />
+          </div>
         </div>
         <div className="px-3 py-3 lg:flex-1 lg:overflow-y-auto lg:py-4">
           <div className="lg:hidden">

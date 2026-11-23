@@ -50,6 +50,11 @@ export default async function DashboardPage() {
     const progress = patientOrderProgress(order);
     return progress.tone !== "done" && order.status !== "CANCELED" && order.status !== "REFUNDED";
   }).length;
+  const awaitingTherapyPay = orders.filter(
+    (order) =>
+      order.paymentStatus === "UNPAID" &&
+      (order.orderNumber.startsWith("KP-THERAPY-") || Boolean(order.intakeSubmissionId)),
+  );
   const whatsappHref = buildWhatsAppUrl(
     `Hi KIAN Privé team, I need support with my member dashboard account (${session.user.email ?? "member"}).`,
   );
@@ -73,6 +78,24 @@ export default async function DashboardPage() {
             <PortalSignOut className={`${editorialCtaSecondary} cursor-pointer`} />
           </div>
         </div>
+        {awaitingTherapyPay.length > 0 ? (
+          <div className={`${editorialPanel} mt-8 border-[#b78d4b80] bg-[#fffaf3] p-5`}>
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Action needed</p>
+            <h2 className="mt-1 font-serif text-2xl text-[#1f1a15]">Therapy ready to pay</h2>
+            <p className="mt-2 text-sm text-[#6f6251]">
+              Your physician sent a plan. Pay from Clinical intake — after payment it shows in Orders for shipping.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link href="/dashboard/intake" className={editorialCtaPrimary}>
+                Pay therapy
+              </Link>
+              <Link href="/dashboard/orders" className={editorialCtaSecondary}>
+                View orders
+              </Link>
+            </div>
+          </div>
+        ) : null}
+
         <div className="mt-8 grid gap-3 md:grid-cols-4">
           <article className={`${editorialPanel} p-4`}>
             <p className="inline-flex items-center gap-2 text-xs tracking-[0.14em] text-[#8f6f3e]">

@@ -144,9 +144,34 @@ async function notifyIntakeMessageParties(opts: {
     } catch (err) {
       console.error("[intake/messages] patient notify failed:", err);
     }
+
+    try {
+      const { notifyUserByEmail } = await import("@/lib/notifications");
+      await notifyUserByEmail(submission.email, {
+        type: opts.paymentUrl ? "THERAPY_READY" : "INTAKE_MESSAGE",
+        title: opts.paymentUrl ? "Therapy plan ready — pay to ship" : "Update from your care team",
+        body: opts.body.slice(0, 220),
+        href: opts.paymentUrl || "/dashboard/intake",
+      });
+    } catch (err) {
+      console.error("[intake/messages] in-app patient notify failed:", err);
+    }
   }
 
   if (opts.authorRole === "PATIENT") {
+    try {
+      const { notifyClinicalStaff } = await import("@/lib/notifications");
+      await notifyClinicalStaff({
+        intakeSubmissionId: submission.id,
+        type: "PATIENT_REPLY",
+        title: `Patient reply — ${submission.fullName}`,
+        body: opts.body.slice(0, 220),
+        href: `/provider/intake/${submission.id}`,
+      });
+    } catch (err) {
+      console.error("[intake/messages] in-app staff notify failed:", err);
+    }
+
     const staffTo = getWellnessHubReportRecipients();
     if (!staffTo.length) return;
     try {

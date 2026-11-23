@@ -94,6 +94,7 @@ export default function AdminOrdersPage() {
   const [status, setStatus] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [catalog, setCatalog] = useState<"all" | "shop" | "therapy" | "GLP">("all");
+  const [stage, setStage] = useState<"all" | "awaiting_pay" | "to_ship" | "fees">("all");
   const [query, setQuery] = useState("");
   const [syncingDistribution, setSyncingDistribution] = useState(false);
   const [retryingId, setRetryingId] = useState<string | null>(null);
@@ -308,24 +309,54 @@ export default function AdminOrdersPage() {
   );
 
   const peptideOrders = useMemo(() => orders.filter((order) => orderIncludesPeptides(order.items)), [orders]);
-  const therapyOrders = useMemo(
+  const isTherapyOrder = useCallback(
+    (order: Order) =>
+      order.orderNumber.startsWith("KP-THERAPY-") ||
+      Boolean(order.therapyProposal) ||
+      order.items?.some((item) => (item.product?.catalogKind || "").toUpperCase() === "CLINICAL"),
+    [],
+  );
+  const isFeeOrder = useCallback(
+    (order: Order) =>
+      order.orderNumber.startsWith("KP-INTAKE-") ||
+      order.orderNumber.startsWith("KP-HUB-") ||
+      order.orderNumber.startsWith("KP-INV-"),
+    [],
+  );
+  const therapyOrders = useMemo(() => orders.filter(isTherapyOrder), [orders, isTherapyOrder]);
+  const awaitingPayOrders = useMemo(
     () =>
       orders.filter(
         (order) =>
-          order.orderNumber.startsWith("KP-THERAPY-") ||
-          Boolean(order.therapyProposal) ||
-          Boolean(order.intakeSubmission) ||
-          order.items?.some((item) => (item.product?.catalogKind || "").toUpperCase() === "CLINICAL"),
+          order.paymentStatus === "UNPAID" &&
+          (isTherapyOrder(order) || Boolean(order.therapyProposal) || Boolean(order.intakeSubmission)),
       ),
-    [orders],
+    [orders, isTherapyOrder],
   );
+  const toShipOrders = useMemo(
+    () =>
+      orders.filter(
+        (order) =>
+          order.paymentStatus === "PAID" &&
+          (order.fulfillmentStatus === "UNFULFILLED" || order.fulfillmentStatus === "PROCESSING") &&
+          !isFeeOrder(order),
+      ),
+    [orders, isFeeOrder],
+  );
+  const feeOrders = useMemo(() => orders.filter(isFeeOrder), [orders, isFeeOrder]);
   const visibleOrders = useMemo(() => {
     let list = orders;
-    if (catalog === "GLP") list = peptideOrders;
+    if (stage === "awaiting_pay") list = awaitingPayOrders;
+    else if (stage === "to_ship") list = toShipOrders;
+    else if (stage === "fees") list = feeOrders;
+    else if (catalog === "GLP") list = peptideOrders;
     else if (catalog === "therapy") list = therapyOrders;
     else if (catalog === "shop") {
       list = orders.filter(
-        (order) => !orderIncludesPeptides(order.items) && !order.orderNumber.startsWith("KP-THERAPY-"),
+        (order) =>
+          !orderIncludesPeptides(order.items) &&
+          !order.orderNumber.startsWith("KP-THERAPY-") &&
+          !isFeeOrder(order),
       );
     }
     const q = query.trim().toLowerCase();
@@ -339,6 +370,7 @@ export default function AdminOrdersPage() {
         order.distributionOrderId,
         order.eventideOrderId,
         order.partner?.displayName,
+        order.intakeSubmission?.fullName,
         ...(order.items ?? []).map((i) => i.title),
       ]
         .filter(Boolean)
@@ -346,7 +378,18 @@ export default function AdminOrdersPage() {
         .toLowerCase();
       return hay.includes(q);
     });
-  }, [catalog, orders, peptideOrders, therapyOrders, query]);
+  }, [
+    catalog,
+    stage,
+    orders,
+    peptideOrders,
+    therapyOrders,
+    awaitingPayOrders,
+    toShipOrders,
+    feeOrders,
+    isFeeOrder,
+    query,
+  ]);
 
   return (
     <div className="space-y-6">
@@ -355,7 +398,7 @@ export default function AdminOrdersPage() {
           <p className={adminEyebrow}>Commerce</p>
           <h1 className={adminTitle}>Orders</h1>
           <p className={adminMuted}>
-            Review line items, payments, and live pharmacy shipping (Wellness Tech → Eventide).
+            Therapy pay → Orders → ship (Wellness Tech → VitaRelay). Use workflow tabs below.
           </p>
         </div>
         <button
@@ -373,7 +416,33 @@ export default function AdminOrdersPage() {
       <div className="flex flex-wrap items-center gap-2">
         {(
           [
-            ["all", "All orders", orders.length],
+            ["all", "All stages", null],
+            ["awaiting_pay", "Awaiting patient pay", awaitingPayOrders.length],
+            ["to_ship", "Paid — ready to ship", toShipOrders.length],
+            ["fees", "Review fees / invoices", feeOrders.length],
+          ] as const
+        ).map(([value, label, count]) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => {
+              setStage(value);
+              if (value !== "all") setCatalog("all");
+            }}
+            className={`rounded-full px-4 py-2 text-xs uppercase tracking-[0.14em] ${
+              stage === value ? "bg-[#1f1a15] text-white" : "border border-[#e4d9c8] bg-white text-[#4f4335]"
+            }`}
+          >
+            {label}
+            {count != null ? ` (${count})` : ""}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2">
+        {(
+          [
+            ["all", "All catalogs", orders.length],
             ["therapy", "Therapy", therapyOrders.length],
             ["shop", "Shop", null],
             ["GLP", "GLP", peptideOrders.length],
@@ -382,9 +451,14 @@ export default function AdminOrdersPage() {
           <button
             key={value}
             type="button"
-            onClick={() => setCatalog(value)}
+            onClick={() => {
+              setCatalog(value);
+              setStage("all");
+            }}
             className={`rounded-full px-4 py-2 text-xs uppercase tracking-[0.14em] ${
-              catalog === value ? "bg-[#1f1a15] text-white" : "border border-[#e4d9c8] bg-white text-[#4f4335]"
+              catalog === value && stage === "all"
+                ? "bg-[#8f6f3e] text-white"
+                : "border border-[#e4d9c8] bg-white text-[#4f4335]"
             }`}
           >
             {label}
@@ -401,22 +475,20 @@ export default function AdminOrdersPage() {
 
       <div className="grid gap-3 sm:grid-cols-4">
         <div className={`${adminPanel} p-5`}>
-          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Orders</p>
-          <p className="mt-2 font-serif text-3xl">{orders.length}</p>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Awaiting pay</p>
+          <p className="mt-2 font-serif text-3xl">{awaitingPayOrders.length}</p>
         </div>
         <div className={`${adminPanel} p-5`}>
-          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Therapy / clinical</p>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Ready to ship</p>
+          <p className="mt-2 font-serif text-3xl">{toShipOrders.length}</p>
+        </div>
+        <div className={`${adminPanel} p-5`}>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Therapy orders</p>
           <p className="mt-2 font-serif text-3xl">{therapyOrders.length}</p>
         </div>
         <div className={`${adminPanel} p-5`}>
           <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Paid revenue</p>
           <p className="mt-2 font-serif text-3xl">{money(paidTotal)}</p>
-        </div>
-        <div className={`${adminPanel} p-5`}>
-          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f6f3e]">Unfulfilled</p>
-          <p className="mt-2 font-serif text-3xl">
-            {orders.filter((o) => o.fulfillmentStatus === "UNFULFILLED" || o.fulfillmentStatus === "PROCESSING").length}
-          </p>
         </div>
       </div>
 

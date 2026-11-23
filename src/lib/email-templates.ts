@@ -386,15 +386,21 @@ export function buildPaymentConfirmationEmail(input: {
   orderNumber: string;
   total: number;
   refillNote?: string | null;
+  /** Prefill track-intake with ref + email when known. */
+  trackUrl?: string | null;
+  /** Member portal orders link. */
+  ordersUrl?: string | null;
 }) {
+  const trackHref = input.trackUrl?.trim() || `${brandSiteUrl()}/track-intake`;
+  const ordersHref = input.ordersUrl?.trim() || `${brandSiteUrl()}/dashboard/orders`;
   const bodyHtml = [
     `<p style="margin:0 0 16px;">Thank you — your payment was received.</p>`,
     emailDetailCard([
       { label: "Order", value: input.orderNumber, highlight: true },
       { label: "Amount paid", value: `$${input.total.toFixed(2)}` },
-      { label: "Status", value: "Paid" },
+      { label: "Status", value: "Paid — preparing to ship" },
     ]),
-    emailSuccessBanner("Our team will fulfill your order. You'll receive updates as your therapy ships."),
+    emailSuccessBanner("Your order is in our fulfillment queue. You'll get shipping updates as therapy ships."),
     input.refillNote
       ? `<p style="margin:16px 0 0;font-size:14px;color:${BRAND.muted};">${escapeHtml(input.refillNote.trim())}</p>`
       : "",
@@ -402,12 +408,23 @@ export function buildPaymentConfirmationEmail(input: {
 
   return {
     subject: `Payment received — ${input.orderNumber}`,
-    text: `Thank you. We received payment for ${input.orderNumber} ($${input.total.toFixed(2)}). Our team will fulfill your order.${input.refillNote ? ` ${input.refillNote.trim()}` : ""}`,
+    text: [
+      `Thank you. We received payment for ${input.orderNumber} ($${input.total.toFixed(2)}).`,
+      "Your order is preparing to ship.",
+      input.refillNote ? input.refillNote.trim() : "",
+      `Track: ${trackHref}`,
+      `Orders: ${ordersHref}`,
+    ]
+      .filter(Boolean)
+      .join("\n"),
     html: emailLayout({
       preheader: `Payment confirmed — ${input.orderNumber}`,
       title: "Payment received",
       bodyHtml,
-      buttons: [{ href: `${brandSiteUrl()}/track-intake`, label: "Track your order", variant: "secondary" }],
+      buttons: [
+        { href: ordersHref, label: "View your order" },
+        { href: trackHref, label: "Track intake", variant: "secondary" },
+      ],
     }),
   };
 }

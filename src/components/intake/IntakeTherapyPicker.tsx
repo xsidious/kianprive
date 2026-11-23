@@ -51,11 +51,12 @@ function productLanded(product: ClinicalProduct) {
   return product.wholesalePrice != null && product.wholesalePrice > 0 ? product.wholesalePrice : 0;
 }
 
-/** Markup-only unit price — shipping is billed separately on the order. */
+/** Markup-only unit price — shipping is billed separately on the order (2× vendor cost). */
 function suggestedProductUnitPrice(product: ClinicalProduct) {
-  if (product.suggestedPrice != null && product.suggestedPrice > 0) return product.suggestedPrice;
   const cost = productLanded(product);
   if (cost > 0) return Math.round(Math.max(0, cost) * 2 * 100) / 100;
+  // Catalog "suggested sell" can still help when wholesale/landed is missing.
+  if (product.suggestedPrice != null && product.suggestedPrice > 0) return product.suggestedPrice;
   return product.price && product.price > 0 ? product.price : 0;
 }
 
@@ -415,12 +416,13 @@ export function IntakeTherapyPicker({
     const payUrl =
       data.proposal?.order?.paymentUrl ??
       (data.paymentUrl as string | undefined);
+    const orderNumber = data.proposal?.order?.orderNumber as string | undefined;
     setStatus(
       send
         ? payUrl
-          ? `Therapy sent. Patient pay link: ${payUrl}`
+          ? `Sent. Patient emailed.${orderNumber ? ` Order ${orderNumber} is awaiting payment.` : ""} Pay link: ${payUrl}`
           : "Therapy sent to patient."
-        : "Therapy draft saved.",
+        : "Draft saved (not in Orders yet — send when ready).",
     );
     onSaved?.();
   }
@@ -431,14 +433,14 @@ export function IntakeTherapyPicker({
         <div>
           <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f6f3e]">Therapy plan</p>
           <h3 className="mt-1 font-serif text-xl text-[#1f1a15]">
-            {forceNew ? "Assign another therapy" : "Build therapy"}
+            {forceNew ? "Assign another therapy" : "Build & send therapy"}
           </h3>
           <p className="mt-1 text-sm text-[#6f6251]">
             {forceNew
-              ? "This creates a separate therapy proposal and pay link. Earlier plans stay on the intake."
+              ? "Creates a separate plan and pay link. Earlier plans stay on this intake."
               : allowPricing
-                ? "Default patient price uses the best vendor landed cost plus your margin settings (Shipping page). Override any line as needed."
-                : "Click a product card → set quantity → Add to therapy. Prices stay hidden for providers."}
+                ? "Add products, set prices, then Send. That emails the patient a pay link and creates the order (drafts stay off Orders)."
+                : "Add products → Save draft anytime → Send therapy to patient. They get an email + pay link; paid orders show in Orders for shipping."}
           </p>
           {currentStatus ? (
             <p className="mt-2 text-xs uppercase tracking-[0.12em] text-[#8f6f3e]">
@@ -846,8 +848,12 @@ export function IntakeTherapyPicker({
                 onClick={() => void save(true)}
                 className="rounded-sm bg-[#b78d4b] px-4 py-2.5 text-sm text-white disabled:opacity-50"
               >
-                Send therapy to patient
+                {saving ? "Sending…" : "Send therapy + pay link"}
               </button>
+              <p className="text-[11px] leading-relaxed text-[#6f6251]">
+                Send emails the patient, creates the KP-THERAPY order, and posts the pay link in messages. After they
+                pay, fulfill from Orders.
+              </p>
             </div>
           </aside>
         </div>
