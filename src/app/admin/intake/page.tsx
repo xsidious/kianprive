@@ -384,7 +384,7 @@ export default function AdminIntakePage() {
         open={Boolean(selected)}
         title={selected?.fullName ?? "Intake"}
         eyebrow="Clinical submission"
-        wide
+        xl
         onClose={() => setModalId(null)}
       >
         {selected ? (

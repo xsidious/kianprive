@@ -533,66 +533,82 @@ export function IntakeTherapyPicker({
       {loading ? (
         <p className="text-sm text-[#6f6251]">Loading catalog…</p>
       ) : (
-        <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
-          <div>
-            <p className="mb-2 text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Catalog</p>
-            <div className="max-h-[28rem] overflow-auto pr-1">
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1.35fr)_minmax(300px,0.9fr)]">
+          <div className="min-w-0">
+            <div className="mb-2 flex flex-wrap items-end justify-between gap-2">
+              <p className="text-[10px] uppercase tracking-[0.14em] text-[#8f6f3e]">Catalog</p>
+              {allowPricing ? (
+                <p className="text-[11px] text-[#6f6251]">
+                  Suggested patient price = <span className="text-[#8f6f3e]">2× vendor cost</span> (shipping separate)
+                </p>
+              ) : null}
+            </div>
+            <div className="max-h-[32rem] overflow-auto rounded-xl border border-[#efe4d4] bg-white">
+              <ul className="divide-y divide-[#efe4d4]">
                 {filtered.map((product) => {
                   const isActive = activeId === product.id;
                   const inTherapy = therapyIds.has(product.id);
+                  const cost = productLanded(product);
+                  const suggest = suggestedProductUnitPrice(product);
                   return (
-                    <button
-                      key={product.id}
-                      type="button"
-                      onClick={() => selectProduct(product)}
-                      className={`overflow-hidden rounded-lg border bg-white text-left transition ${
-                        isActive
-                          ? "border-[#b78d4b] ring-2 ring-[#b78d4b40]"
-                          : inTherapy
-                            ? "border-[#c9b48a]"
-                            : "border-[#efe4d4] hover:border-[#d4c2a0]"
-                      }`}
-                    >
-                      <div className="relative h-20 bg-[#f3ebe0]">
-                        {product.featuredImage ? (
-                          <Image src={product.featuredImage} alt="" fill className="object-cover" unoptimized />
-                        ) : (
-                          <div className="flex h-full items-center justify-center text-[10px] text-[#8f6f3e]">No image</div>
-                        )}
-                        {inTherapy ? (
-                          <span className="absolute right-1.5 top-1.5 rounded-full bg-[#b78d4b] px-1.5 py-0.5 text-[9px] uppercase tracking-[0.1em] text-white">
-                            In plan
-                          </span>
-                        ) : null}
-                      </div>
-                      <div className="space-y-0.5 p-2">
-                        <p className="text-[9px] uppercase tracking-[0.1em] text-[#8f6f3e]">
-                          {product.category || "Clinical"}
-                          {product.isPrescription ? " · Rx" : ""}
-                        </p>
-                        <p className="line-clamp-2 font-serif text-sm leading-snug text-[#1f1a15]">{product.title}</p>
-                        {product.strength || product.form ? (
-                          <p className="line-clamp-1 text-[11px] text-[#6f6251]">
-                            {[product.form, product.strength].filter(Boolean).join(" · ")}
+                    <li key={product.id}>
+                      <button
+                        type="button"
+                        onClick={() => selectProduct(product)}
+                        className={`flex w-full items-center gap-3 px-3 py-3 text-left transition ${
+                          isActive
+                            ? "bg-[#fff6e8]"
+                            : inTherapy
+                              ? "bg-[#fffaf3]"
+                              : "hover:bg-[#faf6f0]"
+                        }`}
+                      >
+                        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-[#f3ebe0]">
+                          {product.featuredImage ? (
+                            <Image src={product.featuredImage} alt="" fill className="object-cover" unoptimized />
+                          ) : (
+                            <div className="flex h-full items-center justify-center px-1 text-center text-[9px] leading-tight text-[#8f6f3e]">
+                              No image
+                            </div>
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[10px] uppercase tracking-[0.1em] text-[#8f6f3e]">
+                            {product.category || "Clinical"}
+                            {product.isPrescription ? " · Rx" : ""}
+                            {inTherapy ? " · In plan" : ""}
                           </p>
-                        ) : null}
+                          <p className="mt-0.5 font-serif text-base leading-snug text-[#1f1a15]">{product.title}</p>
+                          {product.strength || product.form ? (
+                            <p className="mt-0.5 text-xs text-[#6f6251]">
+                              {[product.form, product.strength].filter(Boolean).join(" · ")}
+                            </p>
+                          ) : null}
+                        </div>
                         {allowPricing ? (
-                          <p className="text-[11px] text-[#8f6f3e]">
-                            {productLanded(product) > 0
-                              ? `${product.bestVendor ? `${product.bestVendor.vendorName} · ` : ""}cost $${productLanded(product).toFixed(2)} · suggest $${suggestedProductUnitPrice(product).toFixed(2)}`
-                              : product.price && product.price > 0
-                                ? `$${product.price.toFixed(2)} · add vendor quotes`
-                                : "Add vendor quotes"}
-                          </p>
+                          <div className="shrink-0 text-right text-xs">
+                            {cost > 0 ? (
+                              <>
+                                <p className="text-[#6f6251]">
+                                  {product.bestVendor?.vendorName
+                                    ? `${product.bestVendor.vendorName.slice(0, 18)}${product.bestVendor.vendorName.length > 18 ? "…" : ""}`
+                                    : "Cost"}{" "}
+                                  ${cost.toFixed(2)}
+                                </p>
+                                <p className="mt-0.5 font-medium text-[#8f6f3e]">2× → ${suggest.toFixed(2)}</p>
+                              </>
+                            ) : (
+                              <p className="text-[#8a4b3c]">Add vendor cost</p>
+                            )}
+                          </div>
                         ) : null}
-                      </div>
-                    </button>
+                      </button>
+                    </li>
                   );
                 })}
-              </div>
+              </ul>
               {!filtered.length ? (
-                <p className="py-6 text-sm text-[#6f6251]">No products match these filters.</p>
+                <p className="py-6 text-center text-sm text-[#6f6251]">No products match these filters.</p>
               ) : null}
             </div>
 
@@ -719,7 +735,7 @@ export function IntakeTherapyPicker({
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-start justify-between gap-2">
-                          <p className="truncate text-sm font-medium text-[#1f1a15]">{line.product.title}</p>
+                          <p className="text-sm font-medium leading-snug text-[#1f1a15]">{line.product.title}</p>
                           {allowPricing ? (
                             <p className="shrink-0 text-sm font-medium text-[#1f1a15]">
                               ${(line.unitPrice * line.quantity).toFixed(2)}
@@ -732,7 +748,7 @@ export function IntakeTherapyPicker({
                             {line.product.bestVendor
                               ? ` (${line.product.bestVendor.vendorName})`
                               : ""}
-                            {" · suggest $"}
+                            {" · 2× suggest $"}
                             {suggestedProductUnitPrice(line.product).toFixed(2)}
                           </p>
                         ) : null}

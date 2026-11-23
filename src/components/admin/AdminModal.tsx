@@ -12,9 +12,11 @@ type AdminModalProps = {
   children: React.ReactNode;
   footer?: React.ReactNode;
   wide?: boolean;
+  /** Extra-wide for therapy catalog (readable product rows). */
+  xl?: boolean;
 };
 
-export function AdminModal({ open, title, eyebrow, description, onClose, children, footer, wide }: AdminModalProps) {
+export function AdminModal({ open, title, eyebrow, description, onClose, children, footer, wide, xl }: AdminModalProps) {
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
@@ -46,7 +48,7 @@ export function AdminModal({ open, title, eyebrow, description, onClose, childre
         role="dialog"
         aria-modal="true"
         className={`relative z-10 flex max-h-[92vh] w-full flex-col overflow-hidden rounded-t-2xl border border-[#e4d5bc] bg-[#fffcf8] shadow-[0_24px_80px_rgba(31,26,21,0.28)] sm:rounded-2xl ${
-          wide ? "max-w-5xl" : "max-w-3xl"
+          xl ? "max-w-6xl" : wide ? "max-w-5xl" : "max-w-3xl"
         }`}
       >
         <div className="flex items-start justify-between gap-4 border-b border-[#efe4d4] px-5 py-4 sm:px-6">

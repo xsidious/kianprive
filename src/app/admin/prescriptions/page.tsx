@@ -434,7 +434,7 @@ export default function AdminPrescriptionsPage() {
         open={Boolean(therapyIntake)}
         title={therapyIntake?.fullName ?? "Therapy"}
         eyebrow={therapyIntake?.hasTherapy ? "Therapy plans" : "Create prescription"}
-        wide
+        xl
         onClose={() => setTherapyIntakeId(null)}
       >
         {therapyIntake ? (
