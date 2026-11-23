@@ -3,10 +3,11 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { BCRYPT_COST, PASSWORD_HINT, strongPasswordSchema } from "@/lib/auth-security";
 
 const schema = z.object({
-  currentPassword: z.string().min(6).max(100).optional(),
-  newPassword: z.string().min(8).max(100),
+  currentPassword: z.string().min(1).max(128).optional(),
+  newPassword: strongPasswordSchema,
 });
 
 export async function POST(req: Request) {
@@ -17,7 +18,8 @@ export async function POST(req: Request) {
 
   const parsed = schema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
-    return NextResponse.json({ error: "New password must be at least 8 characters." }, { status: 400 });
+    const passwordIssue = parsed.error.issues.find((issue) => issue.path.includes("newPassword"));
+    return NextResponse.json({ error: passwordIssue?.message || PASSWORD_HINT }, { status: 400 });
   }
 
   const user = await prisma.user.findUnique({ where: { id: session.user.id } });
@@ -35,7 +37,7 @@ export async function POST(req: Request) {
     }
   }
 
-  const passwordHash = await bcrypt.hash(parsed.data.newPassword, 12);
+  const passwordHash = await bcrypt.hash(parsed.data.newPassword, BCRYPT_COST);
   await prisma.user.update({
     where: { id: user.id },
     data: {

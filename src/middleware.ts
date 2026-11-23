@@ -65,18 +65,26 @@ export async function middleware(req: NextRequest) {
   if (
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/api/intake") ||
+    pathname.startsWith("/api/admin") ||
     pathname === "/login" ||
     pathname === "/signup" ||
     pathname === "/forgot-password" ||
     pathname === "/welcome"
   ) {
-    const limit = pathname.startsWith("/api/auth") ? 40 : pathname.startsWith("/api/intake") ? 40 : 30;
+    const limit = pathname.startsWith("/api/auth")
+      ? 30
+      : pathname.startsWith("/api/admin")
+        ? 120
+        : pathname.startsWith("/api/intake")
+          ? 40
+          : 30;
     const limited = rateLimit(`kian:${ip}:${pathname.split("/").slice(0, 3).join("/")}`, limit, 60_000);
     if (!limited.ok) {
       return new NextResponse("Too many requests.", { status: 429, headers: { "Retry-After": "60" } });
     }
   }
 
+  const isAdminApi = pathname.startsWith("/api/admin");
   const isAdminRoute = adminPaths.some((path) => pathname.startsWith(path));
   const isPartnerRoute = partnerPaths.some((path) => pathname.startsWith(path));
   const isAmbassadorRoute = ambassadorPaths.some((path) => pathname.startsWith(path));
@@ -87,6 +95,7 @@ export async function middleware(req: NextRequest) {
   let res: NextResponse;
 
   if (
+    !isAdminApi &&
     !isAdminRoute &&
     !isPartnerRoute &&
     !isAmbassadorRoute &&
@@ -103,6 +112,17 @@ export async function middleware(req: NextRequest) {
     req: req as never,
     secret: process.env.NEXTAUTH_SECRET,
   });
+
+  if (isAdminApi) {
+    if (!token?.sub || !canAccessAdmin(token.role as string | undefined)) {
+      res = NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      applySecurityHeaders(res.headers);
+      return res;
+    }
+    res = NextResponse.next();
+    applySecurityHeaders(res.headers);
+    return res;
+  }
 
   if (!token?.sub) {
     if (isMemberOnlyRoute) {
@@ -199,5 +219,6 @@ export const config = {
     "/welcome",
     "/api/auth/:path*",
     "/api/intake/:path*",
+    "/api/admin/:path*",
   ],
 };

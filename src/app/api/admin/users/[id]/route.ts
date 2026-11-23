@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminAccess } from "@/lib/admin-guard";
 import { writeAuditLog } from "@/lib/ops/audit";
 import { memberProfileWriteData, type MemberProfileDraft } from "@/lib/account/member-profile";
+import { assertStrongPassword, BCRYPT_COST, PASSWORD_HINT } from "@/lib/auth-security";
 
 type Params = {
   params: Promise<{ id: string }>;
@@ -20,7 +21,14 @@ export async function PATCH(req: Request, { params }: Params) {
   if (body.name !== undefined) updateData.name = body.name ? String(body.name) : null;
   if (body.email !== undefined) updateData.email = String(body.email).toLowerCase();
   if (body.role !== undefined) updateData.role = body.role as Role;
-  if (body.password) updateData.passwordHash = await bcrypt.hash(String(body.password), 12);
+  if (body.password) {
+    const strong = assertStrongPassword(String(body.password));
+    if (!strong.ok) {
+      return NextResponse.json({ error: strong.error || PASSWORD_HINT }, { status: 400 });
+    }
+    updateData.passwordHash = await bcrypt.hash(String(body.password), BCRYPT_COST);
+    updateData.mustSetPassword = true;
+  }
 
   const profileFields =
     body.profile && typeof body.profile === "object"

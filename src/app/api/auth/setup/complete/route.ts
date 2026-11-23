@@ -5,10 +5,11 @@ import { Role } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { hashSetupToken } from "@/lib/auth/setup-token";
 import { memberProfileWriteData, type MemberProfileDraft } from "@/lib/account/member-profile";
+import { BCRYPT_COST, PASSWORD_HINT, strongPasswordSchema } from "@/lib/auth-security";
 
 const schema = z.object({
   token: z.string().min(16),
-  password: z.string().min(8).max(100),
+  password: strongPasswordSchema,
   name: z.string().min(2).max(120),
   phone: z.string().max(40).optional(),
   dateOfBirth: z.string().max(40).optional(),
@@ -34,8 +35,9 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
   const parsed = schema.safeParse(body);
   if (!parsed.success) {
+    const passwordIssue = parsed.error.issues.find((issue) => issue.path.includes("password"));
     return NextResponse.json(
-      { error: "Please check your details. Password must be at least 8 characters." },
+      { error: passwordIssue?.message || `Please check your details. ${PASSWORD_HINT}` },
       { status: 400 },
     );
   }
@@ -49,7 +51,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "This setup link is invalid or expired. Start again." }, { status: 404 });
   }
 
-  const passwordHash = await bcrypt.hash(parsed.data.password, 12);
+  const passwordHash = await bcrypt.hash(parsed.data.password, BCRYPT_COST);
   const profileData = {
     ...memberProfileWriteData(parsed.data as Partial<MemberProfileDraft>),
     phone: parsed.data.phone?.trim() || user.profile?.phone || null,

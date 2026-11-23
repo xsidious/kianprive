@@ -6,10 +6,19 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { networkKindFromType } from "@/lib/network-profile";
+import {
+  assertNotLockedOut,
+  assertNotRateLimited,
+  authTimingPad,
+  genericAuthError,
+  requestClientMeta,
+  recordLoginFailure,
+  recordLoginSuccess,
+} from "@/lib/auth-security";
 
 const credentialsSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6),
+  password: z.string().min(1).max(128),
 });
 
 export const authOptions: NextAuthOptions = {
@@ -29,13 +38,36 @@ export const authOptions: NextAuthOptions = {
         const parsed = credentialsSchema.safeParse(credentials);
         if (!parsed.success) return null;
 
+        const email = parsed.data.email.toLowerCase();
+        const meta = await requestClientMeta();
+
+        const limited = await assertNotRateLimited(meta.ip, email);
+        if (!limited.ok) {
+          await authTimingPad();
+          throw new Error(limited.error);
+        }
+
+        const locked = await assertNotLockedOut(email);
+        if (!locked.ok) {
+          await authTimingPad();
+          throw new Error(locked.error);
+        }
+
         const user = await prisma.user.findUnique({
-          where: { email: parsed.data.email.toLowerCase() },
+          where: { email },
         });
-        if (!user?.passwordHash) return null;
+        if (!user?.passwordHash) {
+          await recordLoginFailure(email, meta.ip, "missing_user_or_hash");
+          throw new Error(genericAuthError());
+        }
 
         const valid = await bcrypt.compare(parsed.data.password, user.passwordHash);
-        if (!valid) return null;
+        if (!valid) {
+          await recordLoginFailure(email, meta.ip, "bad_password");
+          throw new Error(genericAuthError());
+        }
+
+        await recordLoginSuccess(user.id, user.email, meta.ip, meta.ua);
 
         return {
           id: user.id,

@@ -4,6 +4,7 @@ import { Prisma, Role, SubscriptionStatus, SubscriptionTier } from "@prisma/clie
 import { prisma } from "@/lib/prisma";
 import { requireAdminAccess } from "@/lib/admin-guard";
 import { writeAuditLog } from "@/lib/ops/audit";
+import { assertStrongPassword, BCRYPT_COST, PASSWORD_HINT } from "@/lib/auth-security";
 
 const roles = new Set<string>(Object.values(Role));
 
@@ -64,15 +65,22 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "email and password are required" }, { status: 400 });
   }
 
-  const passwordHash = await bcrypt.hash(String(body.password), 12);
+  const strong = assertStrongPassword(String(body.password));
+  if (!strong.ok) {
+    return NextResponse.json({ error: strong.error || PASSWORD_HINT }, { status: 400 });
+  }
+
+  const role = (body.role as Role) ?? Role.MEMBER;
+  const passwordHash = await bcrypt.hash(String(body.password), BCRYPT_COST);
   let user;
   try {
     user = await prisma.user.create({
       data: {
         email: String(body.email).toLowerCase(),
         name: body.name ? String(body.name) : null,
-        role: (body.role as Role) ?? Role.MEMBER,
+        role,
         passwordHash,
+        mustSetPassword: role !== Role.MEMBER && role !== Role.GUEST,
         profile: body.phone || body.company
           ? {
               create: {

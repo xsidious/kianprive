@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { generatePartnerCode, writeAuditLog } from "@/lib/partners";
 import { attachNetworkProfile } from "@/lib/network-profile";
 import { getBookingOptionIds } from "@/lib/services/booking-options";
+import { BCRYPT_COST, strongPasswordSchema } from "@/lib/auth-security";
 
 const assignmentSchema = z.object({
   serviceSlug: z.string().min(1),
@@ -17,7 +18,7 @@ const assignmentSchema = z.object({
 const createSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
-  password: z.string().min(8),
+  password: strongPasswordSchema,
   displayName: z.string().min(2),
   phone: z.string().optional(),
   specialty: z.string().optional(),
@@ -146,7 +147,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const passwordHash = await bcrypt.hash(parsed.data.password, 10);
+    const passwordHash = await bcrypt.hash(parsed.data.password, BCRYPT_COST);
     let partnerCode = generatePartnerCode(parsed.data.displayName);
     while (await prisma.partnerProfile.findUnique({ where: { partnerCode } })) {
       partnerCode = generatePartnerCode(parsed.data.displayName);
@@ -158,6 +159,7 @@ export async function POST(req: Request) {
         name: parsed.data.name,
         email: parsed.data.email.toLowerCase(),
         passwordHash,
+        mustSetPassword: true,
         role: "PROVIDER",
       },
     });

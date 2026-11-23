@@ -4,11 +4,12 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { Role } from "@prisma/client";
 import { patientFacingIntakeStatus, intakeReferenceWhere } from "@/lib/intake/tracking";
+import { BCRYPT_COST, PASSWORD_HINT, strongPasswordSchema } from "@/lib/auth-security";
 
 const claimSchema = z.object({
   email: z.string().email(),
   referenceId: z.string().min(6).max(64),
-  password: z.string().min(8).max(100),
+  password: strongPasswordSchema,
   name: z.string().min(2).max(120).optional(),
 });
 
@@ -34,9 +35,10 @@ export async function POST(req: Request) {
 
   const parsed = claimSchema.safeParse(body);
   if (!parsed.success) {
+    const passwordIssue = parsed.error.issues.find((issue) => issue.path.includes("password"));
     return withCors(
       NextResponse.json(
-        { error: "Invalid details. Password must be at least 8 characters." },
+        { error: passwordIssue?.message || `Invalid details. ${PASSWORD_HINT}` },
         { status: 400 },
       ),
     );
@@ -56,7 +58,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const passwordHash = await bcrypt.hash(parsed.data.password, 12);
+  const passwordHash = await bcrypt.hash(parsed.data.password, BCRYPT_COST);
   const displayName = parsed.data.name?.trim() || submission.fullName;
   const existing = await prisma.user.findUnique({ where: { email } });
 

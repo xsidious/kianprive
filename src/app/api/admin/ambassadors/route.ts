@@ -6,11 +6,12 @@ import { ambassadorReferralLinks } from "@/lib/ambassador";
 import { prisma } from "@/lib/prisma";
 import { generatePartnerCode, writeAuditLog } from "@/lib/partners";
 import { attachNetworkProfile } from "@/lib/network-profile";
+import { BCRYPT_COST, strongPasswordSchema } from "@/lib/auth-security";
 
 const createSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
-  password: z.string().min(8),
+  password: strongPasswordSchema,
   displayName: z.string().min(2),
   phone: z.string().optional(),
   defaultProductCommissionPct: z.number().min(0).max(100).optional(),
@@ -126,7 +127,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const passwordHash = await bcrypt.hash(parsed.data.password, 10);
+    const passwordHash = await bcrypt.hash(parsed.data.password, BCRYPT_COST);
     let partnerCode = generatePartnerCode(parsed.data.displayName);
     while (await prisma.partnerProfile.findUnique({ where: { partnerCode } })) {
       partnerCode = generatePartnerCode(parsed.data.displayName);
@@ -138,6 +139,7 @@ export async function POST(req: Request) {
         name: parsed.data.name,
         email: parsed.data.email.toLowerCase(),
         passwordHash,
+        mustSetPassword: true,
         role: "AMBASSADOR",
       },
     });

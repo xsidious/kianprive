@@ -222,7 +222,7 @@ function WelcomeForm() {
               className={editorialInput}
               type="password"
               required
-              minLength={8}
+              minLength={12}
               placeholder="Create a password (min 8 characters)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -231,7 +231,7 @@ function WelcomeForm() {
               className={editorialInput}
               type="password"
               required
-              minLength={8}
+              minLength={12}
               placeholder="Confirm password"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}

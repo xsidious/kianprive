@@ -128,7 +128,7 @@ export default function DashboardProfilePage() {
           <input
             className={editorialInput}
             type="password"
-            minLength={8}
+            minLength={12}
             placeholder="New password (min 8 characters)"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
@@ -137,7 +137,7 @@ export default function DashboardProfilePage() {
           <input
             className={editorialInput}
             type="password"
-            minLength={8}
+            minLength={12}
             placeholder="Confirm new password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}

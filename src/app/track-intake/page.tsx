@@ -233,7 +233,7 @@ function TrackIntakeForm() {
             <input
               type="password"
               required
-              minLength={8}
+              minLength={12}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1.5 w-full rounded-lg border border-[#e0d4c0] bg-white px-3 py-2.5 text-sm text-[#1f1a15]"

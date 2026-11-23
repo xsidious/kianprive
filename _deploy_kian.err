@@ -1,0 +1,317 @@
+Vercel CLI 48.12.1
+Retrieving project…
+Deploying beelzebub1sts-projects/kianprive
+Uploading [--------------------] (0.0B/63.1MB)
+Uploading [=====---------------] (15.8MB/63.1MB)
+Uploading [==========----------] (31.6MB/63.1MB)
+Uploading [===============-----] (47.3MB/63.1MB)
+Uploading [====================] (63.1MB/63.1MB)
+Inspect: https://vercel.com/beelzebub1sts-projects/kianprive/H49G6TBMzzB7vieovffGB74hAzpJ [24s]
+Production: https://kianprive-mlabml2xg-beelzebub1sts-projects.vercel.app [24s]
+Building...
+Building...
+Building: Running build in Washington, D.C., USA (East) – iad1
+Building: Build machine configuration: 2 cores, 8 GB
+Building: Retrieving list of deployment files...
+Building: Skipping build cache, deployment was triggered without cache.
+Building: Concatenating deployment archive files...
+Building: Extracting deployment files...
+Building: Extracted 993 deployment files...
+Building: Running "vercel build"
+Building: Vercel CLI 62.7.0
+Building: Installing dependencies...
+Building: > kianprive@0.1.0 postinstall
+Building: > prisma generate
+Building: Environment variables loaded from .env
+Building: Prisma schema loaded from prisma/schema.prisma
+Building: ┌─────────────────────────────────────────────────────────┐
+Building: │  Update available 6.17.1 -> 8.0.0-rc.22                 │
+Building: │                                                         │
+Building: │  This is a major update - please follow the guide at    │
+Building: │  https://pris.ly/d/major-version-upgrade                │
+Building: │                                                         │
+Building: │  Run the following to update                            │
+Building: │    npm i --save-dev prisma@latest                       │
+Building: │    npm i @prisma/client@latest                          │
+Building: └─────────────────────────────────────────────────────────┘
+Building: ✔ Generated Prisma Client (v6.17.1) to ./node_modules/@prisma/client in 309ms
+Building: Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+Building: Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+Building: added 462 packages in 22s
+Building: 164 packages are looking for funding
+Building: run `npm fund` for details
+Building: npm warn install-scripts 5 packages have install scripts not yet covered by allowScripts:
+Building: npm warn install-scripts   @prisma/client@6.17.1 (postinstall: node scripts/postinstall.js)
+Building: npm warn install-scripts   @prisma/engines@6.17.1 (postinstall: node scripts/postinstall.js)
+Building: npm warn install-scripts   sharp@0.34.5 (install: node install/check.js || npm run build)
+Building: npm warn install-scripts   prisma@6.17.1 (preinstall: node scripts/preinstall-entry.js)
+Building: npm warn install-scripts   unrs-resolver@1.11.1 (postinstall: napi-postinstall unrs-resolver 1.11.1 check)
+Building: npm warn install-scripts
+Building: npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+Building: Detected Next.js version: 16.2.4
+Building: Running "npm run build"
+Building: > kianprive@0.1.0 build
+Building: > next build
+Building: Applying modifyConfig from Vercel
+Building: Attention: Next.js now collects completely anonymous telemetry regarding usage.
+Building: This information is used to shape Next.js' roadmap and prioritize features.
+Building: You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+Building: https://nextjs.org/telemetry
+Building: Warning: Custom Cache-Control headers detected for the following routes:
+Building: - /_next/image
+Building: - /_next/static/:path*
+Building: Setting a custom Cache-Control header can break Next.js development behavior.
+Building: ▲ Next.js 16.2.4 (Turbopack)
+Building: - Environments: .env
+Building: ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+Building: Creating an optimized production build ...
+Building: ✓ Compiled successfully in 22.9s
+Building: Skipping validation of types
+Building: Finished TypeScript config validation in 16ms ...
+Building: Collecting page data using 1 worker ...
+Building: Generating static pages using 1 worker (0/250) ...
+Building: Generating static pages using 1 worker (62/250)
+Building: Generating static pages using 1 worker (124/250)
+Building: Generating static pages using 1 worker (187/250)
+Building: ✓ Generating static pages using 1 worker (250/250) in 1870ms
+Building: Finalizing page optimization ...
+Building: Running onBuildComplete from Vercel
+Building: Detected .env file, it is strongly recommended to use Vercel's env handling instead
+Building: Route (app)
+Building: ┌ ○ /
+Building: ├ ○ /_not-found
+Building: ├ ○ /about
+Building: ├ ○ /access-required
+Building: ├ ƒ /admin
+Building: ├ ƒ /admin/ambassadors
+Building: ├ ƒ /admin/analytics
+Building: ├ ƒ /admin/blog
+Building: ├ ƒ /admin/bookings
+Building: ├ ƒ /admin/cms
+Building: ├ ƒ /admin/commerce
+Building: ├ ƒ /admin/communications
+Building: ├ ƒ /admin/consultations
+Building: ├ ƒ /admin/intake
+Building: ├ ƒ /admin/invoices
+Building: ├ ƒ /admin/operations
+Building: ├ ƒ /admin/orders
+Building: ├ ƒ /admin/partners
+Building: ├ ƒ /admin/partners/commissions
+Building: ├ ƒ /admin/partners/guidelines
+Building: ├ ƒ /admin/partners/network
+Building: ├ ƒ /admin/partners/payouts
+Building: ├ ƒ /admin/prescriptions
+Building: ├ ƒ /admin/products
+Building: ├ ƒ /admin/providers
+Building: ├ ƒ /admin/retreats
+Building: ├ ƒ /admin/seo
+Building: ├ ƒ /admin/settings
+Building: ├ ƒ /admin/shipping
+Building: ├ ƒ /admin/subscriptions
+Building: ├ ƒ /admin/users
+Building: ├ ƒ /admin/vendors
+Building: ├ ƒ /ambassador
+Building: ├ ƒ /ambassador/earnings
+Building: ├ ƒ /ambassador/links
+Building: ├ ƒ /ambassador/payouts
+Building: ├ ƒ /ambassador/profile
+Building: ├ ƒ /ambassador/sales
+Building: ├ ƒ /api/account/password
+Building: ├ ƒ /api/acuity/status
+Building: ├ ƒ /api/admin/ambassadors
+Building: ├ ƒ /api/admin/ambassadors/[id]
+Building: ├ ƒ /api/admin/blog/categories
+Building: ├ ƒ /api/admin/blog/posts
+Building: ├ ƒ /api/admin/blog/posts/[id]
+Building: ├ ƒ /api/admin/bookings
+Building: ├ ƒ /api/admin/bookings/[id]
+Building: ├ ƒ /api/admin/cms/pages
+Building: ├ ƒ /api/admin/cms/pages/[id]
+Building: ├ ƒ /api/admin/commerce/orders
+Building: ├ ƒ /api/admin/commerce/orders/[id]
+Building: ├ ƒ /api/admin/commerce/orders/[id]/fulfillments
+Building: ├ ƒ /api/admin/commerce/orders/[id]/messages
+Building: ├ ƒ /api/admin/commerce/pricing
+Building: ├ ƒ /api/admin/commerce/products
+Building: ├ ƒ /api/admin/commerce/products/[id]
+Building: ├ ƒ /api/admin/commerce/shipping
+Building: ├ ƒ /api/admin/communications/email
+Building: ├ ƒ /api/admin/consultations
+Building: ├ ƒ /api/admin/intake/[id]
+Building: ├ ƒ /api/admin/intake/[id]/messages
+Building: ├ ƒ /api/admin/intake/peptides-glp
+Building: ├ ƒ /api/admin/integrations/stripe/status
+Building: ├ ƒ /api/admin/invoices
+Building: ├ ƒ /api/admin/partners
+Building: ├ ƒ /api/admin/partners/[id]
+Building: ├ ƒ /api/admin/partners/commissions
+Building: ├ ƒ /api/admin/partners/guidelines
+Building: ├ ƒ /api/admin/partners/guidelines/peptides
+Building: ├ ƒ /api/admin/partners/network
+Building: ├ ƒ /api/admin/partners/payouts
+Building: ├ ƒ /api/admin/partners/payouts/[id]
+Building: ├ ƒ /api/admin/prescriptions
+Building: ├ ƒ /api/admin/providers
+Building: ├ ƒ /api/admin/providers/[id]
+Building: ├ ƒ /api/admin/settings
+Building: ├ ƒ /api/admin/therapy-subscriptions
+Building: ├ ƒ /api/admin/users
+Building: ├ ƒ /api/admin/users/[id]
+Building: ├ ƒ /api/admin/users/[id]/network
+Building: ├ ƒ /api/admin/vendor-offers
+Building: ├ ƒ /api/admin/vendor-payables/[id]
+Building: ├ ƒ /api/admin/vendors
+Building: ├ ƒ /api/admin/vendors/[id]
+Building: ├ ƒ /api/ambassador/sales
+Building: ├ ƒ /api/analytics/events
+Building: ├ ƒ /api/auth/[...nextauth]
+Building: ├ ƒ /api/auth/forgot-password
+Building: ├ ƒ /api/auth/register
+Building: ├ ƒ /api/auth/setup/complete
+Building: ├ ƒ /api/auth/setup/preview
+Building: ├ ƒ /api/auth/setup/start
+Building: ├ ƒ /api/bookings
+Building: ├ ƒ /api/clinical/products
+Building: ├ ƒ /api/commerce/authorize-net/config
+Building: ├ ƒ /api/commerce/authorize-net/payer-auth/jwt
+Building: ├ ƒ /api/commerce/authorize-net/payer-auth/validate
+Building: ├ ƒ /api/commerce/cart
+Building: ├ ƒ /api/commerce/checkout
+Building: ├ ƒ /api/commerce/orders
+Building: ├ ƒ /api/commerce/orders/[id]/pay
+Building: ├ ƒ /api/commerce/orders/[id]/shop-pay
+Building: ├ ƒ /api/commerce/orders/[id]/tracking
+Building: ├ ƒ /api/commerce/products
+Building: ├ ƒ /api/commerce/shipping
+Building: ├ ƒ /api/cron/therapy-subscriptions
+Building: ├ ƒ /api/intake/celexo
+Building: ├ ƒ /api/intake/claim-account
+Building: ├ ƒ /api/intake/icoone
+Building: ├ ƒ /api/intake/messages
+Building: ├ ƒ /api/intake/partner
+Building: ├ ƒ /api/intake/peptides-glp
+Building: ├ ƒ /api/intake/therapy
+Building: ├ ƒ /api/intake/track
+Building: ├ ƒ /api/intake/wellness-hub
+Building: ├ ƒ /api/member/intake
+Building: ├ ƒ /api/member/intake/messages
+Building: ├ ƒ /api/member/orders
+Building: ├ ƒ /api/member/orders/[id]
+Building: ├ ƒ /api/member/orders/[id]/messages
+Building: ├ ƒ /api/ops/health
+Building: ├ ƒ /api/partner/analytics
+Building: ├ ƒ /api/partner/bookings
+Building: ├ ƒ /api/partner/clients
+Building: ├ ƒ /api/partner/dashboard
+Building: ├ ƒ /api/partner/earnings
+Building: ├ ƒ /api/partner/guidelines
+Building: ├ ƒ /api/partner/me
+Building: ├ ƒ /api/partner/payouts
+Building: ├ ƒ /api/partner/payouts/[id]
+Building: ├ ƒ /api/partner/sales
+Building: ├ ƒ /api/pay/[token]
+Building: ├ ƒ /api/profile
+Building: ├ ƒ /api/provider/intake
+Building: ├ ƒ /api/provider/intake/[id]
+Building: ├ ƒ /api/provider/intake/[id]/messages
+Building: ├ ƒ /api/provider/intake/[id]/pdf
+Building: ├ ƒ /api/provider/intake/[id]/status
+Building: ├ ƒ /api/provider/patients
+Building: ├ ƒ /api/providers
+Building: ├ ƒ /api/retreats
+Building: ├ ƒ /api/scheduling/slots
+Building: ├ ƒ /api/stripe/checkout
+Building: ├ ƒ /api/stripe/webhook
+Building: ├ ƒ /api/subscription/plan
+Building: ├ ƒ /api/webhooks/wellness-tech-order
+Building: ├ ○ /apple-icon.png
+Building: ├ ○ /athletes
+Building: ├ ƒ /auth/continue
+Building: ├ ○ /blog
+Building: ├ ● /blog/[slug]
+Building: │ ├ /blog/electrolyte-water-recipes
+Building: │ ├ /blog/putting-your-best-face-forward-the-power-of-exfoliation
+Building: │ ├ /blog/what-is-the-lymphatic-system-and-why-it-is-important
+Building: │ └ [+7 more paths]
+Building: ├ ○ /book-online
+Building: ├ ○ /cart
+Building: ├ ○ /checkout
+Building: ├ ○ /checkout/success
+Building: ├ ○ /client-testimonials
+Building: ├ ○ /contact
+Building: ├ ○ /corporate-wellness
+Building: ├ ƒ /dashboard
+Building: ├ ƒ /dashboard/intake
+Building: ├ ƒ /dashboard/orders
+Building: ├ ƒ /dashboard/orders/[id]
+Building: ├ ƒ /dashboard/profile
+Building: ├ ƒ /dashboard/services
+Building: ├ ƒ /dashboard/subscription
+Building: ├ ƒ /dashboard/therapeutics
+Building: ├ ○ /events-retreats
+Building: ├ ƒ /events-retreats/[slug]
+Building: ├ ○ /forgot-password
+Building: ├ ○ /icon.png
+Building: ├ ○ /icoone-training
+Building: ├ ○ /intake/celexo
+Building: ├ ○ /intake/icoone
+Building: ├ ƒ /intake/peptides-glp
+Building: ├ ○ /login
+Building: ├ ○ /manifest.webmanifest
+Building: ├ ƒ /onboarding
+Building: ├ ƒ /partner
+Building: ├ ƒ /partner/analytics
+Building: ├ ƒ /partner/bookings
+Building: ├ ƒ /partner/calendar
+Building: ├ ƒ /partner/clients
+Building: ├ ƒ /partner/earnings
+Building: ├ ƒ /partner/guidelines
+Building: ├ ƒ /partner/intake-link
+Building: ├ ƒ /partner/payouts
+Building: ├ ƒ /partner/products
+Building: ├ ƒ /partner/profile
+Building: ├ ƒ /partner/services
+Building: ├ ƒ /partner/support
+Building: ├ ƒ /pay/[token]
+Building: ├ ○ /pay/preview
+Building: ├ ○ /pay/preview/receipt
+Building: ├ ○ /payment-policies
+Building: ├ ○ /practitioners
+Building: ├ ○ /practitioners-athletes
+Building: ├ ○ /pricing
+Building: ├ ƒ /provider
+Building: ├ ƒ /provider/bookings
+Building: ├ ƒ /provider/earnings
+Building: ├ ƒ /provider/intake
+Building: ├ ƒ /provider/intake/[id]
+Building: ├ ƒ /provider/links
+Building: ├ ƒ /provider/patients
+Building: ├ ƒ /provider/payouts
+Building: ├ ƒ /provider/profile
+Building: ├ ƒ /provider/services
+Building: ├ ƒ /provider/therapeutics
+Building: ├ ○ /robots.txt
+Building: ├ ƒ /services
+Building: ├ ƒ /services/[slug]
+Building: ├ ƒ /shop
+Building: ├ ƒ /shop/[slug]
+Building: ├ ○ /signup
+Building: ├ ○ /sitemap.xml
+Building: ├ ○ /terms-and-conditions
+Building: ├ ○ /track-intake
+Building: ├ ○ /welcome
+Building: └ ○ /what-we-do
+Building: ƒ Proxy (Middleware)
+Building: ○  (Static)   prerendered as static content
+Building: ●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+Building: ƒ  (Dynamic)  server-rendered on demand
+Building: Build Completed in /vercel/output [53s]
+Building: Deploying outputs...
+Building: Deployment completed
+Building: Creating build cache...
+[2K[1A[2K[GProduction: https://kianprive-mlabml2xg-beelzebub1sts-projects.vercel.app [2m]
+Completing...
+
+Common next commands:
+- `vercel inspect kianprive-mlabml2xg-beelzebub1sts-projects.vercel.app --logs`
+- `vercel redeploy kianprive-mlabml2xg-beelzebub1sts-projects.vercel.app`

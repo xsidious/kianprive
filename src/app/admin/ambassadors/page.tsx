@@ -310,7 +310,7 @@ export default function AdminAmbassadorsPage() {
           <Field label="Full name"><TextInput required value={createForm.name} onChange={(event) => setCreateForm({ ...createForm, name: event.target.value })} /></Field>
           <Field label="Display name"><TextInput required value={createForm.displayName} onChange={(event) => setCreateForm({ ...createForm, displayName: event.target.value })} /></Field>
           <Field label="Login email"><TextInput required type="email" value={createForm.email} onChange={(event) => setCreateForm({ ...createForm, email: event.target.value })} /></Field>
-          <Field label="Temporary password"><TextInput required type="password" minLength={8} value={createForm.password} onChange={(event) => setCreateForm({ ...createForm, password: event.target.value })} /></Field>
+          <Field label="Temporary password"><TextInput required type="password" minLength={12} value={createForm.password} onChange={(event) => setCreateForm({ ...createForm, password: event.target.value })} /></Field>
           <Field label="Phone"><TextInput value={createForm.phone} onChange={(event) => setCreateForm({ ...createForm, phone: event.target.value })} /></Field>
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="Default product %"><TextInput type="number" min={0} max={100} value={createForm.productPct} onChange={(event) => setCreateForm({ ...createForm, productPct: event.target.value })} /></Field>
