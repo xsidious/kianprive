@@ -1,0 +1,22 @@
+---
+description: Never delete database records unless the user explicitly names what to delete and grants permission
+alwaysApply: true
+---
+
+# No database deletes without explicit permission
+
+Never delete anything from the database unless the user **specifically names what to delete** and **clearly grants permission** for that delete.
+
+## Hard rules
+
+- Do **not** run `DELETE`, `TRUNCATE`, `DROP`, Prisma `delete` / `deleteMany`, cascading wipes, or “cleanup” scripts that remove rows.
+- Do **not** delete orders, payments, users, intakes, partners, or related records “to fix” a bug, free space, or tidy data.
+- Prefer **status changes** (cancel, refund, hold, restore) and **updates** over deletes.
+- If a delete seems necessary, **stop and ask** with the exact records/IDs proposed — wait for explicit approval before executing.
+- Vague asks like “clean this up” or “fix the DB” are **not** permission to delete.
+
+## Allowed only when all are true
+
+1. User names the specific record(s) or clear scope (e.g. order number / id).
+2. User explicitly says to delete (or grants permission for that delete).
+3. The action is limited to that approved scope — nothing extra.

@@ -1,0 +1,24 @@
+---
+description: Never touch Vercel domains/projects unless the user explicitly orders that exact action
+alwaysApply: true
+---
+
+# No unsolicited Vercel / domain changes
+
+## Hard rules — require an explicit user order
+
+Do **nothing** to Vercel project setup or domains unless Alen **specifically** names the action.
+
+- Do **not** remove a custom domain from any project — ever — unless he explicitly says to remove that domain from that project.
+- Do **not** add, move, transfer, reassign, or detach domains.
+- Do **not** “fix” conflicts by removing a domain so it can be attached elsewhere.
+- Do **not** create a new Vercel project unless he explicitly says to create one.
+- Do **not** delete, rename, transfer, or unlink a Vercel project unless he explicitly says so.
+- Do **not** change DNS, domain redirects, or production domain assignment on your own.
+- Leave domains exactly where they are. If a move seems needed, **stop and ask** — wait for a clear yes that names the domain and both projects.
+
+Deploying code to an **already linked** existing project/repo is fine. Inventing a second project, or touching domains as part of a deploy, is not.
+
+## If unsure
+
+Stop. Ask which team/project and which exact domain action (if any). Default = change nothing.

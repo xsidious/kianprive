@@ -1,0 +1,16 @@
+---
+description: Wellness Tech production is on xsidious/Alen Vercel; KIAN on beelzebub
+alwaysApply: true
+---
+
+# Account map (quick)
+
+| Product | Vercel account | Notes |
+|---|---|---|
+| **KIAN Privé** | `beelzebub1sts-projects` | This repo |
+| **Wellness Tech** | `alens-projects-7f19d9b3` / `xsidious` | `Desktop/wellness-tech` → project `wellnesstechdist` |
+| **All other websites** | `alens-projects-7f19d9b3` / `xsidious` | Not beelzebub |
+
+Full ownership rule: `.cursor/rules/vercel-account-ownership.mdc`.
+
+When working on Wellness Tech, also follow `wellness-tech/.cursor/rules/wellness-tech-vercel.mdc`.

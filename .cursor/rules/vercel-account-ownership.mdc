@@ -1,0 +1,31 @@
+---
+description: Which GitHub/Vercel account owns which products
+alwaysApply: true
+---
+
+# Vercel / GitHub account ownership
+
+## `beelzebub1st` / `beelzebub1sts-projects`
+
+Owns:
+
+- **KIAN Privé** (`kianprive`)
+
+Use this account for deploy, env, domains, and Resend for KIAN. CLI: `vercel whoami` → `beelzebub1st`.
+
+## `xsidious` / `alens-projects-7f19d9b3` (alen's projects)
+
+Owns:
+
+- **Wellness Tech Distribution** (`wellnesstechdist` / `xsidious/wellnesstechdist`) — custom domains confirmed here
+- **All other websites** (client sites, side projects, etc.)
+
+Do **not** put KIAN production here. Do **not** put Wellness Tech production on beelzebub.
+
+## Hard rules
+
+- Prefer beelzebub for KIAN app deploys when that is the linked production home; if custom domains currently live on another project, **leave the domains alone** and deploy only to the GitHub/Vercel the user names.
+- Never deploy Wellness Tech to beelzebub’s old `wellnesstechdistribution` project.
+- Never deploy other client sites to beelzebub's team unless the user explicitly says so.
+- If the wrong account is logged in, switch before any **code** deploy / env change — still never touch domains unless explicitly ordered.
+- Never create a new Vercel project, and never add/remove/move domains, unless the user explicitly asks. See `no-unsolicited-vercel-projects.mdc`.
